@@ -293,6 +293,52 @@ export function SwapPanel() {
           LamportPay will never ask for your seed phrase or private key.
         </Warn>
       </div>
+
+      {confirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/70 backdrop-blur-sm">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Confirm real swap"
+            className="w-full max-w-md rounded-2xl border border-border/60 bg-card p-6 space-y-4 shadow-xl"
+          >
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="w-5 h-5 text-primary" />
+              <h2 className="text-base font-semibold">Confirm real swap</h2>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              This is a real Jupiter swap using real wallet funds. Continue only with a small
+              test amount.
+            </p>
+            <div className="rounded-xl bg-secondary/60 px-4 py-3 text-sm font-medium">
+              {amount} SOL → USDC
+            </div>
+            <p className="text-xs text-muted-foreground">
+              LamportPay will never ask for your seed phrase or private key. Bridge payout, fiat
+              payout and KYC remain disabled.
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => setConfirmOpen(false)}
+                className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmOpen(false);
+                  void signOrder();
+                }}
+                className="rounded-xl px-4 py-2 text-sm font-semibold text-primary-foreground bg-primary hover:opacity-90"
+              >
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
