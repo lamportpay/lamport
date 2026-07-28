@@ -5,6 +5,7 @@ import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
 import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater, HeroFloatingCards } from "@/components/site/LiveSwapTheater";
 import { CitiesNeverSleep } from "@/components/site/CitiesNeverSleep";
+import { TrustedByMillions } from "@/components/site/TrustedByMillions";
 import {
   ArrowRight,
   Bot,
@@ -46,6 +47,7 @@ function Index() {
         <StatsStrip />
       </section>
       <WorldPulse />
+      <TrustedByMillions />
       <WhySection />
       <CitiesNeverSleep />
       <HowItWorksSection />
