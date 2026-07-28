@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as DocsRouteImport } from './routes/docs'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -30,6 +31,11 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
   path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ComplianceRoute = ComplianceRouteImport.update({
   id: '/compliance',
   path: '/compliance',
@@ -44,6 +50,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/compliance': typeof ComplianceRoute
+  '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
   '/whitepaper': typeof WhitepaperRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/compliance': typeof ComplianceRoute
+  '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
   '/whitepaper': typeof WhitepaperRoute
@@ -59,19 +67,27 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/compliance': typeof ComplianceRoute
+  '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
   '/whitepaper': typeof WhitepaperRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/compliance' | '/how-it-works' | '/send' | '/whitepaper'
+  fullPaths:
+    | '/'
+    | '/compliance'
+    | '/docs'
+    | '/how-it-works'
+    | '/send'
+    | '/whitepaper'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/compliance' | '/how-it-works' | '/send' | '/whitepaper'
+  to: '/' | '/compliance' | '/docs' | '/how-it-works' | '/send' | '/whitepaper'
   id:
     | '__root__'
     | '/'
     | '/compliance'
+    | '/docs'
     | '/how-it-works'
     | '/send'
     | '/whitepaper'
@@ -80,6 +96,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ComplianceRoute: typeof ComplianceRoute
+  DocsRoute: typeof DocsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   SendRoute: typeof SendRoute
   WhitepaperRoute: typeof WhitepaperRoute
@@ -108,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/compliance': {
       id: '/compliance'
       path: '/compliance'
@@ -128,6 +152,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ComplianceRoute: ComplianceRoute,
+  DocsRoute: DocsRoute,
   HowItWorksRoute: HowItWorksRoute,
   SendRoute: SendRoute,
   WhitepaperRoute: WhitepaperRoute,
