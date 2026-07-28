@@ -94,18 +94,20 @@ export function VerifiedUsers() {
             {tiles.map((t, i) => (
               <div
                 key={i}
-                className="absolute animate-collage-float will-change-transform"
+                className="absolute"
                 style={{
                   left: `calc(50% + ${(t.x - 50) * 0.9}%)`,
                   top: `${t.y}%`,
                   width: t.size,
                   height: t.size,
                   transform: `translate(-50%, -50%) rotate(${t.rot}deg)`,
-                  animationDelay: `${t.delay}s`,
                   zIndex: t.z,
                 }}
               >
-                <div className="relative w-full h-full rounded-xl overflow-hidden border border-white/10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] bg-[oklch(0.14_0.05_275)]">
+                <div
+                  className="relative w-full h-full rounded-xl overflow-hidden border border-white/10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] bg-[oklch(0.14_0.05_275)] animate-collage-float will-change-transform"
+                  style={{ animationDelay: `${t.delay}s` }}
+                >
                   <img
                     src={t.src}
                     alt=""
