@@ -243,6 +243,17 @@ export function SwapPanel() {
               )}
             </div>
           )}
+          {result && !error && (
+            <div className="rounded-xl border border-border/60 bg-secondary/50 px-4 py-3 space-y-1 opacity-80">
+              <div className="text-sm font-semibold text-muted-foreground">
+                Fiat payout disabled
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                USDC swap completed. Bridge payout is disabled for now. Partner KYC and
+                local-currency payout will be added only after licensed partner approval.
+              </p>
+            </div>
+          )}
         </div>
       )}
 
