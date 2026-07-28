@@ -224,8 +224,13 @@ export function LiveSwapTheater() {
                     style={{ opacity: 1 - i * 0.11, transform: `translateX(${i * 2}px)` }}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] flex items-center justify-center text-lg shrink-0">
-                        {s.avatar}
+                      <div className="relative w-10 h-10 rounded-full shrink-0 p-[2px] bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_16px_oklch(0.7_0.28_330_/_0.45)]">
+                        <img
+                          src={s.avatar}
+                          alt={s.who}
+                          loading="lazy"
+                          className="w-full h-full rounded-full object-cover bg-[oklch(0.14_0.05_275)]"
+                        />
                         {i === 0 && (
                           <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[color:var(--success)] border-2 border-[oklch(0.11_0.05_275)]" />
                         )}
@@ -392,8 +397,13 @@ export function HeroFloatingCards() {
           className={`absolute ${positions[i]} w-64 rounded-2xl border border-primary/20 bg-card/90 backdrop-blur-xl shadow-[var(--shadow-soft)] p-3 animate-[fade-in_0.5s_ease-out]`}
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] flex items-center justify-center text-base">
-              {s.avatar}
+            <div className="w-10 h-10 rounded-full p-[2px] bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_14px_oklch(0.7_0.28_330_/_0.5)]">
+              <img
+                src={s.avatar}
+                alt={s.who}
+                loading="lazy"
+                className="w-full h-full rounded-full object-cover bg-muted"
+              />
             </div>
             <div className="min-w-0 flex-1">
               <div className="text-xs font-medium truncate">{s.who} · {s.from}</div>
