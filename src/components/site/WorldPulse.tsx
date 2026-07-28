@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
 
 // Approximate lon/lat for corridor countries + a few sender hubs
@@ -11,11 +11,25 @@ const HUBS: [number, number, string][] = [
   [139.7, 35.7, "TYO"], [-122.4, 37.8, "SFO"], [13.4, 52.5, "BER"],
 ];
 
-// Equirectangular projection into a 1000x500 viewBox
-function proj(lon: number, lat: number): [number, number] {
-  const x = ((lon + 180) / 360) * 1000;
-  const y = ((90 - lat) / 180) * 500;
-  return [x, y];
+// Orthographic globe projection into a 600x600 viewBox (spinning earth)
+const CX = 300;
+const CY = 300;
+const R = 230;
+const TILT = 18; // deg, gives the globe a natural axial tilt
+const RAD = Math.PI / 180;
+
+/** Returns [x, y, visible] — visible=false when the point is on the far side. */
+function globe(lon: number, lat: number, rot: number): [number, number, boolean] {
+  const la = lat * RAD;
+  const lo = (lon + rot) * RAD;
+  const t = TILT * RAD;
+  const x0 = Math.cos(la) * Math.sin(lo);
+  const y0 = Math.sin(la);
+  const z0 = Math.cos(la) * Math.cos(lo);
+  // tilt around the x-axis
+  const y = y0 * Math.cos(t) - z0 * Math.sin(t);
+  const z = y0 * Math.sin(t) + z0 * Math.cos(t);
+  return [CX + R * x0, CY - R * y, z > 0.02];
 }
 
 function arcPath(a: [number, number], b: [number, number]) {
@@ -41,10 +55,10 @@ function inLand(lon: number, lat: number) {
     return dx * dx + dy * dy < r * r;
   });
 }
-const LAND_DOTS: [number, number][] = [];
-for (let lat = -55; lat <= 70; lat += 5) {
-  for (let lon = -170; lon <= 175; lon += 5) {
-    if (inLand(lon, lat)) LAND_DOTS.push(proj(lon, lat));
+const LAND_POINTS: [number, number][] = [];
+for (let lat = -55; lat <= 75; lat += 4) {
+  for (let lon = -180; lon < 180; lon += 4) {
+    if (inLand(lon, lat)) LAND_POINTS.push([lon, lat]);
   }
 }
 
@@ -66,8 +80,8 @@ function makeFlight(): Flight {
   const amount = Math.round(50 + Math.random() * 4950);
   return {
     id: ++flightSeq,
-    from: proj(hub[0], hub[1]),
-    to: proj(COORDS[corr.currency][0], COORDS[corr.currency][1]),
+    from: [hub[0], hub[1]],
+    to: [COORDS[corr.currency][0], COORDS[corr.currency][1]],
     token,
     amount,
     currency: corr.currency,
