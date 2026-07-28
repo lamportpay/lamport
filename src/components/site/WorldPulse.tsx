@@ -97,18 +97,11 @@ export function WorldPulse() {
     Array.from({ length: 4 }, makeFlight),
   );
   const [rot, setRot] = useState(0);
-  const raf = useRef<number | null>(null);
 
   useEffect(() => {
-    let last = performance.now();
-    const tick = (now: number) => {
-      const dt = now - last;
-      last = now;
-      setRot((r) => (r + dt * 0.006) % 360); // ~one rotation per minute
-      raf.current = requestAnimationFrame(tick);
-    };
-    raf.current = requestAnimationFrame(tick);
-    return () => { if (raf.current) cancelAnimationFrame(raf.current); };
+    // ~20fps spin, one full rotation every ~55s
+    const id = setInterval(() => setRot((r) => (r + 0.32) % 360), 50);
+    return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
