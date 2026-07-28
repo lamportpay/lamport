@@ -254,3 +254,24 @@
 .animate-rail-right { animation: rail-right 48s linear infinite; }
 .rail-group:hover .animate-rail-left,
 .rail-group:hover .animate-rail-right { animation-play-state: paused; }
+
+/* --- Solana wallet adapter button, themed to LamportPay --- */
+.lamport-wallet .wallet-adapter-button {
+  height: 2.25rem;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1;
+  border-radius: 9999px;
+  background-image: var(--gradient-hero);
+  background-color: transparent;
+  color: #fff;
+  box-shadow: var(--shadow-soft);
+}
+.lamport-wallet .wallet-adapter-button:not([disabled]):hover {
+  background-image: var(--gradient-hero);
+  opacity: 0.92;
+}
+.lamport-wallet .wallet-adapter-button-start-icon,
+.lamport-wallet .wallet-adapter-button-end-icon { width: 18px; height: 18px; }
