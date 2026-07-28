@@ -7,11 +7,11 @@ import { clusterApiUrl } from "@solana/web3.js";
 import { ShieldAlert, Copy, Check, Wallet, LogOut, ChevronDown } from "lucide-react";
 
 /**
- * Solana wallet context. Devnet endpoint for the demo — swap the endpoint
- * (or read it from env) when wiring real mainnet integrations later.
+ * Solana wallet context. Mainnet-beta, since Jupiter swap routing only
+ * exists on mainnet.
  */
 export function SolanaWalletProvider({ children }: { children: ReactNode }) {
-  const endpoint = useMemo(() => clusterApiUrl(WalletAdapterNetwork.Devnet), []);
+  const endpoint = useMemo(() => clusterApiUrl(WalletAdapterNetwork.Mainnet), []);
   const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], []);
 
   return (
