@@ -174,6 +174,16 @@ export function SwapPanel() {
           <div className="mt-1 text-xs text-muted-foreground font-mono">
             {toLamports(amount) ?? "0"} lamports
           </div>
+          <div className="mt-2 flex items-center justify-between gap-3 text-xs">
+            <span className="text-muted-foreground">
+              Limits: min {MIN_SOL} SOL · max {MAX_SOL} SOL
+            </span>
+            {amountError && (
+              <span className="font-medium text-[color:var(--warning,theme(colors.amber.600))] text-right">
+                {amountError}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-center">
@@ -201,7 +211,7 @@ export function SwapPanel() {
             n={1}
             label={busy === "order" ? "Creating order…" : "Create Jupiter order"}
             done={!!order}
-            disabled={!connected || busy !== null}
+            disabled={!connected || busy !== null || !!amountError}
             onClick={createOrder}
             busy={busy === "order"}
           />
@@ -209,8 +219,8 @@ export function SwapPanel() {
             n={2}
             label={busy === "sign" ? "Waiting for wallet…" : "Sign transaction"}
             done={!!signed}
-            disabled={!order || busy !== null}
-            onClick={signOrder}
+            disabled={!order || busy !== null || !!amountError}
+            onClick={() => setConfirmOpen(true)}
             busy={busy === "sign"}
           />
           <Step
