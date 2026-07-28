@@ -84,6 +84,13 @@
   --gradient-card: linear-gradient(180deg, oklch(1 0 0) 0%, oklch(0.98 0.01 270) 100%);
   --shadow-elegant: 0 20px 60px -20px oklch(0.52 0.22 275 / 0.25);
   --shadow-soft: 0 4px 20px -8px oklch(0.4 0.1 265 / 0.12);
+  --neon-cyan: oklch(0.82 0.18 200);
+  --neon-magenta: oklch(0.7 0.28 330);
+  --neon-violet: oklch(0.62 0.28 295);
+  --neon-lime: oklch(0.88 0.22 145);
+  --gradient-uv: linear-gradient(90deg, oklch(0.62 0.28 295) 0%, oklch(0.7 0.28 330) 50%, oklch(0.82 0.18 200) 100%);
+  --shadow-neon: 0 0 40px -4px oklch(0.62 0.28 295 / 0.55), 0 0 80px -20px oklch(0.7 0.28 330 / 0.35);
+  --grid-line: oklch(0.62 0.28 295 / 0.08);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(0.929 0.013 255.508);
