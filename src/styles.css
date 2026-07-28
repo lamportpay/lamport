@@ -202,6 +202,11 @@
 .animate-ticker { animation: ticker-scroll 40s linear infinite; }
 .animate-live-dot { animation: live-dot 1.6s ease-out infinite; }
 .animate-rate-tick { animation: rate-tick 0.9s ease-out; }
+@keyframes collage-float {
+  0%, 100% { transform: translate(-50%, -50%) rotate(var(--r, 0deg)) translateY(0); }
+  50% { transform: translate(-50%, -50%) rotate(var(--r, 0deg)) translateY(-8px); }
+}
+.animate-collage-float { animation: collage-float 7s ease-in-out infinite; }
 .animate-uv-scan::after {
   content: "";
   position: absolute;
