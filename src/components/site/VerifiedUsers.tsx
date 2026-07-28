@@ -47,7 +47,7 @@ function buildTiles(): Tile[] {
     const size = 68 + r3 * 72; // 68 → 140px
     const rot = (r4 - 0.5) * 18; // -9 → 9 deg
     tiles.push({
-      src: FACES[i % FACES.length],
+      src: FACES[Math.floor(rand(i + 505) * FACES.length) % FACES.length],
       x,
       y,
       size,
