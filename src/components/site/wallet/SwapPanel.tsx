@@ -58,7 +58,7 @@ export function SwapPanel() {
   const { publicKey, connected, signTransaction } = useWallet();
   const address = publicKey?.toBase58() ?? "";
 
-  const [amount, setAmount] = useState("0.01");
+  const [amount, setAmount] = useState("0.001");
   const [order, setOrder] = useState<OrderResult | null>(null);
   const [signed, setSigned] = useState<string | null>(null);
   const [result, setResult] = useState<ExecuteResult | null>(null);

@@ -150,8 +150,8 @@ export function WalletStatusCard() {
       <div className="flex items-start gap-2.5 rounded-xl border border-[color:var(--warning)]/30 bg-[color:var(--warning)]/10 px-4 py-3">
         <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5 text-[color:var(--warning)]" />
         <p className="text-xs leading-relaxed">
-          <strong>{SEED_PHRASE_WARNING}</strong> LamportPay only ever requests a read-only wallet
-          connection — this demo never moves funds.
+          <strong>{SEED_PHRASE_WARNING}</strong> Creating an order does not move funds. A real
+          Jupiter swap only happens after you review and sign the transaction in your wallet.
         </p>
       </div>
     </div>
