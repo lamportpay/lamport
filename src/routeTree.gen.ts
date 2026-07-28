@@ -13,6 +13,7 @@ import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -36,6 +37,11 @@ const DocsRoute = DocsRouteImport.update({
   path: '/docs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ComplianceRoute = ComplianceRouteImport.update({
   id: '/compliance',
   path: '/compliance',
@@ -50,6 +56,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/compliance': typeof ComplianceRoute
+  '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/compliance': typeof ComplianceRoute
+  '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/compliance': typeof ComplianceRoute
+  '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
@@ -77,16 +86,25 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/compliance'
+    | '/contact'
     | '/docs'
     | '/how-it-works'
     | '/send'
     | '/whitepaper'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/compliance' | '/docs' | '/how-it-works' | '/send' | '/whitepaper'
+  to:
+    | '/'
+    | '/compliance'
+    | '/contact'
+    | '/docs'
+    | '/how-it-works'
+    | '/send'
+    | '/whitepaper'
   id:
     | '__root__'
     | '/'
     | '/compliance'
+    | '/contact'
     | '/docs'
     | '/how-it-works'
     | '/send'
@@ -96,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ComplianceRoute: typeof ComplianceRoute
+  ContactRoute: typeof ContactRoute
   DocsRoute: typeof DocsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   SendRoute: typeof SendRoute
@@ -132,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/compliance': {
       id: '/compliance'
       path: '/compliance'
@@ -152,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ComplianceRoute: ComplianceRoute,
+  ContactRoute: ContactRoute,
   DocsRoute: DocsRoute,
   HowItWorksRoute: HowItWorksRoute,
   SendRoute: SendRoute,
@@ -160,3 +187,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
