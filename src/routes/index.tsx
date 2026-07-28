@@ -4,6 +4,7 @@ import { TransferSimulator } from "@/components/site/TransferSimulator";
 import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
 import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater, HeroFloatingCards } from "@/components/site/LiveSwapTheater";
+import { CitiesNeverSleep } from "@/components/site/CitiesNeverSleep";
 import {
   ArrowRight,
   Bot,
@@ -46,6 +47,7 @@ function Index() {
       </section>
       <WorldPulse />
       <WhySection />
+      <CitiesNeverSleep />
       <HowItWorksSection />
       <AIAssistant />
       <FeeExplainer />
@@ -122,22 +124,31 @@ function TrustStrip() {
 
 function WhySection() {
   const items = [
-    { icon: Zap, title: "Fast crypto checkout", desc: "Pay in seconds using supported Solana assets or stablecoins." },
-    { icon: Coins, title: "USDC settlement", desc: "Every transfer routes through USDC for stable, predictable value." },
-    { icon: Globe2, title: "Bridge-first partner flow", desc: "Local-currency payout handled by Bridge as the first settlement partner." },
-    { icon: Bot, title: "AI transfer assistant", desc: "Type what you want to send — the assistant sets up the transfer." },
-    { icon: FileText, title: "Local-currency payouts", desc: "Support for bank, mobile wallet, card, and cash pickup corridors." },
-    { icon: ShieldCheck, title: "Compliance-aware design", desc: "Partner-led KYC, no custody, no direct money transmission." },
+    { icon: Zap, title: "Fast crypto checkout", desc: "Pay in seconds using supported Solana assets or stablecoins.", stat: "~400ms", statLabel: "avg swap" },
+    { icon: Coins, title: "USDC settlement", desc: "Every transfer routes through USDC for stable, predictable value.", stat: "1:1", statLabel: "peg" },
+    { icon: Globe2, title: "Bridge-first partner flow", desc: "Local-currency payout handled by Bridge as the first settlement partner.", stat: "10+", statLabel: "corridors" },
+    { icon: Bot, title: "AI transfer assistant", desc: "Type what you want to send — the assistant sets up the transfer.", stat: "24/7", statLabel: "online" },
+    { icon: FileText, title: "Local-currency payouts", desc: "Support for bank, mobile wallet, card, and cash pickup corridors.", stat: "4", statLabel: "rails" },
+    { icon: ShieldCheck, title: "Compliance-aware design", desc: "Partner-led KYC, no custody, no direct money transmission.", stat: "0", statLabel: "custody" },
   ];
   return (
-    <section className="mt-32">
+    <section className="relative mt-32 overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-grid-uv opacity-30" />
       <div className="max-w-7xl mx-auto px-5">
         <SectionHead eyebrow="Why LamportPay" title="Built for real-world payouts, not just crypto power users." />
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {items.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="rounded-2xl p-6 bg-card border border-border/60 hover:shadow-[var(--shadow-soft)] transition">
-              <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
-                <Icon className="w-5 h-5" />
+          {items.map(({ icon: Icon, title, desc, stat, statLabel }) => (
+            <div key={title} className="group relative rounded-2xl p-6 bg-card/80 backdrop-blur border border-border/60 hover:border-primary/40 hover:shadow-[var(--shadow-neon)] transition overflow-hidden">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[color:var(--neon-violet)] to-transparent opacity-0 group-hover:opacity-100 transition" />
+              <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-[image:var(--gradient-uv)] opacity-0 group-hover:opacity-20 blur-2xl transition" />
+              <div className="flex items-start justify-between">
+                <div className="w-11 h-11 rounded-xl bg-[image:var(--gradient-uv)] text-white flex items-center justify-center mb-4 shadow-[0_0_20px_-4px_oklch(0.62_0.28_295_/_0.6)]">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <div className="text-right">
+                  <div className="font-mono text-lg font-semibold text-primary tabular-nums">{stat}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{statLabel}</div>
+                </div>
               </div>
               <h3 className="font-semibold text-lg">{title}</h3>
               <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{desc}</p>
@@ -151,24 +162,36 @@ function WhySection() {
 
 function HowItWorksSection() {
   const steps = [
-    "Choose crypto",
-    "Get Bridge quote",
-    "Complete partner KYC",
-    "Settle through USDC",
-    "Bridge processes payout",
-    "Track receipt",
+    { t: "Choose crypto", sub: "SOL · USDC · JUP" },
+    { t: "Get Bridge quote", sub: "Live FX + fees" },
+    { t: "Complete partner KYC", sub: "One-time · seconds" },
+    { t: "Settle through USDC", sub: "On-chain, ~1s" },
+    { t: "Bridge processes payout", sub: "To local rails" },
+    { t: "Track receipt", sub: "Real-time hash" },
   ];
   return (
-    <section className="mt-32">
+    <section className="relative mt-32 overflow-hidden">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[300px] rounded-full bg-[image:var(--gradient-hero)] opacity-[0.06] blur-3xl" />
+      </div>
       <div className="max-w-7xl mx-auto px-5">
         <SectionHead eyebrow="How it works" title="Simple, transparent flow — from crypto to recipient." />
-        <div className="mt-12 grid gap-3 md:grid-cols-3 lg:grid-cols-6">
-          {steps.map((s, i) => (
-            <div key={s} className="rounded-2xl p-5 bg-card border border-border/60 relative">
-              <div className="text-xs font-semibold text-primary mb-2">Step {i + 1}</div>
-              <div className="font-medium leading-snug">{s}</div>
-            </div>
-          ))}
+        <div className="mt-12 relative">
+          <div className="hidden lg:block absolute top-8 left-[8%] right-[8%] h-px bg-gradient-to-r from-transparent via-[color:var(--neon-violet)] to-transparent" />
+          <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-6">
+            {steps.map((s, i) => (
+              <div key={s.t} className="relative rounded-2xl p-5 bg-card/80 backdrop-blur border border-border/60 hover:border-primary/40 transition group">
+                <div className="w-8 h-8 rounded-full bg-[image:var(--gradient-uv)] text-white text-xs font-bold flex items-center justify-center mb-3 shadow-[0_0_16px_-4px_oklch(0.62_0.28_295_/_0.6)]">
+                  {i + 1}
+                </div>
+                <div className="font-medium leading-snug text-sm">{s.t}</div>
+                <div className="mt-1 text-[11px] font-mono text-muted-foreground">{s.sub}</div>
+                <div className="mt-3 h-0.5 rounded-full bg-secondary overflow-hidden">
+                  <div className="h-full bg-[image:var(--gradient-uv)] animate-uv-pulse" style={{ width: `${(i + 1) * 16}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="mt-8 text-center">
           <Link to="/how-it-works" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
@@ -289,12 +312,14 @@ function SafetyAssistant() {
     "Demo values are not live rates.",
   ];
   return (
-    <section className="mt-32">
+    <section className="relative mt-32 overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-grid-uv opacity-25" />
       <div className="max-w-5xl mx-auto px-5">
         <SectionHead eyebrow="Safety Assistant" title="Move money safely — a few reminders." />
         <div className="mt-10 grid gap-3 md:grid-cols-2">
           {items.map((i) => (
-            <div key={i} className="flex items-start gap-3 rounded-2xl p-5 bg-card border border-border/60">
+            <div key={i} className="relative flex items-start gap-3 rounded-2xl p-5 bg-card/80 backdrop-blur border border-border/60 hover:border-[color:var(--warning)]/50 transition overflow-hidden">
+              <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-[color:var(--warning)] to-[color:var(--neon-magenta)]" />
               <AlertTriangle className="w-5 h-5 text-[color:var(--warning)] shrink-0 mt-0.5" />
               <div className="font-medium">{i}</div>
             </div>
