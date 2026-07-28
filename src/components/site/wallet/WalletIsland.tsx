@@ -13,6 +13,10 @@ const StatusCard = lazy(async () => {
   const m = await import("./SolanaWallet");
   return { default: m.WalletStatusCard };
 });
+const Swap = lazy(async () => {
+  const m = await import("./SwapPanel");
+  return { default: m.SwapPanel };
+});
 
 function Island({ children, fallback }: { children: ReactNode; fallback: ReactNode }) {
   return (
@@ -46,6 +50,19 @@ export function WalletPanelIsland() {
       }
     >
       <StatusCard />
+    </Island>
+  );
+}
+
+/** SOL → USDC Jupiter swap demo panel. */
+export function SwapPanelIsland() {
+  return (
+    <Island
+      fallback={
+        <div className="h-[520px] rounded-2xl border border-border/60 bg-card animate-pulse" aria-hidden />
+      }
+    >
+      <Swap />
     </Island>
   );
 }
