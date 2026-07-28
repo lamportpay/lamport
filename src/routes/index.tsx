@@ -6,6 +6,7 @@ import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater, HeroFloatingCards } from "@/components/site/LiveSwapTheater";
 import { CitiesNeverSleep } from "@/components/site/CitiesNeverSleep";
 import { VerifiedUsers } from "@/components/site/VerifiedUsers";
+import { Lammy, LammySays, LammyTyping, LammyCheck, LAMMY_INTRO, LAMMY_SAFETY } from "@/components/site/Lammy";
 import {
   ArrowRight,
   Bot,
@@ -232,12 +233,15 @@ function AIAssistant() {
     <section className="mt-32">
       <div className="max-w-5xl mx-auto px-5">
         <SectionHead eyebrow="AI Transfer Assistant" title="Just tell it what you want to send." />
+        <div className="mt-8">
+          <LammySays size={80} wave>
+            {LAMMY_INTRO}
+          </LammySays>
+        </div>
         <div className="mt-10 rounded-3xl border border-border/60 bg-card overflow-hidden shadow-[var(--shadow-soft)]">
           <div className="p-6 md:p-8 bg-[image:var(--gradient-card)] border-b border-border/60">
             <div className="flex gap-3 items-start">
-              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                <Bot className="w-5 h-5" />
-              </div>
+              <Lammy size={44} className="shrink-0" />
               <div className="flex-1">
                 <textarea
                   value={input}
@@ -255,6 +259,9 @@ function AIAssistant() {
           </div>
           {result && (
             <div className="p-6 md:p-8 grid gap-3 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <LammyCheck label="Lammy understood your request" />
+              </div>
               <KV k="Token" v={result.token} />
               <KV k="Amount" v={result.amount} />
               <KV k="Receiver country" v={result.country} />
