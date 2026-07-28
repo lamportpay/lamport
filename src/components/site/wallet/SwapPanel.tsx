@@ -7,6 +7,8 @@ import { SOL_MINT, USDC_MINT } from "@/lib/tokens";
 import { WalletStatusCard } from "./SolanaWallet";
 
 const LAMPORTS_PER_SOL = 1_000_000_000;
+const MIN_SOL = 0.001;
+const MAX_SOL = 0.01;
 
 type OrderResult = {
   transaction: string | null;
@@ -29,6 +31,14 @@ function toLamports(sol: string): string | null {
   const n = Number(sol);
   if (!Number.isFinite(n) || n <= 0) return null;
   return Math.round(n * LAMPORTS_PER_SOL).toString();
+}
+
+function validateAmount(sol: string): string | null {
+  const n = Number(sol);
+  if (!Number.isFinite(n) || n <= 0) return "Enter a SOL amount greater than zero.";
+  if (n < MIN_SOL) return `Minimum swap amount is ${MIN_SOL} SOL.`;
+  if (n > MAX_SOL) return `Maximum swap amount is ${MAX_SOL} SOL. Test with a small amount only.`;
+  return null;
 }
 
 function toBase64(bytes: Uint8Array): string {
@@ -54,6 +64,9 @@ export function SwapPanel() {
   const [result, setResult] = useState<ExecuteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<"order" | "sign" | "execute" | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const amountError = validateAmount(amount);
 
   const reset = () => {
     setOrder(null);
@@ -64,6 +77,8 @@ export function SwapPanel() {
 
   const createOrder = useCallback(async () => {
     reset();
+    const invalid = validateAmount(amount);
+    if (invalid) return setError(invalid);
     const lamports = toLamports(amount);
     if (!lamports) return setError("Enter a SOL amount greater than zero.");
     if (!address) return setError("Connect a wallet first.");
@@ -94,6 +109,8 @@ export function SwapPanel() {
   const signOrder = useCallback(async () => {
     if (!order?.transaction) return;
     if (!signTransaction) return setError("This wallet cannot sign transactions.");
+    const invalid = validateAmount(amount);
+    if (invalid) return setError(invalid);
     setError(null);
     setBusy("sign");
     try {
@@ -105,7 +122,7 @@ export function SwapPanel() {
     } finally {
       setBusy(null);
     }
-  }, [order, signTransaction]);
+  }, [order, signTransaction, amount]);
 
   const executeSwap = useCallback(async () => {
     if (!signed || !order?.requestId) return;
