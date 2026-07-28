@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { TransferSimulator } from "@/components/site/TransferSimulator";
+import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
 import {
   ArrowRight,
   Bot,
@@ -31,10 +32,14 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <SiteLayout>
+      <LiveRatesTicker />
       <Hero />
       <TrustStrip />
       <section className="max-w-7xl mx-auto px-5 -mt-4 md:-mt-10">
         <TransferSimulator />
+      </section>
+      <section className="max-w-7xl mx-auto px-5 mt-16 md:mt-24">
+        <StatsStrip />
       </section>
       <WhySection />
       <HowItWorksSection />
@@ -50,15 +55,22 @@ function Hero() {
   return (
     <section className="relative overflow-hidden pt-16 md:pt-24 pb-24 md:pb-32">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] rounded-full bg-[image:var(--gradient-hero)] opacity-20 blur-3xl" />
+        <div className="absolute inset-0 bg-grid-uv opacity-70" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] rounded-full bg-[image:var(--gradient-hero)] opacity-20 blur-3xl animate-uv-pulse" />
+        <div className="absolute top-1/3 left-10 w-72 h-72 rounded-full bg-[oklch(0.7_0.28_330)] opacity-15 blur-3xl animate-uv-pulse" />
+        <div className="absolute top-10 right-10 w-72 h-72 rounded-full bg-[oklch(0.75_0.2_200)] opacity-15 blur-3xl animate-uv-pulse" />
       </div>
       <div className="max-w-7xl mx-auto px-5 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/60 backdrop-blur px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6">
-          <Sparkles className="w-3.5 h-3.5 text-primary" /> Solana-first payment routing · Demo preview
+        <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/60 backdrop-blur px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6 shadow-[0_0_30px_-8px_oklch(0.62_0.28_295_/_0.45)]">
+          <span className="relative flex w-2 h-2">
+            <span className="absolute inset-0 rounded-full bg-[color:var(--success)] animate-live-dot" />
+            <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
+          </span>
+          <Sparkles className="w-3.5 h-3.5 text-primary" /> Solana-first routing · Live 24/7 · Best-rate engine
         </div>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.03] max-w-4xl mx-auto">
           Send crypto.<br />
-          <span className="bg-[image:var(--gradient-hero)] bg-clip-text text-transparent">
+          <span className="text-uv">
             Recipient receives local currency.
           </span>
         </h1>
