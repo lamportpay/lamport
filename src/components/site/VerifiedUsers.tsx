@@ -11,66 +11,79 @@ import face8 from "@/assets/face-8.jpg";
 
 const FACES = [face1, face2, face3, face4, face5, face6, face7, face8];
 
-const COUNT = 60;
+const PEOPLE = [
+  { name: "Ayesha K.", city: "Karachi", corridor: "USDC → PKR" },
+  { name: "Rahul M.", city: "Mumbai", corridor: "SOL → INR" },
+  { name: "Chidi O.", city: "Lagos", corridor: "USDC → NGN" },
+  { name: "Marco B.", city: "Manila", corridor: "JUP → PHP" },
+  { name: "Leila H.", city: "Casablanca", corridor: "USDC → MAD" },
+  { name: "Daniel S.", city: "Nairobi", corridor: "USDT → KES" },
+  { name: "Mei L.", city: "Jakarta", corridor: "SOL → IDR" },
+  { name: "Omar A.", city: "Dubai", corridor: "USDC → AED" },
+  { name: "Grace T.", city: "Accra", corridor: "USDC → GHS" },
+  { name: "Yusuf R.", city: "Istanbul", corridor: "USDT → TRY" },
+  { name: "Priya N.", city: "Chennai", corridor: "USDC → INR" },
+  { name: "Ines F.", city: "Lisbon", corridor: "SOL → EUR" },
+];
 
-// Deterministic pseudo-random so SSR/CSR match and tiles don't reshuffle.
-function rand(seed: number) {
-  const x = Math.sin(seed * 9301 + 49297) * 233280;
-  return x - Math.floor(x);
+type Person = (typeof PEOPLE)[number] & { src: string };
+
+function row(offset: number): Person[] {
+  return PEOPLE.map((p, i) => ({
+    ...p,
+    src: FACES[(i + offset) % FACES.length],
+  }));
 }
 
-type Tile = {
-  src: string;
-  x: number; // percent left (0-100)
-  y: number; // percent top within collage (0-100)
-  size: number; // px
-  rot: number; // deg
-  delay: number; // s
-  z: number;
-};
+function AvatarCard({ p }: { p: Person }) {
+  return (
+    <div className="group flex items-center gap-3 shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur px-3 py-2.5 pr-5 hover:border-[color:var(--neon-violet)]/50 hover:bg-white/[0.07] transition-colors">
+      <div className="relative">
+        <div className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-[color:var(--neon-violet)] to-[color:var(--neon-magenta)] opacity-60 blur-[3px] group-hover:opacity-100 transition-opacity" />
+        <img
+          src={p.src}
+          alt=""
+          loading="lazy"
+          className="relative w-11 h-11 rounded-full object-cover border border-white/20"
+        />
+        <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[color:var(--success)] border-2 border-[oklch(0.09_0.04_275)] flex items-center justify-center">
+          <CheckCircle2 className="w-2.5 h-2.5 text-black" strokeWidth={3.5} />
+        </span>
+      </div>
+      <div className="leading-tight">
+        <div className="text-sm text-white/90 font-medium whitespace-nowrap">{p.name}</div>
+        <div className="text-[10px] font-mono uppercase tracking-widest text-white/45 whitespace-nowrap">
+          {p.city} · {p.corridor}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-function buildTiles(): Tile[] {
-  const tiles: Tile[] = [];
-  for (let i = 0; i < COUNT; i++) {
-    const r1 = rand(i + 1);
-    const r2 = rand(i + 101);
-    const r3 = rand(i + 202);
-    const r4 = rand(i + 303);
-    const r5 = rand(i + 404);
-    // Arrange as a shallow "mound" — wider at bottom, narrower at top
-    const col = i % 10;
-    const row = Math.floor(i / 10);
-    const rowBias = row / 5; // 0..1 top→bottom
-    const spread = 6 + rowBias * 10; // more spread at the base
-    const x = col * 10 + (r1 - 0.5) * spread;
-    const y = row * 18 + (r2 - 0.5) * 8;
-    const size = 68 + r3 * 72; // 68 → 140px
-    const rot = (r4 - 0.5) * 18; // -9 → 9 deg
-    tiles.push({
-      src: FACES[Math.floor(rand(i + 505) * FACES.length) % FACES.length],
-      x,
-      y,
-      size,
-      rot,
-      delay: r5 * 4,
-      z: Math.round(rowBias * 10 + r3 * 5),
-    });
-  }
-  return tiles;
+function Rail({ people, dir }: { people: Person[]; dir: "left" | "right" }) {
+  const doubled = [...people, ...people];
+  return (
+    <div className="overflow-hidden">
+      <div
+        className={`flex gap-3 w-max ${dir === "left" ? "animate-rail-left" : "animate-rail-right"}`}
+      >
+        {doubled.map((p, i) => (
+          <AvatarCard key={i} p={p} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function VerifiedUsers() {
-  const tiles = useMemo(buildTiles, []);
+  const rows = useMemo(() => [row(0), row(3), row(6)], []);
   return (
     <section className="relative mt-24 md:mt-32 overflow-hidden">
-      {/* Deep space backdrop */}
       <div className="absolute inset-0 bg-[oklch(0.09_0.04_275)]" />
       <div className="absolute inset-0 bg-grid-uv opacity-40" />
       <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-background to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
-      {/* UV glows */}
       <div className="absolute left-1/2 top-1/3 -translate-x-1/2 w-[720px] h-[720px] rounded-full bg-[oklch(0.62_0.28_295)] opacity-20 blur-3xl pointer-events-none" />
-      <div className="absolute left-1/3 bottom-0 w-[520px] h-[520px] rounded-full bg-[oklch(0.7_0.28_330)] opacity-15 blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-5 py-24 md:py-32">
         <div className="text-center">
@@ -87,7 +100,6 @@ export function VerifiedUsers() {
             <ShieldCheck className="w-4 h-4 text-[color:var(--success)]" />
             Verified users · sending crypto home every day
           </div>
-
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-[11px] font-mono uppercase tracking-widest text-white/50">
             <span className="flex items-center gap-1.5"><Globe2 className="w-3.5 h-3.5" /> 180 countries</span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
@@ -97,46 +109,11 @@ export function VerifiedUsers() {
           </div>
         </div>
 
-        {/* Photo collage mound */}
-        <div className="relative mt-14 md:mt-20 h-[420px] md:h-[520px]">
-          {/* Curved mask fading to darkness at edges */}
-          <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_70%_80%_at_50%_35%,black_55%,transparent_100%)]">
-            {tiles.map((t, i) => (
-              <div
-                key={i}
-                className="absolute"
-                style={{
-                  left: `calc(50% + ${(t.x - 50) * 0.9}%)`,
-                  top: `${t.y}%`,
-                  width: t.size,
-                  height: t.size,
-                  transform: `translate(-50%, -50%) rotate(${t.rot}deg)`,
-                  zIndex: t.z,
-                }}
-              >
-                <div
-                  className="relative w-full h-full rounded-xl overflow-hidden border border-white/10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] bg-[oklch(0.14_0.05_275)] animate-collage-float will-change-transform"
-                  style={{ animationDelay: `${t.delay}s` }}
-                >
-                  <img
-                    src={t.src}
-                    alt=""
-                    loading="lazy"
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  {/* Verified badge on a few tiles */}
-                  {i % 7 === 0 && (
-                    <div className="absolute bottom-1.5 right-1.5 w-5 h-5 rounded-full bg-[color:var(--success)] border-2 border-[oklch(0.09_0.04_275)] flex items-center justify-center shadow-[0_0_10px_var(--success)]">
-                      <CheckCircle2 className="w-3 h-3 text-black" strokeWidth={3} />
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          {/* Bottom fade */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[oklch(0.09_0.04_275)] to-transparent" />
+        {/* Scrolling verified-sender rails */}
+        <div className="rail-group relative mt-14 md:mt-20 space-y-3 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+          <Rail people={rows[0]} dir="left" />
+          <Rail people={rows[1]} dir="right" />
+          <Rail people={rows[2]} dir="left" />
         </div>
       </div>
     </section>
