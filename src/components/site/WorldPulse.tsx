@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
 
 // Approximate lon/lat for corridor countries + a few sender hubs
