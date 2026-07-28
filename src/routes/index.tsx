@@ -5,6 +5,7 @@ import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
 import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater, HeroFloatingCards } from "@/components/site/LiveSwapTheater";
 import { CitiesNeverSleep } from "@/components/site/CitiesNeverSleep";
+import { VerifiedUsers } from "@/components/site/VerifiedUsers";
 import {
   ArrowRight,
   Bot,
@@ -42,6 +43,7 @@ function Index() {
         <TransferSimulator />
       </section>
       <LiveSwapTheater />
+      <VerifiedUsers />
       <section className="max-w-7xl mx-auto px-5 mt-16 md:mt-24">
         <StatsStrip />
       </section>
