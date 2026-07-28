@@ -1,19 +1,15 @@
 import { useMemo } from "react";
 import { CheckCircle2, Globe2, ShieldCheck } from "lucide-react";
-import navi1 from "@/assets/navi-1.jpg";
-import navi2 from "@/assets/navi-2.jpg";
-import navi3 from "@/assets/navi-3.jpg";
-import navi4 from "@/assets/navi-4.jpg";
-import navi5 from "@/assets/navi-5.jpg";
-import navi6 from "@/assets/navi-6.jpg";
-import navi7 from "@/assets/navi-7.jpg";
-import navi8 from "@/assets/navi-8.jpg";
-import navi9 from "@/assets/navi-9.jpg";
-import navi10 from "@/assets/navi-10.jpg";
-import navi11 from "@/assets/navi-11.jpg";
-import navi12 from "@/assets/navi-12.jpg";
+import face1 from "@/assets/face-1.jpg";
+import face2 from "@/assets/face-2.jpg";
+import face3 from "@/assets/face-3.jpg";
+import face4 from "@/assets/face-4.jpg";
+import face5 from "@/assets/face-5.jpg";
+import face6 from "@/assets/face-6.jpg";
+import face7 from "@/assets/face-7.jpg";
+import face8 from "@/assets/face-8.jpg";
 
-const FACES = [navi1, navi2, navi3, navi4, navi5, navi6, navi7, navi8, navi9, navi10, navi11, navi12];
+const FACES = [face1, face2, face3, face4, face5, face6, face7, face8];
 
 const COUNT = 60;
 

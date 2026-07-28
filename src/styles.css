@@ -207,6 +207,31 @@
   50% { transform: translateY(-10px) scale(1.02); }
 }
 .animate-collage-float { animation: collage-float 7s ease-in-out infinite; }
+
+/* --- Lammy mascot animations --- */
+@keyframes lammy-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes lammy-wave {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  70% { transform: rotate(-22deg); }
+  80% { transform: rotate(12deg); }
+  90% { transform: rotate(-14deg); }
+}
+@keyframes lammy-dot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes lammy-check {
+  from { stroke-dasharray: 32; stroke-dashoffset: 32; }
+  to { stroke-dasharray: 32; stroke-dashoffset: 0; }
+}
+.animate-lammy-float { animation: lammy-float 4.5s ease-in-out infinite; }
+.animate-lammy-wave { animation: lammy-wave 2.8s ease-in-out infinite; }
+.animate-lammy-dot { animation: lammy-dot 1.2s ease-in-out infinite; }
+.animate-lammy-pulse { animation: uv-pulse 2.4s ease-in-out infinite; }
+.animate-lammy-check { animation: lammy-check 0.6s ease-out forwards; }
 .animate-uv-scan::after {
   content: "";
   position: absolute;
