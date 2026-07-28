@@ -1,5 +1,19 @@
 import { useMemo } from "react";
 import { CheckCircle2, Globe2, ShieldCheck } from "lucide-react";
+import navi1 from "@/assets/navi-1.jpg";
+import navi2 from "@/assets/navi-2.jpg";
+import navi3 from "@/assets/navi-3.jpg";
+import navi4 from "@/assets/navi-4.jpg";
+import navi5 from "@/assets/navi-5.jpg";
+import navi6 from "@/assets/navi-6.jpg";
+import navi7 from "@/assets/navi-7.jpg";
+import navi8 from "@/assets/navi-8.jpg";
+import navi9 from "@/assets/navi-9.jpg";
+import navi10 from "@/assets/navi-10.jpg";
+import navi11 from "@/assets/navi-11.jpg";
+import navi12 from "@/assets/navi-12.jpg";
+
+const FACES = [navi1, navi2, navi3, navi4, navi5, navi6, navi7, navi8, navi9, navi10, navi11, navi12];
 
 const COUNT = 60;
 
@@ -37,7 +51,7 @@ function buildTiles(): Tile[] {
     const size = 68 + r3 * 72; // 68 → 140px
     const rot = (r4 - 0.5) * 18; // -9 → 9 deg
     tiles.push({
-      src: `https://i.pravatar.cc/160?img=${(i % 70) + 1}`,
+      src: FACES[i % FACES.length],
       x,
       y,
       size,
