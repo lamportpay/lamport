@@ -16,6 +16,7 @@ import { Route as DocsRouteImport } from './routes/docs'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
 
 const WhitepaperRoute = WhitepaperRouteImport.update({
   id: '/whitepaper',
@@ -52,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiJupiterOrderRoute = ApiJupiterOrderRouteImport.update({
+  id: '/api/jupiter/order',
+  path: '/api/jupiter/order',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/api/jupiter/order': typeof ApiJupiterOrderRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/api/jupiter/order': typeof ApiJupiterOrderRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/api/jupiter/order': typeof ApiJupiterOrderRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/send'
     | '/whitepaper'
+    | '/api/jupiter/order'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/send'
     | '/whitepaper'
+    | '/api/jupiter/order'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/send'
     | '/whitepaper'
+    | '/api/jupiter/order'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   SendRoute: typeof SendRoute
   WhitepaperRoute: typeof WhitepaperRoute
+  ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/jupiter/order': {
+      id: '/api/jupiter/order'
+      path: '/api/jupiter/order'
+      fullPath: '/api/jupiter/order'
+      preLoaderRoute: typeof ApiJupiterOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   SendRoute: SendRoute,
   WhitepaperRoute: WhitepaperRoute,
+  ApiJupiterOrderRoute: ApiJupiterOrderRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
