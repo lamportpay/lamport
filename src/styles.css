@@ -156,3 +156,57 @@
     color: var(--color-foreground);
   }
 }
+
+/* ============ UV / neon tech effects ============ */
+@utility bg-grid-uv {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+}
+
+@utility text-uv {
+  background: var(--gradient-uv);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glow-uv {
+  box-shadow: var(--shadow-neon);
+}
+
+@keyframes uv-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+@keyframes uv-scan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes rate-tick {
+  0% { color: var(--neon-cyan); text-shadow: 0 0 12px var(--neon-cyan); }
+  100% { color: inherit; text-shadow: none; }
+}
+@keyframes live-dot {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.22 145 / 0.7); }
+  50% { box-shadow: 0 0 0 6px oklch(0.72 0.22 145 / 0); }
+}
+
+.animate-uv-pulse { animation: uv-pulse 4s ease-in-out infinite; }
+.animate-ticker { animation: ticker-scroll 40s linear infinite; }
+.animate-live-dot { animation: live-dot 1.6s ease-out infinite; }
+.animate-rate-tick { animation: rate-tick 0.9s ease-out; }
+.animate-uv-scan::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, oklch(0.82 0.18 200 / 0.15), transparent);
+  animation: uv-scan 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
