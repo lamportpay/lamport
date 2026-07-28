@@ -13,7 +13,8 @@ const TOKEN_COLOR: Record<string, string> = {
   BONK: "oklch(0.82 0.2 75)",
 };
 
-const AVATARS = ["🧑🏽", "👩🏻", "👨🏾", "🧑🏻‍💻", "👩🏽‍🎓", "👨🏻‍💼", "🧕🏽", "👩🏾‍🔬"];
+// Photo-realistic avatars (MoonPay-style). Uses pravatar.cc for stable, cached faces.
+const AVATARS = Array.from({ length: 30 }, (_, i) => `https://i.pravatar.cc/80?img=${i + 1}`);
 const NAMES = ["Ayaan", "Priya", "Chinedu", "Mei", "Diego", "Fatima", "Yusuf", "Sofia", "Kenji", "Amara"];
 const SENDER_CITIES = ["New York", "London", "Dubai", "Singapore", "Berlin", "Toronto", "Sydney", "San Francisco"];
 
