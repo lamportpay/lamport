@@ -240,3 +240,17 @@
   animation: uv-scan 3.5s ease-in-out infinite;
   pointer-events: none;
 }
+
+/* --- Verified users avatar rails --- */
+@keyframes rail-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes rail-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.animate-rail-left { animation: rail-left 48s linear infinite; }
+.animate-rail-right { animation: rail-right 48s linear infinite; }
+.rail-group:hover .animate-rail-left,
+.rail-group:hover .animate-rail-right { animation-play-state: paused; }
