@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
+import { Route as SwapRouteImport } from './routes/swap'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as DocsRouteImport } from './routes/docs'
@@ -22,6 +23,11 @@ import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/exec
 const WhitepaperRoute = WhitepaperRouteImport.update({
   id: '/whitepaper',
   path: '/whitepaper',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SwapRoute = SwapRouteImport.update({
+  id: '/swap',
+  path: '/swap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SendRoute = SendRouteImport.update({
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
+  '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
+  '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
+  '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/send'
+    | '/swap'
     | '/whitepaper'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/send'
+    | '/swap'
     | '/whitepaper'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/send'
+    | '/swap'
     | '/whitepaper'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   SendRoute: typeof SendRoute
+  SwapRoute: typeof SwapRoute
   WhitepaperRoute: typeof WhitepaperRoute
   ApiJupiterExecuteRoute: typeof ApiJupiterExecuteRoute
   ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
@@ -154,6 +167,13 @@ declare module '@tanstack/react-router' {
       path: '/whitepaper'
       fullPath: '/whitepaper'
       preLoaderRoute: typeof WhitepaperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/swap': {
+      id: '/swap'
+      path: '/swap'
+      fullPath: '/swap'
+      preLoaderRoute: typeof SwapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/send': {
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   HowItWorksRoute: HowItWorksRoute,
   SendRoute: SendRoute,
+  SwapRoute: SwapRoute,
   WhitepaperRoute: WhitepaperRoute,
   ApiJupiterExecuteRoute: ApiJupiterExecuteRoute,
   ApiJupiterOrderRoute: ApiJupiterOrderRoute,
@@ -229,3 +250,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
