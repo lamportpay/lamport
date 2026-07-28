@@ -1,13 +1,10 @@
 import { useMemo, useCallback, useState, type ReactNode } from "react";
 import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
-import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { clusterApiUrl } from "@solana/web3.js";
-import { ShieldAlert, Copy, Check } from "lucide-react";
-
-import "@solana/wallet-adapter-react-ui/styles.css";
+import { ShieldAlert, Copy, Check, Wallet, LogOut, ChevronDown } from "lucide-react";
 
 /**
  * Solana wallet context. Devnet endpoint for the demo — swap the endpoint
@@ -20,7 +17,7 @@ export function SolanaWalletProvider({ children }: { children: ReactNode }) {
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
+        {children}
       </WalletProvider>
     </ConnectionProvider>
   );
@@ -32,11 +29,66 @@ export function shortAddress(a: string) {
 
 export const SEED_PHRASE_WARNING = "Never share your seed phrase or private key.";
 
-/** Compact connect button for the site header. */
+/** Compact connect button + wallet picker for the site header. */
 export function WalletConnectButton() {
+  const { wallets, select, connect, disconnect, connecting, connected, publicKey } = useWallet();
+  const [open, setOpen] = useState(false);
+  const address = publicKey?.toBase58() ?? "";
+
+  const pick = useCallback(
+    async (name: (typeof wallets)[number]["adapter"]["name"]) => {
+      setOpen(false);
+      select(name);
+      try {
+        await connect();
+      } catch {
+        /* user rejected or wallet not installed */
+      }
+    },
+    [select, connect],
+  );
+
+  if (connected && address) {
+    return (
+      <button
+        onClick={() => disconnect()}
+        className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold hover:bg-secondary transition"
+      >
+        <span className="w-2 h-2 rounded-full bg-[color:var(--success)]" />
+        <span className="font-mono">{shortAddress(address)}</span>
+        <LogOut className="w-3.5 h-3.5 text-muted-foreground" />
+      </button>
+    );
+  }
+
   return (
-    <div className="lamport-wallet">
-      <WalletMultiButton />
+    <div className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        disabled={connecting}
+        className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-hero)] text-white px-4 py-2 text-sm font-semibold shadow-[var(--shadow-soft)] hover:opacity-95 transition disabled:opacity-60"
+      >
+        <Wallet className="w-4 h-4" />
+        {connecting ? "Connecting…" : "Connect wallet"}
+        <ChevronDown className="w-3.5 h-3.5" />
+      </button>
+      {open && (
+        <div className="absolute right-0 z-50 mt-2 w-56 rounded-xl border border-border bg-card p-1.5 shadow-[var(--shadow-soft)]">
+          {wallets.map((w) => (
+            <button
+              key={w.adapter.name}
+              onClick={() => pick(w.adapter.name)}
+              className="w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium hover:bg-secondary transition text-left"
+            >
+              <img src={w.adapter.icon} alt="" className="w-5 h-5 rounded" />
+              <span className="flex-1">{w.adapter.name}</span>
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {w.readyState === "Installed" ? "Detected" : "Install"}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
