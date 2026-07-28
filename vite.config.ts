@@ -5,11 +5,27 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { fileURLToPath } from "node:url";
+
+// rpc-websockets (pulled in by @solana/web3.js) only declares "browser"/"node"
+// export conditions, neither of which the workerd SSR build matches. Resolve it
+// to the browser build file directly so bundling succeeds in every environment.
+const rpcWebsocketsBrowser = fileURLToPath(
+  new URL("./node_modules/rpc-websockets/dist/index.browser.mjs", import.meta.url),
+);
 
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+  },
+  vite: {
+    resolve: {
+      alias: [
+        { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
+        { find: /^rpc-websockets\/dist\/lib\/client$/, replacement: rpcWebsocketsBrowser },
+      ],
+    },
   },
 });
