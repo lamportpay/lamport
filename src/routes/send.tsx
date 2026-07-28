@@ -15,6 +15,7 @@ import {
 import { useMemo, useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight, Check, Copy, ShieldCheck } from "lucide-react";
 import { LammySays, LammyCheck, LAMMY_INTRO, LAMMY_SAFETY } from "@/components/site/Lammy";
+import { WalletPanelIsland } from "@/components/site/wallet/WalletIsland";
 
 export const Route = createFileRoute("/send")({
   head: () => ({
@@ -97,6 +98,7 @@ function SendPage() {
           {step === 1 && (
             <div className="space-y-6">
               <SectionTitle title="1. Enter transfer details" />
+              <WalletPanelIsland />
               <div className="grid md:grid-cols-2 gap-5">
                 <Field label="Token">
                   <select value={token} onChange={(e) => setToken(e.target.value as Token)} className="w-full rounded-xl border border-border bg-background px-3 py-2.5">

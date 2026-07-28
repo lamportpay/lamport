@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { WalletButtonIsland } from "@/components/site/wallet/WalletIsland";
 
 const nav = [
   { to: "/send", label: "Send" },
@@ -36,6 +37,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="hidden lg:flex items-center gap-2">
+            <WalletButtonIsland />
             <Link
               to="/send"
               className="px-4 py-2 text-sm font-medium rounded-full bg-foreground text-background hover:opacity-90 transition"
@@ -54,6 +56,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         {open && (
           <div className="lg:hidden border-t border-border bg-background">
             <div className="max-w-7xl mx-auto px-5 py-3 flex flex-col gap-1">
+              <div className="px-1 py-2">
+                <WalletButtonIsland />
+              </div>
               {nav.map((n) => (
                 <Link
                   key={n.to}
