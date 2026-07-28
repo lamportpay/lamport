@@ -13,8 +13,17 @@ const TOKEN_COLOR: Record<string, string> = {
   BONK: "oklch(0.82 0.2 75)",
 };
 
-// Photo-realistic avatars (MoonPay-style). Uses pravatar.cc for stable, cached faces.
-const AVATARS = Array.from({ length: 30 }, (_, i) => `https://i.pravatar.cc/80?img=${i + 1}`);
+// Photo-realistic sender faces (MoonPay-style), generated for LamportPay.
+import face1 from "@/assets/face-1.jpg";
+import face2 from "@/assets/face-2.jpg";
+import face3 from "@/assets/face-3.jpg";
+import face4 from "@/assets/face-4.jpg";
+import face5 from "@/assets/face-5.jpg";
+import face6 from "@/assets/face-6.jpg";
+import face7 from "@/assets/face-7.jpg";
+import face8 from "@/assets/face-8.jpg";
+
+const AVATARS = [face1, face2, face3, face4, face5, face6, face7, face8];
 const NAMES = ["Ayaan", "Priya", "Chinedu", "Mei", "Diego", "Fatima", "Yusuf", "Sofia", "Kenji", "Amara"];
 const SENDER_CITIES = ["New York", "London", "Dubai", "Singapore", "Berlin", "Toronto", "Sydney", "San Francisco"];
 

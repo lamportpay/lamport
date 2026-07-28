@@ -6,6 +6,7 @@ import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater, HeroFloatingCards } from "@/components/site/LiveSwapTheater";
 import { CitiesNeverSleep } from "@/components/site/CitiesNeverSleep";
 import { VerifiedUsers } from "@/components/site/VerifiedUsers";
+import { Lammy, LammySays, LammyTyping, LammyCheck, LAMMY_INTRO, LAMMY_SAFETY } from "@/components/site/Lammy";
 import {
   ArrowRight,
   Bot,
@@ -232,12 +233,15 @@ function AIAssistant() {
     <section className="mt-32">
       <div className="max-w-5xl mx-auto px-5">
         <SectionHead eyebrow="AI Transfer Assistant" title="Just tell it what you want to send." />
+        <div className="mt-8">
+          <LammySays size={80} wave>
+            {LAMMY_INTRO}
+          </LammySays>
+        </div>
         <div className="mt-10 rounded-3xl border border-border/60 bg-card overflow-hidden shadow-[var(--shadow-soft)]">
           <div className="p-6 md:p-8 bg-[image:var(--gradient-card)] border-b border-border/60">
             <div className="flex gap-3 items-start">
-              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                <Bot className="w-5 h-5" />
-              </div>
+              <Lammy size={44} className="shrink-0" />
               <div className="flex-1">
                 <textarea
                   value={input}
@@ -255,6 +259,9 @@ function AIAssistant() {
           </div>
           {result && (
             <div className="p-6 md:p-8 grid gap-3 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <LammyCheck label="Lammy understood your request" />
+              </div>
               <KV k="Token" v={result.token} />
               <KV k="Amount" v={result.amount} />
               <KV k="Receiver country" v={result.country} />
@@ -293,6 +300,11 @@ function FeeExplainer() {
     <section className="mt-32">
       <div className="max-w-5xl mx-auto px-5">
         <SectionHead eyebrow="AI Fee Explainer" title="No surprises. Just plain-English fees." />
+        <div className="mt-8">
+          <LammySays typing>
+            Let me break down every fee on your transfer, line by line
+          </LammySays>
+        </div>
         <div className="mt-10 rounded-3xl border border-border/60 bg-card divide-y divide-border/60">
           {rows.map((r) => (
             <div key={r.k} className="p-6 md:flex md:gap-8 md:items-start">
@@ -318,6 +330,11 @@ function SafetyAssistant() {
       <div className="absolute inset-0 -z-10 bg-grid-uv opacity-25" />
       <div className="max-w-5xl mx-auto px-5">
         <SectionHead eyebrow="Safety Assistant" title="Move money safely — a few reminders." />
+        <div className="mt-8">
+          <LammySays tone="warning">
+            <strong>{LAMMY_SAFETY}</strong> If anyone asks for it — even someone claiming to be LamportPay — stop and report it.
+          </LammySays>
+        </div>
         <div className="mt-10 grid gap-3 md:grid-cols-2">
           {items.map((i) => (
             <div key={i} className="relative flex items-start gap-3 rounded-2xl p-5 bg-card/80 backdrop-blur border border-border/60 hover:border-[color:var(--warning)]/50 transition overflow-hidden">

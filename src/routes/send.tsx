@@ -14,6 +14,7 @@ import {
 } from "@/components/site/demo-data";
 import { useMemo, useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight, Check, Copy, ShieldCheck } from "lucide-react";
+import { LammySays, LammyCheck, LAMMY_INTRO, LAMMY_SAFETY } from "@/components/site/Lammy";
 
 export const Route = createFileRoute("/send")({
   head: () => ({
@@ -80,6 +81,17 @@ function SendPage() {
         </div>
 
         <Stepper current={step} labels={["Details", "Quote", "KYC", "Confirm", "Tracking", "Receipt"]} />
+
+        <div className="mt-8">
+          <LammySays size={72} wave={step === 1}>
+            {step === 1 && LAMMY_INTRO}
+            {step === 2 && "Here's your quote. Every fee is shown before you confirm — nothing is added later."}
+            {step === 3 && "Identity checks are done by the licensed partner, never by LamportPay."}
+            {step === 4 && `Please double-check the recipient details. ${LAMMY_SAFETY}`}
+            {step === 5 && "I'm tracking your payout across the network. This usually settles in under 5 minutes."}
+            {step === 6 && "All done — here's your receipt. You can copy it for your records."}
+          </LammySays>
+        </div>
 
         <div className="mt-10 rounded-3xl border border-border/60 bg-card shadow-[var(--shadow-soft)] p-6 md:p-10">
           {step === 1 && (
@@ -163,6 +175,7 @@ function SendPage() {
                 <KV k="Selected partner" v="Bridge" />
                 <KV k="KYC status" v={kycApproved ? "Approved" : "Not started"} />
               </div>
+              {kycApproved && <LammyCheck label="Mock KYC approved by Bridge" />}
               {!kycApproved ? (
                 <PrimaryButton onClick={() => setKycApproved(true)}>Complete Mock Bridge KYC</PrimaryButton>
               ) : (
@@ -271,6 +284,9 @@ function Receipt(props: any) {
     <div className="space-y-6">
       <SectionTitle title="6. Receipt" />
       <div className="rounded-2xl bg-[image:var(--gradient-card)] border border-border/60 p-6">
+        <div className="mb-5">
+          <LammyCheck label="Payout complete — recipient has been paid" />
+        </div>
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Payment ID</div>
