@@ -96,6 +96,20 @@ export function WorldPulse() {
   const [feed, setFeed] = useState<Flight[]>(() =>
     Array.from({ length: 4 }, makeFlight),
   );
+  const [rot, setRot] = useState(0);
+  const raf = useRef<number | null>(null);
+
+  useEffect(() => {
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = now - last;
+      last = now;
+      setRot((r) => (r + dt * 0.006) % 360); // ~one rotation per minute
+      raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => { if (raf.current) cancelAnimationFrame(raf.current); };
+  }, []);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -128,7 +142,7 @@ export function WorldPulse() {
 
           <div className="relative grid lg:grid-cols-[1fr_320px] gap-0">
             <div className="relative p-4 md:p-6">
-              <svg viewBox="0 0 1000 500" className="w-full h-auto">
+              <svg viewBox="0 0 600 600" className="w-full h-auto max-h-[540px] mx-auto">
                 <defs>
                   <linearGradient id="arc" x1="0" x2="1" y1="0" y2="0">
                     <stop offset="0%" stopColor="oklch(0.82 0.18 200)" stopOpacity="0" />
@@ -139,16 +153,70 @@ export function WorldPulse() {
                     <stop offset="0%" stopColor="oklch(0.82 0.18 200)" stopOpacity="1" />
                     <stop offset="100%" stopColor="oklch(0.82 0.18 200)" stopOpacity="0" />
                   </radialGradient>
+                  <radialGradient id="ocean" cx="35%" cy="30%" r="80%">
+                    <stop offset="0%" stopColor="oklch(0.35 0.12 265)" stopOpacity="0.9" />
+                    <stop offset="70%" stopColor="oklch(0.18 0.08 275)" stopOpacity="0.95" />
+                    <stop offset="100%" stopColor="oklch(0.11 0.05 280)" stopOpacity="1" />
+                  </radialGradient>
+                  <radialGradient id="atmo" cx="50%" cy="50%" r="50%">
+                    <stop offset="82%" stopColor="oklch(0.7 0.22 250)" stopOpacity="0" />
+                    <stop offset="97%" stopColor="oklch(0.75 0.22 250)" stopOpacity="0.45" />
+                    <stop offset="100%" stopColor="oklch(0.75 0.22 250)" stopOpacity="0" />
+                  </radialGradient>
+                  <clipPath id="globeClip">
+                    <circle cx={CX} cy={CY} r={R} />
+                  </clipPath>
                 </defs>
 
-                {/* landmass dots */}
-                {LAND_DOTS.map(([x, y], i) => (
-                  <circle key={i} cx={x} cy={y} r="1.2" fill="oklch(0.75 0.08 260 / 0.35)" />
-                ))}
+                {/* atmosphere + ocean sphere */}
+                <circle cx={CX} cy={CY} r={R + 26} fill="url(#atmo)" />
+                <circle cx={CX} cy={CY} r={R} fill="url(#ocean)" stroke="oklch(0.7 0.2 250 / 0.4)" strokeWidth="1" />
+
+                {/* graticule */}
+                <g clipPath="url(#globeClip)" opacity="0.28" stroke="oklch(0.8 0.12 250 / 0.5)" fill="none">
+                  {[-60, -30, 0, 30, 60].map((lat) => {
+                    const t = TILT * RAD;
+                    const la = lat * RAD;
+                    return (
+                      <ellipse
+                        key={lat}
+                        cx={CX}
+                        cy={CY - R * Math.sin(la) * Math.cos(t)}
+                        rx={R * Math.cos(la)}
+                        ry={Math.abs(R * Math.cos(la) * Math.sin(t)) + 0.4}
+                        strokeWidth="0.6"
+                      />
+                    );
+                  })}
+                  {[0, 30, 60, 90, 120, 150].map((lon) => {
+                    const phase = ((lon + rot) % 180) * RAD;
+                    return (
+                      <ellipse
+                        key={lon}
+                        cx={CX}
+                        cy={CY}
+                        rx={Math.abs(R * Math.cos(phase))}
+                        ry={R}
+                        strokeWidth="0.6"
+                        transform={`rotate(${TILT} ${CX} ${CY})`}
+                      />
+                    );
+                  })}
+                </g>
+
+                {/* landmass dots on the rotating sphere */}
+                <g clipPath="url(#globeClip)">
+                  {LAND_POINTS.map(([lon, lat], i) => {
+                    const [x, y, vis] = globe(lon, lat, rot);
+                    if (!vis) return null;
+                    return <circle key={i} cx={x} cy={y} r="1.5" fill="oklch(0.8 0.1 260 / 0.5)" />;
+                  })}
+                </g>
 
                 {/* hub nodes */}
                 {HUBS.map(([lon, lat, name]) => {
-                  const [x, y] = proj(lon, lat);
+                  const [x, y, vis] = globe(lon, lat, rot);
+                  if (!vis) return null;
                   return (
                     <g key={name}>
                       <circle cx={x} cy={y} r="14" fill="url(#node)" opacity="0.5" />
@@ -163,7 +231,8 @@ export function WorldPulse() {
                 {/* corridor destinations */}
                 {CORRIDORS.map((c) => {
                   const [lon, lat] = COORDS[c.currency];
-                  const [x, y] = proj(lon, lat);
+                  const [x, y, vis] = globe(lon, lat, rot);
+                  if (!vis) return null;
                   return (
                     <g key={c.currency}>
                       <circle cx={x} cy={y} r="10" fill="oklch(0.7 0.28 330 / 0.25)">
@@ -179,23 +248,29 @@ export function WorldPulse() {
                 })}
 
                 {/* flight arcs */}
-                {flights.map((f) => (
-                  <g key={f.id}>
-                    <path
-                      d={arcPath(f.from, f.to)}
-                      stroke="url(#arc)"
-                      strokeWidth="1.5"
-                      fill="none"
-                      strokeDasharray="6 6"
-                      opacity="0.75"
-                    >
-                      <animate attributeName="stroke-dashoffset" from="120" to="0" dur="2.2s" repeatCount="indefinite" />
-                    </path>
-                    <circle r="3" fill="oklch(0.92 0.2 200)">
-                      <animateMotion dur="2.2s" repeatCount="indefinite" path={arcPath(f.from, f.to)} />
-                    </circle>
-                  </g>
-                ))}
+                {flights.map((f) => {
+                  const [ax, ay, av] = globe(f.from[0], f.from[1], rot);
+                  const [bx, by, bv] = globe(f.to[0], f.to[1], rot);
+                  if (!av || !bv) return null;
+                  const d = arcPath([ax, ay], [bx, by]);
+                  return (
+                    <g key={f.id}>
+                      <path
+                        d={d}
+                        stroke="url(#arc)"
+                        strokeWidth="1.5"
+                        fill="none"
+                        strokeDasharray="6 6"
+                        opacity="0.8"
+                      >
+                        <animate attributeName="stroke-dashoffset" from="120" to="0" dur="2.2s" repeatCount="indefinite" />
+                      </path>
+                      <circle r="3" fill="oklch(0.92 0.2 200)">
+                        <animateMotion dur="2.2s" repeatCount="indefinite" path={d} />
+                      </circle>
+                    </g>
+                  );
+                })}
               </svg>
 
               {/* Floating coin chips */}
