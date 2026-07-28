@@ -56,10 +56,10 @@ export const Route = createFileRoute("/api/jupiter/order")({
 
         const lamports = Number(amount);
         if (!Number.isFinite(lamports) || lamports < MIN_LAMPORTS) {
-          return errorResponse("Minimum swap amount is 0.001 SOL.", 400);
+          return errorResponse("Minimum test amount is 0.001 SOL.", 400);
         }
         if (lamports > MAX_LAMPORTS) {
-          return errorResponse("Maximum swap amount is 0.01 SOL.", 400);
+          return errorResponse("Maximum demo swap amount is 0.01 SOL.", 400);
         }
 
         const url = new URL("https://api.jup.ag/swap/v2/order");

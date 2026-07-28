@@ -36,8 +36,8 @@ function toLamports(sol: string): string | null {
 function validateAmount(sol: string): string | null {
   const n = Number(sol);
   if (!Number.isFinite(n) || n <= 0) return "Enter a SOL amount greater than zero.";
-  if (n < MIN_SOL) return `Minimum swap amount is ${MIN_SOL} SOL.`;
-  if (n > MAX_SOL) return `Maximum swap amount is ${MAX_SOL} SOL. Test with a small amount only.`;
+  if (n < MIN_SOL) return "Minimum test amount is 0.001 SOL.";
+  if (n > MAX_SOL) return "Maximum demo swap amount is 0.01 SOL.";
   return null;
 }
 
