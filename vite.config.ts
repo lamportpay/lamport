@@ -12,4 +12,20 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    resolve: {
+      alias: [
+        // rpc-websockets (via @solana/web3.js) only exports "browser"/"node" conditions,
+        // which the workerd SSR environment doesn't match. Point it at the browser build.
+        {
+          find: /^rpc-websockets$/,
+          replacement: "rpc-websockets/dist/index.browser.mjs",
+        },
+        {
+          find: /^rpc-websockets\/dist\/lib\/client$/,
+          replacement: "rpc-websockets/dist/index.browser.mjs",
+        },
+      ],
+    },
+  },
 });
