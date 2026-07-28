@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState, type ReactNode } from "react";
 import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
 import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
@@ -6,7 +6,6 @@ import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { clusterApiUrl } from "@solana/web3.js";
 import { ShieldAlert, Copy, Check } from "lucide-react";
-import { useState, type ReactNode } from "react";
 
 import "@solana/wallet-adapter-react-ui/styles.css";
 
