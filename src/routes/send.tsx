@@ -175,6 +175,7 @@ function SendPage() {
                 <KV k="Selected partner" v="Bridge" />
                 <KV k="KYC status" v={kycApproved ? "Approved" : "Not started"} />
               </div>
+              {kycApproved && <LammyCheck label="Mock KYC approved by Bridge" />}
               {!kycApproved ? (
                 <PrimaryButton onClick={() => setKycApproved(true)}>Complete Mock Bridge KYC</PrimaryButton>
               ) : (
@@ -283,6 +284,9 @@ function Receipt(props: any) {
     <div className="space-y-6">
       <SectionTitle title="6. Receipt" />
       <div className="rounded-2xl bg-[image:var(--gradient-card)] border border-border/60 p-6">
+        <div className="mb-5">
+          <LammyCheck label="Payout complete — recipient has been paid" />
+        </div>
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Payment ID</div>
