@@ -5,6 +5,10 @@ import { USDC_MINT, isSupportedInputMint } from "@/lib/tokens";
 
 const BASE58_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
+// Safety limits for the real-swap demo (lamports).
+const MIN_LAMPORTS = 1_000_000; // 0.001 SOL
+const MAX_LAMPORTS = 10_000_000; // 0.01 SOL
+
 const OrderInput = z.object({
   inputMint: z.string().min(1, "inputMint is required."),
   outputMint: z.string().min(1, "outputMint is required."),
@@ -48,6 +52,14 @@ export const Route = createFileRoute("/api/jupiter/order")({
         }
         if (outputMint !== USDC_MINT) {
           return errorResponse("Unsupported outputMint. Only USDC is supported.", 400);
+        }
+
+        const lamports = Number(amount);
+        if (!Number.isFinite(lamports) || lamports < MIN_LAMPORTS) {
+          return errorResponse("Minimum swap amount is 0.001 SOL.", 400);
+        }
+        if (lamports > MAX_LAMPORTS) {
+          return errorResponse("Maximum swap amount is 0.01 SOL.", 400);
         }
 
         const url = new URL("https://api.jup.ag/swap/v2/order");

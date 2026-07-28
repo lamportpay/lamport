@@ -7,6 +7,8 @@ import { SOL_MINT, USDC_MINT } from "@/lib/tokens";
 import { WalletStatusCard } from "./SolanaWallet";
 
 const LAMPORTS_PER_SOL = 1_000_000_000;
+const MIN_SOL = 0.001;
+const MAX_SOL = 0.01;
 
 type OrderResult = {
   transaction: string | null;
@@ -29,6 +31,14 @@ function toLamports(sol: string): string | null {
   const n = Number(sol);
   if (!Number.isFinite(n) || n <= 0) return null;
   return Math.round(n * LAMPORTS_PER_SOL).toString();
+}
+
+function validateAmount(sol: string): string | null {
+  const n = Number(sol);
+  if (!Number.isFinite(n) || n <= 0) return "Enter a SOL amount greater than zero.";
+  if (n < MIN_SOL) return `Minimum swap amount is ${MIN_SOL} SOL.`;
+  if (n > MAX_SOL) return `Maximum swap amount is ${MAX_SOL} SOL. Test with a small amount only.`;
+  return null;
 }
 
 function toBase64(bytes: Uint8Array): string {
@@ -54,6 +64,9 @@ export function SwapPanel() {
   const [result, setResult] = useState<ExecuteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<"order" | "sign" | "execute" | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const amountError = validateAmount(amount);
 
   const reset = () => {
     setOrder(null);
@@ -64,6 +77,8 @@ export function SwapPanel() {
 
   const createOrder = useCallback(async () => {
     reset();
+    const invalid = validateAmount(amount);
+    if (invalid) return setError(invalid);
     const lamports = toLamports(amount);
     if (!lamports) return setError("Enter a SOL amount greater than zero.");
     if (!address) return setError("Connect a wallet first.");
@@ -94,6 +109,8 @@ export function SwapPanel() {
   const signOrder = useCallback(async () => {
     if (!order?.transaction) return;
     if (!signTransaction) return setError("This wallet cannot sign transactions.");
+    const invalid = validateAmount(amount);
+    if (invalid) return setError(invalid);
     setError(null);
     setBusy("sign");
     try {
@@ -105,7 +122,7 @@ export function SwapPanel() {
     } finally {
       setBusy(null);
     }
-  }, [order, signTransaction]);
+  }, [order, signTransaction, amount]);
 
   const executeSwap = useCallback(async () => {
     if (!signed || !order?.requestId) return;
@@ -157,6 +174,16 @@ export function SwapPanel() {
           <div className="mt-1 text-xs text-muted-foreground font-mono">
             {toLamports(amount) ?? "0"} lamports
           </div>
+          <div className="mt-2 flex items-center justify-between gap-3 text-xs">
+            <span className="text-muted-foreground">
+              Limits: min {MIN_SOL} SOL · max {MAX_SOL} SOL
+            </span>
+            {amountError && (
+              <span className="font-medium text-[color:var(--warning,theme(colors.amber.600))] text-right">
+                {amountError}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-center">
@@ -184,7 +211,7 @@ export function SwapPanel() {
             n={1}
             label={busy === "order" ? "Creating order…" : "Create Jupiter order"}
             done={!!order}
-            disabled={!connected || busy !== null}
+            disabled={!connected || busy !== null || !!amountError}
             onClick={createOrder}
             busy={busy === "order"}
           />
@@ -192,8 +219,8 @@ export function SwapPanel() {
             n={2}
             label={busy === "sign" ? "Waiting for wallet…" : "Sign transaction"}
             done={!!signed}
-            disabled={!order || busy !== null}
-            onClick={signOrder}
+            disabled={!order || busy !== null || !!amountError}
+            onClick={() => setConfirmOpen(true)}
             busy={busy === "sign"}
           />
           <Step
@@ -266,6 +293,52 @@ export function SwapPanel() {
           LamportPay will never ask for your seed phrase or private key.
         </Warn>
       </div>
+
+      {confirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/70 backdrop-blur-sm">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Confirm real swap"
+            className="w-full max-w-md rounded-2xl border border-border/60 bg-card p-6 space-y-4 shadow-xl"
+          >
+            <div className="flex items-center gap-2">
+              <TriangleAlert className="w-5 h-5 text-primary" />
+              <h2 className="text-base font-semibold">Confirm real swap</h2>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              This is a real Jupiter swap using real wallet funds. Continue only with a small
+              test amount.
+            </p>
+            <div className="rounded-xl bg-secondary/60 px-4 py-3 text-sm font-medium">
+              {amount} SOL → USDC
+            </div>
+            <p className="text-xs text-muted-foreground">
+              LamportPay will never ask for your seed phrase or private key. Bridge payout, fiat
+              payout and KYC remain disabled.
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => setConfirmOpen(false)}
+                className="rounded-xl border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setConfirmOpen(false);
+                  void signOrder();
+                }}
+                className="rounded-xl px-4 py-2 text-sm font-semibold text-primary-foreground bg-primary hover:opacity-90"
+              >
+                I understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
