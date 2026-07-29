@@ -41,28 +41,41 @@ type Swap = {
 };
 
 let seq = 0;
-function mkSwap(): Swap {
-  const tok = TOKENS[Math.floor(Math.random() * TOKENS.length)];
-  const c = CORRIDORS[Math.floor(Math.random() * CORRIDORS.length)];
-  const usd = Math.round(50 + Math.random() * 4950);
+// Deterministic PRNG so SSR and the first client render produce identical
+// markup (avoids React hydration mismatch crashes).
+function seeded(i: number) {
+  let s = (i * 1664525 + 1013904223) >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+function mkSwap(seed?: number): Swap {
+  const r = seed === undefined ? Math.random : seeded(seed + 1);
+  const tok = TOKENS[Math.floor(r() * TOKENS.length)];
+  const c = CORRIDORS[Math.floor(r() * CORRIDORS.length)];
+  const usd = Math.round(50 + r() * 4950);
   const amount = usd / (TOKEN_USD[tok] || 1);
   return {
-    id: ++seq,
+    id: seed === undefined ? ++seq : -(seed + 1),
     token: tok,
     amount,
     usd,
     corridor: c,
     local: usd * 0.985 * c.rate,
-    who: NAMES[Math.floor(Math.random() * NAMES.length)],
-    avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)],
-    from: SENDER_CITIES[Math.floor(Math.random() * SENDER_CITIES.length)],
-    ms: 700 + Math.floor(Math.random() * 3200),
+    who: NAMES[Math.floor(r() * NAMES.length)],
+    avatar: AVATARS[Math.floor(r() * AVATARS.length)],
+    from: SENDER_CITIES[Math.floor(r() * SENDER_CITIES.length)],
+    ms: 700 + Math.floor(r() * 3200),
   };
 }
 
 export function LiveSwapTheater() {
-  const [current, setCurrent] = useState<Swap>(() => mkSwap());
-  const [stream, setStream] = useState<Swap[]>(() => Array.from({ length: 6 }, mkSwap));
+  const [current, setCurrent] = useState<Swap>(() => mkSwap(0));
+  const [stream, setStream] = useState<Swap[]>(() =>
+    Array.from({ length: 6 }, (_, i) => mkSwap(i + 1)),
+  );
   const [totalUsd, setTotalUsd] = useState(48_213_907);
   const [txCount, setTxCount] = useState(1_284_617);
   const [progress, setProgress] = useState(0); // 0..1 through the route
