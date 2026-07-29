@@ -92,7 +92,7 @@ export function SwapPanel() {
   const orderReady = Boolean(order?.transaction && order.requestId);
   const createOrderDisabled = !connected || busy !== null || Boolean(amountError);
   const createOrderDisabledMessage = !connected
-    ? "Connect Phantom or Solflare first."
+    ? "Connect Phantom or Solflare first, then create a Jupiter order."
     : amountError
       ? amountError
       : busy === "order"
@@ -102,7 +102,7 @@ export function SwapPanel() {
           : null;
   const signDisabled = !orderReady || !signTransaction || !connected || busy !== null || Boolean(amountError);
   const signDisabledMessage = !connected
-    ? "Connect a wallet before signing."
+    ? "Connect a wallet, then create a Jupiter order before signing."
     : !orderReady
       ? "Create a Jupiter order with a transaction first."
       : !signTransaction
@@ -116,7 +116,7 @@ export function SwapPanel() {
               : null;
   const executeDisabled = !signed || !order?.requestId || busy !== null;
   const executeDisabledMessage = !signed
-    ? "Sign the Jupiter transaction first."
+    ? "Sign the Jupiter transaction first; execution stays locked until a signed transaction exists."
     : !order?.requestId
       ? "Missing Jupiter request ID. Create a new order."
       : busy === "execute"
