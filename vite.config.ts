@@ -22,6 +22,16 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    plugins: [
+      {
+        name: "lamportpay-node-buffer-browser-shim",
+        enforce: "pre",
+        resolveId(id) {
+          if (id === "node:buffer" || id === "buffer" || id === "buffer/") return browserBufferShim;
+          return null;
+        },
+      },
+    ],
     resolve: {
       alias: [
         { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
