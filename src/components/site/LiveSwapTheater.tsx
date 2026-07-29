@@ -79,9 +79,11 @@ export function LiveSwapTheater() {
   const [totalUsd, setTotalUsd] = useState(48_213_907);
   const [txCount, setTxCount] = useState(1_284_617);
   const [progress, setProgress] = useState(0); // 0..1 through the route
+  const hydrated = useHydrated();
 
   // Cycle the featured swap
   useEffect(() => {
+    if (!hydrated) return;
     const id = setInterval(() => {
       const s = mkSwap();
       setCurrent(s);
@@ -91,10 +93,11 @@ export function LiveSwapTheater() {
       setProgress(0);
     }, 3600);
     return () => clearInterval(id);
-  }, []);
+  }, [hydrated]);
 
   // Route progress animation
   useEffect(() => {
+    if (!hydrated) return;
     const t0 = performance.now();
     let raf = 0;
     const tick = (now: number) => {
@@ -104,7 +107,7 @@ export function LiveSwapTheater() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [current.id]);
+  }, [current.id, hydrated]);
 
   const nodes = ["Wallet", "Jupiter", "USDC", "Bridge", `${current.corridor.flag} ${current.corridor.currency}`];
   const activeIdx = Math.min(nodes.length - 1, Math.floor(progress * nodes.length));
