@@ -370,7 +370,10 @@ function MiniStat({ label, value }: { label: string; value: string }) {
 }
 
 function JustSentMarquee() {
-  const items = useMemo(() => Array.from({ length: 14 }, mkSwap), []);
+  const items = useMemo(
+    () => Array.from({ length: 14 }, (_, i) => mkSwap(i + 40)),
+    [],
+  );
   const loop = [...items, ...items];
   return (
     <div className="relative border-t border-white/10 bg-black/30 overflow-hidden">
