@@ -387,17 +387,19 @@ function JustSentMarquee() {
         {loop.map((s, i) => (
           <span key={i} className="inline-flex items-center gap-2 text-[12px] font-mono text-white/70">
             <CheckCircle2 className="w-3 h-3 text-[color:var(--success)]" />
-            <span className="text-white/90">{s.who}</span> sent
+            <span className="text-white/90">Jupiter route preview</span>
             <span
               className="px-1.5 rounded font-semibold"
-              style={{ background: `${TOKEN_COLOR[s.token]}22`, color: TOKEN_COLOR[s.token] }}
+              style={{ background: `${TOKEN_COLOR["SOL"]}22`, color: TOKEN_COLOR["SOL"] }}
             >
-              {fmt(s.amount, s.token === "BONK" ? 0 : 2)} {s.token}
+              SOL → USDC
             </span>
-            →
-            <span className="text-white">{fmt(s.local, 0)} {s.corridor.currency}</span>
             <span className="text-white/30">·</span>
-            <span className="text-white/40">settled in {(s.ms / 1000).toFixed(1)}s</span>
+            <span className="text-white">Output: connected wallet</span>
+            <span className="text-white/30">·</span>
+            <span className="text-white/40">Bridge payout disabled</span>
+            <span className="text-white/30">·</span>
+            <span className="text-white/40">Demo mode</span>
             <span className="text-white/20">·</span>
           </span>
         ))}
