@@ -39,13 +39,13 @@ function from(value: ArrayLike<number> | ArrayBufferLike | string, encoding: Buf
   if (ArrayBuffer.isView(value)) {
     return new Uint8Array(value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength));
   }
-  if (
-    value instanceof ArrayBuffer ||
-    (typeof SharedArrayBuffer !== "undefined" && value instanceof SharedArrayBuffer)
-  ) {
+  if (value instanceof ArrayBuffer) {
     return new Uint8Array(value.slice(0));
   }
-  return Uint8Array.from(value);
+  if (typeof SharedArrayBuffer !== "undefined" && value instanceof SharedArrayBuffer) {
+    return new Uint8Array(value.slice(0));
+  }
+  return Uint8Array.from(value as ArrayLike<number>);
 }
 
 const BrowserBuffer = Object.assign(Uint8Array, {
