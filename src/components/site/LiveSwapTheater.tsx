@@ -432,31 +432,29 @@ export function HeroFloatingCards() {
           className={`absolute ${positions[i]} w-64 rounded-2xl border border-primary/20 bg-card/90 backdrop-blur-xl shadow-[var(--shadow-soft)] p-3 animate-[fade-in_0.5s_ease-out]`}
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-full p-[2px] bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_14px_oklch(0.7_0.28_330_/_0.5)]">
-              <img
-                src={s.avatar}
-                alt={s.who}
-                loading="lazy"
-                className="w-full h-full rounded-full object-cover bg-muted"
-              />
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_14px_oklch(0.7_0.28_330_/_0.5)] flex items-center justify-center text-white font-bold text-sm">
+              J
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-medium truncate">{s.who} · {s.from}</div>
-              <div className="text-[10px] text-muted-foreground font-mono">just sent</div>
+              <div className="text-xs font-medium truncate">Jupiter route preview</div>
+              <div className="text-[10px] text-muted-foreground font-mono">Demo mode</div>
             </div>
             <span className="text-[10px] font-semibold text-[color:var(--success)] flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" /> live
+              <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" /> demo
             </span>
           </div>
           <div className="mt-2 flex items-center justify-between text-sm font-mono">
             <span
               className="px-2 py-0.5 rounded font-semibold text-xs"
-              style={{ background: `${TOKEN_COLOR[s.token]}22`, color: TOKEN_COLOR[s.token] }}
+              style={{ background: `${TOKEN_COLOR["SOL"]}22`, color: TOKEN_COLOR["SOL"] }}
             >
-              {fmt(s.amount, s.token === "BONK" ? 0 : 2)} {s.token}
+              SOL
             </span>
             <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="font-semibold">{fmt(s.local, 0)} {s.corridor.currency} {s.corridor.flag}</span>
+            <span className="font-semibold">USDC</span>
+          </div>
+          <div className="mt-1.5 text-[10px] font-mono text-muted-foreground">
+            Output: connected wallet · Bridge payout disabled
           </div>
         </div>
       ))}
