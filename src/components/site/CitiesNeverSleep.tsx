@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Zap } from "lucide-react";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 const CITIES = [
   { name: "Karachi", tz: "PKT", cur: "PKR", lat: 24.86, lon: 67.01 },
@@ -28,6 +29,7 @@ const OFFSETS: Record<string, number> = {
 
 export function CitiesNeverSleep() {
   const [tick, setTick] = useState(0);
+  const hydrated = useHydrated();
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(id);
@@ -60,7 +62,8 @@ export function CitiesNeverSleep() {
 
         <div className="mt-12 grid gap-3 md:grid-cols-3 lg:grid-cols-4" key={tick}>
           {CITIES.map((c, i) => {
-            const t = nowInCity(OFFSETS[c.tz] ?? 0);
+            // Clocks are time-dependent: render a stable placeholder until hydration.
+            const t = hydrated ? nowInCity(OFFSETS[c.tz] ?? 0) : "--:--";
             const active = (tick + i) % 5 < 3;
             return (
               <div
