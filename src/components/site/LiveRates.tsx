@@ -89,23 +89,33 @@ export function LiveRatesTicker() {
 
 export function StatsStrip() {
   const stats = [
-    { k: "24/7", v: "Global uptime", sub: "Solana never sleeps" },
-    { k: "<5 min", v: "Median settlement", sub: "Crypto → payout" },
-    { k: "99.98%", v: "Route success", sub: "Bridge-first partner" },
-    { k: "10+", v: "Local corridors", sub: "Bank · wallet · cash" },
-    { k: "Best FX", v: "Mid-market quote", sub: "Transparent fees" },
+    {
+      k: "15M+ swap traders",
+      v: "Jupiter ecosystem",
+      sub: "Historical Jupiter Research/Jupuary ecosystem figure, not LamportPay users.",
+    },
+    {
+      k: "100+ liquidity sources",
+      v: "Swap infrastructure",
+      sub: "Jupiter scans Solana liquidity sources to optimize swap execution.",
+    },
+    {
+      k: "Demo only",
+      v: "LamportPay status",
+      sub: "Real fiat payout is disabled until licensed partner approval.",
+    },
   ];
   return (
     <div className="relative rounded-3xl border border-primary/20 bg-[oklch(0.16_0.06_275)] text-white overflow-hidden animate-uv-scan">
       <div className="absolute inset-0 bg-grid-uv opacity-70 pointer-events-none" />
       <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[oklch(0.6_0.28_295)] opacity-30 blur-3xl animate-uv-pulse" />
       <div className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-[oklch(0.7_0.24_200)] opacity-30 blur-3xl animate-uv-pulse" />
-      <div className="relative grid grid-cols-2 md:grid-cols-5 divide-x divide-white/5">
+      <div className="relative grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/5">
         {stats.map((s) => (
           <div key={s.k} className="p-5 md:p-6">
-            <div className="text-2xl md:text-3xl font-semibold tracking-tight text-uv">{s.k}</div>
-            <div className="mt-1 text-sm font-medium text-white/90">{s.v}</div>
-            <div className="text-[11px] text-white/50 mt-0.5">{s.sub}</div>
+            <div className="text-sm font-medium text-white/90">{s.v}</div>
+            <div className="mt-1 text-2xl md:text-3xl font-semibold tracking-tight text-uv">{s.k}</div>
+            <div className="text-[11px] text-white/50 mt-1.5 leading-relaxed">{s.sub}</div>
           </div>
         ))}
       </div>

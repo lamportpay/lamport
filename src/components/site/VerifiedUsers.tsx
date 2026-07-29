@@ -89,23 +89,23 @@ export function VerifiedUsers() {
         <div className="text-center">
           <div className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-white/70 border border-white/10 rounded-full px-3 py-1.5 bg-black/40 backdrop-blur">
             <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" />
-            Trusted by senders across 40+ corridors
+            Jupiter-powered SOL → USDC swap demo
           </div>
           <h2 className="mt-6 text-6xl md:text-8xl font-semibold tracking-tight text-white tabular-nums">
             <span className="bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">
-              2,400,000<span className="text-uv">+</span>
+              SOL <span className="text-uv">→</span> USDC
             </span>
           </h2>
           <div className="mt-3 text-sm md:text-base text-white/60 flex items-center justify-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[color:var(--success)]" />
-            Verified users · sending crypto home every day
+            Built using the Jupiter Swap API · output returns to your connected wallet
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-[11px] font-mono uppercase tracking-widest text-white/50">
-            <span className="flex items-center gap-1.5"><Globe2 className="w-3.5 h-3.5" /> 180 countries</span>
+            <span className="flex items-center gap-1.5"><Globe2 className="w-3.5 h-3.5" /> Demo mode</span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> 99.98% success</span>
+            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Bridge payout disabled</span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
-            <span>24/7 · never sleeps</span>
+            <span>No custody of funds</span>
           </div>
         </div>
 

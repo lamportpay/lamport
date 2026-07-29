@@ -77,8 +77,6 @@ export function LiveSwapTheater() {
   const [stream, setStream] = useState<Swap[]>(() =>
     Array.from({ length: 6 }, (_, i) => mkSwap(i + 1)),
   );
-  const [totalUsd, setTotalUsd] = useState(48_213_907);
-  const [txCount, setTxCount] = useState(1_284_617);
   const [progress, setProgress] = useState(0); // 0..1 through the route
   const hydrated = useHydrated();
 
@@ -89,8 +87,6 @@ export function LiveSwapTheater() {
       const s = mkSwap();
       setCurrent(s);
       setStream((p) => [s, ...p].slice(0, 6));
-      setTotalUsd((v) => v + s.usd);
-      setTxCount((v) => v + 1);
       setProgress(0);
     }, 3600);
     return () => clearInterval(id);
@@ -118,13 +114,13 @@ export function LiveSwapTheater() {
       <div className="max-w-7xl mx-auto px-5">
         <div className="text-center max-w-3xl mx-auto">
           <div className="text-xs font-semibold uppercase tracking-wider text-primary flex items-center justify-center gap-2">
-            <Flame className="w-3.5 h-3.5" /> Live Swap Theater · Jupiter-routed
+            <Flame className="w-3.5 h-3.5" /> Jupiter route preview · Demo mode
           </div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
-            Watch crypto become local money — in real time.
+            See how a Jupiter SOL → USDC swap is routed.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Every swap is AI-routed through Jupiter for best price, settled via USDC, and paid out through Bridge in the recipient's local currency.
+            Built using the Jupiter Swap API. Swap output returns to your connected wallet — LamportPay does not custody funds and fiat payout is disabled.
           </p>
         </div>
 
@@ -135,10 +131,10 @@ export function LiveSwapTheater() {
 
           {/* Counters bar */}
           <div className="relative border-b border-white/10 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10 bg-black/20 backdrop-blur">
-            <Counter label="Volume · last 24h" value={`$${fmt(totalUsd, 0)}`} icon={<Activity className="w-3 h-3" />} />
-            <Counter label="Transfers routed" value={fmt(txCount, 0)} icon={<Zap className="w-3 h-3" />} />
-            <Counter label="Median settle" value="4m 12s" icon={<CheckCircle2 className="w-3 h-3" />} sub="Solana → Bridge" />
-            <Counter label="AI best-rate" value="+0.42%" icon={<Sparkles className="w-3 h-3" />} sub="vs. spot" up />
+            <Counter label="Jupiter route preview" value="SOL → USDC" icon={<Activity className="w-3 h-3" />} />
+            <Counter label="Output" value="Connected wallet" icon={<Zap className="w-3 h-3" />} />
+            <Counter label="Bridge payout" value="Disabled" icon={<CheckCircle2 className="w-3 h-3" />} sub="No fiat payout" />
+            <Counter label="Mode" value="Demo mode" icon={<Sparkles className="w-3 h-3" />} sub="Swap limits 0.001–0.01 SOL" />
           </div>
 
           <div className="relative grid lg:grid-cols-[1.35fr_1fr] gap-0">
@@ -238,7 +234,7 @@ export function LiveSwapTheater() {
                   <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
                 </span>
                 <div className="text-[11px] font-semibold uppercase tracking-widest text-white/80">
-                  People sending money right now
+                  Jupiter route preview
                 </div>
               </div>
 
@@ -250,13 +246,8 @@ export function LiveSwapTheater() {
                     style={{ opacity: 1 - i * 0.11, transform: `translateX(${i * 2}px)` }}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="relative w-10 h-10 rounded-full shrink-0 p-[2px] bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_16px_oklch(0.7_0.28_330_/_0.45)]">
-                        <img
-                          src={s.avatar}
-                          alt={s.who}
-                          loading="lazy"
-                          className="w-full h-full rounded-full object-cover bg-[oklch(0.14_0.05_275)]"
-                        />
+                      <div className="relative w-10 h-10 rounded-full shrink-0 bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_16px_oklch(0.7_0.28_330_/_0.45)] flex items-center justify-center text-white font-bold text-sm">
+                        J
                         {i === 0 && (
                           <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[color:var(--success)] border-2 border-[oklch(0.11_0.05_275)]" />
                         )}
@@ -264,21 +255,19 @@ export function LiveSwapTheater() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-sm font-medium text-white truncate">
-                            {s.who} · <span className="text-white/50">{s.from}</span>
+                            Jupiter route preview · <span className="text-white/50">Demo mode</span>
                           </span>
-                          <span className="text-[10px] text-white/40 font-mono shrink-0">{i === 0 ? "now" : `${i * 7}s`}</span>
+                          <span className="text-[10px] text-white/40 font-mono shrink-0">demo</span>
                         </div>
                         <div className="flex items-center gap-1.5 mt-0.5 text-[12px] font-mono">
                           <span
                             className="px-1.5 py-0.5 rounded font-semibold"
-                            style={{ background: `${TOKEN_COLOR[s.token]}22`, color: TOKEN_COLOR[s.token] }}
+                            style={{ background: `${TOKEN_COLOR["SOL"]}22`, color: TOKEN_COLOR["SOL"] }}
                           >
-                            {s.token}
+                            SOL
                           </span>
                           <span className="text-white/50">→</span>
-                          <span className="text-white/90">
-                            {fmt(s.local, 0)} {s.corridor.currency} {s.corridor.flag}
-                          </span>
+                          <span className="text-white/90">USDC · Output: connected wallet</span>
                         </div>
                       </div>
                     </div>
@@ -287,7 +276,7 @@ export function LiveSwapTheater() {
               </div>
 
               <div className="mt-5 text-[11px] text-white/40 font-mono leading-relaxed">
-                * Simulated demo activity. Real routing will use Jupiter v6 + Bridge partner APIs.
+                * Illustrative route preview only — not LamportPay customer activity. Live swaps use the Jupiter Swap API; Bridge payout is disabled.
               </div>
             </div>
           </div>
@@ -387,17 +376,19 @@ function JustSentMarquee() {
         {loop.map((s, i) => (
           <span key={i} className="inline-flex items-center gap-2 text-[12px] font-mono text-white/70">
             <CheckCircle2 className="w-3 h-3 text-[color:var(--success)]" />
-            <span className="text-white/90">{s.who}</span> sent
+            <span className="text-white/90">Jupiter route preview</span>
             <span
               className="px-1.5 rounded font-semibold"
-              style={{ background: `${TOKEN_COLOR[s.token]}22`, color: TOKEN_COLOR[s.token] }}
+              style={{ background: `${TOKEN_COLOR["SOL"]}22`, color: TOKEN_COLOR["SOL"] }}
             >
-              {fmt(s.amount, s.token === "BONK" ? 0 : 2)} {s.token}
+              SOL → USDC
             </span>
-            →
-            <span className="text-white">{fmt(s.local, 0)} {s.corridor.currency}</span>
             <span className="text-white/30">·</span>
-            <span className="text-white/40">settled in {(s.ms / 1000).toFixed(1)}s</span>
+            <span className="text-white">Output: connected wallet</span>
+            <span className="text-white/30">·</span>
+            <span className="text-white/40">Bridge payout disabled</span>
+            <span className="text-white/30">·</span>
+            <span className="text-white/40">Demo mode</span>
             <span className="text-white/20">·</span>
           </span>
         ))}
@@ -430,31 +421,29 @@ export function HeroFloatingCards() {
           className={`absolute ${positions[i]} w-64 rounded-2xl border border-primary/20 bg-card/90 backdrop-blur-xl shadow-[var(--shadow-soft)] p-3 animate-[fade-in_0.5s_ease-out]`}
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-full p-[2px] bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_14px_oklch(0.7_0.28_330_/_0.5)]">
-              <img
-                src={s.avatar}
-                alt={s.who}
-                loading="lazy"
-                className="w-full h-full rounded-full object-cover bg-muted"
-              />
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_14px_oklch(0.7_0.28_330_/_0.5)] flex items-center justify-center text-white font-bold text-sm">
+              J
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-medium truncate">{s.who} · {s.from}</div>
-              <div className="text-[10px] text-muted-foreground font-mono">just sent</div>
+              <div className="text-xs font-medium truncate">Jupiter route preview</div>
+              <div className="text-[10px] text-muted-foreground font-mono">Demo mode</div>
             </div>
             <span className="text-[10px] font-semibold text-[color:var(--success)] flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" /> live
+              <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" /> demo
             </span>
           </div>
           <div className="mt-2 flex items-center justify-between text-sm font-mono">
             <span
               className="px-2 py-0.5 rounded font-semibold text-xs"
-              style={{ background: `${TOKEN_COLOR[s.token]}22`, color: TOKEN_COLOR[s.token] }}
+              style={{ background: `${TOKEN_COLOR["SOL"]}22`, color: TOKEN_COLOR["SOL"] }}
             >
-              {fmt(s.amount, s.token === "BONK" ? 0 : 2)} {s.token}
+              SOL
             </span>
             <ArrowRight className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="font-semibold">{fmt(s.local, 0)} {s.corridor.currency} {s.corridor.flag}</span>
+            <span className="font-semibold">USDC</span>
+          </div>
+          <div className="mt-1.5 text-[10px] font-mono text-muted-foreground">
+            Output: connected wallet · Bridge payout disabled
           </div>
         </div>
       ))}
