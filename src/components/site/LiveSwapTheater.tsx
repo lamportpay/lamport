@@ -118,13 +118,13 @@ export function LiveSwapTheater() {
       <div className="max-w-7xl mx-auto px-5">
         <div className="text-center max-w-3xl mx-auto">
           <div className="text-xs font-semibold uppercase tracking-wider text-primary flex items-center justify-center gap-2">
-            <Flame className="w-3.5 h-3.5" /> Live Swap Theater · Jupiter-routed
+            <Flame className="w-3.5 h-3.5" /> Jupiter route preview · Demo mode
           </div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
-            Watch crypto become local money — in real time.
+            See how a Jupiter SOL → USDC swap is routed.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Every swap is AI-routed through Jupiter for best price, settled via USDC, and paid out through Bridge in the recipient's local currency.
+            Built using the Jupiter Swap API. Swap output returns to your connected wallet — LamportPay does not custody funds and fiat payout is disabled.
           </p>
         </div>
 
@@ -135,10 +135,10 @@ export function LiveSwapTheater() {
 
           {/* Counters bar */}
           <div className="relative border-b border-white/10 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10 bg-black/20 backdrop-blur">
-            <Counter label="Volume · last 24h" value={`$${fmt(totalUsd, 0)}`} icon={<Activity className="w-3 h-3" />} />
-            <Counter label="Transfers routed" value={fmt(txCount, 0)} icon={<Zap className="w-3 h-3" />} />
-            <Counter label="Median settle" value="4m 12s" icon={<CheckCircle2 className="w-3 h-3" />} sub="Solana → Bridge" />
-            <Counter label="AI best-rate" value="+0.42%" icon={<Sparkles className="w-3 h-3" />} sub="vs. spot" up />
+            <Counter label="Jupiter route preview" value="SOL → USDC" icon={<Activity className="w-3 h-3" />} />
+            <Counter label="Output" value="Connected wallet" icon={<Zap className="w-3 h-3" />} />
+            <Counter label="Bridge payout" value="Disabled" icon={<CheckCircle2 className="w-3 h-3" />} sub="No fiat payout" />
+            <Counter label="Mode" value="Demo mode" icon={<Sparkles className="w-3 h-3" />} sub="Swap limits 0.001–0.01 SOL" />
           </div>
 
           <div className="relative grid lg:grid-cols-[1.35fr_1fr] gap-0">
@@ -287,7 +287,7 @@ export function LiveSwapTheater() {
               </div>
 
               <div className="mt-5 text-[11px] text-white/40 font-mono leading-relaxed">
-                * Simulated demo activity. Real routing will use Jupiter v6 + Bridge partner APIs.
+                * Illustrative route preview only — not LamportPay customer activity. Live swaps use the Jupiter Swap API; Bridge payout is disabled.
               </div>
             </div>
           </div>
