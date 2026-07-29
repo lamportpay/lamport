@@ -1,3 +1,4 @@
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
 import { ArrowRight, Zap, Route as RouteIcon, Wallet, Building2, CheckCircle2, Sparkles, Flame, Activity } from "lucide-react";
