@@ -2,7 +2,7 @@ import "@/lib/buffer-polyfill";
 import { useCallback, useMemo, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, VersionedTransaction } from "@solana/web3.js";
-import { ArrowDown, ExternalLink, Loader2, ShieldAlert, TriangleAlert, Wallet } from "lucide-react";
+import { ArrowDown, Check, ExternalLink, Loader2, ShieldAlert, TriangleAlert, Wallet } from "lucide-react";
 
 import { SOL_MINT, USDC_MINT } from "@/lib/tokens";
 import { WalletStatusCard } from "./SolanaWallet";
