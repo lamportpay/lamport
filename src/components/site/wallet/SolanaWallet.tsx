@@ -1,5 +1,5 @@
 import "@/lib/buffer-polyfill";
-import { useMemo, useCallback, useState, type ReactNode } from "react";
+import { useMemo, useCallback, useEffect, useState, type ReactNode } from "react";
 import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
@@ -13,7 +13,10 @@ import { ShieldAlert, Copy, Check, Wallet, LogOut, ChevronDown } from "lucide-re
  */
 export function SolanaWalletProvider({ children }: { children: ReactNode }) {
   const endpoint = useMemo(() => clusterApiUrl(WalletAdapterNetwork.Mainnet), []);
-  const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], []);
+  const wallets = useMemo(() => {
+    if (typeof window === "undefined") return [];
+    return [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+  }, []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
@@ -32,21 +35,36 @@ export const SEED_PHRASE_WARNING = "Never share your seed phrase or private key.
 
 /** Compact connect button + wallet picker for the site header. */
 export function WalletConnectButton() {
-  const { wallets, select, connect, disconnect, connecting, connected, publicKey } = useWallet();
+  const { wallets, wallet, select, connect, disconnect, connecting, connected, publicKey } = useWallet();
   const [open, setOpen] = useState(false);
+  const [pendingWalletName, setPendingWalletName] = useState<string | null>(null);
   const address = publicKey?.toBase58() ?? "";
 
-  const pick = useCallback(
-    async (name: (typeof wallets)[number]["adapter"]["name"]) => {
-      setOpen(false);
-      select(name);
-      try {
-        await connect();
-      } catch {
+  useEffect(() => {
+    if (!pendingWalletName || connecting || connected) return;
+    if (wallet?.adapter.name !== pendingWalletName) return;
+
+    let cancelled = false;
+    void connect()
+      .catch(() => {
         /* user rejected or wallet not installed */
-      }
+      })
+      .finally(() => {
+        if (!cancelled) setPendingWalletName(null);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pendingWalletName, wallet, connecting, connected, connect]);
+
+  const pick = useCallback(
+    (name: (typeof wallets)[number]["adapter"]["name"]) => {
+      setOpen(false);
+      setPendingWalletName(name);
+      select(name);
     },
-    [select, connect],
+    [select],
   );
 
   if (connected && address) {
@@ -102,7 +120,7 @@ export function WalletStatusCard() {
 
   const copy = useCallback(() => {
     if (!address) return;
-    navigator.clipboard.writeText(address);
+    if (typeof navigator !== "undefined") void navigator.clipboard?.writeText(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }, [address]);

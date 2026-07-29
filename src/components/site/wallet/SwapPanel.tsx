@@ -1,5 +1,5 @@
 import "@/lib/buffer-polyfill";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, VersionedTransaction } from "@solana/web3.js";
 import { ArrowDown, Check, ExternalLink, Loader2, ShieldAlert, TriangleAlert, Wallet } from "lucide-react";
@@ -89,6 +89,48 @@ export function SwapPanel() {
 
   const amountError = validateAmount(amount);
   const usdcAta = useMemo(() => (publicKey ? deriveUsdcAta(publicKey) : null), [publicKey]);
+  const orderReady = Boolean(order?.transaction && order.requestId);
+  const createOrderDisabled = !connected || busy !== null || Boolean(amountError);
+  const createOrderDisabledMessage = !connected
+    ? "Connect Phantom or Solflare first."
+    : amountError
+      ? amountError
+      : busy === "order"
+        ? "Creating Jupiter order…"
+        : busy !== null
+          ? "Wait for the current step to finish."
+          : null;
+  const signDisabled = !orderReady || !signTransaction || !connected || busy !== null || Boolean(amountError);
+  const signDisabledMessage = !connected
+    ? "Connect a wallet before signing."
+    : !orderReady
+      ? "Create a Jupiter order with a transaction first."
+      : !signTransaction
+        ? "This wallet does not support transaction signing."
+        : amountError
+          ? amountError
+          : busy === "sign"
+            ? "Waiting for wallet signature…"
+            : busy !== null
+              ? "Wait for the current step to finish."
+              : null;
+  const executeDisabled = !signed || !order?.requestId || busy !== null;
+  const executeDisabledMessage = !signed
+    ? "Sign the Jupiter transaction first."
+    : !order?.requestId
+      ? "Missing Jupiter request ID. Create a new order."
+      : busy === "execute"
+        ? "Executing swap…"
+        : busy !== null
+          ? "Wait for the current step to finish."
+          : null;
+
+  useEffect(() => {
+    setOrder(null);
+    setSigned(null);
+    setResult(null);
+    setError(null);
+  }, [amount, address]);
 
   const reset = () => {
     setOrder(null);
@@ -282,7 +324,8 @@ export function SwapPanel() {
             n={1}
             label={busy === "order" ? "Creating order…" : "Create Jupiter order"}
             done={!!order}
-            disabled={!connected || busy !== null || !!amountError}
+            disabled={createOrderDisabled}
+            disabledMessage={createOrderDisabledMessage}
             onClick={createOrder}
             busy={busy === "order"}
           />
@@ -290,7 +333,8 @@ export function SwapPanel() {
             n={2}
             label={busy === "sign" ? "Waiting for wallet…" : "Sign transaction"}
             done={!!signed}
-            disabled={!order || busy !== null || !!amountError}
+            disabled={signDisabled}
+            disabledMessage={signDisabledMessage}
             onClick={() => setConfirmOpen(true)}
             busy={busy === "sign"}
           />
@@ -298,7 +342,8 @@ export function SwapPanel() {
             n={3}
             label={busy === "execute" ? "Executing…" : "Execute swap"}
             done={!!result}
-            disabled={!signed || busy !== null}
+            disabled={executeDisabled}
+            disabledMessage={executeDisabledMessage}
             onClick={executeSwap}
             busy={busy === "execute"}
           />
@@ -378,10 +423,6 @@ export function SwapPanel() {
               <h2 className="text-base font-semibold">Confirm real swap</h2>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              This is a real Jupiter swap using real wallet funds. Continue only with a small
-              test amount.
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
               You are about to swap SOL to USDC. The USDC output will return to your connected
               wallet. No fiat payout or third-party transfer will happen.
             </p>
@@ -432,6 +473,7 @@ function Step({
   label,
   done,
   disabled,
+  disabledMessage,
   busy,
   onClick,
 }: {
@@ -439,26 +481,35 @@ function Step({
   label: string;
   done: boolean;
   disabled: boolean;
+  disabledMessage: string | null;
   busy: boolean;
   onClick: () => void;
 }) {
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={
-        "w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition disabled:opacity-50 " +
-        (done
-          ? "border border-[color:var(--success)]/40 bg-[color:var(--success)]/10 text-[color:var(--success)]"
-          : "text-white bg-[image:var(--gradient-hero)] shadow-[var(--shadow-soft)] hover:opacity-95")
-      }
-    >
-      <span className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center text-[11px]">
-        {n}
-      </span>
-      <span className="flex-1 text-left">{label}</span>
-      {busy && <Loader2 className="w-4 h-4 animate-spin" />}
-    </button>
+    <div className="space-y-1.5">
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        aria-describedby={disabled && disabledMessage ? `swap-step-${n}-message` : undefined}
+        className={
+          "w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition disabled:opacity-50 " +
+          (done
+            ? "border border-[color:var(--success)]/40 bg-[color:var(--success)]/10 text-[color:var(--success)]"
+            : "text-white bg-[image:var(--gradient-hero)] shadow-[var(--shadow-soft)] hover:opacity-95")
+        }
+      >
+        <span className="w-5 h-5 rounded-full bg-black/10 flex items-center justify-center text-[11px]">
+          {n}
+        </span>
+        <span className="flex-1 text-left">{label}</span>
+        {busy && <Loader2 className="w-4 h-4 animate-spin" />}
+      </button>
+      {disabled && disabledMessage && (
+        <p id={`swap-step-${n}-message`} className="px-2 text-xs text-muted-foreground">
+          {disabledMessage}
+        </p>
+      )}
+    </div>
   );
 }
 

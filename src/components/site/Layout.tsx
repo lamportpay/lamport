@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { WalletButtonIsland } from "@/components/site/wallet/WalletIsland";
@@ -14,6 +14,8 @@ const nav = [
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const showHeaderWallet = pathname !== "/swap";
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="sticky top-0 z-40 backdrop-blur-lg bg-background/75 border-b border-border/60">
@@ -37,7 +39,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="hidden lg:flex items-center gap-2">
-            <WalletButtonIsland />
+            {showHeaderWallet && <WalletButtonIsland />}
             <Link
               to="/send"
               className="px-4 py-2 text-sm font-medium rounded-full bg-foreground text-background hover:opacity-90 transition"
@@ -56,9 +58,11 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         {open && (
           <div className="lg:hidden border-t border-border bg-background">
             <div className="max-w-7xl mx-auto px-5 py-3 flex flex-col gap-1">
-              <div className="px-1 py-2">
-                <WalletButtonIsland />
-              </div>
+              {showHeaderWallet && (
+                <div className="px-1 py-2">
+                  <WalletButtonIsland />
+                </div>
+              )}
               {nav.map((n) => (
                 <Link
                   key={n.to}
