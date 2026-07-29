@@ -20,6 +20,11 @@ const TILT = 18; // deg, gives the globe a natural axial tilt
 const RAD = Math.PI / 180;
 
 /** Returns [x, y, visible] — visible=false when the point is on the far side. */
+function round2(n: number) {
+  // Round so SSR and browser Math implementations serialize identically.
+  return Math.round(n * 100) / 100;
+}
+
 function globe(lon: number, lat: number, rot: number): [number, number, boolean] {
   const la = lat * RAD;
   const lo = (lon + rot) * RAD;
@@ -30,14 +35,14 @@ function globe(lon: number, lat: number, rot: number): [number, number, boolean]
   // tilt around the x-axis
   const y = y0 * Math.cos(t) - z0 * Math.sin(t);
   const z = y0 * Math.sin(t) + z0 * Math.cos(t);
-  return [CX + R * x0, CY - R * y, z > 0.02];
+  return [round2(CX + R * x0), round2(CY - R * y), z > 0.02];
 }
 
 function arcPath(a: [number, number], b: [number, number]) {
   const [x1, y1] = a;
   const [x2, y2] = b;
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * 0.35;
+  const mx = round2((x1 + x2) / 2);
+  const my = round2((y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * 0.35);
   return `M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`;
 }
 
