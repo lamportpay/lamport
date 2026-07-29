@@ -88,15 +88,21 @@ function Hero() {
           LamportPay helps users pay with supported crypto assets, settle through USDC, and route local-currency payout requests through licensed settlement partners.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link to="/send" className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-hero)] text-white px-6 py-3 font-semibold shadow-[var(--shadow-elegant)] hover:opacity-95 transition">
-            Start Demo Transfer <ArrowRight className="w-4 h-4" />
+          <Link to="/swap" className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-hero)] text-white px-6 py-3 font-semibold shadow-[var(--shadow-elegant)] hover:opacity-95 transition">
+            Try SOL → USDC Swap Demo <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link to="/send" className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-6 py-3 font-semibold hover:bg-secondary transition">
+            View Mock Fiat Payout Demo
           </Link>
           <Link to="/whitepaper" className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-6 py-3 font-semibold hover:bg-secondary transition">
             Read White Paper
           </Link>
-          <Link to="/contact" className="inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-primary hover:bg-primary/5 transition">
-            Join Waitlist
-          </Link>
+        </div>
+        <div className="mt-8 max-w-3xl mx-auto rounded-2xl border border-[color:var(--warning)]/30 bg-card/70 backdrop-blur px-5 py-4 text-sm text-muted-foreground flex items-start gap-2.5 text-left">
+          <AlertTriangle className="w-4 h-4 text-[color:var(--warning)] shrink-0 mt-0.5" />
+          <span>
+            Current demo: small real Jupiter SOL-to-USDC swap only. USDC returns to the connected wallet. LamportPay does not custody funds. Fiat payout remains disabled.
+          </span>
         </div>
       </div>
     </section>
@@ -105,11 +111,9 @@ function Hero() {
 
 function TrustStrip() {
   const items = [
-    "Demo only",
-    "No real crypto processed",
-    "Partner-led KYC",
-    "USDC settlement",
-    "Bridge-first flow",
+    "Jupiter-powered SOL → USDC swap demo",
+    "Output returns to your wallet",
+    "Fiat payout disabled",
   ];
   return (
     <div className="max-w-7xl mx-auto px-5">
