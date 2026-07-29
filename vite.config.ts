@@ -26,6 +26,7 @@ export default defineConfig({
       alias: [
         { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
         { find: /^rpc-websockets\/dist\/lib\/client$/, replacement: rpcWebsocketsBrowser },
+        { find: /^node:buffer$/, replacement: browserBufferShim },
         { find: /^buffer$/, replacement: browserBufferShim },
         { find: /^buffer\/$/, replacement: browserBufferShim },
       ],
