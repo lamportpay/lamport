@@ -243,8 +243,12 @@ export function WorldPulse() {
                   return (
                     <g key={c.currency}>
                       <circle cx={x} cy={y} r="10" fill="oklch(0.7 0.28 330 / 0.25)">
-                        <animate attributeName="r" values="8;16;8" dur="2.4s" repeatCount="indefinite" />
-                        <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
+                        {hydrated && (
+                          <>
+                            <animate attributeName="r" values="8;16;8" dur="2.4s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
+                          </>
+                        )}
                       </circle>
                       <circle cx={x} cy={y} r="3.5" fill="oklch(0.78 0.24 340)" />
                       <text x={x + 7} y={y + 12} fill="oklch(0.9 0.05 320)" fontSize="10" fontFamily="ui-monospace, monospace">
@@ -270,10 +274,12 @@ export function WorldPulse() {
                         strokeDasharray="6 6"
                         opacity="0.8"
                       >
-                        <animate attributeName="stroke-dashoffset" from="120" to="0" dur="2.2s" repeatCount="indefinite" />
+                        {hydrated && (
+                          <animate attributeName="stroke-dashoffset" from="120" to="0" dur="2.2s" repeatCount="indefinite" />
+                        )}
                       </path>
                       <circle r="3" fill="oklch(0.92 0.2 200)">
-                        <animateMotion dur="2.2s" repeatCount="indefinite" path={d} />
+                        {hydrated && <animateMotion dur="2.2s" repeatCount="indefinite" path={d} />}
                       </circle>
                     </g>
                   );
