@@ -6,7 +6,6 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { fileURLToPath } from "node:url";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // rpc-websockets (pulled in by @solana/web3.js) only declares "browser"/"node"
 // export conditions, neither of which the workerd SSR build matches. Resolve it
@@ -22,15 +21,6 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
-    plugins: [
-      nodePolyfills({
-        include: ["buffer"],
-        globals: {
-          Buffer: true,
-          global: true,
-        },
-      }),
-    ],
     resolve: {
       alias: [
         { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
