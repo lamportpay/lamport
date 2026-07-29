@@ -1,3 +1,4 @@
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useEffect, useState } from "react";
 import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
 
