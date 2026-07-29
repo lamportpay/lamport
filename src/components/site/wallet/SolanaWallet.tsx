@@ -1,3 +1,4 @@
+import "@/lib/buffer-polyfill";
 import { useMemo, useCallback, useState, type ReactNode } from "react";
 import { ConnectionProvider, WalletProvider, useWallet } from "@solana/wallet-adapter-react";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
