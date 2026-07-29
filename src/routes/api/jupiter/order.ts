@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { USDC_MINT, isSupportedInputMint } from "@/lib/tokens";
+import { SOL_MINT, USDC_MINT, isSupportedInputMint } from "@/lib/tokens";
 
 const BASE58_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
@@ -9,7 +9,23 @@ const BASE58_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const MIN_LAMPORTS = 1_000_000; // 0.001 SOL
 const MAX_LAMPORTS = 10_000_000; // 0.01 SOL
 
-const OrderInput = z.object({
+// Destination Verification Guard: any field that could redirect swap output
+// away from the connected wallet is rejected outright.
+const FORBIDDEN_FIELDS = [
+  "receiver",
+  "destinationTokenAccount",
+  "payer",
+  "referralAccount",
+  "referralTokenAccount",
+  "feeAccount",
+  "platformFeeBps",
+  "recipient",
+  "merchantWallet",
+  "payoutWallet",
+] as const;
+
+const OrderInput = z
+  .object({
   inputMint: z.string().min(1, "inputMint is required."),
   outputMint: z.string().min(1, "outputMint is required."),
   amount: z
@@ -20,7 +36,8 @@ const OrderInput = z.object({
     .string()
     .min(1, "taker is required.")
     .regex(BASE58_RE, "taker must be a valid Solana wallet address."),
-});
+  })
+  .strict();
 
 function errorResponse(message: string, status: number) {
   return Response.json({ error: message }, { status });
@@ -40,9 +57,27 @@ export const Route = createFileRoute("/api/jupiter/order")({
           return errorResponse("Invalid JSON body.", 400);
         }
 
+        if (body && typeof body === "object" && !Array.isArray(body)) {
+          const keys = Object.keys(body as Record<string, unknown>);
+          const blocked = keys.filter((k) =>
+            (FORBIDDEN_FIELDS as readonly string[]).includes(k),
+          );
+          if (blocked.length > 0) {
+            return errorResponse(
+              `Destination override is not allowed. Remove: ${blocked.join(", ")}.`,
+              400,
+            );
+          }
+        }
+
         const parsed = OrderInput.safeParse(body);
         if (!parsed.success) {
-          return errorResponse(parsed.error.issues[0]?.message ?? "Invalid request.", 400);
+          const issue = parsed.error.issues[0];
+          const msg =
+            issue?.code === "unrecognized_keys"
+              ? "Unexpected fields in request. Only inputMint, outputMint, amount and taker are allowed."
+              : (issue?.message ?? "Invalid request.");
+          return errorResponse(msg, 400);
         }
 
         const { inputMint, outputMint, amount, taker } = parsed.data;
@@ -63,8 +98,9 @@ export const Route = createFileRoute("/api/jupiter/order")({
         }
 
         const url = new URL("https://api.jup.ag/swap/v2/order");
-        url.searchParams.set("inputMint", inputMint);
-        url.searchParams.set("outputMint", outputMint);
+        // Always forced: SOL in, USDC out, output owner = the connected wallet (taker).
+        url.searchParams.set("inputMint", SOL_MINT);
+        url.searchParams.set("outputMint", USDC_MINT);
         url.searchParams.set("amount", amount);
         url.searchParams.set("taker", taker);
 

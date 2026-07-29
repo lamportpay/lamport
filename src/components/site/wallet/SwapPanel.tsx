@@ -1,8 +1,8 @@
 import "@/lib/buffer-polyfill";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { VersionedTransaction } from "@solana/web3.js";
-import { ArrowDown, ExternalLink, Loader2, ShieldAlert, TriangleAlert } from "lucide-react";
+import { PublicKey, VersionedTransaction } from "@solana/web3.js";
+import { ArrowDown, ExternalLink, Loader2, ShieldAlert, TriangleAlert, Wallet } from "lucide-react";
 
 import { SOL_MINT, USDC_MINT } from "@/lib/tokens";
 import { WalletStatusCard } from "./SolanaWallet";
@@ -10,6 +10,26 @@ import { WalletStatusCard } from "./SolanaWallet";
 const LAMPORTS_PER_SOL = 1_000_000_000;
 const MIN_SOL = 0.001;
 const MAX_SOL = 0.01;
+
+const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
+
+/** Derive the wallet's USDC associated token account (output receiving account). */
+function deriveUsdcAta(owner: PublicKey): string | null {
+  try {
+    const [ata] = PublicKey.findProgramAddressSync(
+      [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), new PublicKey(USDC_MINT).toBuffer()],
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+    );
+    return ata.toBase58();
+  } catch {
+    return null;
+  }
+}
+
+function shorten(addr: string): string {
+  return addr.length > 12 ? `${addr.slice(0, 6)}…${addr.slice(-6)}` : addr;
+}
 
 type OrderResult = {
   transaction: string | null;
@@ -68,6 +88,7 @@ export function SwapPanel() {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const amountError = validateAmount(amount);
+  const usdcAta = useMemo(() => (publicKey ? deriveUsdcAta(publicKey) : null), [publicKey]);
 
   const reset = () => {
     setOrder(null);
@@ -208,6 +229,25 @@ export function SwapPanel() {
         </div>
 
         <div className="grid gap-2">
+          <div className="rounded-xl border border-border/60 bg-secondary/40 px-4 py-3 space-y-1.5">
+            <div className="flex items-center gap-2 text-sm font-semibold">
+              <Wallet className="w-4 h-4 text-primary" />
+              Output destination: your connected wallet.
+            </div>
+            <div className="text-xs font-mono break-all text-muted-foreground">
+              {address ? shorten(address) : "Not connected"}
+            </div>
+            {usdcAta && (
+              <div className="text-[11px] text-muted-foreground">
+                USDC receiving account:{" "}
+                <span className="font-mono break-all">{shorten(usdcAta)}</span>
+              </div>
+            )}
+            <p className="text-[11px] leading-relaxed text-muted-foreground">
+              This test swaps SOL to USDC inside your own wallet. LamportPay does not receive
+              your funds. Bridge payout is disabled.
+            </p>
+          </div>
           <Step
             n={1}
             label={busy === "order" ? "Creating order…" : "Create Jupiter order"}
@@ -311,8 +351,21 @@ export function SwapPanel() {
               This is a real Jupiter swap using real wallet funds. Continue only with a small
               test amount.
             </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              You are about to swap SOL to USDC. The USDC output will return to your connected
+              wallet. No fiat payout or third-party transfer will happen.
+            </p>
             <div className="rounded-xl bg-secondary/60 px-4 py-3 text-sm font-medium">
               {amount} SOL → USDC
+            </div>
+            <div className="rounded-xl border border-border/60 px-4 py-3 text-xs space-y-1">
+              <div className="font-semibold">Output destination</div>
+              <div className="font-mono break-all text-muted-foreground">{address || "—"}</div>
+              {usdcAta && (
+                <div className="text-muted-foreground">
+                  USDC account: <span className="font-mono break-all">{shorten(usdcAta)}</span>
+                </div>
+              )}
             </div>
             <p className="text-xs text-muted-foreground">
               LamportPay will never ask for your seed phrase or private key. Bridge payout, fiat
@@ -332,9 +385,9 @@ export function SwapPanel() {
                   setConfirmOpen(false);
                   void signOrder();
                 }}
-                className="rounded-xl px-4 py-2 text-sm font-semibold text-primary-foreground bg-primary hover:opacity-90"
+                className="rounded-xl px-4 py-2 text-sm font-semibold text-primary-foreground bg-primary hover:opacity-90 text-left"
               >
-                I understand
+                I understand — send USDC back to my wallet
               </button>
             </div>
           </div>
