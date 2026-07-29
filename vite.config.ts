@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 const rpcWebsocketsBrowser = fileURLToPath(
   new URL("./node_modules/rpc-websockets/dist/index.browser.mjs", import.meta.url),
 );
+const browserBufferShim = fileURLToPath(new URL("./src/lib/buffer-polyfill.ts", import.meta.url));
 
 export default defineConfig({
   tanstackStart: {
@@ -21,10 +22,23 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    plugins: [
+      {
+        name: "lamportpay-node-buffer-browser-shim",
+        enforce: "pre",
+        resolveId(id) {
+          if (id === "node:buffer" || id === "buffer" || id === "buffer/") return browserBufferShim;
+          return null;
+        },
+      },
+    ],
     resolve: {
       alias: [
         { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
         { find: /^rpc-websockets\/dist\/lib\/client$/, replacement: rpcWebsocketsBrowser },
+        { find: /^node:buffer$/, replacement: browserBufferShim },
+        { find: /^buffer$/, replacement: browserBufferShim },
+        { find: /^buffer\/$/, replacement: browserBufferShim },
       ],
     },
   },

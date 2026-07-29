@@ -101,12 +101,14 @@ BrowserBuffer.concat = function concat(
   };
 (BrowserBuffer as unknown as { prototype: Uint8Array }).prototype = Uint8Array.prototype;
 
+export const Buffer = BrowserBuffer as unknown as BufferStatic;
+
 export function installBufferPolyfill() {
   const g = globalThis as unknown as { Buffer?: BufferStatic; global?: unknown };
-  if (typeof g.Buffer === "undefined") g.Buffer = BrowserBuffer;
+  if (typeof g.Buffer === "undefined") g.Buffer = Buffer;
   if (typeof g.global === "undefined") g.global = globalThis;
 }
 
 installBufferPolyfill();
 
-export {};
+export default { Buffer };
