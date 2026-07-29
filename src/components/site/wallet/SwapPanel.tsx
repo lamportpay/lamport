@@ -1,3 +1,4 @@
+import "@/lib/buffer-polyfill";
 import { useCallback, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { VersionedTransaction } from "@solana/web3.js";
