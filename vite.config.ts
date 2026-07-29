@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 const rpcWebsocketsBrowser = fileURLToPath(
   new URL("./node_modules/rpc-websockets/dist/index.browser.mjs", import.meta.url),
 );
+const bufferBrowser = fileURLToPath(new URL("./node_modules/buffer/index.js", import.meta.url));
 
 export default defineConfig({
   tanstackStart: {
@@ -23,6 +24,8 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: [
+        { find: /^buffer$/, replacement: bufferBrowser },
+        { find: /^buffer\/$/, replacement: bufferBrowser },
         { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
         { find: /^rpc-websockets\/dist\/lib\/client$/, replacement: rpcWebsocketsBrowser },
       ],
