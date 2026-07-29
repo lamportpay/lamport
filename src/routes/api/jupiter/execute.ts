@@ -17,6 +17,16 @@ const ExecuteInput = z
   // Never accept key material — reject any extra fields outright.
   .strict();
 
+const FORBIDDEN_KEY_FIELDS = [
+  "privateKey",
+  "private_key",
+  "secretKey",
+  "secret_key",
+  "seedPhrase",
+  "seed_phrase",
+  "mnemonic",
+] as const;
+
 function errorResponse(message: string, status: number) {
   return Response.json({ error: message }, { status });
 }
@@ -33,6 +43,19 @@ export const Route = createFileRoute("/api/jupiter/execute")({
           body = await request.json();
         } catch {
           return errorResponse("Invalid JSON body.", 400);
+        }
+
+        if (body && typeof body === "object" && !Array.isArray(body)) {
+          const keys = Object.keys(body as Record<string, unknown>);
+          const blocked = keys.filter((key) =>
+            (FORBIDDEN_KEY_FIELDS as readonly string[]).includes(key),
+          );
+          if (blocked.length > 0) {
+            return errorResponse(
+              `Private key or seed phrase fields are not allowed. Remove: ${blocked.join(", ")}.`,
+              400,
+            );
+          }
         }
 
         const parsed = ExecuteInput.safeParse(body);
