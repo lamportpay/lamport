@@ -1,3 +1,4 @@
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useEffect, useState } from "react";
 import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
 
@@ -19,6 +20,11 @@ const TILT = 18; // deg, gives the globe a natural axial tilt
 const RAD = Math.PI / 180;
 
 /** Returns [x, y, visible] — visible=false when the point is on the far side. */
+function round2(n: number) {
+  // Round so SSR and browser Math implementations serialize identically.
+  return Math.round(n * 100) / 100;
+}
+
 function globe(lon: number, lat: number, rot: number): [number, number, boolean] {
   const la = lat * RAD;
   const lo = (lon + rot) * RAD;
@@ -29,14 +35,14 @@ function globe(lon: number, lat: number, rot: number): [number, number, boolean]
   // tilt around the x-axis
   const y = y0 * Math.cos(t) - z0 * Math.sin(t);
   const z = y0 * Math.sin(t) + z0 * Math.cos(t);
-  return [CX + R * x0, CY - R * y, z > 0.02];
+  return [round2(CX + R * x0), round2(CY - R * y), z > 0.02];
 }
 
 function arcPath(a: [number, number], b: [number, number]) {
   const [x1, y1] = a;
   const [x2, y2] = b;
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * 0.35;
+  const mx = round2((x1 + x2) / 2);
+  const my = round2((y1 + y2) / 2 - Math.hypot(x2 - x1, y2 - y1) * 0.35);
   return `M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`;
 }
 
@@ -73,13 +79,23 @@ type Flight = {
 };
 
 let flightSeq = 0;
-function makeFlight(): Flight {
-  const hub = HUBS[Math.floor(Math.random() * HUBS.length)];
-  const corr = CORRIDORS[Math.floor(Math.random() * CORRIDORS.length)];
-  const token = TOKENS[Math.floor(Math.random() * TOKENS.length)];
-  const amount = Math.round(50 + Math.random() * 4950);
+// Deterministic PRNG for the initial render so SSR markup matches the client.
+function seeded(i: number) {
+  let s = (i * 1664525 + 1013904223) >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+function makeFlight(seed?: number): Flight {
+  const r = seed === undefined ? Math.random : seeded(seed + 1);
+  const hub = HUBS[Math.floor(r() * HUBS.length)];
+  const corr = CORRIDORS[Math.floor(r() * CORRIDORS.length)];
+  const token = TOKENS[Math.floor(r() * TOKENS.length)];
+  const amount = Math.round(50 + r() * 4950);
   return {
-    id: ++flightSeq,
+    id: seed === undefined ? ++flightSeq : -(seed + 1),
     from: [hub[0], hub[1]],
     to: [COORDS[corr.currency][0], COORDS[corr.currency][1]],
     token,
@@ -91,27 +107,30 @@ function makeFlight(): Flight {
 
 export function WorldPulse() {
   const [flights, setFlights] = useState<Flight[]>(() =>
-    Array.from({ length: 5 }, makeFlight),
+    Array.from({ length: 5 }, (_, i) => makeFlight(i)),
   );
   const [feed, setFeed] = useState<Flight[]>(() =>
-    Array.from({ length: 4 }, makeFlight),
+    Array.from({ length: 4 }, (_, i) => makeFlight(i + 10)),
   );
   const [rot, setRot] = useState(0);
+  const hydrated = useHydrated();
 
   useEffect(() => {
+    if (!hydrated) return;
     // ~20fps spin, one full rotation every ~55s
     const id = setInterval(() => setRot((r) => (r + 0.32) % 360), 50);
     return () => clearInterval(id);
-  }, []);
+  }, [hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     const id = setInterval(() => {
       const f = makeFlight();
       setFlights((prev) => [...prev.slice(-6), f]);
       setFeed((prev) => [f, ...prev].slice(0, 5));
     }, 1400);
     return () => clearInterval(id);
-  }, []);
+  }, [hydrated]);
 
   return (
     <section className="mt-32">
@@ -229,8 +248,12 @@ export function WorldPulse() {
                   return (
                     <g key={c.currency}>
                       <circle cx={x} cy={y} r="10" fill="oklch(0.7 0.28 330 / 0.25)">
-                        <animate attributeName="r" values="8;16;8" dur="2.4s" repeatCount="indefinite" />
-                        <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
+                        {hydrated && (
+                          <>
+                            <animate attributeName="r" values="8;16;8" dur="2.4s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
+                          </>
+                        )}
                       </circle>
                       <circle cx={x} cy={y} r="3.5" fill="oklch(0.78 0.24 340)" />
                       <text x={x + 7} y={y + 12} fill="oklch(0.9 0.05 320)" fontSize="10" fontFamily="ui-monospace, monospace">
@@ -256,10 +279,12 @@ export function WorldPulse() {
                         strokeDasharray="6 6"
                         opacity="0.8"
                       >
-                        <animate attributeName="stroke-dashoffset" from="120" to="0" dur="2.2s" repeatCount="indefinite" />
+                        {hydrated && (
+                          <animate attributeName="stroke-dashoffset" from="120" to="0" dur="2.2s" repeatCount="indefinite" />
+                        )}
                       </path>
                       <circle r="3" fill="oklch(0.92 0.2 200)">
-                        <animateMotion dur="2.2s" repeatCount="indefinite" path={d} />
+                        {hydrated && <animateMotion dur="2.2s" repeatCount="indefinite" path={d} />}
                       </circle>
                     </g>
                   );

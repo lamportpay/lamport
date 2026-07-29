@@ -1,3 +1,4 @@
+import { useHydrated } from "@/hooks/use-hydrated";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
 import { ArrowRight, Zap, Route as RouteIcon, Wallet, Building2, CheckCircle2, Sparkles, Flame, Activity } from "lucide-react";
@@ -41,34 +42,49 @@ type Swap = {
 };
 
 let seq = 0;
-function mkSwap(): Swap {
-  const tok = TOKENS[Math.floor(Math.random() * TOKENS.length)];
-  const c = CORRIDORS[Math.floor(Math.random() * CORRIDORS.length)];
-  const usd = Math.round(50 + Math.random() * 4950);
+// Deterministic PRNG so SSR and the first client render produce identical
+// markup (avoids React hydration mismatch crashes).
+function seeded(i: number) {
+  let s = (i * 1664525 + 1013904223) >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+function mkSwap(seed?: number): Swap {
+  const r = seed === undefined ? Math.random : seeded(seed + 1);
+  const tok = TOKENS[Math.floor(r() * TOKENS.length)];
+  const c = CORRIDORS[Math.floor(r() * CORRIDORS.length)];
+  const usd = Math.round(50 + r() * 4950);
   const amount = usd / (TOKEN_USD[tok] || 1);
   return {
-    id: ++seq,
+    id: seed === undefined ? ++seq : -(seed + 1),
     token: tok,
     amount,
     usd,
     corridor: c,
     local: usd * 0.985 * c.rate,
-    who: NAMES[Math.floor(Math.random() * NAMES.length)],
-    avatar: AVATARS[Math.floor(Math.random() * AVATARS.length)],
-    from: SENDER_CITIES[Math.floor(Math.random() * SENDER_CITIES.length)],
-    ms: 700 + Math.floor(Math.random() * 3200),
+    who: NAMES[Math.floor(r() * NAMES.length)],
+    avatar: AVATARS[Math.floor(r() * AVATARS.length)],
+    from: SENDER_CITIES[Math.floor(r() * SENDER_CITIES.length)],
+    ms: 700 + Math.floor(r() * 3200),
   };
 }
 
 export function LiveSwapTheater() {
-  const [current, setCurrent] = useState<Swap>(() => mkSwap());
-  const [stream, setStream] = useState<Swap[]>(() => Array.from({ length: 6 }, mkSwap));
+  const [current, setCurrent] = useState<Swap>(() => mkSwap(0));
+  const [stream, setStream] = useState<Swap[]>(() =>
+    Array.from({ length: 6 }, (_, i) => mkSwap(i + 1)),
+  );
   const [totalUsd, setTotalUsd] = useState(48_213_907);
   const [txCount, setTxCount] = useState(1_284_617);
   const [progress, setProgress] = useState(0); // 0..1 through the route
+  const hydrated = useHydrated();
 
   // Cycle the featured swap
   useEffect(() => {
+    if (!hydrated) return;
     const id = setInterval(() => {
       const s = mkSwap();
       setCurrent(s);
@@ -78,10 +94,11 @@ export function LiveSwapTheater() {
       setProgress(0);
     }, 3600);
     return () => clearInterval(id);
-  }, []);
+  }, [hydrated]);
 
   // Route progress animation
   useEffect(() => {
+    if (!hydrated) return;
     const t0 = performance.now();
     let raf = 0;
     const tick = (now: number) => {
@@ -91,7 +108,7 @@ export function LiveSwapTheater() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [current.id]);
+  }, [current.id, hydrated]);
 
   const nodes = ["Wallet", "Jupiter", "USDC", "Bridge", `${current.corridor.flag} ${current.corridor.currency}`];
   const activeIdx = Math.min(nodes.length - 1, Math.floor(progress * nodes.length));
@@ -357,7 +374,10 @@ function MiniStat({ label, value }: { label: string; value: string }) {
 }
 
 function JustSentMarquee() {
-  const items = useMemo(() => Array.from({ length: 14 }, mkSwap), []);
+  const items = useMemo(
+    () => Array.from({ length: 14 }, (_, i) => mkSwap(i + 40)),
+    [],
+  );
   const loop = [...items, ...items];
   return (
     <div className="relative border-t border-white/10 bg-black/30 overflow-hidden">
@@ -388,11 +408,15 @@ function JustSentMarquee() {
 
 // ------- Compact floating cards for hero -------
 export function HeroFloatingCards() {
-  const [items, setItems] = useState<Swap[]>(() => Array.from({ length: 3 }, mkSwap));
+  const [items, setItems] = useState<Swap[]>(() =>
+    Array.from({ length: 3 }, (_, i) => mkSwap(i + 20)),
+  );
+  const hydrated = useHydrated();
   useEffect(() => {
+    if (!hydrated) return;
     const id = setInterval(() => setItems((p) => [mkSwap(), ...p].slice(0, 3)), 2600);
     return () => clearInterval(id);
-  }, []);
+  }, [hydrated]);
   const positions = [
     "top-8 -left-2 md:left-4 rotate-[-4deg]",
     "top-1/2 -right-2 md:right-6 rotate-[3deg]",
