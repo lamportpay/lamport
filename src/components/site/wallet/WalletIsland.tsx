@@ -1,19 +1,28 @@
 import { lazy, Suspense, type ReactNode } from "react";
 import { ClientOnly } from "@tanstack/react-router";
+import { installBufferPolyfill } from "@/lib/buffer-polyfill";
+
+installBufferPolyfill();
+
+async function loadWalletModule() {
+  installBufferPolyfill();
+  return import("./SolanaWallet");
+}
 
 const Providers = lazy(async () => {
-  const m = await import("./SolanaWallet");
+  const m = await loadWalletModule();
   return { default: m.SolanaWalletProvider };
 });
 const ConnectButton = lazy(async () => {
-  const m = await import("./SolanaWallet");
+  const m = await loadWalletModule();
   return { default: m.WalletConnectButton };
 });
 const StatusCard = lazy(async () => {
-  const m = await import("./SolanaWallet");
+  const m = await loadWalletModule();
   return { default: m.WalletStatusCard };
 });
 const Swap = lazy(async () => {
+  installBufferPolyfill();
   const m = await import("./SwapPanel");
   return { default: m.SwapPanel };
 });
