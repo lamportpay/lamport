@@ -77,8 +77,6 @@ export function LiveSwapTheater() {
   const [stream, setStream] = useState<Swap[]>(() =>
     Array.from({ length: 6 }, (_, i) => mkSwap(i + 1)),
   );
-  const [totalUsd, setTotalUsd] = useState(48_213_907);
-  const [txCount, setTxCount] = useState(1_284_617);
   const [progress, setProgress] = useState(0); // 0..1 through the route
   const hydrated = useHydrated();
 
@@ -89,8 +87,6 @@ export function LiveSwapTheater() {
       const s = mkSwap();
       setCurrent(s);
       setStream((p) => [s, ...p].slice(0, 6));
-      setTotalUsd((v) => v + s.usd);
-      setTxCount((v) => v + 1);
       setProgress(0);
     }, 3600);
     return () => clearInterval(id);
@@ -238,7 +234,7 @@ export function LiveSwapTheater() {
                   <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
                 </span>
                 <div className="text-[11px] font-semibold uppercase tracking-widest text-white/80">
-                  People sending money right now
+                  Jupiter route preview
                 </div>
               </div>
 
@@ -250,13 +246,8 @@ export function LiveSwapTheater() {
                     style={{ opacity: 1 - i * 0.11, transform: `translateX(${i * 2}px)` }}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="relative w-10 h-10 rounded-full shrink-0 p-[2px] bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_16px_oklch(0.7_0.28_330_/_0.45)]">
-                        <img
-                          src={s.avatar}
-                          alt={s.who}
-                          loading="lazy"
-                          className="w-full h-full rounded-full object-cover bg-[oklch(0.14_0.05_275)]"
-                        />
+                      <div className="relative w-10 h-10 rounded-full shrink-0 bg-gradient-to-br from-[oklch(0.62_0.28_295)] to-[oklch(0.7_0.28_330)] shadow-[0_0_16px_oklch(0.7_0.28_330_/_0.45)] flex items-center justify-center text-white font-bold text-sm">
+                        J
                         {i === 0 && (
                           <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[color:var(--success)] border-2 border-[oklch(0.11_0.05_275)]" />
                         )}
@@ -264,21 +255,19 @@ export function LiveSwapTheater() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-sm font-medium text-white truncate">
-                            {s.who} · <span className="text-white/50">{s.from}</span>
+                            Jupiter route preview · <span className="text-white/50">Demo mode</span>
                           </span>
-                          <span className="text-[10px] text-white/40 font-mono shrink-0">{i === 0 ? "now" : `${i * 7}s`}</span>
+                          <span className="text-[10px] text-white/40 font-mono shrink-0">demo</span>
                         </div>
                         <div className="flex items-center gap-1.5 mt-0.5 text-[12px] font-mono">
                           <span
                             className="px-1.5 py-0.5 rounded font-semibold"
-                            style={{ background: `${TOKEN_COLOR[s.token]}22`, color: TOKEN_COLOR[s.token] }}
+                            style={{ background: `${TOKEN_COLOR["SOL"]}22`, color: TOKEN_COLOR["SOL"] }}
                           >
-                            {s.token}
+                            SOL
                           </span>
                           <span className="text-white/50">→</span>
-                          <span className="text-white/90">
-                            {fmt(s.local, 0)} {s.corridor.currency} {s.corridor.flag}
-                          </span>
+                          <span className="text-white/90">USDC · Output: connected wallet</span>
                         </div>
                       </div>
                     </div>
