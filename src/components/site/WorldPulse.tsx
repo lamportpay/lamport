@@ -107,21 +107,24 @@ export function WorldPulse() {
     Array.from({ length: 4 }, (_, i) => makeFlight(i + 10)),
   );
   const [rot, setRot] = useState(0);
+  const hydrated = useHydrated();
 
   useEffect(() => {
+    if (!hydrated) return;
     // ~20fps spin, one full rotation every ~55s
     const id = setInterval(() => setRot((r) => (r + 0.32) % 360), 50);
     return () => clearInterval(id);
-  }, []);
+  }, [hydrated]);
 
   useEffect(() => {
+    if (!hydrated) return;
     const id = setInterval(() => {
       const f = makeFlight();
       setFlights((prev) => [...prev.slice(-6), f]);
       setFeed((prev) => [f, ...prev].slice(0, 5));
     }, 1400);
     return () => clearInterval(id);
-  }, []);
+  }, [hydrated]);
 
   return (
     <section className="mt-32">
