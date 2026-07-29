@@ -1,8 +1,8 @@
 import "@/lib/buffer-polyfill";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { VersionedTransaction } from "@solana/web3.js";
-import { ArrowDown, ExternalLink, Loader2, ShieldAlert, TriangleAlert } from "lucide-react";
+import { PublicKey, VersionedTransaction } from "@solana/web3.js";
+import { ArrowDown, ExternalLink, Loader2, ShieldAlert, TriangleAlert, Wallet } from "lucide-react";
 
 import { SOL_MINT, USDC_MINT } from "@/lib/tokens";
 import { WalletStatusCard } from "./SolanaWallet";
@@ -10,6 +10,26 @@ import { WalletStatusCard } from "./SolanaWallet";
 const LAMPORTS_PER_SOL = 1_000_000_000;
 const MIN_SOL = 0.001;
 const MAX_SOL = 0.01;
+
+const TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
+
+/** Derive the wallet's USDC associated token account (output receiving account). */
+function deriveUsdcAta(owner: PublicKey): string | null {
+  try {
+    const [ata] = PublicKey.findProgramAddressSync(
+      [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), new PublicKey(USDC_MINT).toBuffer()],
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+    );
+    return ata.toBase58();
+  } catch {
+    return null;
+  }
+}
+
+function shorten(addr: string): string {
+  return addr.length > 12 ? `${addr.slice(0, 6)}…${addr.slice(-6)}` : addr;
+}
 
 type OrderResult = {
   transaction: string | null;
