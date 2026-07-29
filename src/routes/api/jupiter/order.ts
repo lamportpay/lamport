@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { USDC_MINT, isSupportedInputMint } from "@/lib/tokens";
+import { SOL_MINT, USDC_MINT, isSupportedInputMint } from "@/lib/tokens";
 
 const BASE58_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 
@@ -9,7 +9,23 @@ const BASE58_RE = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const MIN_LAMPORTS = 1_000_000; // 0.001 SOL
 const MAX_LAMPORTS = 10_000_000; // 0.01 SOL
 
-const OrderInput = z.object({
+// Destination Verification Guard: any field that could redirect swap output
+// away from the connected wallet is rejected outright.
+const FORBIDDEN_FIELDS = [
+  "receiver",
+  "destinationTokenAccount",
+  "payer",
+  "referralAccount",
+  "referralTokenAccount",
+  "feeAccount",
+  "platformFeeBps",
+  "recipient",
+  "merchantWallet",
+  "payoutWallet",
+] as const;
+
+const OrderInput = z
+  .object({
   inputMint: z.string().min(1, "inputMint is required."),
   outputMint: z.string().min(1, "outputMint is required."),
   amount: z
@@ -20,7 +36,8 @@ const OrderInput = z.object({
     .string()
     .min(1, "taker is required.")
     .regex(BASE58_RE, "taker must be a valid Solana wallet address."),
-});
+  })
+  .strict();
 
 function errorResponse(message: string, status: number) {
   return Response.json({ error: message }, { status });
