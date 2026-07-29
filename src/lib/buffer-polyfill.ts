@@ -1,6 +1,6 @@
 // Solana web3.js / wallet adapters expect Node's Buffer + `global` in the browser.
 // Import this module BEFORE any @solana/* import.
-import { Buffer } from "buffer";
+import { Buffer } from "buffer/";
 
 export function installBufferPolyfill() {
   const g = globalThis as unknown as { Buffer?: typeof Buffer; global?: unknown };
