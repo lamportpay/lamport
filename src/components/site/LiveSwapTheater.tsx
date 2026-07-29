@@ -411,10 +411,12 @@ export function HeroFloatingCards() {
   const [items, setItems] = useState<Swap[]>(() =>
     Array.from({ length: 3 }, (_, i) => mkSwap(i + 20)),
   );
+  const hydrated = useHydrated();
   useEffect(() => {
+    if (!hydrated) return;
     const id = setInterval(() => setItems((p) => [mkSwap(), ...p].slice(0, 3)), 2600);
     return () => clearInterval(id);
-  }, []);
+  }, [hydrated]);
   const positions = [
     "top-8 -left-2 md:left-4 rotate-[-4deg]",
     "top-1/2 -right-2 md:right-6 rotate-[3deg]",
