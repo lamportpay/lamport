@@ -73,13 +73,23 @@ type Flight = {
 };
 
 let flightSeq = 0;
-function makeFlight(): Flight {
-  const hub = HUBS[Math.floor(Math.random() * HUBS.length)];
-  const corr = CORRIDORS[Math.floor(Math.random() * CORRIDORS.length)];
-  const token = TOKENS[Math.floor(Math.random() * TOKENS.length)];
-  const amount = Math.round(50 + Math.random() * 4950);
+// Deterministic PRNG for the initial render so SSR markup matches the client.
+function seeded(i: number) {
+  let s = (i * 1664525 + 1013904223) >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+function makeFlight(seed?: number): Flight {
+  const r = seed === undefined ? Math.random : seeded(seed + 1);
+  const hub = HUBS[Math.floor(r() * HUBS.length)];
+  const corr = CORRIDORS[Math.floor(r() * CORRIDORS.length)];
+  const token = TOKENS[Math.floor(r() * TOKENS.length)];
+  const amount = Math.round(50 + r() * 4950);
   return {
-    id: ++flightSeq,
+    id: seed === undefined ? ++flightSeq : -(seed + 1),
     from: [hub[0], hub[1]],
     to: [COORDS[corr.currency][0], COORDS[corr.currency][1]],
     token,
@@ -91,10 +101,10 @@ function makeFlight(): Flight {
 
 export function WorldPulse() {
   const [flights, setFlights] = useState<Flight[]>(() =>
-    Array.from({ length: 5 }, makeFlight),
+    Array.from({ length: 5 }, (_, i) => makeFlight(i)),
   );
   const [feed, setFeed] = useState<Flight[]>(() =>
-    Array.from({ length: 4 }, makeFlight),
+    Array.from({ length: 4 }, (_, i) => makeFlight(i + 10)),
   );
   const [rot, setRot] = useState(0);
 
