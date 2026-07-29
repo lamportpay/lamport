@@ -57,9 +57,27 @@ export const Route = createFileRoute("/api/jupiter/order")({
           return errorResponse("Invalid JSON body.", 400);
         }
 
+        if (body && typeof body === "object" && !Array.isArray(body)) {
+          const keys = Object.keys(body as Record<string, unknown>);
+          const blocked = keys.filter((k) =>
+            (FORBIDDEN_FIELDS as readonly string[]).includes(k),
+          );
+          if (blocked.length > 0) {
+            return errorResponse(
+              `Destination override is not allowed. Remove: ${blocked.join(", ")}.`,
+              400,
+            );
+          }
+        }
+
         const parsed = OrderInput.safeParse(body);
         if (!parsed.success) {
-          return errorResponse(parsed.error.issues[0]?.message ?? "Invalid request.", 400);
+          const issue = parsed.error.issues[0];
+          const msg =
+            issue?.code === "unrecognized_keys"
+              ? "Unexpected fields in request. Only inputMint, outputMint, amount and taker are allowed."
+              : (issue?.message ?? "Invalid request.");
+          return errorResponse(msg, 400);
         }
 
         const { inputMint, outputMint, amount, taker } = parsed.data;
@@ -80,8 +98,9 @@ export const Route = createFileRoute("/api/jupiter/order")({
         }
 
         const url = new URL("https://api.jup.ag/swap/v2/order");
-        url.searchParams.set("inputMint", inputMint);
-        url.searchParams.set("outputMint", outputMint);
+        // Always forced: SOL in, USDC out, output owner = the connected wallet (taker).
+        url.searchParams.set("inputMint", SOL_MINT);
+        url.searchParams.set("outputMint", USDC_MINT);
         url.searchParams.set("amount", amount);
         url.searchParams.set("taker", taker);
 
