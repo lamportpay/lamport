@@ -106,13 +106,12 @@ export function CitiesNeverSleep() {
         <div className="mt-6 rounded-2xl border border-border/60 bg-card/60 backdrop-blur px-4 py-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-[11px] font-mono text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" />
-            GLOBAL MESH · ONLINE
+            DEMO MODE
           </span>
-          <span>UPTIME 99.98%</span>
-          <span>NODES 47</span>
-          <span>QUEUE 0</span>
-          <span>P95 LATENCY 214ms</span>
-          <span className="text-[color:var(--neon-cyan)]">AI ROUTER ACTIVE</span>
+          <span>JUPITER ROUTE PREVIEW</span>
+          <span>SOL → USDC</span>
+          <span>OUTPUT: CONNECTED WALLET</span>
+          <span className="text-[color:var(--neon-cyan)]">BRIDGE PAYOUT DISABLED</span>
         </div>
       </div>
     </section>
