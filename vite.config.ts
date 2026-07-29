@@ -24,7 +24,7 @@ export default defineConfig({
   vite: {
     plugins: [
       nodePolyfills({
-        include: ["buffer", "global"],
+        include: ["buffer"],
         globals: {
           Buffer: true,
           global: true,
