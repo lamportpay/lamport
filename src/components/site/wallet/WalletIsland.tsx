@@ -1,5 +1,11 @@
-import { Component, lazy, Suspense, type ReactNode } from "react";
+import { Component, lazy, Suspense, type ReactElement, type ReactNode } from "react";
 import { ClientOnly } from "@tanstack/react-router";
+
+type WalletModule = {
+  SolanaWalletProvider: ({ children }: { children: ReactNode }) => ReactElement;
+  WalletConnectButton: () => ReactElement;
+  WalletStatusCard: () => ReactElement;
+};
 
 function ProviderPassthrough({ children }: { children: ReactNode }) {
   return <>{children}</>;
@@ -49,8 +55,14 @@ class WalletErrorBoundary extends Component<
   }
 }
 
-async function loadWalletModule() {
-  if (typeof window === "undefined") return { SolanaWalletProvider: ProviderPassthrough };
+async function loadWalletModule(): Promise<WalletModule> {
+  if (typeof window === "undefined") {
+    return {
+      SolanaWalletProvider: ProviderPassthrough,
+      WalletConnectButton: WalletFallbackButton,
+      WalletStatusCard: WalletFallbackCard,
+    };
+  }
   const polyfill = await import("@/lib/buffer-polyfill");
   polyfill.installBufferPolyfill();
   return import("./SolanaWallet");
