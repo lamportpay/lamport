@@ -248,6 +248,36 @@ export function SwapPanel() {
               your funds. Bridge payout is disabled.
             </p>
           </div>
+
+          <div className="rounded-xl border border-[color:var(--primary)]/30 bg-[color:var(--primary)]/10 px-4 py-3 space-y-2">
+            <div className="flex items-center gap-2 text-sm font-semibold">
+              <ShieldAlert className="w-4 h-4 text-[color:var(--primary)]" />
+              Before signing, confirm:
+            </div>
+            <ul className="space-y-1.5 text-xs text-muted-foreground leading-relaxed">
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[color:var(--success)]" />
+                <span>Connected wallet is your test wallet.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[color:var(--success)]" />
+                <span>Amount is 0.001 SOL.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[color:var(--success)]" />
+                <span>Output destination is your connected wallet.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[color:var(--success)]" />
+                <span>Bridge payout is disabled.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[color:var(--success)]" />
+                <span>No fiat payout or third-party transfer will happen.</span>
+              </li>
+            </ul>
+          </div>
+
           <Step
             n={1}
             label={busy === "order" ? "Creating order…" : "Create Jupiter order"}
