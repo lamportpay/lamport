@@ -401,7 +401,9 @@ function JustSentMarquee() {
 
 // ------- Compact floating cards for hero -------
 export function HeroFloatingCards() {
-  const [items, setItems] = useState<Swap[]>(() => Array.from({ length: 3 }, mkSwap));
+  const [items, setItems] = useState<Swap[]>(() =>
+    Array.from({ length: 3 }, (_, i) => mkSwap(i + 20)),
+  );
   useEffect(() => {
     const id = setInterval(() => setItems((p) => [mkSwap(), ...p].slice(0, 3)), 2600);
     return () => clearInterval(id);
