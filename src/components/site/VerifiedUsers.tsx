@@ -1,38 +1,25 @@
 import { useMemo } from "react";
-import { CheckCircle2, Globe2, ShieldCheck } from "lucide-react";
-import face1 from "@/assets/face-1.jpg";
-import face2 from "@/assets/face-2.jpg";
-import face3 from "@/assets/face-3.jpg";
-import face4 from "@/assets/face-4.jpg";
-import face5 from "@/assets/face-5.jpg";
-import face6 from "@/assets/face-6.jpg";
-import face7 from "@/assets/face-7.jpg";
-import face8 from "@/assets/face-8.jpg";
-
-const FACES = [face1, face2, face3, face4, face5, face6, face7, face8];
+import { CheckCircle2, Globe2, ShieldCheck, Route } from "lucide-react";
 
 const PEOPLE = [
-  { name: "Ayesha K.", city: "Karachi", corridor: "USDC → PKR" },
-  { name: "Rahul M.", city: "Mumbai", corridor: "SOL → INR" },
-  { name: "Chidi O.", city: "Lagos", corridor: "USDC → NGN" },
-  { name: "Marco B.", city: "Manila", corridor: "JUP → PHP" },
-  { name: "Leila H.", city: "Casablanca", corridor: "USDC → MAD" },
-  { name: "Daniel S.", city: "Nairobi", corridor: "USDT → KES" },
-  { name: "Mei L.", city: "Jakarta", corridor: "SOL → IDR" },
-  { name: "Omar A.", city: "Dubai", corridor: "USDC → AED" },
-  { name: "Grace T.", city: "Accra", corridor: "USDC → GHS" },
-  { name: "Yusuf R.", city: "Istanbul", corridor: "USDT → TRY" },
-  { name: "Priya N.", city: "Chennai", corridor: "USDC → INR" },
-  { name: "Ines F.", city: "Lisbon", corridor: "SOL → EUR" },
+  { name: "Jupiter route preview", city: "Demo mode", corridor: "SOL → USDC" },
+  { name: "Output: connected wallet", city: "No custody", corridor: "SOL → USDC" },
+  { name: "Bridge payout disabled", city: "Fiat off", corridor: "SOL → USDC" },
+  { name: "Built using Jupiter Swap API", city: "Solana", corridor: "SOL → USDC" },
+  { name: "Best-route scan", city: "Liquidity sources", corridor: "SOL → USDC" },
+  { name: "Test amount 0.001 SOL", city: "Limit 0.01 SOL", corridor: "SOL → USDC" },
+  { name: "Slippage checked", city: "Pre-sign review", corridor: "SOL → USDC" },
+  { name: "Signed in your wallet", city: "You approve", corridor: "SOL → USDC" },
+  { name: "KYC disabled", city: "Demo only", corridor: "SOL → USDC" },
+  { name: "No user funds held", city: "Non-custodial", corridor: "SOL → USDC" },
+  { name: "On-chain receipt", city: "Solscan link", corridor: "SOL → USDC" },
+  { name: "Mock fiat payout demo", city: "/send", corridor: "SOL → USDC" },
 ];
 
-type Person = (typeof PEOPLE)[number] & { src: string };
+type Person = (typeof PEOPLE)[number];
 
 function row(offset: number): Person[] {
-  return PEOPLE.map((p, i) => ({
-    ...p,
-    src: FACES[(i + offset) % FACES.length],
-  }));
+  return PEOPLE.map((_, i) => PEOPLE[(i + offset) % PEOPLE.length]);
 }
 
 function AvatarCard({ p }: { p: Person }) {
@@ -40,12 +27,9 @@ function AvatarCard({ p }: { p: Person }) {
     <div className="group flex items-center gap-3 shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur px-3 py-2.5 pr-5 hover:border-[color:var(--neon-violet)]/50 hover:bg-white/[0.07] transition-colors">
       <div className="relative">
         <div className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-[color:var(--neon-violet)] to-[color:var(--neon-magenta)] opacity-60 blur-[3px] group-hover:opacity-100 transition-opacity" />
-        <img
-          src={p.src}
-          alt=""
-          loading="lazy"
-          className="relative w-11 h-11 rounded-full object-cover border border-white/20"
-        />
+        <div className="relative w-11 h-11 rounded-full border border-white/20 bg-[oklch(0.16_0.06_275)] flex items-center justify-center">
+          <Route className="w-5 h-5 text-white/80" />
+        </div>
         <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-[color:var(--success)] border-2 border-[oklch(0.09_0.04_275)] flex items-center justify-center">
           <CheckCircle2 className="w-2.5 h-2.5 text-black" strokeWidth={3.5} />
         </span>
