@@ -133,7 +133,7 @@ function WhySection() {
   const items = [
     { icon: Zap, title: "Fast crypto checkout", desc: "Pay in seconds using supported Solana assets or stablecoins.", stat: "~400ms", statLabel: "avg swap" },
     { icon: Coins, title: "USDC settlement", desc: "Every transfer routes through USDC for stable, predictable value.", stat: "1:1", statLabel: "peg" },
-    { icon: Globe2, title: "Bridge-first partner flow", desc: "Local-currency payout handled by Bridge as the first settlement partner.", stat: "10+", statLabel: "corridors" },
+    { icon: Globe2, title: "Bridge-first partner flow", desc: "Bridge-style payout flow is shown as a mock placeholder. Real Bridge payout is disabled until partner approval.", stat: "10+", statLabel: "corridors" },
     { icon: Bot, title: "AI transfer assistant", desc: "Type what you want to send — the assistant sets up the transfer.", stat: "24/7", statLabel: "online" },
     { icon: FileText, title: "Local-currency payouts", desc: "Support for bank, mobile wallet, card, and cash pickup corridors.", stat: "4", statLabel: "rails" },
     { icon: ShieldCheck, title: "Compliance-aware design", desc: "Partner-led KYC, no custody, no direct money transmission.", stat: "0", statLabel: "custody" },
@@ -142,7 +142,7 @@ function WhySection() {
     <section className="relative mt-32 overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-grid-uv opacity-30" />
       <div className="max-w-7xl mx-auto px-5">
-        <SectionHead eyebrow="Why LamportPay" title="Built for real-world payouts, not just crypto power users." />
+        <SectionHead eyebrow="Why LamportPay" title="Built for a future payout flow, starting with a Jupiter swap demo." />
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {items.map(({ icon: Icon, title, desc, stat, statLabel }) => (
             <div key={title} className="group relative rounded-2xl p-6 bg-card/80 backdrop-blur border border-border/60 hover:border-primary/40 hover:shadow-[var(--shadow-neon)] transition overflow-hidden">
@@ -170,10 +170,10 @@ function WhySection() {
 function HowItWorksSection() {
   const steps = [
     { t: "Choose crypto", sub: "SOL · USDC · JUP" },
-    { t: "Get Bridge quote", sub: "Live FX + fees" },
-    { t: "Complete partner KYC", sub: "One-time · seconds" },
+    { t: "View mock payout quote", sub: "Mock FX + fees" },
+    { t: "Mock KYC step", sub: "Demo only" },
     { t: "Settle through USDC", sub: "On-chain, ~1s" },
-    { t: "Bridge processes payout", sub: "To local rails" },
+    { t: "Mock payout placeholder", sub: "Payout disabled" },
     { t: "Track receipt", sub: "Real-time hash" },
   ];
   return (
@@ -182,7 +182,7 @@ function HowItWorksSection() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[300px] rounded-full bg-[image:var(--gradient-hero)] opacity-[0.06] blur-3xl" />
       </div>
       <div className="max-w-7xl mx-auto px-5">
-        <SectionHead eyebrow="How it works" title="Simple, transparent flow — from crypto to recipient." />
+        <SectionHead eyebrow="How it works" title="Simple, transparent demo flow — from wallet swap to mock payout preview." />
         <div className="mt-12 relative">
           <div className="hidden lg:block absolute top-8 left-[8%] right-[8%] h-px bg-gradient-to-r from-transparent via-[color:var(--neon-violet)] to-transparent" />
           <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-6">
@@ -296,7 +296,7 @@ function FeeExplainer() {
   const rows = [
     { k: "Bridge fee", v: "A small fee (1% of amount, minimum $1) charged by our settlement partner Bridge for processing the local-currency payout." },
     { k: "LamportPay platform fee", v: "A flat 0.5% platform fee that keeps the service running and improving." },
-    { k: "FX rate", v: "The demo mid-market rate used to convert USDC into the recipient's local currency." },
+    { k: "FX rate", v: "The mock FX rate used in this demo to convert USDC into the recipient's local currency." },
     { k: "Recipient amount", v: "What the recipient will receive after all fees and FX conversion, in their local currency." },
     { k: "Quote expiry", v: "Real quotes expire after a short window because rates move — demo quotes here are static." },
   ];
@@ -359,10 +359,10 @@ function FinalCTA() {
       <div className="max-w-6xl mx-auto px-5">
         <div className="rounded-3xl bg-[image:var(--gradient-hero)] text-white p-10 md:p-16 text-center shadow-[var(--shadow-elegant)]">
           <h2 className="text-3xl md:text-5xl font-semibold tracking-tight max-w-2xl mx-auto">
-            Try the demo. See crypto become local money.
+            Try the demo. See a wallet swap and mock payout preview.
           </h2>
           <p className="mt-4 text-white/85 max-w-xl mx-auto">
-            Explore the full transfer flow — quote, mock KYC, settlement, and receipt — with realistic timing and fees.
+            Explore the demo flow — mock quote, mock KYC, simulated payout tracking, and receipt preview.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
             <Link to="/send" className="inline-flex items-center gap-2 rounded-full bg-white text-primary px-6 py-3 font-semibold hover:bg-white/90 transition">
