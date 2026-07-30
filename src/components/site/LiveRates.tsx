@@ -54,7 +54,7 @@ export function LiveRatesTicker() {
             <span className="relative rounded-full w-2.5 h-2.5 bg-[color:var(--success)]" />
           </span>
           <span className="text-[11px] font-semibold uppercase tracking-widest text-white/80 flex items-center gap-1.5">
-            <Activity className="w-3 h-3" /> Live · 24/7
+            <Activity className="w-3 h-3" /> Demo mode
           </span>
         </div>
         <div className="flex-1 overflow-hidden">
