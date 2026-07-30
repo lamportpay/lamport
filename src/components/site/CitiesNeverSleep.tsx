@@ -53,10 +53,10 @@ export function CitiesNeverSleep() {
             Cities never sleep
           </div>
           <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">
-            While banks close, <span className="text-uv">money keeps moving.</span>
+            A demo built for <span className="text-uv">a future payout flow.</span>
           </h2>
           <p className="mt-3 text-muted-foreground">
-            LamportPay routes 24/7 across every corridor. No cutoffs, no weekends, no holidays.
+            LamportPay currently demonstrates wallet connection and Jupiter SOL-to-USDC swap routing. Corridor payouts are not live.
           </p>
         </div>
 

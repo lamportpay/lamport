@@ -61,7 +61,7 @@ function Compliance() {
         </div>
 
         <div className="mt-10 text-xs text-muted-foreground">
-          Demo only. LamportPay does not currently process real crypto, fiat, KYC, FX conversion, or bank payouts.
+          Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or third-party recipient transfer.
         </div>
       </section>
     </SiteLayout>
