@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { TransferSimulator } from "@/components/site/TransferSimulator";
 import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
 import { WorldPulse } from "@/components/site/WorldPulse";
-import { LiveSwapTheater, HeroFloatingCards } from "@/components/site/LiveSwapTheater";
+import { LiveSwapTheater } from "@/components/site/LiveSwapTheater";
 import { CitiesNeverSleep } from "@/components/site/CitiesNeverSleep";
 import { VerifiedUsers } from "@/components/site/VerifiedUsers";
 import { Lammy, LammySays, LammyTyping, LammyCheck, LAMMY_INTRO, LAMMY_SAFETY } from "@/components/site/Lammy";
@@ -69,7 +69,7 @@ function Hero() {
         <div className="absolute top-1/3 left-10 w-72 h-72 rounded-full bg-[oklch(0.7_0.28_330)] opacity-15 blur-3xl animate-uv-pulse" />
         <div className="absolute top-10 right-10 w-72 h-72 rounded-full bg-[oklch(0.75_0.2_200)] opacity-15 blur-3xl animate-uv-pulse" />
       </div>
-      <HeroFloatingCards />
+      
       <div className="relative max-w-7xl mx-auto px-5 text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/60 backdrop-blur px-4 py-1.5 text-xs font-medium text-muted-foreground mb-6 shadow-[0_0_30px_-8px_oklch(0.62_0.28_295_/_0.45)]">
           <span className="relative flex w-2 h-2">
