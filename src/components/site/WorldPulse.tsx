@@ -140,10 +140,10 @@ export function WorldPulse() {
             Global Payment Mesh · AI-routed
           </div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
-            Payments that never sleep — not like your bank.
+            Jupiter-powered swap demo — built for future payout routing.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            While banks close, our AI router keeps FX quotes fresh and settles crypto into local currency around the clock.
+            This demo shows how a Solana wallet can swap SOL to USDC through Jupiter. Local-currency payout remains disabled until licensed partner approval.
           </p>
         </div>
 
@@ -322,7 +322,7 @@ export function WorldPulse() {
                   <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
                 </span>
                 <div className="text-[11px] font-semibold uppercase tracking-widest text-white/80">
-                  Live transfer feed
+                  Simulated route preview
                 </div>
               </div>
               <ul className="space-y-2.5">
@@ -333,19 +333,17 @@ export function WorldPulse() {
                     style={{ opacity: 1 - idx * 0.14 }}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="font-mono text-white/90">
-                        {fmt(f.amount, 0)} {f.token}
-                      </span>
-                      <span className="text-uv font-semibold text-xs">→ {f.currency}</span>
+                      <span className="font-mono text-white/90">SOL → USDC route preview</span>
+                      <span className="text-uv font-semibold text-xs">Demo</span>
                     </div>
                     <div className="text-[11px] text-white/50 mt-0.5 font-mono">
-                      {f.city} · route/ai · settled
+                      Demo preview only · Output: connected wallet
                     </div>
                   </li>
                 ))}
               </ul>
               <div className="mt-5 text-[11px] text-white/40 font-mono leading-relaxed">
-                * Simulated. Demo values only. AI router selects lowest-fee corridor in real time.
+                * Simulated route preview. Demo values only. No payout is executed.
               </div>
             </div>
           </div>
