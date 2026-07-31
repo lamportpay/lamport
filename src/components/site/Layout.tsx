@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Twitter, Linkedin, Github, MessageCircle, Send } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { WalletButtonIsland } from "@/components/site/wallet/WalletIsland";
 
