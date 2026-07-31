@@ -2,6 +2,20 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, X, Twitter, Linkedin, Github, MessageCircle, Send } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { WalletButtonIsland } from "@/components/site/wallet/WalletIsland";
+import logoAsset from "@/assets/lamportpay-logo.png.asset.json";
+
+function BrandLogo({ className = "" }: { className?: string }) {
+  return (
+    <span className={`relative block h-10 w-[160px] overflow-hidden ${className}`}>
+      <img
+        src={logoAsset.url}
+        alt="LamportPay logo"
+        className="absolute max-w-none"
+        style={{ width: 270, left: -52, top: -69 }}
+      />
+    </span>
+  );
+}
 
 const nav = [
   { to: "/send", label: "Send" },
@@ -20,11 +34,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="sticky top-0 z-40 backdrop-blur-lg bg-background/75 border-b border-border/60">
         <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-[image:var(--gradient-hero)] shadow-[var(--shadow-soft)] flex items-center justify-center text-white font-bold">
-              L
-            </div>
-            <span className="font-semibold tracking-tight text-lg">LamportPay</span>
+          <Link to="/" className="flex items-center group" aria-label="LamportPay home">
+            <BrandLogo />
           </Link>
           <nav className="hidden lg:flex items-center gap-1">
             {nav.map((n) => (
@@ -40,6 +51,20 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           </nav>
           <div className="hidden lg:flex items-center gap-2">
             {showHeaderWallet && <WalletButtonIsland />}
+            <div className="flex items-center gap-1 mr-1">
+              {socialLinks.map(({ label, href, icon: Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
             <Link
               to="/send"
               className="px-4 py-2 text-sm font-medium rounded-full bg-foreground text-background hover:opacity-90 transition"
@@ -80,6 +105,20 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               >
                 Start demo
               </Link>
+              <div className="mt-3 flex items-center gap-2">
+                {socialLinks.map(({ label, href, icon: Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border/60 text-muted-foreground hover:text-foreground transition"
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -103,10 +142,7 @@ function SiteFooter() {
     <footer className="border-t border-border/60 mt-24 bg-secondary/40">
       <div className="max-w-7xl mx-auto px-5 py-12 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-[image:var(--gradient-hero)] flex items-center justify-center text-white font-bold">L</div>
-            <span className="font-semibold text-lg">LamportPay</span>
-          </div>
+          <BrandLogo className="mb-3" />
           <p className="text-sm text-muted-foreground max-w-sm">
             Crypto in. Local money out. A Solana-first crypto-to-local-currency payment routing demo.
           </p>
