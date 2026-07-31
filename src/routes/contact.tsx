@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -28,6 +28,13 @@ function Contact() {
         <div className="text-xs font-semibold uppercase tracking-wider text-primary">Contact / waitlist</div>
         <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">Get early access to LamportPay.</h1>
         <p className="mt-4 text-lg text-muted-foreground">Tell us who you are and how you'd like to use LamportPay.</p>
+        <a
+          href="mailto:hello@lamportpay.com"
+          className="mt-3 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
+        >
+          <Mail className="w-4 h-4" />
+          hello@lamportpay.com
+        </a>
 
         {sent ? (
           <div className="mt-12 rounded-3xl border border-border/60 bg-card p-10 text-center shadow-[var(--shadow-soft)]">
