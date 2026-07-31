@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Twitter, Linkedin, Github, MessageCircle, Send } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { WalletButtonIsland } from "@/components/site/wallet/WalletIsland";
 
@@ -90,6 +90,14 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   );
 }
 
+const socialLinks = [
+  { label: "X (Twitter)", href: "https://x.com/lamportpay", icon: Twitter },
+  { label: "LinkedIn", href: "https://linkedin.com/company/lamportpay", icon: Linkedin },
+  { label: "GitHub", href: "https://github.com/lamportpay", icon: Github },
+  { label: "Discord", href: "https://discord.gg/lamportpay", icon: MessageCircle },
+  { label: "Telegram", href: "https://t.me/lamportpay", icon: Send },
+] as const;
+
 function SiteFooter() {
   return (
     <footer className="border-t border-border/60 mt-24 bg-secondary/40">
@@ -102,6 +110,20 @@ function SiteFooter() {
           <p className="text-sm text-muted-foreground max-w-sm">
             Crypto in. Local money out. A Solana-first crypto-to-local-currency payment routing demo.
           </p>
+          <div className="mt-4 flex items-center gap-2">
+            {socialLinks.map(({ label, href, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border/60 bg-card/70 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-secondary transition"
+              >
+                <Icon className="w-4 h-4" />
+              </a>
+            ))}
+          </div>
         </div>
         <div>
           <div className="text-sm font-semibold mb-3">Product</div>
