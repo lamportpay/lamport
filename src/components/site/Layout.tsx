@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X, Twitter, Linkedin, Github, MessageCircle, Send } from "lucide-react";
+import { Menu, X, Twitter, Linkedin, Github, Mail } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { WalletButtonIsland } from "@/components/site/wallet/WalletIsland";
 import logoAsset from "@/assets/lamportpay-logo.png.asset.json";
@@ -130,12 +130,12 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 }
 
 const socialLinks = [
-  { label: "X (Twitter)", href: "https://x.com/lamportpay", icon: Twitter },
-  { label: "LinkedIn", href: "https://linkedin.com/company/lamportpay", icon: Linkedin },
+  { label: "X (Twitter)", href: "https://x.com/LamportPay", icon: Twitter },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/lamport-pay-31a564426/", icon: Linkedin },
   { label: "GitHub", href: "https://github.com/lamportpay", icon: Github },
-  { label: "Discord", href: "https://discord.gg/lamportpay", icon: MessageCircle },
-  { label: "Telegram", href: "https://t.me/lamportpay", icon: Send },
 ] as const;
+
+const contactEmail = "hello@lamportpay.com";
 
 function SiteFooter() {
   return (
@@ -159,7 +159,21 @@ function SiteFooter() {
                 <Icon className="w-4 h-4" />
               </a>
             ))}
+            <a
+              href={`mailto:${contactEmail}`}
+              aria-label={`Email ${contactEmail}`}
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border/60 bg-card/70 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-secondary transition"
+            >
+              <Mail className="w-4 h-4" />
+            </a>
           </div>
+          <a
+            href={`mailto:${contactEmail}`}
+            className="mt-3 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
+          >
+            <Mail className="w-3.5 h-3.5" />
+            {contactEmail}
+          </a>
         </div>
         <div>
           <div className="text-sm font-semibold mb-3">Product</div>
