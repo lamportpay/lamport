@@ -26,6 +26,8 @@ import {
 import { LammySays, LammyCheck, LAMMY_INTRO, LAMMY_SAFETY } from "@/components/site/Lammy";
 import { WalletPanelIsland } from "@/components/site/wallet/WalletIsland";
 import { getBridgePaymentRail, bridgeCurrency } from "@/lib/bridge.mapping";
+import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
+import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
 
 export const Route = createFileRoute("/send")({
   head: () => ({
@@ -297,6 +299,11 @@ export default function SendPage() {
           current={step}
           labels={["Details", "Quote", "KYC", "Confirm", "Tracking", "Receipt"]}
         />
+
+        <div className="mt-6 space-y-6">
+          <IntegrationStatusPanel />
+          <SwapRoutePreviewCard />
+        </div>
 
         <div className="mt-8">
           <LammySays size={72} wave={step === 1}>

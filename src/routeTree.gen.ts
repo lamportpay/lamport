@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as SwapRouteImport } from './routes/swap'
 import { Route as SendRouteImport } from './routes/send'
@@ -27,6 +28,11 @@ import { Route as ApiBridgeQuoteRouteImport } from './routes/api/bridge/quote'
 import { Route as ApiBridgeExternalAccountRouteImport } from './routes/api/bridge/external-account'
 import { Route as ApiBridgeCustomerRouteImport } from './routes/api/bridge/customer'
 
+const WorkflowRoute = WorkflowRouteImport.update({
+  id: '/workflow',
+  path: '/workflow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WhitepaperRoute = WhitepaperRouteImport.update({
   id: '/whitepaper',
   path: '/whitepaper',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/workflow': typeof WorkflowRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/bridge/customer': typeof ApiBridgeCustomerRoute
   '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/workflow': typeof WorkflowRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/bridge/customer': typeof ApiBridgeCustomerRoute
   '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/workflow': typeof WorkflowRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/bridge/customer': typeof ApiBridgeCustomerRoute
   '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/send'
     | '/swap'
     | '/whitepaper'
+    | '/workflow'
     | '/api/integration-status'
     | '/api/bridge/customer'
     | '/api/bridge/external-account'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/send'
     | '/swap'
     | '/whitepaper'
+    | '/workflow'
     | '/api/integration-status'
     | '/api/bridge/customer'
     | '/api/bridge/external-account'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/send'
     | '/swap'
     | '/whitepaper'
+    | '/workflow'
     | '/api/integration-status'
     | '/api/bridge/customer'
     | '/api/bridge/external-account'
@@ -241,6 +253,7 @@ export interface RootRouteChildren {
   SendRoute: typeof SendRoute
   SwapRoute: typeof SwapRoute
   WhitepaperRoute: typeof WhitepaperRoute
+  WorkflowRoute: typeof WorkflowRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
   ApiBridgeCustomerRoute: typeof ApiBridgeCustomerRoute
   ApiBridgeExternalAccountRoute: typeof ApiBridgeExternalAccountRoute
@@ -254,6 +267,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workflow': {
+      id: '/workflow'
+      path: '/workflow'
+      fullPath: '/workflow'
+      preLoaderRoute: typeof WorkflowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/whitepaper': {
       id: '/whitepaper'
       path: '/whitepaper'
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   SendRoute: SendRoute,
   SwapRoute: SwapRoute,
   WhitepaperRoute: WhitepaperRoute,
+  WorkflowRoute: WorkflowRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
   ApiBridgeCustomerRoute: ApiBridgeCustomerRoute,
   ApiBridgeExternalAccountRoute: ApiBridgeExternalAccountRoute,
