@@ -13,9 +13,10 @@ import {
   mockSolanaHash,
 } from "@/components/site/demo-data";
 import { useMemo, useState, useEffect } from "react";
-import { ArrowLeft, ArrowRight, Check, Copy, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Copy, ShieldCheck, AlertCircle, ToggleLeft, ToggleRight } from "lucide-react";
 import { LammySays, LammyCheck, LAMMY_INTRO, LAMMY_SAFETY } from "@/components/site/Lammy";
 import { WalletPanelIsland } from "@/components/site/wallet/WalletIsland";
+import { getBridgePaymentRail, bridgeCurrency } from "@/lib/bridge.mapping";
 
 export const Route = createFileRoute("/send")({
   head: () => ({
@@ -31,7 +32,12 @@ export const Route = createFileRoute("/send")({
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6;
 
-function SendPage() {
+type BridgeStatus = {
+  configured: boolean | null;
+  message: string;
+};
+
+export default function SendPage() {
   const [step, setStep] = useState<Step>(1);
   const [amount, setAmount] = useState("500");
   const [token, setToken] = useState<Token>("USDC");
@@ -45,6 +51,14 @@ function SendPage() {
   const [bridgeRef, setBridgeRef] = useState("");
   const [txHash, setTxHash] = useState("");
   const [trackIdx, setTrackIdx] = useState(0);
+
+  const [bridgeMode, setBridgeMode] = useState(false);
+  const [bridgeStatus, setBridgeStatus] = useState<BridgeStatus>({ configured: null, message: "" });
+  const [bridgeLoading, setBridgeLoading] = useState(false);
+  const [bridgeError, setBridgeError] = useState<string | null>(null);
+  const [bridgeCustomerId, setBridgeCustomerId] = useState("");
+  const [bridgeExternalAccountId, setBridgeExternalAccountId] = useState("");
+  const [bridgeTransferId, setBridgeTransferId] = useState("");
 
   const corridor = CORRIDORS[corridorIdx];
   const quote = useMemo(() => calcQuote(parseFloat(amount) || 0, token, corridor.currency), [amount, token, corridor.currency]);
@@ -72,14 +86,165 @@ function SendPage() {
     return () => clearInterval(id);
   }, [step]);
 
+  const getBridgeQuote = async () => {
+    setBridgeLoading(true);
+    setBridgeError(null);
+    try {
+      const res = await fetch("/api/bridge/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Idempotency-Key": mockPaymentId() },
+        body: JSON.stringify({
+          amount: (parseFloat(amount) || 0).toString(),
+          sourceCurrency: "usdc",
+          destinationCurrency: bridgeCurrency(corridor.currency),
+          paymentRail: getBridgePaymentRail(corridor.currency, method),
+          onBehalfOf: "demo_customer",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setBridgeError(data.error ?? "Bridge quote failed.");
+      } else {
+        setBridgeStatus({ configured: !data.demoMode, message: data.demoMode ? "Bridge API not configured — using demo quote." : "Bridge API connected — real quote received." });
+        if (data.transfer?.id) {
+          setBridgeRef(data.transfer.id as string);
+        }
+      }
+    } catch (e) {
+      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+    } finally {
+      setBridgeLoading(false);
+    }
+  };
+
+  const createBridgeCustomer = async () => {
+    setBridgeLoading(true);
+    setBridgeError(null);
+    try {
+      const res = await fetch("/api/bridge/customer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Idempotency-Key": mockPaymentId() },
+        body: JSON.stringify({
+          type: "individual",
+          first_name: recipientName.split(" ")[0] || "Demo",
+          last_name: recipientName.split(" ")[1] || "User",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setBridgeError(data.error ?? "Bridge customer creation failed.");
+      } else if (data.customer?.id) {
+        setBridgeCustomerId(data.customer.id as string);
+      }
+      setBridgeStatus({ configured: !data.demoMode, message: data.demoMode ? "Bridge API not configured — mock KYC used." : "Bridge customer created." });
+    } catch (e) {
+      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+    } finally {
+      setBridgeLoading(false);
+    }
+  };
+
+  const createBridgeExternalAccountAndTransfer = async () => {
+    setBridgeLoading(true);
+    setBridgeError(null);
+    try {
+      if (bridgeCustomerId) {
+        const accountRes = await fetch("/api/bridge/external-account", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Idempotency-Key": mockPaymentId() },
+          body: JSON.stringify({
+            customerId: bridgeCustomerId,
+            currency: bridgeCurrency(corridor.currency),
+            account_number: "0000000000",
+            account_holder_name: recipientName,
+            account_holder_type: "individual",
+          }),
+        });
+        const accountData = await accountRes.json();
+        if (accountRes.ok && accountData.externalAccount?.id) {
+          setBridgeExternalAccountId(accountData.externalAccount.id as string);
+        }
+      }
+
+      const transferRes = await fetch("/api/bridge/transfer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Idempotency-Key": mockPaymentId() },
+        body: JSON.stringify({
+          amount: quote.usdcSettlement.toString(),
+          onBehalfOf: bridgeCustomerId || "demo_customer",
+          sourceCurrency: "usdc",
+          destinationCurrency: bridgeCurrency(corridor.currency),
+          paymentRail: getBridgePaymentRail(corridor.currency, method),
+          externalAccountId: bridgeExternalAccountId || undefined,
+          developerFee: quote.platformFee.toString(),
+        }),
+      });
+      const transferData = await transferRes.json();
+      if (!transferRes.ok) {
+        setBridgeError(transferData.error ?? "Bridge transfer failed.");
+      } else if (transferData.transfer?.id) {
+        setBridgeTransferId(transferData.transfer.id as string);
+      }
+      setBridgeStatus({ configured: !transferData.demoMode, message: transferData.demoMode ? "Bridge API not configured — mock transfer used." : "Bridge transfer created." });
+    } catch (e) {
+      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+    } finally {
+      setBridgeLoading(false);
+    }
+  };
+
   return (
     <SiteLayout>
       <div className="max-w-5xl mx-auto px-5 py-14 md:py-20">
         <div className="mb-8">
           <div className="text-xs font-semibold uppercase tracking-wider text-primary">Demo send flow</div>
           <h1 className="text-3xl md:text-4xl font-semibold tracking-tight mt-2">Send a demo transfer</h1>
-          <p className="text-muted-foreground mt-2">Six steps. All mock data. No real crypto, KYC, or fiat moves.</p>
+          <p className="text-muted-foreground mt-2">Six steps. All mock data unless Bridge API is connected. No real crypto, KYC, or fiat moves without partner approval.</p>
         </div>
+
+        <div className="rounded-2xl border border-border/60 bg-card p-5 mb-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5">
+              {bridgeMode ? <ToggleRight className="w-5 h-5 text-primary" /> : <ToggleLeft className="w-5 h-5 text-muted-foreground" />}
+            </div>
+            <div>
+              <div className="font-semibold text-sm">Bridge API mode</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                When enabled, the demo tries to call real Bridge sandbox endpoints. If BRIDGE_API_KEY is missing, it falls back to mock data.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setBridgeMode((v) => !v);
+              setBridgeStatus({ configured: null, message: "" });
+              setBridgeError(null);
+            }}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${bridgeMode ? "bg-primary text-white" : "bg-card border border-border hover:bg-secondary"}`}
+          >
+            {bridgeMode ? "Bridge mode on" : "Bridge mode off"}
+          </button>
+        </div>
+
+        {bridgeMode && (
+          <div className="rounded-2xl border border-border/60 bg-card p-5 mb-6 space-y-2">
+            <div className="flex items-center gap-2 text-sm font-semibold">
+              <AlertCircle className="w-4 h-4 text-primary" />
+              Bridge integration status
+            </div>
+            <div className="text-sm text-muted-foreground">
+              {bridgeStatus.configured === null
+                ? "Not tested yet. Continue to the quote step to probe the Bridge API."
+                : bridgeStatus.message}
+            </div>
+            {bridgeLoading && <div className="text-xs text-muted-foreground">Calling Bridge API…</div>}
+            {bridgeError && (
+              <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm">
+                {bridgeError}
+              </div>
+            )}
+          </div>
+        )}
 
         <Stepper current={step} labels={["Details", "Quote", "KYC", "Confirm", "Tracking", "Receipt"]} />
 
@@ -142,6 +307,15 @@ function SendPage() {
           {step === 2 && (
             <div className="space-y-6">
               <SectionTitle title="2. Bridge quote" />
+              {bridgeMode && (
+                <button
+                  onClick={getBridgeQuote}
+                  disabled={bridgeLoading}
+                  className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
+                >
+                  {bridgeLoading ? "Calling Bridge…" : "Fetch real Bridge quote"}
+                </button>
+              )}
               <div className="grid md:grid-cols-2 gap-3">
                 <KV k="Provider" v="Bridge" />
                 <KV k="Provider type" v="Stablecoin orchestration / settlement partner" />
@@ -157,8 +331,9 @@ function SendPage() {
                 <KV k="KYC method" v="Bridge-hosted KYC" />
                 <KV k="Payout method" v={method} />
                 <KV k="Corridor support" v="Demo supported" />
+                {bridgeMode && bridgeTransferId && <KV k="Bridge transfer id" v={<span className="font-mono text-xs">{bridgeTransferId}</span>} />}
               </div>
-              <div className="text-xs text-muted-foreground">Status note: Mock quote for demo only.</div>
+              <div className="text-xs text-muted-foreground">Status note: {bridgeMode ? "Attempting real Bridge quote; falls back to mock if API is not configured." : "Mock quote for demo only."}</div>
               <NavButtons onBack={() => setStep(1)} onNext={() => setStep(3)} nextLabel="Continue to Bridge KYC" />
             </div>
           )}
@@ -173,13 +348,25 @@ function SendPage() {
                   not by LamportPay.
                 </p>
               </div>
+              {bridgeMode && !kycApproved && (
+                <button
+                  onClick={createBridgeCustomer}
+                  disabled={bridgeLoading}
+                  className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
+                >
+                  {bridgeLoading ? "Creating…" : "Create real Bridge customer"}
+                </button>
+              )}
               <div className="grid md:grid-cols-2 gap-3">
                 <KV k="Selected partner" v="Bridge" />
                 <KV k="KYC status" v={kycApproved ? "Approved" : "Not started"} />
+                {bridgeMode && bridgeCustomerId && <KV k="Bridge customer id" v={<span className="font-mono text-xs">{bridgeCustomerId}</span>} />}
               </div>
               {kycApproved && <LammyCheck label="Mock KYC approved by Bridge" />}
               {!kycApproved ? (
-                <PrimaryButton onClick={() => setKycApproved(true)}>Complete Mock Bridge KYC</PrimaryButton>
+                <PrimaryButton onClick={() => { setKycApproved(true); if (bridgeMode) void createBridgeCustomer(); }}>
+                  Complete Mock Bridge KYC
+                </PrimaryButton>
               ) : (
                 <NavButtons onBack={() => setStep(2)} onNext={() => setStep(4)} nextLabel="Confirm Demo Payment" />
               )}
@@ -189,6 +376,15 @@ function SendPage() {
           {step === 4 && (
             <div className="space-y-6">
               <SectionTitle title="4. Payment confirmation" />
+              {bridgeMode && (
+                <button
+                  onClick={createBridgeExternalAccountAndTransfer}
+                  disabled={bridgeLoading}
+                  className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
+                >
+                  {bridgeLoading ? "Creating…" : "Create Bridge external account + transfer"}
+                </button>
+              )}
               <div className="grid md:grid-cols-2 gap-3">
                 <KV k="Input token" v={token} />
                 <KV k="Input amount" v={amount} />
@@ -202,11 +398,14 @@ function SendPage() {
                 <KV k="Recipient receives" v={`${fmt(quote.recipientAmount)} ${corridor.currency}`} />
                 <KV k="Estimated delivery" v="Under 5 minutes" />
                 <KV k="Payout method" v={method} />
+                {bridgeMode && bridgeExternalAccountId && <KV k="Bridge external account" v={<span className="font-mono text-xs">{bridgeExternalAccountId}</span>} />}
+                {bridgeMode && bridgeTransferId && <KV k="Bridge transfer id" v={<span className="font-mono text-xs">{bridgeTransferId}</span>} />}
               </div>
               <PrimaryButton onClick={() => {
                 setTxHash(mockSolanaHash());
-                setBridgeRef(mockBridgeRef());
+                setBridgeRef(bridgeTransferId || mockBridgeRef());
                 setStep(5);
+                if (bridgeMode) void createBridgeExternalAccountAndTransfer();
               }}>Simulate Payment</PrimaryButton>
             </div>
           )}
@@ -244,12 +443,19 @@ function SendPage() {
               method={method}
               bridgeRef={bridgeRef}
               txHash={txHash}
+              bridgeMode={bridgeMode}
+              bridgeTransferId={bridgeTransferId}
               onReset={() => {
                 setStep(1);
                 setKycApproved(false);
                 setPaymentId("");
                 setBridgeRef("");
                 setTxHash("");
+                setBridgeCustomerId("");
+                setBridgeExternalAccountId("");
+                setBridgeTransferId("");
+                setBridgeError(null);
+                setBridgeStatus({ configured: null, message: "" });
               }}
             />
           )}
@@ -263,8 +469,23 @@ function SendPage() {
   );
 }
 
-function Receipt(props: any) {
-  const { paymentId, token, amount, quote, corridor, recipientName, method, bridgeRef, txHash, onReset } = props;
+type ReceiptProps = {
+  paymentId: string;
+  token: Token;
+  amount: string;
+  quote: ReturnType<typeof calcQuote>;
+  corridor: (typeof CORRIDORS)[number];
+  recipientName: string;
+  method: string;
+  bridgeRef: string;
+  txHash: string;
+  bridgeMode: boolean;
+  bridgeTransferId: string;
+  onReset: () => void;
+};
+
+function Receipt(props: ReceiptProps) {
+  const { paymentId, token, amount, quote, corridor, recipientName, method, bridgeRef, txHash, bridgeMode, bridgeTransferId, onReset } = props;
   const [copied, setCopied] = useState(false);
   const receiptText = [
     `Payment ID: ${paymentId}`,
@@ -281,7 +502,9 @@ function Receipt(props: any) {
     `Payout method: ${method}`,
     `Solana tx (mock): ${txHash}`,
     `Status: Paid`,
-  ].join("\n");
+    bridgeMode ? `Bridge transfer id: ${bridgeTransferId || "n/a"}` : "",
+    bridgeMode ? "Note: Bridge mode was on; real transfer may not have been created if API key was missing." : "",
+  ].filter(Boolean).join("\n");
   return (
     <div className="space-y-6">
       <SectionTitle title="6. Receipt" />
@@ -311,6 +534,7 @@ function Receipt(props: any) {
           <KV k="FX rate used" v={`1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`} />
           <KV k="Payout method" v={method} />
           <KV k="Mock Solana tx" v={<span className="font-mono text-[10px] break-all">{txHash}</span>} />
+          {bridgeMode && <KV k="Bridge transfer id" v={<span className="font-mono text-[10px] break-all">{bridgeTransferId || "n/a"}</span>} />}
         </div>
       </div>
       <div className="flex flex-wrap gap-3">
