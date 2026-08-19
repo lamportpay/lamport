@@ -19,6 +19,10 @@ import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
 import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
+import { Route as ApiBridgeTransferRouteImport } from './routes/api/bridge/transfer'
+import { Route as ApiBridgeQuoteRouteImport } from './routes/api/bridge/quote'
+import { Route as ApiBridgeExternalAccountRouteImport } from './routes/api/bridge/external-account'
+import { Route as ApiBridgeCustomerRouteImport } from './routes/api/bridge/customer'
 
 const WhitepaperRoute = WhitepaperRouteImport.update({
   id: '/whitepaper',
@@ -70,6 +74,27 @@ const ApiJupiterExecuteRoute = ApiJupiterExecuteRouteImport.update({
   path: '/api/jupiter/execute',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBridgeTransferRoute = ApiBridgeTransferRouteImport.update({
+  id: '/api/bridge/transfer',
+  path: '/api/bridge/transfer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBridgeQuoteRoute = ApiBridgeQuoteRouteImport.update({
+  id: '/api/bridge/quote',
+  path: '/api/bridge/quote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBridgeExternalAccountRoute =
+  ApiBridgeExternalAccountRouteImport.update({
+    id: '/api/bridge/external-account',
+    path: '/api/bridge/external-account',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiBridgeCustomerRoute = ApiBridgeCustomerRouteImport.update({
+  id: '/api/bridge/customer',
+  path: '/api/bridge/customer',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -80,6 +105,10 @@ export interface FileRoutesByFullPath {
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/api/bridge/customer': typeof ApiBridgeCustomerRoute
+  '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
+  '/api/bridge/quote': typeof ApiBridgeQuoteRoute
+  '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
 }
@@ -92,6 +121,10 @@ export interface FileRoutesByTo {
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/api/bridge/customer': typeof ApiBridgeCustomerRoute
+  '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
+  '/api/bridge/quote': typeof ApiBridgeQuoteRoute
+  '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
 }
@@ -105,6 +138,10 @@ export interface FileRoutesById {
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
+  '/api/bridge/customer': typeof ApiBridgeCustomerRoute
+  '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
+  '/api/bridge/quote': typeof ApiBridgeQuoteRoute
+  '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
 }
@@ -119,6 +156,10 @@ export interface FileRouteTypes {
     | '/send'
     | '/swap'
     | '/whitepaper'
+    | '/api/bridge/customer'
+    | '/api/bridge/external-account'
+    | '/api/bridge/quote'
+    | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +172,10 @@ export interface FileRouteTypes {
     | '/send'
     | '/swap'
     | '/whitepaper'
+    | '/api/bridge/customer'
+    | '/api/bridge/external-account'
+    | '/api/bridge/quote'
+    | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
   id:
@@ -143,6 +188,10 @@ export interface FileRouteTypes {
     | '/send'
     | '/swap'
     | '/whitepaper'
+    | '/api/bridge/customer'
+    | '/api/bridge/external-account'
+    | '/api/bridge/quote'
+    | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
   fileRoutesById: FileRoutesById
@@ -156,6 +205,10 @@ export interface RootRouteChildren {
   SendRoute: typeof SendRoute
   SwapRoute: typeof SwapRoute
   WhitepaperRoute: typeof WhitepaperRoute
+  ApiBridgeCustomerRoute: typeof ApiBridgeCustomerRoute
+  ApiBridgeExternalAccountRoute: typeof ApiBridgeExternalAccountRoute
+  ApiBridgeQuoteRoute: typeof ApiBridgeQuoteRoute
+  ApiBridgeTransferRoute: typeof ApiBridgeTransferRoute
   ApiJupiterExecuteRoute: typeof ApiJupiterExecuteRoute
   ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
 }
@@ -232,6 +285,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiJupiterExecuteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/bridge/transfer': {
+      id: '/api/bridge/transfer'
+      path: '/api/bridge/transfer'
+      fullPath: '/api/bridge/transfer'
+      preLoaderRoute: typeof ApiBridgeTransferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bridge/quote': {
+      id: '/api/bridge/quote'
+      path: '/api/bridge/quote'
+      fullPath: '/api/bridge/quote'
+      preLoaderRoute: typeof ApiBridgeQuoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bridge/external-account': {
+      id: '/api/bridge/external-account'
+      path: '/api/bridge/external-account'
+      fullPath: '/api/bridge/external-account'
+      preLoaderRoute: typeof ApiBridgeExternalAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/bridge/customer': {
+      id: '/api/bridge/customer'
+      path: '/api/bridge/customer'
+      fullPath: '/api/bridge/customer'
+      preLoaderRoute: typeof ApiBridgeCustomerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -244,6 +325,10 @@ const rootRouteChildren: RootRouteChildren = {
   SendRoute: SendRoute,
   SwapRoute: SwapRoute,
   WhitepaperRoute: WhitepaperRoute,
+  ApiBridgeCustomerRoute: ApiBridgeCustomerRoute,
+  ApiBridgeExternalAccountRoute: ApiBridgeExternalAccountRoute,
+  ApiBridgeQuoteRoute: ApiBridgeQuoteRoute,
+  ApiBridgeTransferRoute: ApiBridgeTransferRoute,
   ApiJupiterExecuteRoute: ApiJupiterExecuteRoute,
   ApiJupiterOrderRoute: ApiJupiterOrderRoute,
 }
