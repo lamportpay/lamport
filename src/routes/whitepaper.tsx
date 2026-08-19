@@ -5,67 +5,254 @@ export const Route = createFileRoute("/whitepaper")({
   head: () => ({
     meta: [
       { title: "White paper — LamportPay" },
-      { name: "description", content: "Executive summary, architecture, compliance positioning, and roadmap for LamportPay." },
+      {
+        name: "description",
+        content:
+          "Executive summary, architecture, compliance positioning, and roadmap for LamportPay.",
+      },
       { property: "og:title", content: "White paper — LamportPay" },
-      { property: "og:description", content: "Solana-first crypto-to-local-currency payment routing." },
+      {
+        property: "og:description",
+        content: "Solana-first crypto-to-local-currency payment routing.",
+      },
     ],
   }),
   component: Whitepaper,
 });
 
 const sections: { title: string; body: React.ReactNode }[] = [
-  { title: "1. Executive summary", body: <p>LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps users pay with supported crypto assets, settle through USDC, and route local-currency payout requests through licensed settlement partners such as Bridge.</p> },
-  { title: "2. Problem", body: <p>Crypto is global and fast, but recipients usually want local currency in a bank account, mobile wallet, card, or cash pickup channel. Existing flows are complex for normal users.</p> },
-  { title: "3. Solution", body: <p>LamportPay provides a simple transfer interface, AI assistant, USDC settlement model, Bridge-first payout simulation, and status tracking.</p> },
-  { title: "4. Product positioning", body: <p>LamportPay is a technology routing platform, not a bank, money transmitter, custodian, exchange, or remittance company.</p> },
-  { title: "5. Core flow", body: <List items={["Sender enters transfer details", "LamportPay creates payment", "Bridge quote generated", "Partner KYC", "User confirms crypto payment", "Jupiter swaps supported token into USDC (later)", "USDC settlement verified", "Bridge processes payout", "Recipient receives local currency", "LamportPay shows receipt"]} /> },
-  { title: "6. Technology architecture", body: (
-    <div className="space-y-3">
-      <ArchRow k="Frontend" v="Next.js, Tailwind CSS, transfer simulator, AI assistant, receipt dashboard." />
-      <ArchRow k="Backend" v="API routes, payment state machine, Bridge adapter, Jupiter adapter, Solana verifier, webhook handler, database layer." />
-      <ArchRow k="Blockchain" v="Solana wallet connection, USDC settlement, Jupiter token-to-USDC swap, Solana transaction verification." />
-      <ArchRow k="Partner" v="Bridge customer/KYC flow, Bridge transfer flow, Bridge webhook/status updates." />
-      <ArchRow k="Database" v="Users, payments, quotes, KYC status, Bridge references, Solana transaction signatures, timeline events, receipts." />
-    </div>
-  )},
-  { title: "7. AI layer", body: <p>AI transfer assistant, fee explanation, scam warning, payout method guidance, support assistant. AI does not approve KYC, perform AML, or make regulated decisions.</p> },
-  { title: "8. Liquidity layer", body: <p>Use Jupiter first for Solana token-to-USDC swaps. If user pays in USDC, skip swap.</p> },
-  { title: "9. Settlement partner layer", body: <p>Use Bridge first. Add other partners later, such as Crossmint, Nium, Thunes, Transak, Ramp, Bitso, and Yellow Card.</p> },
+  {
+    title: "1. Executive summary",
+    body: (
+      <p>
+        LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps
+        users pay with supported crypto assets, settle through USDC, and route local-currency payout
+        requests through licensed settlement partners such as Bridge.
+      </p>
+    ),
+  },
+  {
+    title: "2. Problem",
+    body: (
+      <p>
+        Crypto is global and fast, but recipients usually want local currency in a bank account,
+        mobile wallet, card, or cash pickup channel. Existing flows are complex for normal users.
+      </p>
+    ),
+  },
+  {
+    title: "3. Solution",
+    body: (
+      <p>
+        LamportPay provides a simple transfer interface, AI assistant, USDC settlement model,
+        Bridge-first payout simulation, and status tracking.
+      </p>
+    ),
+  },
+  {
+    title: "4. Product positioning",
+    body: (
+      <p>
+        LamportPay is a technology routing platform, not a bank, money transmitter, custodian,
+        exchange, or remittance company.
+      </p>
+    ),
+  },
+  {
+    title: "5. Core flow",
+    body: (
+      <List
+        items={[
+          "Sender enters transfer details",
+          "LamportPay creates payment",
+          "Bridge quote generated",
+          "Partner KYC",
+          "User confirms crypto payment",
+          "Jupiter swaps supported token into USDC (later)",
+          "USDC settlement verified",
+          "Bridge processes payout",
+          "Recipient receives local currency",
+          "LamportPay shows receipt",
+        ]}
+      />
+    ),
+  },
+  {
+    title: "6. Technology architecture",
+    body: (
+      <div className="space-y-3">
+        <ArchRow
+          k="Frontend"
+          v="Next.js, Tailwind CSS, transfer simulator, AI assistant, receipt dashboard."
+        />
+        <ArchRow
+          k="Backend"
+          v="API routes, payment state machine, Bridge adapter, Jupiter adapter, Solana verifier, webhook handler, database layer."
+        />
+        <ArchRow
+          k="Blockchain"
+          v="Solana wallet connection, USDC settlement, Jupiter token-to-USDC swap, Solana transaction verification."
+        />
+        <ArchRow
+          k="Partner"
+          v="Bridge customer/KYC flow, Bridge transfer flow, Bridge webhook/status updates."
+        />
+        <ArchRow
+          k="Database"
+          v="Users, payments, quotes, KYC status, Bridge references, Solana transaction signatures, timeline events, receipts."
+        />
+      </div>
+    ),
+  },
+  {
+    title: "7. AI layer",
+    body: (
+      <p>
+        AI transfer assistant, fee explanation, scam warning, payout method guidance, support
+        assistant. AI does not approve KYC, perform AML, or make regulated decisions.
+      </p>
+    ),
+  },
+  {
+    title: "8. Liquidity layer",
+    body: <p>Use Jupiter first for Solana token-to-USDC swaps. If user pays in USDC, skip swap.</p>,
+  },
+  {
+    title: "9. Settlement partner layer",
+    body: (
+      <p>
+        Use Bridge first. Add other partners later, such as Crossmint, Nium, Thunes, Transak, Ramp,
+        Bitso, and Yellow Card.
+      </p>
+    ),
+  },
   { title: "10. Supported demo assets", body: <p>USDC, SOL, USDT, JUP, RAY, PYTH, BONK.</p> },
-  { title: "11. Supported demo corridors", body: <p>Pakistan PKR, India INR, Nigeria NGN, Philippines PHP, Mexico MXN, Bangladesh BDT, Egypt EGP, Colombia COP, Brazil BRL, Peru PEN.</p> },
-  { title: "12. Payment status lifecycle", body: (
-    <div className="flex flex-wrap gap-2">
-      {["CREATED","QUOTE_GENERATED","KYC_PENDING","KYC_APPROVED","PAYMENT_CONFIRMED","JUPITER_SWAP_STARTED","USDC_SETTLED","PAYOUT_SENT_TO_BRIDGE","BRIDGE_PROCESSING","PAID","FAILED","REFUNDED"].map(s => (
-        <span key={s} className="text-xs font-mono px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{s}</span>
-      ))}
-    </div>
-  )},
-  { title: "13. Compliance positioning", body: <p>LamportPay does not custody user funds, control private keys, issue balances, perform KYC, or independently transmit money. Licensed partners handle KYC, KYB, AML, sanctions screening, Travel Rule, FX/off-ramp, payout processing, and settlement.</p> },
-  { title: "14. Business model", body: <p>Small platform fee per completed transfer, SaaS/API fee for businesses, premium dashboard, partner referral/commission where legally allowed.</p> },
-  { title: "15. Roadmap", body: <List items={["Phase 1: Demo website","Phase 2: Backend MVP","Phase 3: Phantom wallet + Solana devnet","Phase 4: Jupiter quote/swap integration","Phase 5: Bridge sandbox integration","Phase 6: Controlled live pilot after legal and partner approval"]} /> },
-  { title: "16. Risk management", body: (
-    <div className="space-y-3">
-      <div><span className="font-semibold">Risks: </span>regulation, KYC failure, payout delay, slippage, wrong wallet, fraud, provider approval.</div>
-      <div><span className="font-semibold">Mitigations: </span>partner-led KYC before payment, USDC settlement, quote expiry, no custody, no user balances, clear refund/failure policy.</div>
-    </div>
-  )},
-  { title: "17. Conclusion", body: <p>LamportPay aims to make crypto-to-local-currency transfer simple, explainable, and partner-compliant.</p> },
+  {
+    title: "11. Supported demo corridors",
+    body: (
+      <p>
+        Pakistan PKR, India INR, Nigeria NGN, Philippines PHP, Mexico MXN, Bangladesh BDT, Egypt
+        EGP, Colombia COP, Brazil BRL, Peru PEN.
+      </p>
+    ),
+  },
+  {
+    title: "12. Payment status lifecycle",
+    body: (
+      <div className="flex flex-wrap gap-2">
+        {[
+          "CREATED",
+          "QUOTE_GENERATED",
+          "KYC_PENDING",
+          "KYC_APPROVED",
+          "PAYMENT_CONFIRMED",
+          "JUPITER_SWAP_STARTED",
+          "USDC_SETTLED",
+          "PAYOUT_SENT_TO_BRIDGE",
+          "BRIDGE_PROCESSING",
+          "PAID",
+          "FAILED",
+          "REFUNDED",
+        ].map((s) => (
+          <span
+            key={s}
+            className="text-xs font-mono px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground"
+          >
+            {s}
+          </span>
+        ))}
+      </div>
+    ),
+  },
+  {
+    title: "13. Compliance positioning",
+    body: (
+      <p>
+        LamportPay does not custody user funds, control private keys, issue balances, perform KYC,
+        or independently transmit money. Licensed partners handle KYC, KYB, AML, sanctions
+        screening, Travel Rule, FX/off-ramp, payout processing, and settlement.
+      </p>
+    ),
+  },
+  {
+    title: "14. Business model",
+    body: (
+      <p>
+        Small platform fee per completed transfer, SaaS/API fee for businesses, premium dashboard,
+        partner referral/commission where legally allowed.
+      </p>
+    ),
+  },
+  {
+    title: "15. Roadmap",
+    body: (
+      <List
+        items={[
+          "Phase 1: Demo website",
+          "Phase 2: Backend MVP",
+          "Phase 3: Phantom wallet + Solana devnet",
+          "Phase 4: Jupiter quote/swap integration",
+          "Phase 5: Bridge sandbox integration",
+          "Phase 6: Controlled live pilot after legal and partner approval",
+        ]}
+      />
+    ),
+  },
+  {
+    title: "16. Risk management",
+    body: (
+      <div className="space-y-3">
+        <div>
+          <span className="font-semibold">Risks: </span>regulation, KYC failure, payout delay,
+          slippage, wrong wallet, fraud, provider approval.
+        </div>
+        <div>
+          <span className="font-semibold">Mitigations: </span>partner-led KYC before payment, USDC
+          settlement, quote expiry, no custody, no user balances, clear refund/failure policy.
+        </div>
+      </div>
+    ),
+  },
+  {
+    title: "17. Conclusion",
+    body: (
+      <p>
+        LamportPay aims to make crypto-to-local-currency transfer simple, explainable, and
+        partner-compliant.
+      </p>
+    ),
+  },
 ];
 
 function Whitepaper() {
   return (
     <SiteLayout>
       <section className="max-w-4xl mx-auto px-5 py-16 md:py-24">
-        <div className="text-xs font-semibold uppercase tracking-wider text-primary">White paper</div>
-        <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">LamportPay: crypto-to-local-currency payment routing.</h1>
-        <p className="mt-4 text-lg text-muted-foreground">A Solana-first, USDC-settled, partner-orchestrated payment routing platform.</p>
+        <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+          White paper
+        </div>
+        <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">
+          LamportPay: crypto-to-local-currency payment routing.
+        </h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          A Solana-first, USDC-settled, partner-orchestrated payment routing platform.
+        </p>
 
         <div className="mt-14 grid md:grid-cols-[220px_1fr] gap-10">
           <aside className="hidden md:block sticky top-24 self-start">
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Contents</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+              Contents
+            </div>
             <ul className="space-y-1.5 text-sm">
               {sections.map((s) => (
-                <li key={s.title}><a href={`#${slug(s.title)}`} className="text-muted-foreground hover:text-foreground">{s.title}</a></li>
+                <li key={s.title}>
+                  <a
+                    href={`#${slug(s.title)}`}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    {s.title}
+                  </a>
+                </li>
               ))}
             </ul>
           </aside>
@@ -83,12 +270,19 @@ function Whitepaper() {
   );
 }
 
-function slug(s: string) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, ""); }
+function slug(s: string) {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+$/, "");
+}
 
 function List({ items }: { items: string[] }) {
   return (
     <ol className="space-y-2 list-decimal pl-5">
-      {items.map((i) => <li key={i}>{i}</li>)}
+      {items.map((i) => (
+        <li key={i}>{i}</li>
+      ))}
     </ol>
   );
 }

@@ -114,7 +114,9 @@ export function StatsStrip() {
         {stats.map((s) => (
           <div key={s.k} className="p-5 md:p-6">
             <div className="text-sm font-medium text-white/90">{s.v}</div>
-            <div className="mt-1 text-2xl md:text-3xl font-semibold tracking-tight text-uv">{s.k}</div>
+            <div className="mt-1 text-2xl md:text-3xl font-semibold tracking-tight text-uv">
+              {s.k}
+            </div>
             <div className="text-[11px] text-white/50 mt-1.5 leading-relaxed">{s.sub}</div>
           </div>
         ))}

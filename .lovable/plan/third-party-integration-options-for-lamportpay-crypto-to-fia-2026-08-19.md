@@ -19,12 +19,12 @@ The current demo implements only step 3 (a real Jupiter SOL→USDC swap back to 
 
 This layer already exists in `/swap` and `/api/jupiter/*`. It is the **on-chain exchange** that turns volatile or non-USD crypto into a stable settlement token.
 
-| Provider | API | Fit for LamportPay | Notes |
-|---|---|---|---|
-| **Jupiter** | `api.jup.ag/swap/v2/*` | **Current / recommended** | Deepest Solana liquidity, 100+ sources, token routing. Already integrated. |
-| **Raydium** | Direct SDK + on-chain | Secondary option | Good for specific pool routes, but Jupiter already aggregates Raydium. |
-| **Orca** | SDK + on-chain | Secondary option | Concentrated liquidity on Solana; usually reached through Jupiter. |
-| **1inch / 0x / ParaSwap** | REST API | Cross-chain alternative | Useful if the platform later expands beyond Solana. |
+| Provider                  | API                    | Fit for LamportPay        | Notes                                                                      |
+| ------------------------- | ---------------------- | ------------------------- | -------------------------------------------------------------------------- |
+| **Jupiter**               | `api.jup.ag/swap/v2/*` | **Current / recommended** | Deepest Solana liquidity, 100+ sources, token routing. Already integrated. |
+| **Raydium**               | Direct SDK + on-chain  | Secondary option          | Good for specific pool routes, but Jupiter already aggregates Raydium.     |
+| **Orca**                  | SDK + on-chain         | Secondary option          | Concentrated liquidity on Solana; usually reached through Jupiter.         |
+| **1inch / 0x / ParaSwap** | REST API               | Cross-chain alternative   | Useful if the platform later expands beyond Solana.                        |
 
 **Recommendation:** Keep Jupiter as the primary swap aggregator on Solana. It is the de facto standard, reduces integration work, and already supports the strict SOL→USDC guard that the current code enforces.
 
@@ -45,35 +45,36 @@ This is the layer the demo currently mocks. It converts verified USDC into local
 
 ### Recommended primary options
 
-| Provider | Coverage | API model | Why it fits |
-|---|---|---|---|
-| **Bridge** | USD, EUR, BRL, MXN, others; liquidation addresses for many chains | REST API + webhooks | Already named in the whitepaper and `/send` demo. Supports Solana USDC, liquidation addresses, and customer/KYC objects. |
-| **Crossmint** | 40+ countries, 13+ rails (ACH, SEPA, Pix, etc.) | REST API + hosted/embedded widgets | Broad stablecoin off-ramp API, Solana support, treasury and embedded modes. |
-| **Transak** | 18+ countries, bank/card/mobile wallet payouts | REST API + SDK widget | Strong off-ramp coverage, white-label API, KYC handled by Transak. |
-| **Yellow Card** | 50+ fiat currencies, strong in Africa (NGN, etc.) | REST API | Good fit for Nigeria, Ghana, Kenya, other African corridors. Mobile-money and bank payout support. |
-| **Bitso** | Latin America (MXN, BRL, ARS, COP) | REST API + SDK | Strong in Mexico, Brazil, Colombia, Argentina. Fits the LATAM corridors in the demo. |
-| **Ramp Network** | On/Off-ramp in Europe + emerging markets | REST API + widget | Good for EUR corridors and card/bank payouts. |
-| **Nium** | 100+ countries, bank payouts, cards | REST API | Global payout infrastructure, fits B2B/embedded models. |
-| **Thunes** | 130+ countries, mobile wallets, bank, cash | REST API | Strong for mobile wallets and emerging-market corridors. |
+| Provider         | Coverage                                                          | API model                          | Why it fits                                                                                                              |
+| ---------------- | ----------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Bridge**       | USD, EUR, BRL, MXN, others; liquidation addresses for many chains | REST API + webhooks                | Already named in the whitepaper and `/send` demo. Supports Solana USDC, liquidation addresses, and customer/KYC objects. |
+| **Crossmint**    | 40+ countries, 13+ rails (ACH, SEPA, Pix, etc.)                   | REST API + hosted/embedded widgets | Broad stablecoin off-ramp API, Solana support, treasury and embedded modes.                                              |
+| **Transak**      | 18+ countries, bank/card/mobile wallet payouts                    | REST API + SDK widget              | Strong off-ramp coverage, white-label API, KYC handled by Transak.                                                       |
+| **Yellow Card**  | 50+ fiat currencies, strong in Africa (NGN, etc.)                 | REST API                           | Good fit for Nigeria, Ghana, Kenya, other African corridors. Mobile-money and bank payout support.                       |
+| **Bitso**        | Latin America (MXN, BRL, ARS, COP)                                | REST API + SDK                     | Strong in Mexico, Brazil, Colombia, Argentina. Fits the LATAM corridors in the demo.                                     |
+| **Ramp Network** | On/Off-ramp in Europe + emerging markets                          | REST API + widget                  | Good for EUR corridors and card/bank payouts.                                                                            |
+| **Nium**         | 100+ countries, bank payouts, cards                               | REST API                           | Global payout infrastructure, fits B2B/embedded models.                                                                  |
+| **Thunes**       | 130+ countries, mobile wallets, bank, cash                        | REST API                           | Strong for mobile wallets and emerging-market corridors.                                                                 |
 
 ### Corridor mapping for the current demo
 
 Current demo corridors: **PKR, INR, NGN, PHP, MXN, BDT, EGP, COP, BRL, PEN.**
 
-| Corridor | Best-fit partners (off-ramp) | Notes |
-|---|---|---|
-| **PKR (Pakistan)** | Transak, Thunes, local PSPs | Pakistan is limited; many global providers do not serve it. |
-| **INR (India)** | Transak, Bridge, Crossmint, local banking APIs | UPI/IMPS bank payouts are common. |
-| **NGN (Nigeria)** | **Yellow Card**, Transak, Bridge, Crossmint, local fintech | Mobile money + bank transfers are dominant. |
-| **PHP (Philippines)** | Transak, Crossmint, Thunes, local e-wallets | GCash/PayMaya style mobile wallet payout. |
-| **MXN (Mexico)** | **Bitso**, Bridge, Transak, Crossmint | SPEI bank transfer is standard. |
-| **BDT (Bangladesh)** | Thunes, local PSPs | Limited direct API coverage; may need local aggregator. |
-| **EGP (Egypt)** | Thunes, local PSPs | Limited direct global provider coverage. |
-| **COP (Colombia)** | **Bitso**, Transak, Crossmint, Bridge | PSE/bank transfers. |
-| **BRL (Brazil)** | **Bitso**, Bridge, Crossmint, Transak | Pix is the preferred rail. |
-| **PEN (Peru)** | Transak, Crossmint, local PSPs | Interbank transfers. |
+| Corridor              | Best-fit partners (off-ramp)                               | Notes                                                       |
+| --------------------- | ---------------------------------------------------------- | ----------------------------------------------------------- |
+| **PKR (Pakistan)**    | Transak, Thunes, local PSPs                                | Pakistan is limited; many global providers do not serve it. |
+| **INR (India)**       | Transak, Bridge, Crossmint, local banking APIs             | UPI/IMPS bank payouts are common.                           |
+| **NGN (Nigeria)**     | **Yellow Card**, Transak, Bridge, Crossmint, local fintech | Mobile money + bank transfers are dominant.                 |
+| **PHP (Philippines)** | Transak, Crossmint, Thunes, local e-wallets                | GCash/PayMaya style mobile wallet payout.                   |
+| **MXN (Mexico)**      | **Bitso**, Bridge, Transak, Crossmint                      | SPEI bank transfer is standard.                             |
+| **BDT (Bangladesh)**  | Thunes, local PSPs                                         | Limited direct API coverage; may need local aggregator.     |
+| **EGP (Egypt)**       | Thunes, local PSPs                                         | Limited direct global provider coverage.                    |
+| **COP (Colombia)**    | **Bitso**, Transak, Crossmint, Bridge                      | PSE/bank transfers.                                         |
+| **BRL (Brazil)**      | **Bitso**, Bridge, Crossmint, Transak                      | Pix is the preferred rail.                                  |
+| **PEN (Peru)**        | Transak, Crossmint, local PSPs                             | Interbank transfers.                                        |
 
 **Recommendation:** Start with **Bridge** as the first partner (already in the whitepaper) because it supports the USDC-first model and can be expanded to multiple corridors. Then add corridor-specific specialists:
+
 - **Yellow Card** for African corridors (NGN, future GHS/KES).
 - **Bitso** for LATAM (MXN, BRL, COP, ARS).
 - **Crossmint or Transak** for general global coverage (INR, PHP, EUR, etc.).
@@ -122,15 +123,18 @@ LamportPay shows receipt and tracking
 ## Phased implementation plan
 
 ### Phase 1 — Keep current demo (now)
+
 - Keep Jupiter SOL→USDC swap demo.
 - Keep all fiat/KYC/Bridge flows as mock placeholders.
 - Update whitepaper/docs to reflect the exact current demo scope.
 
 ### Phase 2 — Add real swap verification
+
 - Add a server route `/api/solana/verify-transaction` that confirms a Solana transaction and final USDC token-account balance using a paid RPC provider.
 - Link the verified signature to the payment record.
 
 ### Phase 3 — Integrate one payout partner (Bridge recommended)
+
 - Create a **sandbox** Bridge API key.
 - Add server routes: `/api/bridge/quote`, `/api/bridge/customer`, `/api/bridge/external-account`, `/api/bridge/transfer`, `/api/bridge/webhook`.
 - Replace the mock quote in `/send` with real Bridge sandbox data for supported corridors.
@@ -138,11 +142,13 @@ LamportPay shows receipt and tracking
 - Keep KYC as a partner-hosted step.
 
 ### Phase 4 — Add corridor-specific specialists
+
 - Add **Yellow Card** for African corridors, **Bitso** for LATAM, etc.
 - Build a routing table that selects the cheapest/fastest available partner per corridor.
 - Add partner-agnostic webhook handlers and status mapping.
 
 ### Phase 5 — Legal and compliance gating
+
 - KYB with each partner.
 - Legal review of user-facing copy and terms.
 - Add real terms, privacy policy, and risk disclosures.

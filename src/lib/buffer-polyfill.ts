@@ -5,13 +5,22 @@
 type BufferEncoding = "utf8" | "utf-8" | "hex" | "base64";
 
 type BufferStatic = {
-  (value: number | ArrayLike<number> | ArrayBufferLike | string, encoding?: BufferEncoding): Uint8Array;
-  from: (value: ArrayLike<number> | ArrayBufferLike | string, encoding?: BufferEncoding) => Uint8Array;
+  (
+    value: number | ArrayLike<number> | ArrayBufferLike | string,
+    encoding?: BufferEncoding,
+  ): Uint8Array;
+  from: (
+    value: ArrayLike<number> | ArrayBufferLike | string,
+    encoding?: BufferEncoding,
+  ) => Uint8Array;
   alloc: (size: number, fill?: number | string, encoding?: BufferEncoding) => Uint8Array;
   allocUnsafe: (size: number) => Uint8Array;
   allocUnsafeSlow: (size: number) => Uint8Array;
   isBuffer: (value: unknown) => value is Uint8Array;
-  byteLength: (value: string | ArrayBufferLike | ArrayLike<number>, encoding?: BufferEncoding) => number;
+  byteLength: (
+    value: string | ArrayBufferLike | ArrayLike<number>,
+    encoding?: BufferEncoding,
+  ) => number;
   compare: (left: Uint8Array, right: Uint8Array) => number;
   concat: (chunks: Uint8Array[], totalLength?: number) => Uint8Array;
 };
@@ -31,14 +40,19 @@ function decodeHex(value: string) {
   return bytes;
 }
 
-function from(value: ArrayLike<number> | ArrayBufferLike | string, encoding: BufferEncoding = "utf8") {
+function from(
+  value: ArrayLike<number> | ArrayBufferLike | string,
+  encoding: BufferEncoding = "utf8",
+) {
   if (typeof value === "string") {
     if (encoding === "base64") return decodeBase64(value);
     if (encoding === "hex") return decodeHex(value);
     return new TextEncoder().encode(value);
   }
   if (ArrayBuffer.isView(value)) {
-    return new Uint8Array(value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength));
+    return new Uint8Array(
+      value.buffer.slice(value.byteOffset, value.byteOffset + value.byteLength),
+    );
   }
   if (value instanceof ArrayBuffer) {
     return new Uint8Array(value.slice(0));
@@ -49,20 +63,27 @@ function from(value: ArrayLike<number> | ArrayBufferLike | string, encoding: Buf
   return Uint8Array.from(value as ArrayLike<number>);
 }
 
-function BrowserBuffer(value: number | ArrayLike<number> | ArrayBufferLike | string, encoding?: BufferEncoding) {
+function BrowserBuffer(
+  value: number | ArrayLike<number> | ArrayBufferLike | string,
+  encoding?: BufferEncoding,
+) {
   if (typeof value === "number") return BrowserBuffer.alloc(value);
   return from(value, encoding);
 }
 
 BrowserBuffer.from = from;
-BrowserBuffer.alloc = function alloc(size: number, fill?: number | string, encoding?: BufferEncoding) {
-    const bytes = new Uint8Array(size);
-    if (fill !== undefined) {
-      if (typeof fill === "string") bytes.set(from(fill, encoding).slice(0, size));
-      else bytes.fill(fill);
-    }
-    return bytes;
-  };
+BrowserBuffer.alloc = function alloc(
+  size: number,
+  fill?: number | string,
+  encoding?: BufferEncoding,
+) {
+  const bytes = new Uint8Array(size);
+  if (fill !== undefined) {
+    if (typeof fill === "string") bytes.set(from(fill, encoding).slice(0, size));
+    else bytes.fill(fill);
+  }
+  return bytes;
+};
 BrowserBuffer.allocUnsafe = function allocUnsafe(size: number) {
   return new Uint8Array(size);
 };
@@ -79,26 +100,26 @@ BrowserBuffer.byteLength = function byteLength(
   return from(value, encoding).byteLength;
 };
 BrowserBuffer.compare = function compare(left: Uint8Array, right: Uint8Array) {
-    const length = Math.min(left.length, right.length);
-    for (let index = 0; index < length; index += 1) {
-      const diff = left[index] - right[index];
-      if (diff !== 0) return diff;
-    }
-    return left.length - right.length;
-  };
+  const length = Math.min(left.length, right.length);
+  for (let index = 0; index < length; index += 1) {
+    const diff = left[index] - right[index];
+    if (diff !== 0) return diff;
+  }
+  return left.length - right.length;
+};
 BrowserBuffer.concat = function concat(
   chunks: Uint8Array[],
   totalLength = chunks.reduce((sum, chunk) => sum + chunk.length, 0),
 ) {
-    const bytes = new Uint8Array(totalLength);
-    let offset = 0;
-    for (const chunk of chunks) {
-      bytes.set(chunk.slice(0, Math.max(0, totalLength - offset)), offset);
-      offset += chunk.length;
-      if (offset >= totalLength) break;
-    }
-    return bytes;
-  };
+  const bytes = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk.slice(0, Math.max(0, totalLength - offset)), offset);
+    offset += chunk.length;
+    if (offset >= totalLength) break;
+  }
+  return bytes;
+};
 (BrowserBuffer as unknown as { prototype: Uint8Array }).prototype = Uint8Array.prototype;
 
 export const Buffer = BrowserBuffer as unknown as BufferStatic;

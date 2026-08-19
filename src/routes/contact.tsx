@@ -7,7 +7,10 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact / waitlist — LamportPay" },
-      { name: "description", content: "Request demo access, partnership, API access, or investment info." },
+      {
+        name: "description",
+        content: "Request demo access, partnership, API access, or investment info.",
+      },
       { property: "og:title", content: "Contact / waitlist — LamportPay" },
       { property: "og:description", content: "Join the LamportPay waitlist." },
     ],
@@ -18,16 +21,30 @@ export const Route = createFileRoute("/contact")({
 function Contact() {
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({
-    name: "", email: "", company: "", role: "User", interest: "Demo access", message: "",
+    name: "",
+    email: "",
+    company: "",
+    role: "User",
+    interest: "Demo access",
+    message: "",
   });
-  const set = (k: keyof typeof form) => (e: any) => setForm({ ...form, [k]: e.target.value });
+  const set =
+    (k: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm({ ...form, [k]: e.target.value });
 
   return (
     <SiteLayout>
       <section className="max-w-3xl mx-auto px-5 py-16 md:py-24">
-        <div className="text-xs font-semibold uppercase tracking-wider text-primary">Contact / waitlist</div>
-        <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">Get early access to LamportPay.</h1>
-        <p className="mt-4 text-lg text-muted-foreground">Tell us who you are and how you'd like to use LamportPay.</p>
+        <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+          Contact / waitlist
+        </div>
+        <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">
+          Get early access to LamportPay.
+        </h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          Tell us who you are and how you'd like to use LamportPay.
+        </p>
         <a
           href="mailto:hello@lamportpay.com"
           className="mt-3 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
@@ -42,9 +59,21 @@ function Contact() {
               <CheckCircle2 className="w-7 h-7" />
             </div>
             <h2 className="mt-5 text-2xl font-semibold tracking-tight">Thanks.</h2>
-            <p className="mt-2 text-muted-foreground">Your LamportPay request has been saved for demo purposes.</p>
+            <p className="mt-2 text-muted-foreground">
+              Your LamportPay request has been saved for demo purposes.
+            </p>
             <button
-              onClick={() => { setSent(false); setForm({ name: "", email: "", company: "", role: "User", interest: "Demo access", message: "" }); }}
+              onClick={() => {
+                setSent(false);
+                setForm({
+                  name: "",
+                  email: "",
+                  company: "",
+                  role: "User",
+                  interest: "Demo access",
+                  message: "",
+                });
+              }}
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground text-background px-5 py-2.5 font-semibold hover:opacity-90 transition"
             >
               Submit another
@@ -52,37 +81,77 @@ function Contact() {
           </div>
         ) : (
           <form
-            onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSent(true);
+            }}
             className="mt-12 rounded-3xl border border-border/60 bg-card p-6 md:p-10 shadow-[var(--shadow-soft)] space-y-5"
           >
             <div className="grid md:grid-cols-2 gap-5">
               <Field label="Name">
-                <input required value={form.name} onChange={set("name")} className="w-full rounded-xl border border-border bg-background px-3 py-2.5" />
+                <input
+                  required
+                  value={form.name}
+                  onChange={set("name")}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
+                />
               </Field>
               <Field label="Email">
-                <input required type="email" value={form.email} onChange={set("email")} className="w-full rounded-xl border border-border bg-background px-3 py-2.5" />
+                <input
+                  required
+                  type="email"
+                  value={form.email}
+                  onChange={set("email")}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
+                />
               </Field>
               <Field label="Company">
-                <input value={form.company} onChange={set("company")} className="w-full rounded-xl border border-border bg-background px-3 py-2.5" />
+                <input
+                  value={form.company}
+                  onChange={set("company")}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
+                />
               </Field>
               <Field label="Role">
-                <select value={form.role} onChange={set("role")} className="w-full rounded-xl border border-border bg-background px-3 py-2.5">
-                  {["User","Developer","Investor","Payout Partner","Other"].map(r => <option key={r}>{r}</option>)}
+                <select
+                  value={form.role}
+                  onChange={set("role")}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
+                >
+                  {["User", "Developer", "Investor", "Payout Partner", "Other"].map((r) => (
+                    <option key={r}>{r}</option>
+                  ))}
                 </select>
               </Field>
               <Field label="Interest">
-                <select value={form.interest} onChange={set("interest")} className="w-full rounded-xl border border-border bg-background px-3 py-2.5">
-                  {["Demo access","Partnership","API access","Investment","Other"].map(r => <option key={r}>{r}</option>)}
+                <select
+                  value={form.interest}
+                  onChange={set("interest")}
+                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
+                >
+                  {["Demo access", "Partnership", "API access", "Investment", "Other"].map((r) => (
+                    <option key={r}>{r}</option>
+                  ))}
                 </select>
               </Field>
             </div>
             <Field label="Message">
-              <textarea rows={5} value={form.message} onChange={set("message")} className="w-full rounded-xl border border-border bg-background px-3 py-2.5" />
+              <textarea
+                rows={5}
+                value={form.message}
+                onChange={set("message")}
+                className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
+              />
             </Field>
-            <button type="submit" className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-hero)] text-white px-6 py-3 font-semibold shadow-[var(--shadow-soft)] hover:opacity-95 transition">
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-hero)] text-white px-6 py-3 font-semibold shadow-[var(--shadow-soft)] hover:opacity-95 transition"
+            >
               Request access
             </button>
-            <p className="text-xs text-muted-foreground">Mock submission only. No data is stored.</p>
+            <p className="text-xs text-muted-foreground">
+              Mock submission only. No data is stored.
+            </p>
           </form>
         )}
       </section>

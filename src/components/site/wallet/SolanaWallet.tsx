@@ -35,7 +35,8 @@ export const SEED_PHRASE_WARNING = "Never share your seed phrase or private key.
 
 /** Compact connect button + wallet picker for the site header. */
 export function WalletConnectButton() {
-  const { wallets, wallet, select, connect, disconnect, connecting, connected, publicKey } = useWallet();
+  const { wallets, wallet, select, connect, disconnect, connecting, connected, publicKey } =
+    useWallet();
   const [open, setOpen] = useState(false);
   const [pendingWalletName, setPendingWalletName] = useState<string | null>(null);
   const address = publicKey?.toBase58() ?? "";

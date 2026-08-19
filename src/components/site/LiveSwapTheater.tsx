@@ -1,7 +1,17 @@
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
-import { ArrowRight, Zap, Route as RouteIcon, Wallet, Building2, CheckCircle2, Sparkles, Flame, Activity } from "lucide-react";
+import {
+  ArrowRight,
+  Zap,
+  Route as RouteIcon,
+  Wallet,
+  Building2,
+  CheckCircle2,
+  Sparkles,
+  Flame,
+  Activity,
+} from "lucide-react";
 
 // Token color chips (UV-neon)
 const TOKEN_COLOR: Record<string, string> = {
@@ -25,8 +35,28 @@ import face7 from "@/assets/face-7.jpg";
 import face8 from "@/assets/face-8.jpg";
 
 const AVATARS = [face1, face2, face3, face4, face5, face6, face7, face8];
-const NAMES = ["Ayaan", "Priya", "Chinedu", "Mei", "Diego", "Fatima", "Yusuf", "Sofia", "Kenji", "Amara"];
-const SENDER_CITIES = ["New York", "London", "Dubai", "Singapore", "Berlin", "Toronto", "Sydney", "San Francisco"];
+const NAMES = [
+  "Ayaan",
+  "Priya",
+  "Chinedu",
+  "Mei",
+  "Diego",
+  "Fatima",
+  "Yusuf",
+  "Sofia",
+  "Kenji",
+  "Amara",
+];
+const SENDER_CITIES = [
+  "New York",
+  "London",
+  "Dubai",
+  "Singapore",
+  "Berlin",
+  "Toronto",
+  "Sydney",
+  "San Francisco",
+];
 
 type Swap = {
   id: number;
@@ -106,7 +136,13 @@ export function LiveSwapTheater() {
     return () => cancelAnimationFrame(raf);
   }, [current.id, hydrated]);
 
-  const nodes = ["Wallet", "Jupiter", "USDC", "Bridge", `${current.corridor.flag} ${current.corridor.currency}`];
+  const nodes = [
+    "Wallet",
+    "Jupiter",
+    "USDC",
+    "Bridge",
+    `${current.corridor.flag} ${current.corridor.currency}`,
+  ];
   const activeIdx = Math.min(nodes.length - 1, Math.floor(progress * nodes.length));
 
   return (
@@ -120,7 +156,8 @@ export function LiveSwapTheater() {
             See how a Jupiter SOL → USDC swap is routed.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Built using the Jupiter Swap API. Swap output returns to your connected wallet — LamportPay does not custody funds and fiat payout is disabled.
+            Built using the Jupiter Swap API. Swap output returns to your connected wallet —
+            LamportPay does not custody funds and fiat payout is disabled.
           </p>
         </div>
 
@@ -131,10 +168,24 @@ export function LiveSwapTheater() {
 
           {/* Counters bar */}
           <div className="relative border-b border-white/10 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10 bg-black/20 backdrop-blur">
-            <Counter label="Jupiter route preview" value="SOL → USDC" icon={<Activity className="w-3 h-3" />} />
+            <Counter
+              label="Jupiter route preview"
+              value="SOL → USDC"
+              icon={<Activity className="w-3 h-3" />}
+            />
             <Counter label="Output" value="Connected wallet" icon={<Zap className="w-3 h-3" />} />
-            <Counter label="Bridge payout" value="Disabled" icon={<CheckCircle2 className="w-3 h-3" />} sub="No fiat payout" />
-            <Counter label="Mode" value="Demo mode" icon={<Sparkles className="w-3 h-3" />} sub="Swap limits 0.001–0.01 SOL" />
+            <Counter
+              label="Bridge payout"
+              value="Disabled"
+              icon={<CheckCircle2 className="w-3 h-3" />}
+              sub="No fiat payout"
+            />
+            <Counter
+              label="Mode"
+              value="Demo mode"
+              icon={<Sparkles className="w-3 h-3" />}
+              sub="Swap limits 0.001–0.01 SOL"
+            />
           </div>
 
           <div className="relative grid lg:grid-cols-[1.35fr_1fr] gap-0">
@@ -147,7 +198,9 @@ export function LiveSwapTheater() {
                   </div>
                   <div>
                     <div className="text-sm font-semibold">Jupiter Router</div>
-                    <div className="text-[10px] text-white/50 font-mono">v6 · aggregating 27 DEXs</div>
+                    <div className="text-[10px] text-white/50 font-mono">
+                      v6 · aggregating 27 DEXs
+                    </div>
                   </div>
                 </div>
                 <span className="text-[10px] font-mono text-[oklch(0.82_0.18_200)] flex items-center gap-1.5 border border-[oklch(0.82_0.18_200)]/30 rounded-full px-2 py-1">
@@ -183,8 +236,12 @@ export function LiveSwapTheater() {
               {/* Route visualization */}
               <div className="mt-6">
                 <div className="flex items-center justify-between mb-2 text-[10px] font-mono uppercase tracking-widest text-white/50">
-                  <span className="flex items-center gap-1.5"><RouteIcon className="w-3 h-3" /> Route</span>
-                  <span>{Math.round(progress * 100)}% · {current.ms}ms</span>
+                  <span className="flex items-center gap-1.5">
+                    <RouteIcon className="w-3 h-3" /> Route
+                  </span>
+                  <span>
+                    {Math.round(progress * 100)}% · {current.ms}ms
+                  </span>
                 </div>
                 <div className="relative rounded-2xl border border-white/10 bg-black/30 p-4">
                   <div className="absolute left-4 right-4 top-1/2 -translate-y-1/2 h-px bg-white/10" />
@@ -210,7 +267,11 @@ export function LiveSwapTheater() {
                             {i === 3 && <Building2 className="w-3.5 h-3.5 text-white" />}
                             {i === 4 && <span className="text-xs">{current.corridor.flag}</span>}
                           </div>
-                          <span className={`text-[10px] font-mono ${active ? "text-white" : "text-white/40"}`}>{i === 4 ? current.corridor.currency : n}</span>
+                          <span
+                            className={`text-[10px] font-mono ${active ? "text-white" : "text-white/40"}`}
+                          >
+                            {i === 4 ? current.corridor.currency : n}
+                          </span>
                         </div>
                       );
                     })}
@@ -221,7 +282,10 @@ export function LiveSwapTheater() {
                 <div className="mt-4 grid grid-cols-3 gap-2 text-[10px] font-mono">
                   <MiniStat label="Slippage" value="0.05%" />
                   <MiniStat label="Price impact" value="0.02%" />
-                  <MiniStat label="Min received" value={`${fmt(current.local * 0.995, 0)} ${current.corridor.currency}`} />
+                  <MiniStat
+                    label="Min received"
+                    value={`${fmt(current.local * 0.995, 0)} ${current.corridor.currency}`}
+                  />
                 </div>
               </div>
             </div>
@@ -262,7 +326,10 @@ export function LiveSwapTheater() {
                         <div className="flex items-center gap-1.5 mt-0.5 text-[12px] font-mono">
                           <span
                             className="px-1.5 py-0.5 rounded font-semibold"
-                            style={{ background: `${TOKEN_COLOR["SOL"]}22`, color: TOKEN_COLOR["SOL"] }}
+                            style={{
+                              background: `${TOKEN_COLOR["SOL"]}22`,
+                              color: TOKEN_COLOR["SOL"],
+                            }}
                           >
                             SOL
                           </span>
@@ -276,7 +343,8 @@ export function LiveSwapTheater() {
               </div>
 
               <div className="mt-5 text-[11px] text-white/40 font-mono leading-relaxed">
-                * Illustrative route preview only — not LamportPay customer activity. Live swaps use the Jupiter Swap API; Bridge payout is disabled.
+                * Illustrative route preview only — not LamportPay customer activity. Live swaps use
+                the Jupiter Swap API; Bridge payout is disabled.
               </div>
             </div>
           </div>
@@ -289,13 +357,27 @@ export function LiveSwapTheater() {
   );
 }
 
-function Counter({ label, value, icon, sub, up }: { label: string; value: string; icon?: React.ReactNode; sub?: string; up?: boolean }) {
+function Counter({
+  label,
+  value,
+  icon,
+  sub,
+  up,
+}: {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+  sub?: string;
+  up?: boolean;
+}) {
   return (
     <div className="p-4 md:p-5">
       <div className="text-[10px] font-mono uppercase tracking-widest text-white/50 flex items-center gap-1.5">
         {icon} {label}
       </div>
-      <div className={`mt-1 text-xl md:text-2xl font-semibold tabular-nums ${up ? "text-uv" : "text-white"}`}>
+      <div
+        className={`mt-1 text-xl md:text-2xl font-semibold tabular-nums ${up ? "text-uv" : "text-white"}`}
+      >
         {value}
       </div>
       {sub && <div className="text-[10px] text-white/40 font-mono">{sub}</div>}
@@ -363,10 +445,7 @@ function MiniStat({ label, value }: { label: string; value: string }) {
 }
 
 function JustSentMarquee() {
-  const items = useMemo(
-    () => Array.from({ length: 14 }, (_, i) => mkSwap(i + 40)),
-    [],
-  );
+  const items = useMemo(() => Array.from({ length: 14 }, (_, i) => mkSwap(i + 40)), []);
   const loop = [...items, ...items];
   return (
     <div className="relative border-t border-white/10 bg-black/30 overflow-hidden">
@@ -374,7 +453,10 @@ function JustSentMarquee() {
       <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[oklch(0.11_0.05_275)] to-transparent z-10" />
       <div className="flex gap-6 py-3 animate-ticker whitespace-nowrap will-change-transform">
         {loop.map((s, i) => (
-          <span key={i} className="inline-flex items-center gap-2 text-[12px] font-mono text-white/70">
+          <span
+            key={i}
+            className="inline-flex items-center gap-2 text-[12px] font-mono text-white/70"
+          >
             <CheckCircle2 className="w-3 h-3 text-[color:var(--success)]" />
             <span className="text-white/90">Jupiter route preview</span>
             <span
@@ -429,7 +511,8 @@ export function HeroFloatingCards() {
               <div className="text-[10px] text-muted-foreground font-mono">Demo mode</div>
             </div>
             <span className="text-[10px] font-semibold text-[color:var(--success)] flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" /> demo
+              <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" />{" "}
+              demo
             </span>
           </div>
           <div className="mt-2 flex items-center justify-between text-sm font-mono">

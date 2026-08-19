@@ -1,13 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowRight, Info } from "lucide-react";
-import {
-  CORRIDORS,
-  PAYOUT_METHODS,
-  TOKENS,
-  type Token,
-  calcQuote,
-  fmt,
-} from "./demo-data";
+import { CORRIDORS, PAYOUT_METHODS, TOKENS, type Token, calcQuote, fmt } from "./demo-data";
 import { Link } from "@tanstack/react-router";
 
 export function TransferSimulator({ compact = false }: { compact?: boolean }) {
@@ -30,8 +23,12 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
         <div className="grid md:grid-cols-2">
           <div className="p-6 md:p-8 space-y-5 border-b md:border-b-0 md:border-r border-border/60">
             <div className="flex items-center justify-between">
-              <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">You send</div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-semibold">DEMO</span>
+              <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                You send
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-semibold">
+                DEMO
+              </span>
             </div>
             <div className="flex gap-3 items-center">
               <input
@@ -45,7 +42,9 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
                 onChange={(e) => setToken(e.target.value as Token)}
                 className="rounded-xl border border-border bg-secondary px-4 py-2 font-semibold"
               >
-                {TOKENS.map((t) => <option key={t}>{t}</option>)}
+                {TOKENS.map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
               </select>
             </div>
 
@@ -57,7 +56,9 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
                   className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm"
                 >
                   {CORRIDORS.map((c, i) => (
-                    <option key={c.currency} value={i}>{c.flag} {c.country}</option>
+                    <option key={c.currency} value={i}>
+                      {c.flag} {c.country}
+                    </option>
                   ))}
                 </select>
               </Field>
@@ -89,14 +90,21 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
           </div>
 
           <div className="p-6 md:p-8 bg-[image:var(--gradient-card)] space-y-4">
-            <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Recipient gets</div>
+            <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              Recipient gets
+            </div>
             <div className="flex items-baseline gap-2">
-              <div className="text-4xl md:text-5xl font-semibold tracking-tight">{fmt(quote.recipientAmount, 2)}</div>
+              <div className="text-4xl md:text-5xl font-semibold tracking-tight">
+                {fmt(quote.recipientAmount, 2)}
+              </div>
               <div className="text-lg font-semibold text-muted-foreground">{corridor.currency}</div>
             </div>
             <div className="space-y-2 text-sm border-t border-border/60 pt-4">
               <Row k="Estimated USDC settlement" v={`${fmt(quote.usdcSettlement)} USDC`} />
-              <Row k="FX rate" v={`1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`} />
+              <Row
+                k="FX rate"
+                v={`1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`}
+              />
               <Row k="Bridge fee" v={`$${fmt(quote.bridgeFee)}`} />
               <Row k="LamportPay fee" v={`$${fmt(quote.platformFee)}`} />
               <Row k="Estimated delivery" v="Under 5 minutes" />
