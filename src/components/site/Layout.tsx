@@ -20,6 +20,7 @@ function BrandLogo({ className = "" }: { className?: string }) {
 const nav = [
   { to: "/send", label: "Send" },
   { to: "/how-it-works", label: "How it works" },
+  { to: "/workflow", label: "Workflow" },
   { to: "/whitepaper", label: "White paper" },
   { to: "/compliance", label: "Compliance" },
   { to: "/docs", label: "Docs" },
@@ -189,6 +190,11 @@ function SiteFooter() {
             <li>
               <Link to="/how-it-works" className="hover:text-foreground">
                 How it works
+              </Link>
+            </li>
+            <li>
+              <Link to="/workflow" className="hover:text-foreground">
+                Workflow overview
               </Link>
             </li>
             <li>
