@@ -29,10 +29,17 @@ const apis = [
   "POST /api/bridge-kyc/complete",
   "POST /api/payments/confirm",
   "POST /api/jupiter/quote",
+  "POST /api/jupiter/order",
+  "POST /api/jupiter/execute",
   "POST /api/solana/verify-transaction",
   "POST /api/bridge-transfer",
   "GET /api/payments/[paymentId]",
   "GET /api/receipt/[paymentId]",
+  "POST /api/bridge/quote",
+  "POST /api/bridge/customer",
+  "POST /api/bridge/external-account",
+  "POST /api/bridge/transfer",
+  "POST /api/public/bridge-webhook",
 ];
 
 function Docs() {
