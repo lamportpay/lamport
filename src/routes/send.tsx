@@ -367,7 +367,7 @@ export default function SendPage() {
                 <Field label="Payout method">
                   <select
                     value={method}
-                    onChange={(e) => setMethod(e.target.value as any)}
+                    onChange={(e) => setMethod(e.target.value as (typeof PAYOUT_METHODS)[number])}
                     className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
                   >
                     {PAYOUT_METHODS.map((m) => (
