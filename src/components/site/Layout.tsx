@@ -193,6 +193,11 @@ function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link to="/workflow" className="hover:text-foreground">
+                Workflow overview
+              </Link>
+            </li>
+            <li>
               <Link to="/docs" className="hover:text-foreground">
                 Developer docs
               </Link>

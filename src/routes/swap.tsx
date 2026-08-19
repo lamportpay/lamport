@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteLayout } from "@/components/site/Layout";
 import { SwapPanelIsland } from "@/components/site/wallet/WalletIsland";
+import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
+import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
 
 export const Route = createFileRoute("/swap")({
   head: () => ({
@@ -27,7 +29,7 @@ export const Route = createFileRoute("/swap")({
 function SwapPage() {
   return (
     <SiteLayout>
-      <section className="max-w-2xl mx-auto px-5 py-16 md:py-24">
+      <section className="max-w-3xl mx-auto px-5 py-16 md:py-24">
         <div className="text-xs font-semibold uppercase tracking-wider text-primary">
           Jupiter swap
         </div>
@@ -41,6 +43,11 @@ function SwapPage() {
 
         <div className="mt-10">
           <SwapPanelIsland />
+        </div>
+
+        <div className="mt-10 space-y-6">
+          <SwapRoutePreviewCard />
+          <IntegrationStatusPanel />
         </div>
       </section>
     </SiteLayout>
