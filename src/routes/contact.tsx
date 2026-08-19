@@ -28,7 +28,10 @@ function Contact() {
     interest: "Demo access",
     message: "",
   });
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setForm({ ...form, [k]: e.target.value });
+  const set =
+    (k: keyof typeof form) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm({ ...form, [k]: e.target.value });
 
   return (
     <SiteLayout>
