@@ -17,6 +17,7 @@ import { Route as DocsRouteImport } from './routes/docs'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicBridgeWebhookRouteImport } from './routes/api/public/bridge-webhook'
 import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
 import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
 import { Route as ApiBridgeTransferRouteImport } from './routes/api/bridge/transfer'
@@ -62,6 +63,11 @@ const ComplianceRoute = ComplianceRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBridgeWebhookRoute = ApiPublicBridgeWebhookRouteImport.update({
+  id: '/api/public/bridge-webhook',
+  path: '/api/public/bridge-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiJupiterOrderRoute = ApiJupiterOrderRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
+  '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
+  '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
+  '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
+    | '/api/public/bridge-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
+    | '/api/public/bridge-webhook'
   id:
     | '__root__'
     | '/'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
+    | '/api/public/bridge-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -211,6 +223,7 @@ export interface RootRouteChildren {
   ApiBridgeTransferRoute: typeof ApiBridgeTransferRoute
   ApiJupiterExecuteRoute: typeof ApiJupiterExecuteRoute
   ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
+  ApiPublicBridgeWebhookRoute: typeof ApiPublicBridgeWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -269,6 +282,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/bridge-webhook': {
+      id: '/api/public/bridge-webhook'
+      path: '/api/public/bridge-webhook'
+      fullPath: '/api/public/bridge-webhook'
+      preLoaderRoute: typeof ApiPublicBridgeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/jupiter/order': {
@@ -331,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBridgeTransferRoute: ApiBridgeTransferRoute,
   ApiJupiterExecuteRoute: ApiJupiterExecuteRoute,
   ApiJupiterOrderRoute: ApiJupiterOrderRoute,
+  ApiPublicBridgeWebhookRoute: ApiPublicBridgeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
