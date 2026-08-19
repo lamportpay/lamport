@@ -4,12 +4,25 @@ import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
 
 // Approximate lon/lat for corridor countries + a few sender hubs
 const COORDS: Record<string, [number, number]> = {
-  PKR: [69, 30], INR: [78, 22], NGN: [8, 9], PHP: [122, 13], MXN: [-102, 23],
-  BDT: [90, 24], EGP: [30, 27], COP: [-74, 4], BRL: [-52, -10], PEN: [-75, -10],
+  PKR: [69, 30],
+  INR: [78, 22],
+  NGN: [8, 9],
+  PHP: [122, 13],
+  MXN: [-102, 23],
+  BDT: [90, 24],
+  EGP: [30, 27],
+  COP: [-74, 4],
+  BRL: [-52, -10],
+  PEN: [-75, -10],
 };
 const HUBS: [number, number, string][] = [
-  [-74, 40, "NYC"], [-0.1, 51.5, "LON"], [103.8, 1.3, "SGP"], [55.3, 25.2, "DXB"],
-  [139.7, 35.7, "TYO"], [-122.4, 37.8, "SFO"], [13.4, 52.5, "BER"],
+  [-74, 40, "NYC"],
+  [-0.1, 51.5, "LON"],
+  [103.8, 1.3, "SGP"],
+  [55.3, 25.2, "DXB"],
+  [139.7, 35.7, "TYO"],
+  [-122.4, 37.8, "SFO"],
+  [13.4, 52.5, "BER"],
 ];
 
 // Orthographic globe projection into a 600x600 viewBox (spinning earth)
@@ -49,10 +62,23 @@ function arcPath(a: [number, number], b: [number, number]) {
 // Sparse dot-matrix continents (hand-tuned lon/lat blobs). Cheap, no map lib.
 const CONTINENT_BLOBS: [number, number, number][] = [
   // [lon, lat, radiusDeg]
-  [-100, 45, 22], [-90, 32, 14], [-75, 10, 10], [-60, -15, 22], [-70, -35, 8],
-  [10, 50, 18], [20, 30, 14], [25, 5, 14], [25, -10, 14], [28, -28, 10],
-  [45, 55, 18], [80, 45, 20], [100, 30, 18], [115, 20, 10], [130, -5, 10],
-  [135, -25, 12], [140, 60, 14],
+  [-100, 45, 22],
+  [-90, 32, 14],
+  [-75, 10, 10],
+  [-60, -15, 22],
+  [-70, -35, 8],
+  [10, 50, 18],
+  [20, 30, 14],
+  [25, 5, 14],
+  [25, -10, 14],
+  [28, -28, 10],
+  [45, 55, 18],
+  [80, 45, 20],
+  [100, 30, 18],
+  [115, 20, 10],
+  [130, -5, 10],
+  [135, -25, 12],
+  [140, 60, 14],
 ];
 function inLand(lon: number, lat: number) {
   return CONTINENT_BLOBS.some(([blon, blat, r]) => {
@@ -143,7 +169,8 @@ export function WorldPulse() {
             Jupiter-powered swap demo — built for future payout routing.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            This demo shows how a Solana wallet can swap SOL to USDC through Jupiter. Local-currency payout remains disabled until licensed partner approval.
+            This demo shows how a Solana wallet can swap SOL to USDC through Jupiter. Local-currency
+            payout remains disabled until licensed partner approval.
           </p>
         </div>
 
@@ -182,10 +209,22 @@ export function WorldPulse() {
 
                 {/* atmosphere + ocean sphere */}
                 <circle cx={CX} cy={CY} r={R + 26} fill="url(#atmo)" />
-                <circle cx={CX} cy={CY} r={R} fill="url(#ocean)" stroke="oklch(0.7 0.2 250 / 0.4)" strokeWidth="1" />
+                <circle
+                  cx={CX}
+                  cy={CY}
+                  r={R}
+                  fill="url(#ocean)"
+                  stroke="oklch(0.7 0.2 250 / 0.4)"
+                  strokeWidth="1"
+                />
 
                 {/* graticule */}
-                <g clipPath="url(#globeClip)" opacity="0.28" stroke="oklch(0.8 0.12 250 / 0.5)" fill="none">
+                <g
+                  clipPath="url(#globeClip)"
+                  opacity="0.28"
+                  stroke="oklch(0.8 0.12 250 / 0.5)"
+                  fill="none"
+                >
                   {[-60, -30, 0, 30, 60].map((lat) => {
                     const t = TILT * RAD;
                     const la = lat * RAD;
@@ -233,7 +272,13 @@ export function WorldPulse() {
                     <g key={name}>
                       <circle cx={x} cy={y} r="14" fill="url(#node)" opacity="0.5" />
                       <circle cx={x} cy={y} r="3" fill="oklch(0.85 0.18 200)" />
-                      <text x={x + 8} y={y - 6} fill="oklch(0.85 0.18 200)" fontSize="10" fontFamily="ui-monospace, monospace">
+                      <text
+                        x={x + 8}
+                        y={y - 6}
+                        fill="oklch(0.85 0.18 200)"
+                        fontSize="10"
+                        fontFamily="ui-monospace, monospace"
+                      >
                         {name}
                       </text>
                     </g>
@@ -250,13 +295,29 @@ export function WorldPulse() {
                       <circle cx={x} cy={y} r="10" fill="oklch(0.7 0.28 330 / 0.25)">
                         {hydrated && (
                           <>
-                            <animate attributeName="r" values="8;16;8" dur="2.4s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
+                            <animate
+                              attributeName="r"
+                              values="8;16;8"
+                              dur="2.4s"
+                              repeatCount="indefinite"
+                            />
+                            <animate
+                              attributeName="opacity"
+                              values="0.5;0;0.5"
+                              dur="2.4s"
+                              repeatCount="indefinite"
+                            />
                           </>
                         )}
                       </circle>
                       <circle cx={x} cy={y} r="3.5" fill="oklch(0.78 0.24 340)" />
-                      <text x={x + 7} y={y + 12} fill="oklch(0.9 0.05 320)" fontSize="10" fontFamily="ui-monospace, monospace">
+                      <text
+                        x={x + 7}
+                        y={y + 12}
+                        fill="oklch(0.9 0.05 320)"
+                        fontSize="10"
+                        fontFamily="ui-monospace, monospace"
+                      >
                         {c.currency}
                       </text>
                     </g>
@@ -280,7 +341,13 @@ export function WorldPulse() {
                         opacity="0.8"
                       >
                         {hydrated && (
-                          <animate attributeName="stroke-dashoffset" from="120" to="0" dur="2.2s" repeatCount="indefinite" />
+                          <animate
+                            attributeName="stroke-dashoffset"
+                            from="120"
+                            to="0"
+                            dur="2.2s"
+                            repeatCount="indefinite"
+                          />
                         )}
                       </path>
                       <circle r="3" fill="oklch(0.92 0.2 200)">
@@ -295,8 +362,12 @@ export function WorldPulse() {
               <div className="pointer-events-none absolute inset-0">
                 {TOKENS.map((t, i) => {
                   const positions = [
-                    "top-4 left-6", "top-10 right-8", "bottom-8 left-10",
-                    "bottom-14 right-14", "top-1/2 left-4", "top-1/3 right-6",
+                    "top-4 left-6",
+                    "top-10 right-8",
+                    "bottom-8 left-10",
+                    "bottom-14 right-14",
+                    "top-1/2 left-4",
+                    "top-1/3 right-6",
                     "bottom-4 left-1/2",
                   ];
                   return (
@@ -307,7 +378,9 @@ export function WorldPulse() {
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.82_0.18_200)] shadow-[0_0_8px_oklch(0.82_0.18_200)]" />
                       {t}
-                      <span className="text-white/50">${fmt(TOKEN_USD[t], TOKEN_USD[t] < 1 ? 4 : 2)}</span>
+                      <span className="text-white/50">
+                        ${fmt(TOKEN_USD[t], TOKEN_USD[t] < 1 ? 4 : 2)}
+                      </span>
                     </div>
                   );
                 })}

@@ -26,16 +26,16 @@ const FORBIDDEN_FIELDS = [
 
 const OrderInput = z
   .object({
-  inputMint: z.string().min(1, "inputMint is required."),
-  outputMint: z.string().min(1, "outputMint is required."),
-  amount: z
-    .string()
-    .min(1, "amount is required.")
-    .regex(/^\d+$/, "amount must be a numeric string in the smallest token unit."),
-  taker: z
-    .string()
-    .min(1, "taker is required.")
-    .regex(BASE58_RE, "taker must be a valid Solana wallet address."),
+    inputMint: z.string().min(1, "inputMint is required."),
+    outputMint: z.string().min(1, "outputMint is required."),
+    amount: z
+      .string()
+      .min(1, "amount is required.")
+      .regex(/^\d+$/, "amount must be a numeric string in the smallest token unit."),
+    taker: z
+      .string()
+      .min(1, "taker is required.")
+      .regex(BASE58_RE, "taker must be a valid Solana wallet address."),
   })
   .strict();
 
@@ -59,9 +59,7 @@ export const Route = createFileRoute("/api/jupiter/order")({
 
         if (body && typeof body === "object" && !Array.isArray(body)) {
           const keys = Object.keys(body as Record<string, unknown>);
-          const blocked = keys.filter((k) =>
-            (FORBIDDEN_FIELDS as readonly string[]).includes(k),
-          );
+          const blocked = keys.filter((k) => (FORBIDDEN_FIELDS as readonly string[]).includes(k));
           if (blocked.length > 0) {
             return errorResponse(
               `Destination override is not allowed. Remove: ${blocked.join(", ")}.`,
@@ -106,7 +104,9 @@ export const Route = createFileRoute("/api/jupiter/order")({
 
         let upstream: Response;
         try {
-          upstream = await fetch(url, { headers: { "x-api-key": apiKey, Accept: "application/json" } });
+          upstream = await fetch(url, {
+            headers: { "x-api-key": apiKey, Accept: "application/json" },
+          });
         } catch {
           return errorResponse("Failed to reach Jupiter API.", 502);
         }

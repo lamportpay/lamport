@@ -23,8 +23,18 @@ function nowInCity(offsetH: number) {
 }
 
 const OFFSETS: Record<string, number> = {
-  PKT: 5, IST: 5.5, WAT: 1, PHT: 8, CST: -6, BST: 6, EET: 2,
-  BRT: -3, COT: -5, PET: -5, WIB: 7, EAT: 3,
+  PKT: 5,
+  IST: 5.5,
+  WAT: 1,
+  PHT: 8,
+  CST: -6,
+  BST: 6,
+  EET: 2,
+  BRT: -3,
+  COT: -5,
+  PET: -5,
+  WIB: 7,
+  EAT: 3,
 };
 
 export function CitiesNeverSleep() {
@@ -56,7 +66,8 @@ export function CitiesNeverSleep() {
             A demo built for <span className="text-uv">a future payout flow.</span>
           </h2>
           <p className="mt-3 text-muted-foreground">
-            LamportPay currently demonstrates wallet connection and Jupiter SOL-to-USDC swap routing. Corridor payouts are not live.
+            LamportPay currently demonstrates wallet connection and Jupiter SOL-to-USDC swap
+            routing. Corridor payouts are not live.
           </p>
         </div>
 
@@ -80,7 +91,9 @@ export function CitiesNeverSleep() {
                   </div>
                   <div className="text-right">
                     <div className="font-mono text-lg tabular-nums text-primary">{t}</div>
-                    <div className={`text-[10px] uppercase font-semibold mt-0.5 ${active ? "text-[color:var(--success)]" : "text-muted-foreground"}`}>
+                    <div
+                      className={`text-[10px] uppercase font-semibold mt-0.5 ${active ? "text-[color:var(--success)]" : "text-muted-foreground"}`}
+                    >
                       {active ? "● routing" : "○ idle"}
                     </div>
                   </div>
@@ -88,7 +101,10 @@ export function CitiesNeverSleep() {
                 <div className="mt-3 h-1 rounded-full bg-secondary overflow-hidden relative">
                   <div
                     className="absolute inset-y-0 bg-[image:var(--gradient-uv)] rounded-full"
-                    style={{ width: `${20 + ((tick + i * 3) % 80)}%`, transition: "width 900ms ease" }}
+                    style={{
+                      width: `${20 + ((tick + i * 3) % 80)}%`,
+                      transition: "width 900ms ease",
+                    }}
                   />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground font-mono">

@@ -2,7 +2,15 @@ import "@/lib/buffer-polyfill";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PublicKey, VersionedTransaction } from "@solana/web3.js";
-import { ArrowDown, Check, ExternalLink, Loader2, ShieldAlert, TriangleAlert, Wallet } from "lucide-react";
+import {
+  ArrowDown,
+  Check,
+  ExternalLink,
+  Loader2,
+  ShieldAlert,
+  TriangleAlert,
+  Wallet,
+} from "lucide-react";
 
 import { SOL_MINT, USDC_MINT } from "@/lib/tokens";
 import { WalletStatusCard } from "./SolanaWallet";
@@ -100,7 +108,8 @@ export function SwapPanel() {
         : busy !== null
           ? "Wait for the current step to finish."
           : null;
-  const signDisabled = !orderReady || !signTransaction || !connected || busy !== null || Boolean(amountError);
+  const signDisabled =
+    !orderReady || !signTransaction || !connected || busy !== null || Boolean(amountError);
   const signDisabledMessage = !connected
     ? "Connect a wallet, then create a Jupiter order before signing."
     : !orderReady
@@ -286,8 +295,8 @@ export function SwapPanel() {
               </div>
             )}
             <p className="text-[11px] leading-relaxed text-muted-foreground">
-              This test swaps SOL to USDC inside your own wallet. LamportPay does not receive
-              your funds. Bridge payout is disabled.
+              This test swaps SOL to USDC inside your own wallet. LamportPay does not receive your
+              funds. Bridge payout is disabled.
             </p>
           </div>
 
@@ -367,8 +376,14 @@ export function SwapPanel() {
           {result && (
             <div className="space-y-2 text-sm">
               <Row k="Status" v={result.status ?? "—"} />
-              <Row k="Input amount" v={result.totalInputAmount ?? result.inputAmountResult ?? "—"} />
-              <Row k="Output amount" v={result.totalOutputAmount ?? result.outputAmountResult ?? "—"} />
+              <Row
+                k="Input amount"
+                v={result.totalInputAmount ?? result.inputAmountResult ?? "—"}
+              />
+              <Row
+                k="Output amount"
+                v={result.totalOutputAmount ?? result.outputAmountResult ?? "—"}
+              />
               {result.signature && (
                 <>
                   <div className="text-xs font-mono break-all rounded-xl bg-secondary/60 px-4 py-3">
@@ -405,9 +420,7 @@ export function SwapPanel() {
           Real Jupiter swaps may use real funds. Test only with a very small amount.
         </Warn>
         <Warn tone="muted">Bridge fiat payout is disabled for now.</Warn>
-        <Warn tone="warning">
-          LamportPay will never ask for your seed phrase or private key.
-        </Warn>
+        <Warn tone="warning">LamportPay will never ask for your seed phrase or private key.</Warn>
       </div>
 
       {confirmOpen && (

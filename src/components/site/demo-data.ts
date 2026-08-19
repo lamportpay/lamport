@@ -48,7 +48,10 @@ export function calcQuote(amount: number, token: Token, currency: string) {
 }
 
 export function fmt(n: number, digits = 2) {
-  return n.toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  return n.toLocaleString(undefined, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
 }
 
 export function mockSolanaHash() {

@@ -21,10 +21,20 @@ async function importRsaPublicKey(pem: string): Promise<CryptoKey> {
     .replace(/-----END PUBLIC KEY-----/g, "")
     .replace(/\s/g, "");
   const binary = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
-  return crypto.subtle.importKey("spki", binary.buffer, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
+  return crypto.subtle.importKey(
+    "spki",
+    binary.buffer,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["verify"],
+  );
 }
 
-async function verifyWebhookSignature(payload: string, header: string, publicKeyPem: string): Promise<boolean> {
+async function verifyWebhookSignature(
+  payload: string,
+  header: string,
+  publicKeyPem: string,
+): Promise<boolean> {
   const parsed = parseSignatureHeader(header);
   if (!parsed) return false;
 

@@ -142,11 +142,7 @@ function WalletButtonClient() {
 /** Full wallet panel: connect, address, safety warning. */
 export function WalletPanelIsland() {
   return (
-    <Island
-      fallback={
-        <WalletFallbackCard />
-      }
-    >
+    <Island fallback={<WalletFallbackCard />}>
       <StatusCard />
     </Island>
   );
@@ -155,11 +151,7 @@ export function WalletPanelIsland() {
 /** SOL → USDC Jupiter swap demo panel. */
 export function SwapPanelIsland() {
   return (
-    <Island
-      fallback={
-        <WalletFallbackCard />
-      }
-    >
+    <Island fallback={<WalletFallbackCard />}>
       <Swap />
     </Island>
   );

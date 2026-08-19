@@ -47,18 +47,21 @@ export const Route = createFileRoute("/api/bridge/external-account")({
         const { customerId, ...account } = parsed.data;
         const idempotencyKey = request.headers.get("Idempotency-Key") || crypto.randomUUID();
 
-        const upstream = await fetch(`${config.apiUrl}/v0/customers/${customerId}/external_accounts`, {
-          method: "POST",
-          headers: bridgeHeaders(config, idempotencyKey),
-          body: JSON.stringify({
-            currency: account.currency,
-            account_number: account.account_number,
-            routing_number: account.routing_number,
-            bank_name: account.bank_name,
-            account_holder_name: account.account_holder_name,
-            account_holder_type: account.account_holder_type,
-          }),
-        });
+        const upstream = await fetch(
+          `${config.apiUrl}/v0/customers/${customerId}/external_accounts`,
+          {
+            method: "POST",
+            headers: bridgeHeaders(config, idempotencyKey),
+            body: JSON.stringify({
+              currency: account.currency,
+              account_number: account.account_number,
+              routing_number: account.routing_number,
+              bank_name: account.bank_name,
+              account_holder_name: account.account_holder_name,
+              account_holder_type: account.account_holder_type,
+            }),
+          },
+        );
 
         const text = await upstream.text();
         if (!upstream.ok) {

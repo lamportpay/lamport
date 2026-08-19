@@ -80,7 +80,12 @@
   --accent-foreground: oklch(0.3 0.12 275);
   --success: oklch(0.65 0.16 155);
   --warning: oklch(0.78 0.15 75);
-  --gradient-hero: linear-gradient(135deg, oklch(0.52 0.22 275) 0%, oklch(0.68 0.19 300) 50%, oklch(0.75 0.14 220) 100%);
+  --gradient-hero: linear-gradient(
+    135deg,
+    oklch(0.52 0.22 275) 0%,
+    oklch(0.68 0.19 300) 50%,
+    oklch(0.75 0.14 220) 100%
+  );
   --gradient-card: linear-gradient(180deg, oklch(1 0 0) 0%, oklch(0.98 0.01 270) 100%);
   --shadow-elegant: 0 20px 60px -20px oklch(0.52 0.22 275 / 0.25);
   --shadow-soft: 0 4px 20px -8px oklch(0.4 0.1 265 / 0.12);
@@ -88,8 +93,14 @@
   --neon-magenta: oklch(0.7 0.28 330);
   --neon-violet: oklch(0.62 0.28 295);
   --neon-lime: oklch(0.88 0.22 145);
-  --gradient-uv: linear-gradient(90deg, oklch(0.62 0.28 295) 0%, oklch(0.7 0.28 330) 50%, oklch(0.82 0.18 200) 100%);
-  --shadow-neon: 0 0 40px -4px oklch(0.62 0.28 295 / 0.55), 0 0 80px -20px oklch(0.7 0.28 330 / 0.35);
+  --gradient-uv: linear-gradient(
+    90deg,
+    oklch(0.62 0.28 295) 0%,
+    oklch(0.7 0.28 330) 50%,
+    oklch(0.82 0.18 200) 100%
+  );
+  --shadow-neon:
+    0 0 40px -4px oklch(0.62 0.28 295 / 0.55), 0 0 80px -20px oklch(0.7 0.28 330 / 0.35);
   --grid-line: oklch(0.62 0.28 295 / 0.08);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
@@ -178,60 +189,140 @@
 }
 
 @keyframes uv-pulse {
-  0%, 100% { opacity: 0.55; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.04); }
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
 }
 @keyframes uv-scan {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 @keyframes ticker-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 @keyframes rate-tick {
-  0% { color: var(--neon-cyan); text-shadow: 0 0 12px var(--neon-cyan); }
-  100% { color: inherit; text-shadow: none; }
+  0% {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 12px var(--neon-cyan);
+  }
+  100% {
+    color: inherit;
+    text-shadow: none;
+  }
 }
 @keyframes live-dot {
-  0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.22 145 / 0.7); }
-  50% { box-shadow: 0 0 0 6px oklch(0.72 0.22 145 / 0); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 oklch(0.72 0.22 145 / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 6px oklch(0.72 0.22 145 / 0);
+  }
 }
 
-.animate-uv-pulse { animation: uv-pulse 4s ease-in-out infinite; }
-.animate-ticker { animation: ticker-scroll 40s linear infinite; }
-.animate-live-dot { animation: live-dot 1.6s ease-out infinite; }
-.animate-rate-tick { animation: rate-tick 0.9s ease-out; }
-@keyframes collage-float {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-10px) scale(1.02); }
+.animate-uv-pulse {
+  animation: uv-pulse 4s ease-in-out infinite;
 }
-.animate-collage-float { animation: collage-float 7s ease-in-out infinite; }
+.animate-ticker {
+  animation: ticker-scroll 40s linear infinite;
+}
+.animate-live-dot {
+  animation: live-dot 1.6s ease-out infinite;
+}
+.animate-rate-tick {
+  animation: rate-tick 0.9s ease-out;
+}
+@keyframes collage-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.02);
+  }
+}
+.animate-collage-float {
+  animation: collage-float 7s ease-in-out infinite;
+}
 
 /* --- Lammy mascot animations --- */
 @keyframes lammy-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
 @keyframes lammy-wave {
-  0%, 60%, 100% { transform: rotate(0deg); }
-  70% { transform: rotate(-22deg); }
-  80% { transform: rotate(12deg); }
-  90% { transform: rotate(-14deg); }
+  0%,
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+  70% {
+    transform: rotate(-22deg);
+  }
+  80% {
+    transform: rotate(12deg);
+  }
+  90% {
+    transform: rotate(-14deg);
+  }
 }
 @keyframes lammy-dot {
-  0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
-  40% { transform: translateY(-4px); opacity: 1; }
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  40% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
 }
 @keyframes lammy-check {
-  from { stroke-dasharray: 32; stroke-dashoffset: 32; }
-  to { stroke-dasharray: 32; stroke-dashoffset: 0; }
+  from {
+    stroke-dasharray: 32;
+    stroke-dashoffset: 32;
+  }
+  to {
+    stroke-dasharray: 32;
+    stroke-dashoffset: 0;
+  }
 }
-.animate-lammy-float { animation: lammy-float 4.5s ease-in-out infinite; }
-.animate-lammy-wave { animation: lammy-wave 2.8s ease-in-out infinite; }
-.animate-lammy-dot { animation: lammy-dot 1.2s ease-in-out infinite; }
-.animate-lammy-pulse { animation: uv-pulse 2.4s ease-in-out infinite; }
-.animate-lammy-check { animation: lammy-check 0.6s ease-out forwards; }
+.animate-lammy-float {
+  animation: lammy-float 4.5s ease-in-out infinite;
+}
+.animate-lammy-wave {
+  animation: lammy-wave 2.8s ease-in-out infinite;
+}
+.animate-lammy-dot {
+  animation: lammy-dot 1.2s ease-in-out infinite;
+}
+.animate-lammy-pulse {
+  animation: uv-pulse 2.4s ease-in-out infinite;
+}
+.animate-lammy-check {
+  animation: lammy-check 0.6s ease-out forwards;
+}
 .animate-uv-scan::after {
   content: "";
   position: absolute;
@@ -243,14 +334,28 @@
 
 /* --- Verified users avatar rails --- */
 @keyframes rail-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 @keyframes rail-right {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
-.animate-rail-left { animation: rail-left 48s linear infinite; }
-.animate-rail-right { animation: rail-right 48s linear infinite; }
+.animate-rail-left {
+  animation: rail-left 48s linear infinite;
+}
+.animate-rail-right {
+  animation: rail-right 48s linear infinite;
+}
 .rail-group:hover .animate-rail-left,
-.rail-group:hover .animate-rail-right { animation-play-state: paused; }
+.rail-group:hover .animate-rail-right {
+  animation-play-state: paused;
+}

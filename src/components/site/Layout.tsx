@@ -43,7 +43,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                 key={n.to}
                 to={n.to}
                 className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md"
-                activeProps={{ className: "px-3 py-2 text-sm text-foreground font-medium rounded-md" }}
+                activeProps={{
+                  className: "px-3 py-2 text-sm text-foreground font-medium rounded-md",
+                }}
               >
                 {n.label}
               </Link>
@@ -144,7 +146,8 @@ function SiteFooter() {
         <div className="md:col-span-2">
           <BrandLogo className="mb-3" />
           <p className="text-sm text-muted-foreground max-w-sm">
-            Crypto in. Local money out. A Solana-first crypto-to-local-currency payment routing demo.
+            Crypto in. Local money out. A Solana-first crypto-to-local-currency payment routing
+            demo.
           </p>
           <div className="mt-4 flex items-center gap-2">
             {socialLinks.map(({ label, href, icon: Icon }) => (
@@ -178,23 +181,49 @@ function SiteFooter() {
         <div>
           <div className="text-sm font-semibold mb-3">Product</div>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/send" className="hover:text-foreground">Send demo</Link></li>
-            <li><Link to="/how-it-works" className="hover:text-foreground">How it works</Link></li>
-            <li><Link to="/docs" className="hover:text-foreground">Developer docs</Link></li>
+            <li>
+              <Link to="/send" className="hover:text-foreground">
+                Send demo
+              </Link>
+            </li>
+            <li>
+              <Link to="/how-it-works" className="hover:text-foreground">
+                How it works
+              </Link>
+            </li>
+            <li>
+              <Link to="/docs" className="hover:text-foreground">
+                Developer docs
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <div className="text-sm font-semibold mb-3">Company</div>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/whitepaper" className="hover:text-foreground">White paper</Link></li>
-            <li><Link to="/compliance" className="hover:text-foreground">Compliance</Link></li>
-            <li><Link to="/contact" className="hover:text-foreground">Contact</Link></li>
+            <li>
+              <Link to="/whitepaper" className="hover:text-foreground">
+                White paper
+              </Link>
+            </li>
+            <li>
+              <Link to="/compliance" className="hover:text-foreground">
+                Compliance
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className="hover:text-foreground">
+                Contact
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
       <div className="border-t border-border/60">
         <div className="max-w-7xl mx-auto px-5 py-5 text-xs text-muted-foreground">
-          Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or third-party recipient transfer.
+          Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected
+          wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or
+          third-party recipient transfer.
         </div>
       </div>
     </footer>

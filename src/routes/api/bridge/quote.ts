@@ -42,7 +42,8 @@ export const Route = createFileRoute("/api/bridge/quote")({
           return errorResponse(parsed.error.issues[0]?.message ?? "Invalid request.", 400);
         }
 
-        const { amount, sourceCurrency, destinationCurrency, paymentRail, onBehalfOf } = parsed.data;
+        const { amount, sourceCurrency, destinationCurrency, paymentRail, onBehalfOf } =
+          parsed.data;
         const idempotencyKey = request.headers.get("Idempotency-Key") || crypto.randomUUID();
 
         // Bridge does not expose a separate quote endpoint. We create a transfer

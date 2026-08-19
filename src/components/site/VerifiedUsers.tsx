@@ -85,9 +85,14 @@ export function VerifiedUsers() {
             Built using the Jupiter Swap API · output returns to your connected wallet
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-[11px] font-mono uppercase tracking-widest text-white/50">
-            <span className="flex items-center gap-1.5"><Globe2 className="w-3.5 h-3.5" /> Demo mode</span>
+            <span className="flex items-center gap-1.5">
+              <Globe2 className="w-3.5 h-3.5" /> Demo mode
+            </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
-            <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Bridge payout disabled</span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Bridge payout
+              disabled
+            </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
             <span>No custody of funds</span>
           </div>
