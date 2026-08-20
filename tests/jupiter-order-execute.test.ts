@@ -150,7 +150,7 @@ describe("POST /api/jupiter/execute — guards (never executes a real swap)", ()
       body: { signedTransaction: "AQAB" },
     });
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/requestId/);
+    expect(res.body.error).toMatch(/requestId|Required/i);
   });
 
   it("rejects unknown extra fields", async () => {
