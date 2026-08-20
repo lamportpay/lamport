@@ -58,7 +58,9 @@ export const Route = createFileRoute("/api/solana/health")({
               : "Jupiter has no routing or liquidity on this cluster. Use it to verify RPC and transaction verification only.",
             error: reachable ? null : (health.ok ? null : health.error) ?? (slot.ok ? null : slot.error),
           },
-          { status: reachable ? 200 : 502, headers: { "Cache-Control": "no-store" } },
+          // Always 200: an unreachable cluster is reported in the payload, not as
+          // an HTTP error, so the client can render it without an error boundary.
+          { status: 200, headers: { "Cache-Control": "no-store" } },
         );
       },
     },
