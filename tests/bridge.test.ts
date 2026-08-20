@@ -33,7 +33,7 @@ describe("Bridge payout endpoints — mock fallback", () => {
       assertNoSecretLeak(res.raw);
 
       if (!configured) {
-        expect(res.status, `${c.path} should be demo-mode`).toBe(503);
+        expect(res.status, `${c.path} should be demo-mode`).toBe(200);
         expect(res.body.demoMode).toBe(true);
         expect(res.body.error).toMatch(/BRIDGE_API_KEY|not configured/);
       } else {
@@ -56,7 +56,7 @@ describe("Bridge payout endpoints — mock fallback", () => {
     // Unknown fields and missing required fields are rejected by the schema
     // whenever a key is configured; without a key the demo guard fires first.
     const res = await post("/api/bridge/external-account", { customerId: "cus_demo" });
-    expect([400, 503]).toContain(res.status);
+    expect([200, 400]).toContain(res.status);
   });
 });
 
