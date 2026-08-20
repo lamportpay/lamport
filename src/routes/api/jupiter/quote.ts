@@ -135,9 +135,13 @@ export const Route = createFileRoute("/api/jupiter/quote")({
         // Read-only order previews come back with slippageBps 0; keep the demo's
         // default tolerance so the min-received figure stays meaningful.
         const slippageBps = payload.slippageBps && payload.slippageBps > 0 ? payload.slippageBps : 50;
-        const minOutAmountUsdc = payload.otherAmountThreshold
+        const thresholdUsdc = payload.otherAmountThreshold
           ? baseUnitsToUsdc(payload.otherAmountThreshold)
-          : outAmountUsdc * (1 - slippageBps / 10_000);
+          : null;
+        const minOutAmountUsdc =
+          thresholdUsdc !== null && thresholdUsdc < outAmountUsdc
+            ? thresholdUsdc
+            : outAmountUsdc * (1 - slippageBps / 10_000);
 
         const steps: RouteStepPreview[] = (payload.routePlan ?? []).map((leg) => {
           const info = leg.swapInfo ?? {};
