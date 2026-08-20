@@ -4,6 +4,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { SwapPanelIsland } from "@/components/site/wallet/WalletIsland";
 import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
 import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
+import { SolanaRpcVerifier } from "@/components/site/SolanaRpcVerifier";
 
 export const Route = createFileRoute("/swap")({
   head: () => ({
@@ -47,6 +48,7 @@ function SwapPage() {
 
         <div className="mt-10 space-y-6">
           <SwapRoutePreviewCard />
+          <SolanaRpcVerifier />
           <IntegrationStatusPanel />
         </div>
       </section>
