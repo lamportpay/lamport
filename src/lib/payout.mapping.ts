@@ -23,7 +23,7 @@ export const PAYOUT_PAYMENT_RAILS: Record<string, string> = {
   AED: "iban",
 };
 
-export const PAYOUT_PAYOUT_RAIL_BY_METHOD: Record<string, string> = {
+export const PAYOUT_RAIL_BY_METHOD: Record<string, string> = {
   "Bank account": "ach",
   "Mobile wallet": "mobile_wallet",
   Card: "card",
@@ -31,8 +31,8 @@ export const PAYOUT_PAYOUT_RAIL_BY_METHOD: Record<string, string> = {
 };
 
 export function getPayoutPaymentRail(currency: string, method?: string): string {
-  if (method && PAYOUT_PAYOUT_RAIL_BY_METHOD[method]) {
-    return PAYOUT_PAYOUT_RAIL_BY_METHOD[method];
+  if (method && PAYOUT_RAIL_BY_METHOD[method]) {
+    return PAYOUT_RAIL_BY_METHOD[method];
   }
   return PAYOUT_PAYMENT_RAILS[currency] || "ach";
 }

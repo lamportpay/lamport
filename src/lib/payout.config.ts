@@ -22,7 +22,7 @@ export function getPayoutConfig(): PayoutConfig {
     apiKey,
     webhookSecret,
     apiUrl,
-    enabled: Boolean(apiKey && apiKey.startsWith("api_")),
+    enabled: Boolean(apiKey && apiKey.startsWith("api_") && apiUrl),
   };
 }
 
