@@ -24,7 +24,7 @@ export const Route = createFileRoute("/api/bridge/customer")({
         if (!config.enabled) {
           return errorResponse(
             "Bridge API is not configured. Add BRIDGE_API_KEY to create real customers.",
-            503,
+            200,
             { demoMode: true },
           );
         }

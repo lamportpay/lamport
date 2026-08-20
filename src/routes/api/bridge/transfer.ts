@@ -31,7 +31,7 @@ export const Route = createFileRoute("/api/bridge/transfer")({
         if (!config.enabled) {
           return errorResponse(
             "Bridge API is not configured. Add BRIDGE_API_KEY to create real transfers.",
-            503,
+            200,
             { demoMode: true },
           );
         }
