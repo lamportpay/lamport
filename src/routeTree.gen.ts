@@ -19,6 +19,8 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
+import { Route as ApiSolanaVerifyTxRouteImport } from './routes/api/solana/verify-tx'
+import { Route as ApiSolanaHealthRouteImport } from './routes/api/solana/health'
 import { Route as ApiPublicBridgeWebhookRouteImport } from './routes/api/public/bridge-webhook'
 import { Route as ApiJupiterQuoteRouteImport } from './routes/api/jupiter/quote'
 import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
@@ -76,6 +78,16 @@ const IndexRoute = IndexRouteImport.update({
 const ApiIntegrationStatusRoute = ApiIntegrationStatusRouteImport.update({
   id: '/api/integration-status',
   path: '/api/integration-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSolanaVerifyTxRoute = ApiSolanaVerifyTxRouteImport.update({
+  id: '/api/solana/verify-tx',
+  path: '/api/solana/verify-tx',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSolanaHealthRoute = ApiSolanaHealthRouteImport.update({
+  id: '/api/solana/health',
+  path: '/api/solana/health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicBridgeWebhookRoute = ApiPublicBridgeWebhookRouteImport.update({
@@ -139,6 +151,8 @@ export interface FileRoutesByFullPath {
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
   '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
+  '/api/solana/health': typeof ApiSolanaHealthRoute
+  '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -159,6 +173,8 @@ export interface FileRoutesByTo {
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
   '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
+  '/api/solana/health': typeof ApiSolanaHealthRoute
+  '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -180,6 +196,8 @@ export interface FileRoutesById {
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
   '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
+  '/api/solana/health': typeof ApiSolanaHealthRoute
+  '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -202,6 +220,8 @@ export interface FileRouteTypes {
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
     | '/api/public/bridge-webhook'
+    | '/api/solana/health'
+    | '/api/solana/verify-tx'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -222,6 +242,8 @@ export interface FileRouteTypes {
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
     | '/api/public/bridge-webhook'
+    | '/api/solana/health'
+    | '/api/solana/verify-tx'
   id:
     | '__root__'
     | '/'
@@ -242,6 +264,8 @@ export interface FileRouteTypes {
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
     | '/api/public/bridge-webhook'
+    | '/api/solana/health'
+    | '/api/solana/verify-tx'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -263,6 +287,8 @@ export interface RootRouteChildren {
   ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
   ApiJupiterQuoteRoute: typeof ApiJupiterQuoteRoute
   ApiPublicBridgeWebhookRoute: typeof ApiPublicBridgeWebhookRoute
+  ApiSolanaHealthRoute: typeof ApiSolanaHealthRoute
+  ApiSolanaVerifyTxRoute: typeof ApiSolanaVerifyTxRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -335,6 +361,20 @@ declare module '@tanstack/react-router' {
       path: '/api/integration-status'
       fullPath: '/api/integration-status'
       preLoaderRoute: typeof ApiIntegrationStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/solana/verify-tx': {
+      id: '/api/solana/verify-tx'
+      path: '/api/solana/verify-tx'
+      fullPath: '/api/solana/verify-tx'
+      preLoaderRoute: typeof ApiSolanaVerifyTxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/solana/health': {
+      id: '/api/solana/health'
+      path: '/api/solana/health'
+      fullPath: '/api/solana/health'
+      preLoaderRoute: typeof ApiSolanaHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/bridge-webhook': {
@@ -415,6 +455,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiJupiterOrderRoute: ApiJupiterOrderRoute,
   ApiJupiterQuoteRoute: ApiJupiterQuoteRoute,
   ApiPublicBridgeWebhookRoute: ApiPublicBridgeWebhookRoute,
+  ApiSolanaHealthRoute: ApiSolanaHealthRoute,
+  ApiSolanaVerifyTxRoute: ApiSolanaVerifyTxRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
