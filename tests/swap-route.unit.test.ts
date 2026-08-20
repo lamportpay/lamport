@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { buildMockRoutePreview, lamportsToSol, solToLamports, baseUnitsToUsdc } from "@/lib/swap-route";
+import {
+  buildMockRoutePreview,
+  lamportsToSol,
+  solToLamports,
+  baseUnitsToUsdc,
+} from "@/lib/swap-route";
 import { SOL_MINT, USDC_MINT, isSupportedInputMint } from "@/lib/tokens";
 
 describe("swap-route mock fallback", () => {

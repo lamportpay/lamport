@@ -4,8 +4,7 @@ import { api, assertNoSecretLeak, getIntegrationStatus, providerMode } from "./h
 
 type BridgeResult = { error?: string; demoMode?: boolean; bridgeMode?: boolean };
 
-const post = (path: string, body: unknown) =>
-  api<BridgeResult>(path, { method: "POST", body });
+const post = (path: string, body: unknown) => api<BridgeResult>(path, { method: "POST", body });
 
 const cases: Array<{ path: string; body: Record<string, unknown> }> = [
   { path: "/api/bridge/customer", body: { type: "individual", email: "demo@example.com" } },

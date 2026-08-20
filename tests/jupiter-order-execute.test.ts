@@ -19,8 +19,7 @@ type OrderResponse = {
   error?: string;
 };
 
-const order = (body: unknown) =>
-  api<OrderResponse>("/api/jupiter/order", { method: "POST", body });
+const order = (body: unknown) => api<OrderResponse>("/api/jupiter/order", { method: "POST", body });
 
 const validOrder = {
   inputMint: SOL_MINT,
