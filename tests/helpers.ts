@@ -69,7 +69,7 @@ export function providerMode(status: IntegrationStatus, name: string) {
 export const SECRET_LEAK_PATTERNS = [
   /x-api-key/i,
   /JUPITER_API_KEY\s*[:=]\s*\S/i,
-  /BRIDGE_API_KEY\s*[:=]\s*\S/i,
+  /PAYOUT_API_KEY\s*[:=]\s*\S/i,
   /\bsk_live\b/i,
 ];
 

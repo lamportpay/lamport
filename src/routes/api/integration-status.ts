@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { getBridgeConfig } from "@/lib/bridge.config";
+import { getPayoutConfig } from "@/lib/payout.config";
 
 /**
  * Read-only integration status. Returns booleans only — never key values,
@@ -10,12 +10,12 @@ export const Route = createFileRoute("/api/integration-status")({
   server: {
     handlers: {
       GET: async () => {
-        const bridge = getBridgeConfig();
+        const payout = getPayoutConfig();
         const jupiterConfigured = Boolean(process.env["JUPITER_API_KEY"]);
-        const bridgeConfigured = bridge.enabled;
+        const payoutConfigured = payout.enabled;
 
         const jupiterMode = jupiterConfigured ? "sandbox" : "mock";
-        const bridgeMode = bridgeConfigured ? "sandbox" : "mock";
+        const payoutMode = payoutConfigured ? "sandbox" : "mock";
 
         return Response.json(
           {
@@ -32,9 +32,9 @@ export const Route = createFileRoute("/api/integration-status")({
               {
                 name: "Payout partner",
                 role: "USDC → local currency payout",
-                configured: bridgeConfigured,
-                mode: bridgeMode,
-                note: bridgeConfigured
+                configured: payoutConfigured,
+                mode: payoutMode,
+                note: payoutConfigured
                   ? "payout partner sandbox endpoints are reachable."
                   : "Payout steps are simulated. No fiat payout is possible.",
               },
@@ -43,11 +43,11 @@ export const Route = createFileRoute("/api/integration-status")({
               { path: "POST /api/jupiter/quote", provider: "Jupiter", mode: jupiterMode },
               { path: "POST /api/jupiter/order", provider: "Jupiter", mode: jupiterMode },
               { path: "POST /api/jupiter/execute", provider: "Jupiter", mode: jupiterMode },
-              { path: "POST /api/bridge/quote", provider: "Regulated payout partner", mode: bridgeMode },
-              { path: "POST /api/bridge/customer", provider: "Regulated payout partner", mode: bridgeMode },
-              { path: "POST /api/bridge/external-account", provider: "Regulated payout partner", mode: bridgeMode },
-              { path: "POST /api/bridge/transfer", provider: "Regulated payout partner", mode: bridgeMode },
-              { path: "POST /api/public/bridge-webhook", provider: "Regulated payout partner", mode: bridgeMode },
+              { path: "POST /api/payout/quote", provider: "Regulated payout partner", mode: payoutMode },
+              { path: "POST /api/payout/customer", provider: "Regulated payout partner", mode: payoutMode },
+              { path: "POST /api/payout/external-account", provider: "Regulated payout partner", mode: payoutMode },
+              { path: "POST /api/payout/transfer", provider: "Regulated payout partner", mode: payoutMode },
+              { path: "POST /api/public/payout-webhook", provider: "Regulated payout partner", mode: payoutMode },
             ],
             guards: {
               fiatPayoutEnabled: false,

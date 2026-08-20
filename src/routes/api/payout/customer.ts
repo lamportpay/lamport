@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { bridgeError, bridgeHeaders, getBridgeConfig } from "@/lib/bridge.config";
+import { payoutError, payoutHeaders, getPayoutConfig } from "@/lib/payout.config";
 
 const CustomerInput = z
   .object({
@@ -16,14 +16,14 @@ function errorResponse(message: string, status: number, extra?: Record<string, u
   return Response.json({ error: message, ...extra }, { status });
 }
 
-export const Route = createFileRoute("/api/bridge/customer")({
+export const Route = createFileRoute("/api/payout/customer")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const config = getBridgeConfig();
+        const config = getPayoutConfig();
         if (!config.enabled) {
           return errorResponse(
-            "Payout partner API is not configured. Add BRIDGE_API_KEY to create real customers.",
+            "Payout partner API is not configured. Add PAYOUT_API_KEY to create real customers.",
             200,
             { demoMode: true },
           );
@@ -45,15 +45,15 @@ export const Route = createFileRoute("/api/bridge/customer")({
 
         const upstream = await fetch(`${config.apiUrl}/v0/customers`, {
           method: "POST",
-          headers: bridgeHeaders(config, idempotencyKey),
+          headers: payoutHeaders(config, idempotencyKey),
           body: JSON.stringify(parsed.data),
         });
 
         const text = await upstream.text();
         if (!upstream.ok) {
-          return errorResponse(bridgeError(upstream.status, text).error, 502, {
-            bridgeStatus: upstream.status,
-            bridgeRaw: text,
+          return errorResponse(payoutError(upstream.status, text).error, 502, {
+            payoutStatus: upstream.status,
+            payoutRaw: text,
           });
         }
 
@@ -64,7 +64,7 @@ export const Route = createFileRoute("/api/bridge/customer")({
           return errorResponse("Invalid response from Payout partner API.", 502);
         }
 
-        return Response.json({ bridgeMode: true, customer: payload });
+        return Response.json({ payoutMode: true, customer: payload });
       },
     },
   },

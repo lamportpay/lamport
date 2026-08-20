@@ -5,19 +5,19 @@
  * or webhook secrets to the browser.
  */
 
-export const BRIDGE_API_URL = "";
+export const PAYOUT_API_URL = "";
 
-export interface BridgeConfig {
+export interface PayoutConfig {
   apiKey: string | undefined;
   webhookSecret: string | undefined;
   apiUrl: string;
   enabled: boolean;
 }
 
-export function getBridgeConfig(): BridgeConfig {
-  const apiKey = process.env["BRIDGE_API_KEY"];
-  const webhookSecret = process.env["BRIDGE_WEBHOOK_SECRET"];
-  const apiUrl = process.env["BRIDGE_API_URL"] || BRIDGE_API_URL;
+export function getPayoutConfig(): PayoutConfig {
+  const apiKey = process.env["PAYOUT_API_KEY"];
+  const webhookSecret = process.env["PAYOUT_WEBHOOK_SECRET"];
+  const apiUrl = process.env["PAYOUT_API_URL"] || PAYOUT_API_URL;
   return {
     apiKey,
     webhookSecret,
@@ -26,7 +26,7 @@ export function getBridgeConfig(): BridgeConfig {
   };
 }
 
-export function bridgeHeaders(config: BridgeConfig, idempotencyKey?: string) {
+export function payoutHeaders(config: PayoutConfig, idempotencyKey?: string) {
   const headers: Record<string, string> = {
     "Api-Key": config.apiKey || "",
     "Content-Type": "application/json",
@@ -38,6 +38,6 @@ export function bridgeHeaders(config: BridgeConfig, idempotencyKey?: string) {
   return headers;
 }
 
-export function bridgeError(status: number, body: string) {
+export function payoutError(status: number, body: string) {
   return { error: `Payout partner API request failed (${status}).`, raw: body };
 }

@@ -105,7 +105,7 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
                 k="FX rate"
                 v={`1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`}
               />
-              <Row k="Partner payout fee" v={`$${fmt(quote.bridgeFee)}`} />
+              <Row k="Partner payout fee" v={`$${fmt(quote.payoutFee)}`} />
               <Row k="LamportPay fee" v={`$${fmt(quote.platformFee)}`} />
               <Row k="Estimated delivery" v="Under 5 minutes" />
             </div>

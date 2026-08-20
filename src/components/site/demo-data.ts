@@ -30,16 +30,16 @@ export const SENDER_CURRENCIES = ["USD", "GBP", "EUR", "CAD", "AUD", "AED"] as c
 export function calcQuote(amount: number, token: Token, currency: string) {
   const usdValue = amount * (TOKEN_USD[token] ?? 1);
   const corridor = CORRIDORS.find((c) => c.currency === currency) ?? CORRIDORS[0];
-  const bridgeFee = Math.max(1, usdValue * 0.01);
+  const payoutFee = Math.max(1, usdValue * 0.01);
   const platformFee = usdValue * 0.005;
-  const totalFee = bridgeFee + platformFee;
+  const totalFee = payoutFee + platformFee;
   const netUsdc = Math.max(0, usdValue - totalFee);
   const recipientAmount = netUsdc * corridor.rate;
   return {
     usdValue,
     usdcSettlement: usdValue,
     fxRate: corridor.rate,
-    bridgeFee,
+    payoutFee,
     platformFee,
     totalFee,
     recipientAmount,
@@ -59,7 +59,7 @@ export function mockSolanaHash() {
   return Array.from({ length: 88 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
 }
 
-export function mockBridgeRef() {
+export function mockPayoutRef() {
   return "brg_" + Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 6);
 }
 

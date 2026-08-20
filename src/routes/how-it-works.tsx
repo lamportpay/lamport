@@ -35,13 +35,13 @@ const userFlow = [
 const apiFlow = [
   "Frontend form",
   "POST /api/payments",
-  "POST /api/bridge-quote",
-  "POST /api/bridge-kyc/start",
-  "POST /api/bridge-kyc/complete",
+  "POST /api/payout-quote",
+  "POST /api/payout-kyc/start",
+  "POST /api/payout-kyc/complete",
   "POST /api/payments/confirm",
   "POST /api/jupiter/quote",
   "POST /api/solana/verify-transaction",
-  "POST /api/bridge-transfer",
+  "POST /api/payout-transfer",
   "GET /api/payments/[paymentId]",
   "GET /api/receipt/[paymentId]",
 ];

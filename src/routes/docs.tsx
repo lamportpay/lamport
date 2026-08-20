@@ -27,22 +27,22 @@ const stack = [
 
 const apis = [
   "POST /api/payments",
-  "POST /api/bridge-quote",
-  "POST /api/bridge-kyc/start",
-  "POST /api/bridge-kyc/complete",
+  "POST /api/payout-quote",
+  "POST /api/payout-kyc/start",
+  "POST /api/payout-kyc/complete",
   "POST /api/payments/confirm",
   "POST /api/jupiter/quote",
   "POST /api/jupiter/order",
   "POST /api/jupiter/execute",
   "POST /api/solana/verify-transaction",
-  "POST /api/bridge-transfer",
+  "POST /api/payout-transfer",
   "GET /api/payments/[paymentId]",
   "GET /api/receipt/[paymentId]",
-  "POST /api/bridge/quote",
-  "POST /api/bridge/customer",
-  "POST /api/bridge/external-account",
-  "POST /api/bridge/transfer",
-  "POST /api/public/bridge-webhook",
+  "POST /api/payout/quote",
+  "POST /api/payout/customer",
+  "POST /api/payout/external-account",
+  "POST /api/payout/transfer",
+  "POST /api/public/payout-webhook",
 ];
 
 function Docs() {

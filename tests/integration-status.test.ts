@@ -31,6 +31,6 @@ describe("GET /api/integration-status", () => {
     const status = await getIntegrationStatus();
     const paths = status.endpoints.map((e) => e.path);
     expect(paths.some((p) => p.includes("/api/jupiter/quote"))).toBe(true);
-    expect(paths.some((p) => p.includes("/api/bridge/"))).toBe(true);
+    expect(paths.some((p) => p.includes("/api/payout/"))).toBe(true);
   });
 });

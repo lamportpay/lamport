@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { bridgeError, bridgeHeaders, getBridgeConfig } from "@/lib/bridge.config";
+import { payoutError, payoutHeaders, getPayoutConfig } from "@/lib/payout.config";
 
 const QuoteInput = z
   .object({
@@ -17,14 +17,14 @@ function errorResponse(message: string, status: number, extra?: Record<string, u
   return Response.json({ error: message, ...extra }, { status });
 }
 
-export const Route = createFileRoute("/api/bridge/quote")({
+export const Route = createFileRoute("/api/payout/quote")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const config = getBridgeConfig();
+        const config = getPayoutConfig();
         if (!config.enabled) {
           return errorResponse(
-            "Payout partner API is not configured. Add BRIDGE_API_KEY to enable real quotes.",
+            "Payout partner API is not configured. Add PAYOUT_API_KEY to enable real quotes.",
             200,
             { demoMode: true },
           );
@@ -46,26 +46,26 @@ export const Route = createFileRoute("/api/bridge/quote")({
           parsed.data;
         const idempotencyKey = request.headers.get("Idempotency-Key") || crypto.randomUUID();
 
-        // Bridge does not expose a separate quote endpoint. We create a transfer
+        // Payout does not expose a separate quote endpoint. We create a transfer
         // in preview/simulation shape so the receipt can be inspected without
         // moving funds. The destination is intentionally an external account
         // placeholder because the real quote depends on the recipient rail.
         const upstream = await fetch(`${config.apiUrl}/v0/transfers`, {
           method: "POST",
-          headers: bridgeHeaders(config, idempotencyKey),
+          headers: payoutHeaders(config, idempotencyKey),
           body: JSON.stringify({
             amount,
             on_behalf_of: onBehalfOf,
-            source: { payment_rail: "bridge_wallet", currency: sourceCurrency },
+            source: { payment_rail: "payout_wallet", currency: sourceCurrency },
             destination: { payment_rail: paymentRail, currency: destinationCurrency },
           }),
         });
 
         const text = await upstream.text();
         if (!upstream.ok) {
-          return errorResponse(bridgeError(upstream.status, text).error, 502, {
-            bridgeStatus: upstream.status,
-            bridgeRaw: text,
+          return errorResponse(payoutError(upstream.status, text).error, 502, {
+            payoutStatus: upstream.status,
+            payoutRaw: text,
           });
         }
 
@@ -77,7 +77,7 @@ export const Route = createFileRoute("/api/bridge/quote")({
         }
 
         return Response.json({
-          bridgeMode: true,
+          payoutMode: true,
           transfer: payload,
           amount,
           sourceCurrency,
