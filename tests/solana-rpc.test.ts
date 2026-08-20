@@ -18,7 +18,7 @@ describe("solana rpc health", () => {
         customEndpoint: boolean;
         endpointProvider: string | null;
       }>(`/api/solana/health?cluster=${cluster}`);
-      expect([200, 502]).toContain(res.status);
+      expect(res.status).toBe(200);
       expect(res.body.cluster).toBe(cluster);
       expect(res.body.jupiterSwapAvailable).toBe(cluster === "mainnet-beta");
       expect(res.body.customEndpoint).toBe(true);
