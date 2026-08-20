@@ -25,7 +25,7 @@ export const Route = createFileRoute("/api/bridge/quote")({
         if (!config.enabled) {
           return errorResponse(
             "Bridge API is not configured. Add BRIDGE_API_KEY to enable real quotes.",
-            503,
+            200,
             { demoMode: true },
           );
         }
