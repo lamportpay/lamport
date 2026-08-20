@@ -10,6 +10,8 @@ type Health = {
   blockHeight: number | null;
   solanaCore: string | null;
   latencyMs: number;
+  customEndpoint: boolean;
+  endpointProvider: string | null;
   jupiterSwapAvailable: boolean;
   note: string;
   error: string | null;
@@ -126,6 +128,7 @@ export function SolanaRpcVerifier() {
         <Stat k="Block height" v={health?.blockHeight != null ? String(health.blockHeight) : "—"} />
         <Stat k="Validator" v={health?.solanaCore ?? "—"} />
         <Stat k="Jupiter swaps" v={health ? (health.jupiterSwapAvailable ? "available" : "not available") : "—"} />
+        <Stat k="RPC provider" v={health?.endpointProvider ?? "Public Solana RPC"} />
       </div>
 
       {health?.note && (
