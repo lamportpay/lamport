@@ -35,7 +35,7 @@ export const Route = createFileRoute("/send")({
       { title: "Send demo transfer — LamportPay" },
       {
         name: "description",
-        content: "Walk through a mock Bridge-only crypto-to-local-currency transfer flow.",
+        content: "Walk through a mock partner-led crypto-to-local-currency transfer flow.",
       },
       { property: "og:title", content: "Send demo transfer — LamportPay" },
       { property: "og:description", content: "Mock quote, KYC, settlement, and receipt." },
@@ -86,7 +86,7 @@ export default function SendPage() {
     "Mock partner KYC approved",
     "Crypto converted to USDC",
     "USDC settlement confirmed",
-    "Payout request sent to Bridge",
+    "Payout request sent to settlement partner",
     "Partner processing payout",
     "Recipient paid",
   ];
@@ -403,7 +403,7 @@ export default function SendPage() {
                   setStep(2);
                 }}
               >
-                Get Bridge Quote <ArrowRight className="w-4 h-4" />
+                Get Payout Quote <ArrowRight className="w-4 h-4" />
               </PrimaryButton>
             </div>
           )}
@@ -421,7 +421,7 @@ export default function SendPage() {
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
-                <KV k="Provider" v="Bridge" />
+                <KV k="Provider" v="Regulated payout partner (TBD)" />
                 <KV k="Provider type" v="Stablecoin orchestration / settlement partner" />
                 <KV k="Input token" v={token} />
                 <KV k="Input amount" v={amount} />
@@ -468,7 +468,7 @@ export default function SendPage() {
               <div className="rounded-2xl bg-secondary/60 p-5 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <p className="text-sm leading-relaxed">
-                  Identity verification is handled by <strong>Bridge</strong> or the selected
+                  Identity verification is handled by <strong>a regulated payout partner</strong> or the selected
                   licensed payout partner, not by LamportPay.
                 </p>
               </div>
@@ -482,7 +482,7 @@ export default function SendPage() {
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
-                <KV k="Selected partner" v="Bridge" />
+                <KV k="Selected partner" v="Regulated payout partner (TBD)" />
                 <KV k="KYC status" v={kycApproved ? "Approved" : "Not started"} />
                 {bridgeMode && bridgeCustomerId && (
                   <KV
@@ -530,7 +530,7 @@ export default function SendPage() {
                 <KV k="Receiver country" v={corridor.country} />
                 <KV k="Receiver currency" v={corridor.currency} />
                 <KV k="Recipient name" v={recipientName} />
-                <KV k="Selected partner" v="Bridge" />
+                <KV k="Selected partner" v="Regulated payout partner (TBD)" />
                 <KV k="Partner payout fee" v={`$${fmt(quote.bridgeFee)}`} />
                 <KV k="LamportPay fee" v={`$${fmt(quote.platformFee)}`} />
                 <KV
@@ -673,7 +673,7 @@ function Receipt(props: ReceiptProps) {
     `Recipient: ${recipientName}`,
     `Country: ${corridor.country} (${corridor.currency})`,
     `Recipient receives: ${fmt(quote.recipientAmount)} ${corridor.currency}`,
-    `Partner: Bridge`,
+    `Partner: regulated payout partner (TBD)`,
     `Payout reference: ${bridgeRef}`,
     `Partner payout fee: $${fmt(quote.bridgeFee)}`,
     `LamportPay fee: $${fmt(quote.platformFee)}`,
@@ -714,7 +714,7 @@ function Receipt(props: ReceiptProps) {
           <KV k="Receiver currency" v={corridor.currency} />
           <KV k="Recipient name" v={recipientName} />
           <KV k="Recipient receives" v={`${fmt(quote.recipientAmount)} ${corridor.currency}`} />
-          <KV k="Selected partner" v="Bridge" />
+          <KV k="Selected partner" v="Regulated payout partner (TBD)" />
           <KV k="Payout reference" v={<span className="font-mono text-xs">{bridgeRef}</span>} />
           <KV k="Partner payout fee" v={`$${fmt(quote.bridgeFee)}`} />
           <KV k="LamportPay platform fee" v={`$${fmt(quote.platformFee)}`} />

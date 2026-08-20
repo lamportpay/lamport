@@ -1,11 +1,11 @@
 /**
  * Payout partner API configuration and server-side helpers.
  *
- * All secrets are read inside handler bodies. Never expose Bridge keys
+ * All secrets are read inside handler bodies. Never expose payout partner keys
  * or webhook secrets to the browser.
  */
 
-export const BRIDGE_API_URL = "https://api.bridge.xyz";
+export const BRIDGE_API_URL = "";
 
 export interface BridgeConfig {
   apiKey: string | undefined;

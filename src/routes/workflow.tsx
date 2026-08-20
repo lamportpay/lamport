@@ -31,7 +31,7 @@ const STAGES = [
     stage: "1. Transfer details",
     demo: "You choose token, amount, corridor and payout method on /send.",
     provider: "None",
-    real: "Same form, but corridor availability would be validated against Bridge supported rails.",
+    real: "Same form, but corridor availability would be validated against a regulated payout partner's supported rails.",
   },
   {
     stage: "2. Swap routing",
@@ -54,7 +54,7 @@ const STAGES = [
   {
     stage: "5. Payout request",
     demo: "Payout partner API mode can call sandbox endpoints; without a key everything stays mock.",
-    provider: "Bridge",
+    provider: "Regulated payout partner",
     real: "Payout transfer endpoint moves USDC to the recipient's bank rail in local currency.",
   },
   {
@@ -73,7 +73,7 @@ function WorkflowPage() {
           Integration workflow
         </div>
         <h1 className="text-3xl md:text-4xl font-semibold tracking-tight mt-2">
-          How Jupiter and Bridge map to the demo
+          How Jupiter and the payout layer map to the demo
         </h1>
         <p className="text-muted-foreground mt-3 max-w-2xl">
           LamportPay splits the flow into a swap layer and a payout layer. Jupiter handles SOL → USDC
@@ -90,7 +90,7 @@ function WorkflowPage() {
             },
             {
               icon: Landmark,
-              title: "Payout layer — Bridge",
+              title: "Payout layer — regulated partner",
               body: "Customer orchestration, external bank accounts, transfers and webhooks. Disabled in this demo.",
             },
             {
@@ -133,7 +133,7 @@ function WorkflowPage() {
 
         <h2 className="text-xl font-semibold mt-12">Current integration status</h2>
         <p className="text-sm text-muted-foreground mt-2">
-          Shows whether Jupiter and Bridge keys are configured and which endpoints serve mock versus
+          Shows whether Jupiter and payout partner keys are configured and which endpoints serve mock versus
           sandbox data.
         </p>
         <div className="mt-4">

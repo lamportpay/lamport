@@ -2,7 +2,7 @@
  * Shared helpers for the end-to-end API suite.
  *
  * The suite runs against a running server (dev server by default) and never
- * uses real funds: only read-only Jupiter previews/orders and mock Bridge
+ * uses real funds: only read-only Jupiter previews/orders and mock payout partner
  * fallbacks are exercised. No transaction is ever signed or executed.
  */
 

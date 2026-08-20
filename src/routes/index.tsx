@@ -376,7 +376,7 @@ function AIAssistant() {
               <KV k="Receiver country" v={result.country} />
               <KV k="Receiver currency" v={result.currency} />
               <KV k="Suggested payout method" v={result.method} />
-              <KV k="Partner" v="Bridge" />
+              <KV k="Partner" v="Regulated payout partner (TBD)" />
               <div className="md:col-span-2 text-xs text-muted-foreground flex gap-1.5 items-center pt-2">
                 <Info className="w-3.5 h-3.5" /> This is a demo suggestion only.
               </div>

@@ -26,7 +26,7 @@ const cases: Array<{ path: string; body: Record<string, unknown> }> = [
 describe("Partner payout endpoints — mock fallback", () => {
   it("returns a clean demo-mode response for every endpoint when no key is configured", async () => {
     const status = await getIntegrationStatus();
-    const configured = providerMode(status, "Bridge") === "sandbox";
+    const configured = providerMode(status, "Payout partner") === "sandbox";
 
     for (const c of cases) {
       const res = await post(c.path, c.body);
@@ -44,7 +44,7 @@ describe("Partner payout endpoints — mock fallback", () => {
 
   it("never returns a real payout confirmation in mock mode", async () => {
     const status = await getIntegrationStatus();
-    if (providerMode(status, "Bridge") === "sandbox") return;
+    if (providerMode(status, "Payout partner") === "sandbox") return;
 
     for (const c of cases) {
       const res = await post(c.path, c.body);

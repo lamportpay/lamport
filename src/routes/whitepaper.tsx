@@ -121,7 +121,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "9. Settlement partner layer",
     body: (
       <p>
-        Use Bridge first. Add other partners later, such as Crossmint, Nium, Thunes, Transak, Ramp,
+        Start with a single regulated payout infrastructure partner, then add further partners later,
         Bitso, and Yellow Card.
       </p>
     ),
