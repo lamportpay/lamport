@@ -2,7 +2,7 @@
  * Shared helpers for the end-to-end API suite.
  *
  * The suite runs against a running server (dev server by default) and never
- * uses real funds: only read-only Jupiter previews/orders and mock Bridge
+ * uses real funds: only read-only Jupiter previews/orders and mock payout partner
  * fallbacks are exercised. No transaction is ever signed or executed.
  */
 
@@ -69,7 +69,7 @@ export function providerMode(status: IntegrationStatus, name: string) {
 export const SECRET_LEAK_PATTERNS = [
   /x-api-key/i,
   /JUPITER_API_KEY\s*[:=]\s*\S/i,
-  /BRIDGE_API_KEY\s*[:=]\s*\S/i,
+  /PAYOUT_API_KEY\s*[:=]\s*\S/i,
   /\bsk_live\b/i,
 ];
 

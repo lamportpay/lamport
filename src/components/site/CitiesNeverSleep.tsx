@@ -127,7 +127,7 @@ export function CitiesNeverSleep() {
           <span>JUPITER ROUTE PREVIEW</span>
           <span>SOL → USDC</span>
           <span>OUTPUT: CONNECTED WALLET</span>
-          <span className="text-[color:var(--neon-cyan)]">BRIDGE PAYOUT DISABLED</span>
+          <span className="text-[color:var(--neon-cyan)]">FIAT PAYOUT DISABLED</span>
         </div>
       </div>
     </section>

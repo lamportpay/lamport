@@ -2,18 +2,18 @@ import { describe, expect, it } from "vitest";
 
 import { api, assertNoSecretLeak, getIntegrationStatus, providerMode } from "./helpers";
 
-type BridgeResult = { error?: string; demoMode?: boolean; bridgeMode?: boolean };
+type PayoutResult = { error?: string; demoMode?: boolean; payoutMode?: boolean };
 
-const post = (path: string, body: unknown) => api<BridgeResult>(path, { method: "POST", body });
+const post = (path: string, body: unknown) => api<PayoutResult>(path, { method: "POST", body });
 
 const cases: Array<{ path: string; body: Record<string, unknown> }> = [
-  { path: "/api/bridge/customer", body: { type: "individual", email: "demo@example.com" } },
+  { path: "/api/payout/customer", body: { type: "individual", email: "demo@example.com" } },
   {
-    path: "/api/bridge/external-account",
+    path: "/api/payout/external-account",
     body: { customerId: "cus_demo", currency: "usd", account_number: "000123456789" },
   },
   {
-    path: "/api/bridge/quote",
+    path: "/api/payout/quote",
     body: {
       amount: "100",
       destinationCurrency: "pkr",
@@ -23,10 +23,10 @@ const cases: Array<{ path: string; body: Record<string, unknown> }> = [
   },
 ];
 
-describe("Bridge payout endpoints — mock fallback", () => {
+describe("Partner payout endpoints — mock fallback", () => {
   it("returns a clean demo-mode response for every endpoint when no key is configured", async () => {
     const status = await getIntegrationStatus();
-    const configured = providerMode(status, "Bridge") === "sandbox";
+    const configured = providerMode(status, "Payout partner") === "sandbox";
 
     for (const c of cases) {
       const res = await post(c.path, c.body);
@@ -35,7 +35,7 @@ describe("Bridge payout endpoints — mock fallback", () => {
       if (!configured) {
         expect(res.status, `${c.path} should be demo-mode`).toBe(200);
         expect(res.body.demoMode).toBe(true);
-        expect(res.body.error).toMatch(/BRIDGE_API_KEY|not configured/);
+        expect(res.body.error).toMatch(/PAYOUT_API_KEY|not configured/);
       } else {
         expect([200, 502]).toContain(res.status);
       }
@@ -44,31 +44,31 @@ describe("Bridge payout endpoints — mock fallback", () => {
 
   it("never returns a real payout confirmation in mock mode", async () => {
     const status = await getIntegrationStatus();
-    if (providerMode(status, "Bridge") === "sandbox") return;
+    if (providerMode(status, "Payout partner") === "sandbox") return;
 
     for (const c of cases) {
       const res = await post(c.path, c.body);
-      expect(res.body.bridgeMode).toBeUndefined();
+      expect(res.body.payoutMode).toBeUndefined();
     }
   });
 
   it("validates payloads before touching the payout provider", async () => {
     // Unknown fields and missing required fields are rejected by the schema
     // whenever a key is configured; without a key the demo guard fires first.
-    const res = await post("/api/bridge/external-account", { customerId: "cus_demo" });
+    const res = await post("/api/payout/external-account", { customerId: "cus_demo" });
     expect([200, 400]).toContain(res.status);
   });
 });
 
-describe("POST /api/public/bridge-webhook", () => {
+describe("POST /api/public/payout-webhook", () => {
   it("rejects calls with no signature header", async () => {
-    const res = await post("/api/public/bridge-webhook", { event_type: "transfer.updated" });
+    const res = await post("/api/public/payout-webhook", { event_type: "transfer.updated" });
     expect(res.status).toBe(400);
     expect(res.body.error).toMatch(/X-Webhook-Signature/);
   });
 
   it("rejects an unparseable signature header", async () => {
-    const res = await api<BridgeResult>("/api/public/bridge-webhook", {
+    const res = await api<PayoutResult>("/api/public/payout-webhook", {
       method: "POST",
       headers: { "X-Webhook-Signature": "garbage" },
       body: { event_type: "transfer.updated" },
@@ -78,7 +78,7 @@ describe("POST /api/public/bridge-webhook", () => {
   });
 
   it("rejects malformed JSON bodies", async () => {
-    const res = await api<BridgeResult>("/api/public/bridge-webhook", {
+    const res = await api<PayoutResult>("/api/public/payout-webhook", {
       method: "POST",
       headers: { "X-Webhook-Signature": "t=1,v0=abc" },
       body: "{not-json",

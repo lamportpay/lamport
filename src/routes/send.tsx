@@ -8,7 +8,7 @@ import {
   type Token,
   calcQuote,
   fmt,
-  mockBridgeRef,
+  mockPayoutRef,
   mockPaymentId,
   mockSolanaHash,
 } from "@/components/site/demo-data";
@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { LammySays, LammyCheck, LAMMY_INTRO, LAMMY_SAFETY } from "@/components/site/Lammy";
 import { WalletPanelIsland } from "@/components/site/wallet/WalletIsland";
-import { getBridgePaymentRail, bridgeCurrency } from "@/lib/bridge.mapping";
+import { getPayoutPaymentRail, payoutCurrency } from "@/lib/payout.mapping";
 import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
 import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
 
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/send")({
       { title: "Send demo transfer — LamportPay" },
       {
         name: "description",
-        content: "Walk through a mock Bridge-only crypto-to-local-currency transfer flow.",
+        content: "Walk through a mock partner-led crypto-to-local-currency transfer flow.",
       },
       { property: "og:title", content: "Send demo transfer — LamportPay" },
       { property: "og:description", content: "Mock quote, KYC, settlement, and receipt." },
@@ -46,7 +46,7 @@ export const Route = createFileRoute("/send")({
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6;
 
-type BridgeStatus = {
+type PayoutStatus = {
   configured: boolean | null;
   message: string;
 };
@@ -62,17 +62,17 @@ export default function SendPage() {
   const [recipientDetails, setRecipientDetails] = useState("Mock Bank • •••• 4821");
   const [kycApproved, setKycApproved] = useState(false);
   const [paymentId, setPaymentId] = useState("");
-  const [bridgeRef, setBridgeRef] = useState("");
+  const [payoutRef, setPayoutRef] = useState("");
   const [txHash, setTxHash] = useState("");
   const [trackIdx, setTrackIdx] = useState(0);
 
-  const [bridgeMode, setBridgeMode] = useState(false);
-  const [bridgeStatus, setBridgeStatus] = useState<BridgeStatus>({ configured: null, message: "" });
-  const [bridgeLoading, setBridgeLoading] = useState(false);
-  const [bridgeError, setBridgeError] = useState<string | null>(null);
-  const [bridgeCustomerId, setBridgeCustomerId] = useState("");
-  const [bridgeExternalAccountId, setBridgeExternalAccountId] = useState("");
-  const [bridgeTransferId, setBridgeTransferId] = useState("");
+  const [payoutMode, setPayoutMode] = useState(false);
+  const [payoutStatus, setPayoutStatus] = useState<PayoutStatus>({ configured: null, message: "" });
+  const [payoutLoading, setPayoutLoading] = useState(false);
+  const [payoutError, setPayoutError] = useState<string | null>(null);
+  const [payoutCustomerId, setPayoutCustomerId] = useState("");
+  const [payoutExternalAccountId, setPayoutExternalAccountId] = useState("");
+  const [payoutTransferId, setPayoutTransferId] = useState("");
 
   const corridor = CORRIDORS[corridorIdx];
   const quote = useMemo(
@@ -82,12 +82,12 @@ export default function SendPage() {
 
   const timeline = [
     "Payment created",
-    "Bridge selected as settlement partner",
-    "Mock Bridge KYC approved",
+    "Regulated settlement partner selected",
+    "Mock partner KYC approved",
     "Crypto converted to USDC",
     "USDC settlement confirmed",
-    "Payout request sent to Bridge",
-    "Bridge processing payout",
+    "Payout request sent to settlement partner",
+    "Partner processing payout",
     "Recipient paid",
   ];
 
@@ -106,47 +106,47 @@ export default function SendPage() {
     return () => clearInterval(id);
   }, [step]);
 
-  const getBridgeQuote = async () => {
-    setBridgeLoading(true);
-    setBridgeError(null);
+  const getPayoutQuote = async () => {
+    setPayoutLoading(true);
+    setPayoutError(null);
     try {
-      const res = await fetch("/api/bridge/quote", {
+      const res = await fetch("/api/payout/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Idempotency-Key": mockPaymentId() },
         body: JSON.stringify({
           amount: (parseFloat(amount) || 0).toString(),
           sourceCurrency: "usdc",
-          destinationCurrency: bridgeCurrency(corridor.currency),
-          paymentRail: getBridgePaymentRail(corridor.currency, method),
+          destinationCurrency: payoutCurrency(corridor.currency),
+          paymentRail: getPayoutPaymentRail(corridor.currency, method),
           onBehalfOf: "demo_customer",
         }),
       });
       const data = await res.json();
       if (!res.ok) {
-        setBridgeError(data.error ?? "Bridge quote failed.");
+        setPayoutError(data.error ?? "Payout quote failed.");
       } else {
-        setBridgeStatus({
+        setPayoutStatus({
           configured: !data.demoMode,
           message: data.demoMode
-            ? "Bridge API not configured — using demo quote."
-            : "Bridge API connected — real quote received.",
+            ? "Payout partner API not configured — using demo quote."
+            : "Payout partner API connected — real quote received.",
         });
         if (data.transfer?.id) {
-          setBridgeRef(data.transfer.id as string);
+          setPayoutRef(data.transfer.id as string);
         }
       }
     } catch (e) {
-      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+      setPayoutError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
     } finally {
-      setBridgeLoading(false);
+      setPayoutLoading(false);
     }
   };
 
-  const createBridgeCustomer = async () => {
-    setBridgeLoading(true);
-    setBridgeError(null);
+  const createPayoutCustomer = async () => {
+    setPayoutLoading(true);
+    setPayoutError(null);
     try {
-      const res = await fetch("/api/bridge/customer", {
+      const res = await fetch("/api/payout/customer", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Idempotency-Key": mockPaymentId() },
         body: JSON.stringify({
@@ -157,34 +157,34 @@ export default function SendPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setBridgeError(data.error ?? "Bridge customer creation failed.");
+        setPayoutError(data.error ?? "Payout partner customer creation failed.");
       } else if (data.customer?.id) {
-        setBridgeCustomerId(data.customer.id as string);
+        setPayoutCustomerId(data.customer.id as string);
       }
-      setBridgeStatus({
+      setPayoutStatus({
         configured: !data.demoMode,
         message: data.demoMode
-          ? "Bridge API not configured — mock KYC used."
-          : "Bridge customer created.",
+          ? "Payout partner API not configured — mock KYC used."
+          : "Payout partner customer created.",
       });
     } catch (e) {
-      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+      setPayoutError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
     } finally {
-      setBridgeLoading(false);
+      setPayoutLoading(false);
     }
   };
 
-  const createBridgeExternalAccountAndTransfer = async () => {
-    setBridgeLoading(true);
-    setBridgeError(null);
+  const createPayoutExternalAccountAndTransfer = async () => {
+    setPayoutLoading(true);
+    setPayoutError(null);
     try {
-      if (bridgeCustomerId) {
-        const accountRes = await fetch("/api/bridge/external-account", {
+      if (payoutCustomerId) {
+        const accountRes = await fetch("/api/payout/external-account", {
           method: "POST",
           headers: { "Content-Type": "application/json", "Idempotency-Key": mockPaymentId() },
           body: JSON.stringify({
-            customerId: bridgeCustomerId,
-            currency: bridgeCurrency(corridor.currency),
+            customerId: payoutCustomerId,
+            currency: payoutCurrency(corridor.currency),
             account_number: "0000000000",
             account_holder_name: recipientName,
             account_holder_type: "individual",
@@ -192,39 +192,39 @@ export default function SendPage() {
         });
         const accountData = await accountRes.json();
         if (accountRes.ok && accountData.externalAccount?.id) {
-          setBridgeExternalAccountId(accountData.externalAccount.id as string);
+          setPayoutExternalAccountId(accountData.externalAccount.id as string);
         }
       }
 
-      const transferRes = await fetch("/api/bridge/transfer", {
+      const transferRes = await fetch("/api/payout/transfer", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Idempotency-Key": mockPaymentId() },
         body: JSON.stringify({
           amount: quote.usdcSettlement.toString(),
-          onBehalfOf: bridgeCustomerId || "demo_customer",
+          onBehalfOf: payoutCustomerId || "demo_customer",
           sourceCurrency: "usdc",
-          destinationCurrency: bridgeCurrency(corridor.currency),
-          paymentRail: getBridgePaymentRail(corridor.currency, method),
-          externalAccountId: bridgeExternalAccountId || undefined,
+          destinationCurrency: payoutCurrency(corridor.currency),
+          paymentRail: getPayoutPaymentRail(corridor.currency, method),
+          externalAccountId: payoutExternalAccountId || undefined,
           developerFee: quote.platformFee.toString(),
         }),
       });
       const transferData = await transferRes.json();
       if (!transferRes.ok) {
-        setBridgeError(transferData.error ?? "Bridge transfer failed.");
+        setPayoutError(transferData.error ?? "Payout transfer failed.");
       } else if (transferData.transfer?.id) {
-        setBridgeTransferId(transferData.transfer.id as string);
+        setPayoutTransferId(transferData.transfer.id as string);
       }
-      setBridgeStatus({
+      setPayoutStatus({
         configured: !transferData.demoMode,
         message: transferData.demoMode
-          ? "Bridge API not configured — mock transfer used."
-          : "Bridge transfer created.",
+          ? "Payout partner API not configured — mock transfer used."
+          : "Payout transfer created.",
       });
     } catch (e) {
-      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+      setPayoutError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
     } finally {
-      setBridgeLoading(false);
+      setPayoutLoading(false);
     }
   };
 
@@ -239,7 +239,7 @@ export default function SendPage() {
             Send a demo transfer
           </h1>
           <p className="text-muted-foreground mt-2">
-            Six steps. All mock data unless Bridge API is connected. No real crypto, KYC, or fiat
+            Six steps. All mock data unless Payout partner API is connected. No real crypto, KYC, or fiat
             moves without partner approval.
           </p>
         </div>
@@ -247,49 +247,49 @@ export default function SendPage() {
         <div className="rounded-2xl border border-border/60 bg-card p-5 mb-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
           <div className="flex items-start gap-3">
             <div className="mt-0.5">
-              {bridgeMode ? (
+              {payoutMode ? (
                 <ToggleRight className="w-5 h-5 text-primary" />
               ) : (
                 <ToggleLeft className="w-5 h-5 text-muted-foreground" />
               )}
             </div>
             <div>
-              <div className="font-semibold text-sm">Bridge API mode</div>
+              <div className="font-semibold text-sm">Payout partner API mode</div>
               <p className="text-xs text-muted-foreground mt-1">
-                When enabled, the demo tries to call real Bridge sandbox endpoints. If
-                BRIDGE_API_KEY is missing, it falls back to mock data.
+                When enabled, the demo tries to call real payout partner sandbox endpoints. If
+                PAYOUT_API_KEY is missing, it falls back to mock data.
               </p>
             </div>
           </div>
           <button
             onClick={() => {
-              setBridgeMode((v) => !v);
-              setBridgeStatus({ configured: null, message: "" });
-              setBridgeError(null);
+              setPayoutMode((v) => !v);
+              setPayoutStatus({ configured: null, message: "" });
+              setPayoutError(null);
             }}
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${bridgeMode ? "bg-primary text-white" : "bg-card border border-border hover:bg-secondary"}`}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${payoutMode ? "bg-primary text-white" : "bg-card border border-border hover:bg-secondary"}`}
           >
-            {bridgeMode ? "Bridge mode on" : "Bridge mode off"}
+            {payoutMode ? "Payout partner mode on" : "Payout partner mode off"}
           </button>
         </div>
 
-        {bridgeMode && (
+        {payoutMode && (
           <div className="rounded-2xl border border-border/60 bg-card p-5 mb-6 space-y-2">
             <div className="flex items-center gap-2 text-sm font-semibold">
               <AlertCircle className="w-4 h-4 text-primary" />
-              Bridge integration status
+              Payout partner integration status
             </div>
             <div className="text-sm text-muted-foreground">
-              {bridgeStatus.configured === null
-                ? "Not tested yet. Continue to the quote step to probe the Bridge API."
-                : bridgeStatus.message}
+              {payoutStatus.configured === null
+                ? "Not tested yet. Continue to the quote step to probe the Payout partner API."
+                : payoutStatus.message}
             </div>
-            {bridgeLoading && (
-              <div className="text-xs text-muted-foreground">Calling Bridge API…</div>
+            {payoutLoading && (
+              <div className="text-xs text-muted-foreground">Calling Payout partner API…</div>
             )}
-            {bridgeError && (
+            {payoutError && (
               <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm">
-                {bridgeError}
+                {payoutError}
               </div>
             )}
           </div>
@@ -403,25 +403,25 @@ export default function SendPage() {
                   setStep(2);
                 }}
               >
-                Get Bridge Quote <ArrowRight className="w-4 h-4" />
+                Get Payout Quote <ArrowRight className="w-4 h-4" />
               </PrimaryButton>
             </div>
           )}
 
           {step === 2 && (
             <div className="space-y-6">
-              <SectionTitle title="2. Bridge quote" />
-              {bridgeMode && (
+              <SectionTitle title="2. Payout quote" />
+              {payoutMode && (
                 <button
-                  onClick={getBridgeQuote}
-                  disabled={bridgeLoading}
+                  onClick={getPayoutQuote}
+                  disabled={payoutLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {bridgeLoading ? "Calling Bridge…" : "Fetch real Bridge quote"}
+                  {payoutLoading ? "Calling partner API…" : "Fetch real Payout quote"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
-                <KV k="Provider" v="Bridge" />
+                <KV k="Provider" v="Regulated payout partner (TBD)" />
                 <KV k="Provider type" v="Stablecoin orchestration / settlement partner" />
                 <KV k="Input token" v={token} />
                 <KV k="Input amount" v={amount} />
@@ -430,7 +430,7 @@ export default function SendPage() {
                   k="FX rate"
                   v={`1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`}
                 />
-                <KV k="Bridge fee" v={`$${fmt(quote.bridgeFee)}`} />
+                <KV k="Partner payout fee" v={`$${fmt(quote.payoutFee)}`} />
                 <KV k="LamportPay platform fee" v={`$${fmt(quote.platformFee)}`} />
                 <KV k="Total fee" v={`$${fmt(quote.totalFee)}`} />
                 <KV
@@ -438,68 +438,68 @@ export default function SendPage() {
                   v={`${fmt(quote.recipientAmount)} ${corridor.currency}`}
                 />
                 <KV k="Estimated delivery" v="Under 5 minutes" />
-                <KV k="KYC method" v="Bridge-hosted KYC" />
+                <KV k="KYC method" v="Partner-hosted KYC" />
                 <KV k="Payout method" v={method} />
                 <KV k="Corridor support" v="Demo supported" />
-                {bridgeMode && bridgeTransferId && (
+                {payoutMode && payoutTransferId && (
                   <KV
-                    k="Bridge transfer id"
-                    v={<span className="font-mono text-xs">{bridgeTransferId}</span>}
+                    k="Payout transfer id"
+                    v={<span className="font-mono text-xs">{payoutTransferId}</span>}
                   />
                 )}
               </div>
               <div className="text-xs text-muted-foreground">
                 Status note:{" "}
-                {bridgeMode
-                  ? "Attempting real Bridge quote; falls back to mock if API is not configured."
+                {payoutMode
+                  ? "Attempting real Payout quote; falls back to mock if API is not configured."
                   : "Mock quote for demo only."}
               </div>
               <NavButtons
                 onBack={() => setStep(1)}
                 onNext={() => setStep(3)}
-                nextLabel="Continue to Bridge KYC"
+                nextLabel="Continue to Partner KYC"
               />
             </div>
           )}
 
           {step === 3 && (
             <div className="space-y-6">
-              <SectionTitle title="3. Bridge KYC" />
+              <SectionTitle title="3. Partner KYC" />
               <div className="rounded-2xl bg-secondary/60 p-5 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <p className="text-sm leading-relaxed">
-                  Identity verification is handled by <strong>Bridge</strong> or the selected
+                  Identity verification is handled by <strong>a regulated payout partner</strong> or the selected
                   licensed payout partner, not by LamportPay.
                 </p>
               </div>
-              {bridgeMode && !kycApproved && (
+              {payoutMode && !kycApproved && (
                 <button
-                  onClick={createBridgeCustomer}
-                  disabled={bridgeLoading}
+                  onClick={createPayoutCustomer}
+                  disabled={payoutLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {bridgeLoading ? "Creating…" : "Create real Bridge customer"}
+                  {payoutLoading ? "Creating…" : "Create real Payout partner customer"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
-                <KV k="Selected partner" v="Bridge" />
+                <KV k="Selected partner" v="Regulated payout partner (TBD)" />
                 <KV k="KYC status" v={kycApproved ? "Approved" : "Not started"} />
-                {bridgeMode && bridgeCustomerId && (
+                {payoutMode && payoutCustomerId && (
                   <KV
-                    k="Bridge customer id"
-                    v={<span className="font-mono text-xs">{bridgeCustomerId}</span>}
+                    k="Payout partner customer id"
+                    v={<span className="font-mono text-xs">{payoutCustomerId}</span>}
                   />
                 )}
               </div>
-              {kycApproved && <LammyCheck label="Mock KYC approved by Bridge" />}
+              {kycApproved && <LammyCheck label="Mock KYC approved by settlement partner" />}
               {!kycApproved ? (
                 <PrimaryButton
                   onClick={() => {
                     setKycApproved(true);
-                    if (bridgeMode) void createBridgeCustomer();
+                    if (payoutMode) void createPayoutCustomer();
                   }}
                 >
-                  Complete Mock Bridge KYC
+                  Complete Mock partner KYC
                 </PrimaryButton>
               ) : (
                 <NavButtons
@@ -514,13 +514,13 @@ export default function SendPage() {
           {step === 4 && (
             <div className="space-y-6">
               <SectionTitle title="4. Payment confirmation" />
-              {bridgeMode && (
+              {payoutMode && (
                 <button
-                  onClick={createBridgeExternalAccountAndTransfer}
-                  disabled={bridgeLoading}
+                  onClick={createPayoutExternalAccountAndTransfer}
+                  disabled={payoutLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {bridgeLoading ? "Creating…" : "Create Bridge external account + transfer"}
+                  {payoutLoading ? "Creating…" : "Create Payout partner account + transfer"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
@@ -530,8 +530,8 @@ export default function SendPage() {
                 <KV k="Receiver country" v={corridor.country} />
                 <KV k="Receiver currency" v={corridor.currency} />
                 <KV k="Recipient name" v={recipientName} />
-                <KV k="Selected partner" v="Bridge" />
-                <KV k="Bridge fee" v={`$${fmt(quote.bridgeFee)}`} />
+                <KV k="Selected partner" v="Regulated payout partner (TBD)" />
+                <KV k="Partner payout fee" v={`$${fmt(quote.payoutFee)}`} />
                 <KV k="LamportPay fee" v={`$${fmt(quote.platformFee)}`} />
                 <KV
                   k="Recipient receives"
@@ -539,25 +539,25 @@ export default function SendPage() {
                 />
                 <KV k="Estimated delivery" v="Under 5 minutes" />
                 <KV k="Payout method" v={method} />
-                {bridgeMode && bridgeExternalAccountId && (
+                {payoutMode && payoutExternalAccountId && (
                   <KV
-                    k="Bridge external account"
-                    v={<span className="font-mono text-xs">{bridgeExternalAccountId}</span>}
+                    k="Payout partner account"
+                    v={<span className="font-mono text-xs">{payoutExternalAccountId}</span>}
                   />
                 )}
-                {bridgeMode && bridgeTransferId && (
+                {payoutMode && payoutTransferId && (
                   <KV
-                    k="Bridge transfer id"
-                    v={<span className="font-mono text-xs">{bridgeTransferId}</span>}
+                    k="Payout transfer id"
+                    v={<span className="font-mono text-xs">{payoutTransferId}</span>}
                   />
                 )}
               </div>
               <PrimaryButton
                 onClick={() => {
                   setTxHash(mockSolanaHash());
-                  setBridgeRef(bridgeTransferId || mockBridgeRef());
+                  setPayoutRef(payoutTransferId || mockPayoutRef());
                   setStep(5);
-                  if (bridgeMode) void createBridgeExternalAccountAndTransfer();
+                  if (payoutMode) void createPayoutExternalAccountAndTransfer();
                 }}
               >
                 Simulate Payment
@@ -605,21 +605,21 @@ export default function SendPage() {
               corridor={corridor}
               recipientName={recipientName}
               method={method}
-              bridgeRef={bridgeRef}
+              payoutRef={payoutRef}
               txHash={txHash}
-              bridgeMode={bridgeMode}
-              bridgeTransferId={bridgeTransferId}
+              payoutMode={payoutMode}
+              payoutTransferId={payoutTransferId}
               onReset={() => {
                 setStep(1);
                 setKycApproved(false);
                 setPaymentId("");
-                setBridgeRef("");
+                setPayoutRef("");
                 setTxHash("");
-                setBridgeCustomerId("");
-                setBridgeExternalAccountId("");
-                setBridgeTransferId("");
-                setBridgeError(null);
-                setBridgeStatus({ configured: null, message: "" });
+                setPayoutCustomerId("");
+                setPayoutExternalAccountId("");
+                setPayoutTransferId("");
+                setPayoutError(null);
+                setPayoutStatus({ configured: null, message: "" });
               }}
             />
           )}
@@ -643,10 +643,10 @@ type ReceiptProps = {
   corridor: (typeof CORRIDORS)[number];
   recipientName: string;
   method: string;
-  bridgeRef: string;
+  payoutRef: string;
   txHash: string;
-  bridgeMode: boolean;
-  bridgeTransferId: string;
+  payoutMode: boolean;
+  payoutTransferId: string;
   onReset: () => void;
 };
 
@@ -659,10 +659,10 @@ function Receipt(props: ReceiptProps) {
     corridor,
     recipientName,
     method,
-    bridgeRef,
+    payoutRef,
     txHash,
-    bridgeMode,
-    bridgeTransferId,
+    payoutMode,
+    payoutTransferId,
     onReset,
   } = props;
   const [copied, setCopied] = useState(false);
@@ -673,17 +673,17 @@ function Receipt(props: ReceiptProps) {
     `Recipient: ${recipientName}`,
     `Country: ${corridor.country} (${corridor.currency})`,
     `Recipient receives: ${fmt(quote.recipientAmount)} ${corridor.currency}`,
-    `Partner: Bridge`,
-    `Bridge reference: ${bridgeRef}`,
-    `Bridge fee: $${fmt(quote.bridgeFee)}`,
+    `Partner: regulated payout partner (TBD)`,
+    `Payout reference: ${payoutRef}`,
+    `Partner payout fee: $${fmt(quote.payoutFee)}`,
     `LamportPay fee: $${fmt(quote.platformFee)}`,
     `FX rate: 1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`,
     `Payout method: ${method}`,
     `Solana tx (mock): ${txHash}`,
     `Status: Paid`,
-    bridgeMode ? `Bridge transfer id: ${bridgeTransferId || "n/a"}` : "",
-    bridgeMode
-      ? "Note: Bridge mode was on; real transfer may not have been created if API key was missing."
+    payoutMode ? `Payout transfer id: ${payoutTransferId || "n/a"}` : "",
+    payoutMode
+      ? "Note: Payout partner mode was on; real transfer may not have been created if API key was missing."
       : "",
   ]
     .filter(Boolean)
@@ -714,9 +714,9 @@ function Receipt(props: ReceiptProps) {
           <KV k="Receiver currency" v={corridor.currency} />
           <KV k="Recipient name" v={recipientName} />
           <KV k="Recipient receives" v={`${fmt(quote.recipientAmount)} ${corridor.currency}`} />
-          <KV k="Selected partner" v="Bridge" />
-          <KV k="Bridge reference" v={<span className="font-mono text-xs">{bridgeRef}</span>} />
-          <KV k="Bridge fee" v={`$${fmt(quote.bridgeFee)}`} />
+          <KV k="Selected partner" v="Regulated payout partner (TBD)" />
+          <KV k="Payout reference" v={<span className="font-mono text-xs">{payoutRef}</span>} />
+          <KV k="Partner payout fee" v={`$${fmt(quote.payoutFee)}`} />
           <KV k="LamportPay platform fee" v={`$${fmt(quote.platformFee)}`} />
           <KV
             k="FX rate used"
@@ -727,11 +727,11 @@ function Receipt(props: ReceiptProps) {
             k="Mock Solana tx"
             v={<span className="font-mono text-[10px] break-all">{txHash}</span>}
           />
-          {bridgeMode && (
+          {payoutMode && (
             <KV
-              k="Bridge transfer id"
+              k="Payout transfer id"
               v={
-                <span className="font-mono text-[10px] break-all">{bridgeTransferId || "n/a"}</span>
+                <span className="font-mono text-[10px] break-all">{payoutTransferId || "n/a"}</span>
               }
             />
           )}

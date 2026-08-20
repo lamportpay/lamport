@@ -12,12 +12,12 @@ export const Route = createFileRoute("/workflow")({
       {
         name: "description",
         content:
-          "How Jupiter swap routing and Bridge payout orchestration map to each step of the LamportPay demo, with no real fiat payout.",
+          "How Jupiter swap routing and Partner payout orchestration map to each step of the LamportPay demo, with no real fiat payout.",
       },
       { property: "og:title", content: "Workflow overview — LamportPay demo architecture" },
       {
         property: "og:description",
-        content: "Jupiter handles SOL → USDC routing; Bridge would handle USDC → local currency.",
+        content: "Jupiter handles SOL → USDC routing; a regulated payout partner would handle USDC → local currency.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -31,7 +31,7 @@ const STAGES = [
     stage: "1. Transfer details",
     demo: "You choose token, amount, corridor and payout method on /send.",
     provider: "None",
-    real: "Same form, but corridor availability would be validated against Bridge supported rails.",
+    real: "Same form, but corridor availability would be validated against a regulated payout partner's supported rails.",
   },
   {
     stage: "2. Swap routing",
@@ -48,20 +48,20 @@ const STAGES = [
   {
     stage: "4. Identity check",
     demo: "Mock KYC screen only. No documents are collected or stored.",
-    provider: "Bridge (disabled)",
-    real: "Bridge-hosted KYC/KYB runs on the licensed partner side, never inside LamportPay.",
+    provider: "Regulated payout partner (disabled)",
+    real: "Partner-hosted KYC/KYB runs on the licensed partner side, never inside LamportPay.",
   },
   {
     stage: "5. Payout request",
-    demo: "Bridge API mode can call sandbox endpoints; without a key everything stays mock.",
-    provider: "Bridge",
-    real: "Bridge transfer endpoint moves USDC to the recipient's bank rail in local currency.",
+    demo: "Payout partner API mode can call sandbox endpoints; without a key everything stays mock.",
+    provider: "Regulated payout partner",
+    real: "Payout transfer endpoint moves USDC to the recipient's bank rail in local currency.",
   },
   {
     stage: "6. Tracking and receipt",
     demo: "Timeline and receipt are generated from mock identifiers.",
-    provider: "Bridge webhooks",
-    real: "Signed Bridge webhooks update the transfer status in real time.",
+    provider: "Partner webhooks",
+    real: "Signed Partner webhooks update the transfer status in real time.",
   },
 ];
 
@@ -73,11 +73,11 @@ function WorkflowPage() {
           Integration workflow
         </div>
         <h1 className="text-3xl md:text-4xl font-semibold tracking-tight mt-2">
-          How Jupiter and Bridge map to the demo
+          How Jupiter and the payout layer map to the demo
         </h1>
         <p className="text-muted-foreground mt-3 max-w-2xl">
           LamportPay splits the flow into a swap layer and a payout layer. Jupiter handles SOL → USDC
-          routing on Solana. Bridge would handle USDC → local currency. In this demo the payout layer
+          routing on Solana. a regulated payout partner would handle USDC → local currency. In this demo the payout layer
           never moves fiat, and identity checks are simulated.
         </p>
 
@@ -90,7 +90,7 @@ function WorkflowPage() {
             },
             {
               icon: Landmark,
-              title: "Payout layer — Bridge",
+              title: "Payout layer — regulated partner",
               body: "Customer orchestration, external bank accounts, transfers and webhooks. Disabled in this demo.",
             },
             {
@@ -133,7 +133,7 @@ function WorkflowPage() {
 
         <h2 className="text-xl font-semibold mt-12">Current integration status</h2>
         <p className="text-sm text-muted-foreground mt-2">
-          Shows whether Jupiter and Bridge keys are configured and which endpoints serve mock versus
+          Shows whether Jupiter and payout partner keys are configured and which endpoints serve mock versus
           sandbox data.
         </p>
         <div className="mt-4">

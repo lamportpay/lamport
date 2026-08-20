@@ -10,7 +10,7 @@ describe("GET /api/integration-status", () => {
 
     const names = res.body.providers.map((p) => p.name);
     expect(names).toContain("Jupiter");
-    expect(names).toContain("Bridge");
+    expect(names).toContain("Payout partner");
 
     for (const provider of res.body.providers) {
       expect(["sandbox", "mock"]).toContain(provider.mode);
@@ -27,10 +27,10 @@ describe("GET /api/integration-status", () => {
     }
   });
 
-  it("lists the Jupiter and Bridge endpoints", async () => {
+  it("lists the Jupiter and payout endpoints", async () => {
     const status = await getIntegrationStatus();
     const paths = status.endpoints.map((e) => e.path);
     expect(paths.some((p) => p.includes("/api/jupiter/quote"))).toBe(true);
-    expect(paths.some((p) => p.includes("/api/bridge/"))).toBe(true);
+    expect(paths.some((p) => p.includes("/api/payout/"))).toBe(true);
   });
 });

@@ -296,7 +296,7 @@ export function SwapPanel() {
             )}
             <p className="text-[11px] leading-relaxed text-muted-foreground">
               This test swaps SOL to USDC inside your own wallet. LamportPay does not receive your
-              funds. Bridge payout is disabled.
+              funds. Fiat payout is disabled.
             </p>
           </div>
 
@@ -320,7 +320,7 @@ export function SwapPanel() {
               </li>
               <li className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[color:var(--success)]" />
-                <span>Bridge payout is disabled.</span>
+                <span>Fiat payout is disabled.</span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[color:var(--success)]" />
@@ -407,7 +407,7 @@ export function SwapPanel() {
                 Fiat payout disabled
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                USDC swap completed. Bridge payout is disabled for now. Partner KYC and
+                USDC swap completed. Fiat payout is disabled for now. Partner KYC and
                 local-currency payout will be added only after licensed partner approval.
               </p>
             </div>
@@ -419,7 +419,7 @@ export function SwapPanel() {
         <Warn tone="warning">
           Real Jupiter swaps may use real funds. Test only with a very small amount.
         </Warn>
-        <Warn tone="muted">Bridge fiat payout is disabled for now.</Warn>
+        <Warn tone="muted">Fiat payout is disabled for now.</Warn>
         <Warn tone="warning">LamportPay will never ask for your seed phrase or private key.</Warn>
       </div>
 
@@ -452,7 +452,7 @@ export function SwapPanel() {
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              LamportPay will never ask for your seed phrase or private key. Bridge payout, fiat
+              LamportPay will never ask for your seed phrase or private key. Partner payout, fiat
               payout and KYC remain disabled.
             </p>
             <div className="flex gap-2 justify-end">

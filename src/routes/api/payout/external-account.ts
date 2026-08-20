@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { bridgeError, bridgeHeaders, getBridgeConfig } from "@/lib/bridge.config";
+import { payoutError, payoutHeaders, getPayoutConfig } from "@/lib/payout.config";
 
 const ExternalAccountInput = z
   .object({
@@ -19,14 +19,14 @@ function errorResponse(message: string, status: number, extra?: Record<string, u
   return Response.json({ error: message, ...extra }, { status });
 }
 
-export const Route = createFileRoute("/api/bridge/external-account")({
+export const Route = createFileRoute("/api/payout/external-account")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const config = getBridgeConfig();
+        const config = getPayoutConfig();
         if (!config.enabled) {
           return errorResponse(
-            "Bridge API is not configured. Add BRIDGE_API_KEY to create real external accounts.",
+            "Payout partner API is not configured. Add PAYOUT_API_KEY to create real external accounts.",
             200,
             { demoMode: true },
           );
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/bridge/external-account")({
           `${config.apiUrl}/v0/customers/${customerId}/external_accounts`,
           {
             method: "POST",
-            headers: bridgeHeaders(config, idempotencyKey),
+            headers: payoutHeaders(config, idempotencyKey),
             body: JSON.stringify({
               currency: account.currency,
               account_number: account.account_number,
@@ -65,9 +65,9 @@ export const Route = createFileRoute("/api/bridge/external-account")({
 
         const text = await upstream.text();
         if (!upstream.ok) {
-          return errorResponse(bridgeError(upstream.status, text).error, 502, {
-            bridgeStatus: upstream.status,
-            bridgeRaw: text,
+          return errorResponse(payoutError(upstream.status, text).error, 502, {
+            payoutStatus: upstream.status,
+            payoutRaw: text,
           });
         }
 
@@ -75,10 +75,10 @@ export const Route = createFileRoute("/api/bridge/external-account")({
         try {
           payload = JSON.parse(text);
         } catch {
-          return errorResponse("Invalid response from Bridge API.", 502);
+          return errorResponse("Invalid response from Payout partner API.", 502);
         }
 
-        return Response.json({ bridgeMode: true, externalAccount: payload });
+        return Response.json({ payoutMode: true, externalAccount: payload });
       },
     },
   },

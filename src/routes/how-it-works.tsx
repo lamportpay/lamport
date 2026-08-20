@@ -24,24 +24,24 @@ export const Route = createFileRoute("/how-it-works")({
 const userFlow = [
   "User enters transfer details",
   "LamportPay creates payment record",
-  "Bridge quote generated",
+  "Payout quote generated",
   "Partner KYC",
   "Jupiter swap to USDC planned",
   "USDC settlement verified",
-  "Bridge payout processing",
+  "Partner payout processing",
   "Receipt shown",
 ];
 
 const apiFlow = [
   "Frontend form",
   "POST /api/payments",
-  "POST /api/bridge-quote",
-  "POST /api/bridge-kyc/start",
-  "POST /api/bridge-kyc/complete",
+  "POST /api/payout-quote",
+  "POST /api/payout-kyc/start",
+  "POST /api/payout-kyc/complete",
   "POST /api/payments/confirm",
   "POST /api/jupiter/quote",
   "POST /api/solana/verify-transaction",
-  "POST /api/bridge-transfer",
+  "POST /api/payout-transfer",
   "GET /api/payments/[paymentId]",
   "GET /api/receipt/[paymentId]",
 ];

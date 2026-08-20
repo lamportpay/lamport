@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { getBridgeConfig } from "@/lib/bridge.config";
+import { getPayoutConfig } from "@/lib/payout.config";
 
 interface WebhookSignature {
   timestamp: string;
@@ -54,11 +54,11 @@ async function verifyWebhookSignature(
   }
 }
 
-export const Route = createFileRoute("/api/public/bridge-webhook")({
+export const Route = createFileRoute("/api/public/payout-webhook")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const config = getBridgeConfig();
+        const config = getPayoutConfig();
         const signatureHeader = request.headers.get("X-Webhook-Signature");
 
         if (!signatureHeader) {
@@ -84,7 +84,7 @@ export const Route = createFileRoute("/api/public/bridge-webhook")({
         // In a production app, this would update the payment record in the database.
         // LamportPay currently has no database, so we acknowledge receipt and echo
         // the event for visibility.
-        console.log("[bridge-webhook] received event", JSON.stringify(event));
+        console.log("[payout-webhook] received event", JSON.stringify(event));
 
         return Response.json({ received: true, eventType: event.event_type ?? "unknown" });
       },

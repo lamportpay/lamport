@@ -172,8 +172,8 @@ function WhySection() {
     },
     {
       icon: Globe2,
-      title: "Bridge-first partner flow",
-      desc: "Bridge-style payout flow is shown as a mock placeholder. Real Bridge payout is disabled until partner approval.",
+      title: "Partner-first partner flow",
+      desc: "Partner-style payout flow is shown as a mock placeholder. Real Fiat payout is disabled until partner approval.",
       stat: "10+",
       statLabel: "corridors",
     },
@@ -376,7 +376,7 @@ function AIAssistant() {
               <KV k="Receiver country" v={result.country} />
               <KV k="Receiver currency" v={result.currency} />
               <KV k="Suggested payout method" v={result.method} />
-              <KV k="Partner" v="Bridge" />
+              <KV k="Partner" v="Regulated payout partner (TBD)" />
               <div className="md:col-span-2 text-xs text-muted-foreground flex gap-1.5 items-center pt-2">
                 <Info className="w-3.5 h-3.5" /> This is a demo suggestion only.
               </div>
@@ -402,8 +402,8 @@ function KV({ k, v }: { k: string; v: string }) {
 function FeeExplainer() {
   const rows = [
     {
-      k: "Bridge fee",
-      v: "A small fee (1% of amount, minimum $1) charged by our settlement partner Bridge for processing the local-currency payout.",
+      k: "Partner payout fee",
+      v: "A small fee (1% of amount, minimum $1) charged by the regulated settlement partner for processing the local-currency payout.",
     },
     {
       k: "LamportPay platform fee",

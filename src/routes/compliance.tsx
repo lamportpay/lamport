@@ -30,7 +30,7 @@ function Compliance() {
   const positives = [
     "LamportPay is a technology platform.",
     "Licensed partners handle regulated payout activity.",
-    "Bridge is a candidate settlement provider under evaluation. No agreement is in place.",
+    "LamportPay is evaluating regulated infrastructure partners for future fiat conversion and payout services. No agreement is in place.",
     "Real launch requires partner approval, KYB, legal review, and corridor approval.",
   ];
   return (
@@ -80,7 +80,7 @@ function Compliance() {
             <div className="font-semibold">Partner-led compliance</div>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               KYC, KYB, AML, sanctions screening, Travel Rule, FX/off-ramp, payout processing, and
-              settlement are performed by licensed partners such as Bridge — not by LamportPay. This
+              settlement are performed by licensed regulated settlement partners — not by LamportPay. This
               posture is intentional: it keeps the surface area of the platform narrow and
               defensible.
             </p>
@@ -138,8 +138,8 @@ function Compliance() {
         <div className="mt-10 text-xs text-muted-foreground">
           Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected
           wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or
-          third-party recipient transfer. No partnership, agreement, or integration with Bridge,
-          Yellow Card, or any other payout provider is in place or claimed.
+          third-party recipient transfer. No partnership, agreement, or integration with any
+          payout provider is in place or claimed.
         </div>
 
       </section>

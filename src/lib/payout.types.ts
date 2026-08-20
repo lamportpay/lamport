@@ -1,29 +1,29 @@
 /**
- * Shared Bridge API types for customer, external account, and transfer flows.
- * These are intentionally lightweight and match the Bridge v0 API surface used
+ * Shared Payout partner API types for customer, external account, and transfer flows.
+ * These are intentionally lightweight and match the Payout v0 API surface used
  * by LamportPay.
  */
 
-export type BridgeCustomerType = "individual" | "business";
+export type PayoutCustomerType = "individual" | "business";
 
-export interface BridgeCustomerRequest {
-  type: BridgeCustomerType;
+export interface PayoutCustomerRequest {
+  type: PayoutCustomerType;
   first_name?: string;
   last_name?: string;
   email?: string;
   // Additional fields are omitted in the first demo integration.
 }
 
-export interface BridgeCustomerResponse {
+export interface PayoutCustomerResponse {
   id: string;
-  type: BridgeCustomerType;
+  type: PayoutCustomerType;
   first_name?: string;
   last_name?: string;
   email?: string;
   status?: string;
 }
 
-export interface BridgeExternalAccountRequest {
+export interface PayoutExternalAccountRequest {
   currency: string;
   // Supported rails: ach, iban, clabe, pix_key, pix_br_code, etc.
   // This is a simplified wrapper; real payloads differ per rail.
@@ -34,13 +34,13 @@ export interface BridgeExternalAccountRequest {
   account_holder_type?: "individual" | "business";
 }
 
-export interface BridgeExternalAccountResponse {
+export interface PayoutExternalAccountResponse {
   id: string;
   currency: string;
   status?: string;
 }
 
-export interface BridgeTransferRequest {
+export interface PayoutTransferRequest {
   amount: string;
   on_behalf_of: string;
   source: {
@@ -56,7 +56,7 @@ export interface BridgeTransferRequest {
   developer_fee?: string;
 }
 
-export interface BridgeTransferResponse {
+export interface PayoutTransferResponse {
   id: string;
   state: string;
   amount: string;

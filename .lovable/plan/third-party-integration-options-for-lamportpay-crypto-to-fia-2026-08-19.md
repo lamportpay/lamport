@@ -135,10 +135,10 @@ LamportPay shows receipt and tracking
 
 ### Phase 3 — Integrate one payout partner (Bridge recommended)
 
-- Create a **sandbox** Bridge API key.
+- Create a **sandbox** Payout partner API key.
 - Add server routes: `/api/bridge/quote`, `/api/bridge/customer`, `/api/bridge/external-account`, `/api/bridge/transfer`, `/api/bridge/webhook`.
-- Replace the mock quote in `/send` with real Bridge sandbox data for supported corridors.
-- Enable only corridors that Bridge sandbox supports.
+- Replace the mock quote in `/send` with real payout partner sandbox data for supported corridors.
+- Enable only corridors that payout partner sandbox supports.
 - Keep KYC as a partner-hosted step.
 
 ### Phase 4 — Add corridor-specific specialists
@@ -165,4 +165,4 @@ LamportPay shows receipt and tracking
 
 ## Recommended next step
 
-If you want to proceed, I will create a focused implementation plan for **Phase 2 + Phase 3** (Bridge sandbox integration with real quote, customer creation, and transfer endpoints) behind a feature flag so the demo stays safe while the real integration is built.
+If you want to proceed, I will create a focused implementation plan for **Phase 2 + Phase 3** (payout partner sandbox integration with real quote, customer creation, and transfer endpoints) behind a feature flag so the demo stays safe while the real integration is built.
