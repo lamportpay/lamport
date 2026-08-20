@@ -20,8 +20,8 @@ export const Route = createFileRoute("/api/solana/health")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const url = new URL(request.url);
-        const raw = url.searchParams.get("cluster") ?? "devnet";
+        const requestUrl = new URL(request.url);
+        const raw = requestUrl.searchParams.get("cluster") ?? "devnet";
         if (!isSolanaCluster(raw)) {
           return Response.json(
             { error: `cluster must be one of: ${SOLANA_CLUSTERS.join(", ")}` },

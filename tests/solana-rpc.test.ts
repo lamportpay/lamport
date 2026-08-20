@@ -15,10 +15,14 @@ describe("solana rpc health", () => {
         reachable: boolean;
         slot: number | null;
         jupiterSwapAvailable: boolean;
+        customEndpoint: boolean;
+        endpointProvider: string | null;
       }>(`/api/solana/health?cluster=${cluster}`);
       expect([200, 502]).toContain(res.status);
       expect(res.body.cluster).toBe(cluster);
       expect(res.body.jupiterSwapAvailable).toBe(cluster === "mainnet-beta");
+      expect(res.body.customEndpoint).toBe(true);
+      expect(res.body.endpointProvider).toBe("Alchemy");
       if (res.status === 200) {
         expect(res.body.reachable).toBe(true);
         expect(typeof res.body.slot).toBe("number");
