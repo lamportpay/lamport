@@ -3,6 +3,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SOLANA_CLUSTERS, isSolanaCluster, supportsJupiterSwap } from "@/lib/solana-rpc";
 import { resolveRpcUrl, rpc } from "@/lib/solana-rpc.server";
 
+function detectProvider(url: string): string {
+  const lower = url.toLowerCase();
+  if (lower.includes("alchemy")) return "Alchemy";
+  if (lower.includes("quicknode")) return "QuickNode";
+  if (lower.includes("helius")) return "Helius";
+  return "Custom RPC";
+}
+
 /**
  * GET /api/solana/health?cluster=devnet
  *
@@ -29,7 +37,8 @@ export const Route = createFileRoute("/api/solana/health")({
           rpc<number>(cluster, "getBlockHeight", [{ commitment: "confirmed" }]),
         ]);
         const latencyMs = Date.now() - started;
-        const { custom } = resolveRpcUrl(cluster);
+        const { url, custom } = resolveRpcUrl(cluster);
+        const endpointProvider = custom ? detectProvider(url) : null;
 
         const reachable = health.ok && slot.ok;
         return Response.json(
@@ -42,6 +51,7 @@ export const Route = createFileRoute("/api/solana/health")({
             solanaCore: version.ok ? (version.result?.["solana-core"] ?? null) : null,
             latencyMs,
             customEndpoint: custom,
+            endpointProvider,
             jupiterSwapAvailable: supportsJupiterSwap(cluster),
             note: supportsJupiterSwap(cluster)
               ? "Jupiter routing and liquidity exist on this cluster. Swap limits 0.001–0.01 SOL still apply."
