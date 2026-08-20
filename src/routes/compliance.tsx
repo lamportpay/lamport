@@ -30,7 +30,7 @@ function Compliance() {
   const positives = [
     "LamportPay is a technology platform.",
     "Licensed partners handle regulated payout activity.",
-    "Bridge is the first planned/demo settlement partner.",
+    "Bridge is a candidate settlement provider under evaluation. No agreement is in place.",
     "Real launch requires partner approval, KYB, legal review, and corridor approval.",
   ];
   return (
