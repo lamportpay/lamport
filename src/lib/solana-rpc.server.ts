@@ -19,7 +19,22 @@ export async function rpc<T>(
   method: string,
   params: unknown[],
 ): Promise<{ ok: true; result: T } | { ok: false; error: string; status: number }> {
-  const { url } = resolveRpcUrl(cluster);
+  const { url, custom } = resolveRpcUrl(cluster);
+  const attempt = await rpcAt<T>(url, cluster, method, params);
+  // A misconfigured or unreachable custom endpoint should not break the cluster
+  // check — retry once on the public endpoint.
+  if (!attempt.ok && custom && url !== DEFAULT_RPC_URLS[cluster]) {
+    return rpcAt<T>(DEFAULT_RPC_URLS[cluster], cluster, method, params);
+  }
+  return attempt;
+}
+
+async function rpcAt<T>(
+  url: string,
+  cluster: SolanaCluster,
+  method: string,
+  params: unknown[],
+): Promise<{ ok: true; result: T } | { ok: false; error: string; status: number }> {
   try {
     const res = await fetch(url, {
       method: "POST",
