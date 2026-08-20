@@ -21,14 +21,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
 import { Route as ApiSolanaVerifyTxRouteImport } from './routes/api/solana/verify-tx'
 import { Route as ApiSolanaHealthRouteImport } from './routes/api/solana/health'
-import { Route as ApiPublicBridgeWebhookRouteImport } from './routes/api/public/bridge-webhook'
+import { Route as ApiPublicPayoutWebhookRouteImport } from './routes/api/public/payout-webhook'
+import { Route as ApiPayoutTransferRouteImport } from './routes/api/payout/transfer'
+import { Route as ApiPayoutQuoteRouteImport } from './routes/api/payout/quote'
+import { Route as ApiPayoutExternalAccountRouteImport } from './routes/api/payout/external-account'
+import { Route as ApiPayoutCustomerRouteImport } from './routes/api/payout/customer'
 import { Route as ApiJupiterQuoteRouteImport } from './routes/api/jupiter/quote'
 import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
 import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
-import { Route as ApiBridgeTransferRouteImport } from './routes/api/bridge/transfer'
-import { Route as ApiBridgeQuoteRouteImport } from './routes/api/bridge/quote'
-import { Route as ApiBridgeExternalAccountRouteImport } from './routes/api/bridge/external-account'
-import { Route as ApiBridgeCustomerRouteImport } from './routes/api/bridge/customer'
 
 const WorkflowRoute = WorkflowRouteImport.update({
   id: '/workflow',
@@ -90,9 +90,30 @@ const ApiSolanaHealthRoute = ApiSolanaHealthRouteImport.update({
   path: '/api/solana/health',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicBridgeWebhookRoute = ApiPublicBridgeWebhookRouteImport.update({
-  id: '/api/public/bridge-webhook',
-  path: '/api/public/bridge-webhook',
+const ApiPublicPayoutWebhookRoute = ApiPublicPayoutWebhookRouteImport.update({
+  id: '/api/public/payout-webhook',
+  path: '/api/public/payout-webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPayoutTransferRoute = ApiPayoutTransferRouteImport.update({
+  id: '/api/payout/transfer',
+  path: '/api/payout/transfer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPayoutQuoteRoute = ApiPayoutQuoteRouteImport.update({
+  id: '/api/payout/quote',
+  path: '/api/payout/quote',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPayoutExternalAccountRoute =
+  ApiPayoutExternalAccountRouteImport.update({
+    id: '/api/payout/external-account',
+    path: '/api/payout/external-account',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPayoutCustomerRoute = ApiPayoutCustomerRouteImport.update({
+  id: '/api/payout/customer',
+  path: '/api/payout/customer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiJupiterQuoteRoute = ApiJupiterQuoteRouteImport.update({
@@ -110,27 +131,6 @@ const ApiJupiterExecuteRoute = ApiJupiterExecuteRouteImport.update({
   path: '/api/jupiter/execute',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiBridgeTransferRoute = ApiBridgeTransferRouteImport.update({
-  id: '/api/bridge/transfer',
-  path: '/api/bridge/transfer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiBridgeQuoteRoute = ApiBridgeQuoteRouteImport.update({
-  id: '/api/bridge/quote',
-  path: '/api/bridge/quote',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiBridgeExternalAccountRoute =
-  ApiBridgeExternalAccountRouteImport.update({
-    id: '/api/bridge/external-account',
-    path: '/api/bridge/external-account',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiBridgeCustomerRoute = ApiBridgeCustomerRouteImport.update({
-  id: '/api/bridge/customer',
-  path: '/api/bridge/customer',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -143,14 +143,14 @@ export interface FileRoutesByFullPath {
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
-  '/api/bridge/customer': typeof ApiBridgeCustomerRoute
-  '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
-  '/api/bridge/quote': typeof ApiBridgeQuoteRoute
-  '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
-  '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
+  '/api/payout/customer': typeof ApiPayoutCustomerRoute
+  '/api/payout/external-account': typeof ApiPayoutExternalAccountRoute
+  '/api/payout/quote': typeof ApiPayoutQuoteRoute
+  '/api/payout/transfer': typeof ApiPayoutTransferRoute
+  '/api/public/payout-webhook': typeof ApiPublicPayoutWebhookRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
 }
@@ -165,14 +165,14 @@ export interface FileRoutesByTo {
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
-  '/api/bridge/customer': typeof ApiBridgeCustomerRoute
-  '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
-  '/api/bridge/quote': typeof ApiBridgeQuoteRoute
-  '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
-  '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
+  '/api/payout/customer': typeof ApiPayoutCustomerRoute
+  '/api/payout/external-account': typeof ApiPayoutExternalAccountRoute
+  '/api/payout/quote': typeof ApiPayoutQuoteRoute
+  '/api/payout/transfer': typeof ApiPayoutTransferRoute
+  '/api/public/payout-webhook': typeof ApiPublicPayoutWebhookRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
 }
@@ -188,14 +188,14 @@ export interface FileRoutesById {
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
-  '/api/bridge/customer': typeof ApiBridgeCustomerRoute
-  '/api/bridge/external-account': typeof ApiBridgeExternalAccountRoute
-  '/api/bridge/quote': typeof ApiBridgeQuoteRoute
-  '/api/bridge/transfer': typeof ApiBridgeTransferRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
-  '/api/public/bridge-webhook': typeof ApiPublicBridgeWebhookRoute
+  '/api/payout/customer': typeof ApiPayoutCustomerRoute
+  '/api/payout/external-account': typeof ApiPayoutExternalAccountRoute
+  '/api/payout/quote': typeof ApiPayoutQuoteRoute
+  '/api/payout/transfer': typeof ApiPayoutTransferRoute
+  '/api/public/payout-webhook': typeof ApiPublicPayoutWebhookRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
 }
@@ -212,14 +212,14 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/workflow'
     | '/api/integration-status'
-    | '/api/bridge/customer'
-    | '/api/bridge/external-account'
-    | '/api/bridge/quote'
-    | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
-    | '/api/public/bridge-webhook'
+    | '/api/payout/customer'
+    | '/api/payout/external-account'
+    | '/api/payout/quote'
+    | '/api/payout/transfer'
+    | '/api/public/payout-webhook'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
   fileRoutesByTo: FileRoutesByTo
@@ -234,14 +234,14 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/workflow'
     | '/api/integration-status'
-    | '/api/bridge/customer'
-    | '/api/bridge/external-account'
-    | '/api/bridge/quote'
-    | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
-    | '/api/public/bridge-webhook'
+    | '/api/payout/customer'
+    | '/api/payout/external-account'
+    | '/api/payout/quote'
+    | '/api/payout/transfer'
+    | '/api/public/payout-webhook'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
   id:
@@ -256,14 +256,14 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/workflow'
     | '/api/integration-status'
-    | '/api/bridge/customer'
-    | '/api/bridge/external-account'
-    | '/api/bridge/quote'
-    | '/api/bridge/transfer'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
-    | '/api/public/bridge-webhook'
+    | '/api/payout/customer'
+    | '/api/payout/external-account'
+    | '/api/payout/quote'
+    | '/api/payout/transfer'
+    | '/api/public/payout-webhook'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
   fileRoutesById: FileRoutesById
@@ -279,14 +279,14 @@ export interface RootRouteChildren {
   WhitepaperRoute: typeof WhitepaperRoute
   WorkflowRoute: typeof WorkflowRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
-  ApiBridgeCustomerRoute: typeof ApiBridgeCustomerRoute
-  ApiBridgeExternalAccountRoute: typeof ApiBridgeExternalAccountRoute
-  ApiBridgeQuoteRoute: typeof ApiBridgeQuoteRoute
-  ApiBridgeTransferRoute: typeof ApiBridgeTransferRoute
   ApiJupiterExecuteRoute: typeof ApiJupiterExecuteRoute
   ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
   ApiJupiterQuoteRoute: typeof ApiJupiterQuoteRoute
-  ApiPublicBridgeWebhookRoute: typeof ApiPublicBridgeWebhookRoute
+  ApiPayoutCustomerRoute: typeof ApiPayoutCustomerRoute
+  ApiPayoutExternalAccountRoute: typeof ApiPayoutExternalAccountRoute
+  ApiPayoutQuoteRoute: typeof ApiPayoutQuoteRoute
+  ApiPayoutTransferRoute: typeof ApiPayoutTransferRoute
+  ApiPublicPayoutWebhookRoute: typeof ApiPublicPayoutWebhookRoute
   ApiSolanaHealthRoute: typeof ApiSolanaHealthRoute
   ApiSolanaVerifyTxRoute: typeof ApiSolanaVerifyTxRoute
 }
@@ -377,11 +377,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSolanaHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/bridge-webhook': {
-      id: '/api/public/bridge-webhook'
-      path: '/api/public/bridge-webhook'
-      fullPath: '/api/public/bridge-webhook'
-      preLoaderRoute: typeof ApiPublicBridgeWebhookRouteImport
+    '/api/public/payout-webhook': {
+      id: '/api/public/payout-webhook'
+      path: '/api/public/payout-webhook'
+      fullPath: '/api/public/payout-webhook'
+      preLoaderRoute: typeof ApiPublicPayoutWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payout/transfer': {
+      id: '/api/payout/transfer'
+      path: '/api/payout/transfer'
+      fullPath: '/api/payout/transfer'
+      preLoaderRoute: typeof ApiPayoutTransferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payout/quote': {
+      id: '/api/payout/quote'
+      path: '/api/payout/quote'
+      fullPath: '/api/payout/quote'
+      preLoaderRoute: typeof ApiPayoutQuoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payout/external-account': {
+      id: '/api/payout/external-account'
+      path: '/api/payout/external-account'
+      fullPath: '/api/payout/external-account'
+      preLoaderRoute: typeof ApiPayoutExternalAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payout/customer': {
+      id: '/api/payout/customer'
+      path: '/api/payout/customer'
+      fullPath: '/api/payout/customer'
+      preLoaderRoute: typeof ApiPayoutCustomerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/jupiter/quote': {
@@ -405,34 +433,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiJupiterExecuteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/bridge/transfer': {
-      id: '/api/bridge/transfer'
-      path: '/api/bridge/transfer'
-      fullPath: '/api/bridge/transfer'
-      preLoaderRoute: typeof ApiBridgeTransferRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/bridge/quote': {
-      id: '/api/bridge/quote'
-      path: '/api/bridge/quote'
-      fullPath: '/api/bridge/quote'
-      preLoaderRoute: typeof ApiBridgeQuoteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/bridge/external-account': {
-      id: '/api/bridge/external-account'
-      path: '/api/bridge/external-account'
-      fullPath: '/api/bridge/external-account'
-      preLoaderRoute: typeof ApiBridgeExternalAccountRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/bridge/customer': {
-      id: '/api/bridge/customer'
-      path: '/api/bridge/customer'
-      fullPath: '/api/bridge/customer'
-      preLoaderRoute: typeof ApiBridgeCustomerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -447,14 +447,14 @@ const rootRouteChildren: RootRouteChildren = {
   WhitepaperRoute: WhitepaperRoute,
   WorkflowRoute: WorkflowRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
-  ApiBridgeCustomerRoute: ApiBridgeCustomerRoute,
-  ApiBridgeExternalAccountRoute: ApiBridgeExternalAccountRoute,
-  ApiBridgeQuoteRoute: ApiBridgeQuoteRoute,
-  ApiBridgeTransferRoute: ApiBridgeTransferRoute,
   ApiJupiterExecuteRoute: ApiJupiterExecuteRoute,
   ApiJupiterOrderRoute: ApiJupiterOrderRoute,
   ApiJupiterQuoteRoute: ApiJupiterQuoteRoute,
-  ApiPublicBridgeWebhookRoute: ApiPublicBridgeWebhookRoute,
+  ApiPayoutCustomerRoute: ApiPayoutCustomerRoute,
+  ApiPayoutExternalAccountRoute: ApiPayoutExternalAccountRoute,
+  ApiPayoutQuoteRoute: ApiPayoutQuoteRoute,
+  ApiPayoutTransferRoute: ApiPayoutTransferRoute,
+  ApiPublicPayoutWebhookRoute: ApiPublicPayoutWebhookRoute,
   ApiSolanaHealthRoute: ApiSolanaHealthRoute,
   ApiSolanaVerifyTxRoute: ApiSolanaVerifyTxRoute,
 }
