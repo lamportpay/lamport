@@ -22,6 +22,7 @@ const QuoteInput = z
     outputMint: z.string().default(USDC_MINT),
     amount: z
       .string()
+      .nonempty("amount is required (lamports as a string).")
       .min(1, "amount is required.")
       .regex(/^\d+$/, "amount must be a numeric string in lamports."),
   })
@@ -131,10 +132,16 @@ export const Route = createFileRoute("/api/jupiter/quote")({
 
         const inAmountSol = lamportsToSol(amount);
         const outAmountUsdc = baseUnitsToUsdc(payload.outAmount);
-        const slippageBps = payload.slippageBps ?? 50;
-        const minOutAmountUsdc = payload.otherAmountThreshold
+        // Read-only order previews come back with slippageBps 0; keep the demo's
+        // default tolerance so the min-received figure stays meaningful.
+        const slippageBps = payload.slippageBps && payload.slippageBps > 0 ? payload.slippageBps : 50;
+        const thresholdUsdc = payload.otherAmountThreshold
           ? baseUnitsToUsdc(payload.otherAmountThreshold)
-          : outAmountUsdc * (1 - slippageBps / 10_000);
+          : null;
+        const minOutAmountUsdc =
+          thresholdUsdc !== null && thresholdUsdc < outAmountUsdc
+            ? thresholdUsdc
+            : outAmountUsdc * (1 - slippageBps / 10_000);
 
         const steps: RouteStepPreview[] = (payload.routePlan ?? []).map((leg) => {
           const info = leg.swapInfo ?? {};
