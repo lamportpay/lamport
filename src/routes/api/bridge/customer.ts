@@ -23,7 +23,7 @@ export const Route = createFileRoute("/api/bridge/customer")({
         const config = getBridgeConfig();
         if (!config.enabled) {
           return errorResponse(
-            "Bridge API is not configured. Add BRIDGE_API_KEY to create real customers.",
+            "Payout partner API is not configured. Add BRIDGE_API_KEY to create real customers.",
             200,
             { demoMode: true },
           );
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/api/bridge/customer")({
         try {
           payload = JSON.parse(text);
         } catch {
-          return errorResponse("Invalid response from Bridge API.", 502);
+          return errorResponse("Invalid response from Payout partner API.", 502);
         }
 
         return Response.json({ bridgeMode: true, customer: payload });

@@ -1,5 +1,5 @@
 /**
- * Bridge API configuration and server-side helpers.
+ * Payout partner API configuration and server-side helpers.
  *
  * All secrets are read inside handler bodies. Never expose Bridge keys
  * or webhook secrets to the browser.
@@ -39,5 +39,5 @@ export function bridgeHeaders(config: BridgeConfig, idempotencyKey?: string) {
 }
 
 export function bridgeError(status: number, body: string) {
-  return { error: `Bridge API request failed (${status}).`, raw: body };
+  return { error: `Payout partner API request failed (${status}).`, raw: body };
 }

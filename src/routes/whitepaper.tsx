@@ -27,7 +27,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps
         users pay with supported crypto assets, settle through USDC, and route local-currency payout
-        requests through licensed settlement partners such as Bridge.
+        requests through licensed regulated settlement partners.
       </p>
     ),
   },
@@ -45,7 +45,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         LamportPay provides a simple transfer interface, AI assistant, USDC settlement model,
-        Bridge-first payout simulation, and status tracking.
+        Partner-first payout simulation, and status tracking.
       </p>
     ),
   },
@@ -65,12 +65,12 @@ const sections: { title: string; body: React.ReactNode }[] = [
         items={[
           "Sender enters transfer details",
           "LamportPay creates payment",
-          "Bridge quote generated",
+          "Payout quote generated",
           "Partner KYC",
           "User confirms crypto payment",
           "Jupiter swaps supported token into USDC (later)",
           "USDC settlement verified",
-          "Bridge processes payout",
+          "Partner processes payout",
           "Recipient receives local currency",
           "LamportPay shows receipt",
         ]}
@@ -87,7 +87,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         />
         <ArchRow
           k="Backend"
-          v="API routes, payment state machine, Bridge adapter, Jupiter adapter, Solana verifier, webhook handler, database layer."
+          v="API routes, payment state machine, Payout partner adapter, Jupiter adapter, Solana verifier, webhook handler, database layer."
         />
         <ArchRow
           k="Blockchain"
@@ -95,11 +95,11 @@ const sections: { title: string; body: React.ReactNode }[] = [
         />
         <ArchRow
           k="Partner"
-          v="Bridge customer/KYC flow, Bridge transfer flow, Bridge webhook/status updates."
+          v="Payout partner customer/KYC flow, Payout transfer flow, Partner webhook/status updates."
         />
         <ArchRow
           k="Database"
-          v="Users, payments, quotes, KYC status, Bridge references, Solana transaction signatures, timeline events, receipts."
+          v="Users, payments, quotes, KYC status, Payout references, Solana transaction signatures, timeline events, receipts."
         />
       </div>
     ),
@@ -148,8 +148,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
           "PAYMENT_CONFIRMED",
           "JUPITER_SWAP_STARTED",
           "USDC_SETTLED",
-          "PAYOUT_SENT_TO_BRIDGE",
-          "BRIDGE_PROCESSING",
+          "PAYOUT_SENT_TO_PARTNER",
+          "PARTNER_PROCESSING",
           "PAID",
           "FAILED",
           "REFUNDED",
@@ -192,7 +192,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           "Phase 2: Backend MVP",
           "Phase 3: Phantom wallet + Solana devnet",
           "Phase 4: Jupiter quote/swap integration",
-          "Phase 5: Bridge sandbox integration",
+          "Phase 5: payout partner sandbox integration",
           "Phase 6: Controlled live pilot after legal and partner approval",
         ]}
       />

@@ -209,7 +209,7 @@ export function SwapRoutePreviewCard({ defaultSol = MIN_SOL }: { defaultSol?: nu
         <div className="flex gap-2 rounded-xl border border-border/60 bg-secondary px-4 py-3 text-xs text-muted-foreground">
           <Info className="w-4 h-4 shrink-0 mt-0.5" />
           <span>
-            Output destination is always your own connected wallet. Fiat payout, Bridge payout and
+            Output destination is always your own connected wallet. Fiat payout, Partner payout and
             KYC stay disabled in this preview.
           </span>
         </div>

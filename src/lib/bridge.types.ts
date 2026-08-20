@@ -1,5 +1,5 @@
 /**
- * Shared Bridge API types for customer, external account, and transfer flows.
+ * Shared Payout partner API types for customer, external account, and transfer flows.
  * These are intentionally lightweight and match the Bridge v0 API surface used
  * by LamportPay.
  */

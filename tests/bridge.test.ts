@@ -23,7 +23,7 @@ const cases: Array<{ path: string; body: Record<string, unknown> }> = [
   },
 ];
 
-describe("Bridge payout endpoints — mock fallback", () => {
+describe("Partner payout endpoints — mock fallback", () => {
   it("returns a clean demo-mode response for every endpoint when no key is configured", async () => {
     const status = await getIntegrationStatus();
     const configured = providerMode(status, "Bridge") === "sandbox";

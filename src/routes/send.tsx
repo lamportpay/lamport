@@ -82,12 +82,12 @@ export default function SendPage() {
 
   const timeline = [
     "Payment created",
-    "Bridge selected as settlement partner",
-    "Mock Bridge KYC approved",
+    "Regulated settlement partner selected",
+    "Mock partner KYC approved",
     "Crypto converted to USDC",
     "USDC settlement confirmed",
     "Payout request sent to Bridge",
-    "Bridge processing payout",
+    "Partner processing payout",
     "Recipient paid",
   ];
 
@@ -123,20 +123,20 @@ export default function SendPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setBridgeError(data.error ?? "Bridge quote failed.");
+        setBridgeError(data.error ?? "Payout quote failed.");
       } else {
         setBridgeStatus({
           configured: !data.demoMode,
           message: data.demoMode
-            ? "Bridge API not configured — using demo quote."
-            : "Bridge API connected — real quote received.",
+            ? "Payout partner API not configured — using demo quote."
+            : "Payout partner API connected — real quote received.",
         });
         if (data.transfer?.id) {
           setBridgeRef(data.transfer.id as string);
         }
       }
     } catch (e) {
-      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+      setBridgeError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
     } finally {
       setBridgeLoading(false);
     }
@@ -157,18 +157,18 @@ export default function SendPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setBridgeError(data.error ?? "Bridge customer creation failed.");
+        setBridgeError(data.error ?? "Payout partner customer creation failed.");
       } else if (data.customer?.id) {
         setBridgeCustomerId(data.customer.id as string);
       }
       setBridgeStatus({
         configured: !data.demoMode,
         message: data.demoMode
-          ? "Bridge API not configured — mock KYC used."
-          : "Bridge customer created.",
+          ? "Payout partner API not configured — mock KYC used."
+          : "Payout partner customer created.",
       });
     } catch (e) {
-      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+      setBridgeError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
     } finally {
       setBridgeLoading(false);
     }
@@ -211,18 +211,18 @@ export default function SendPage() {
       });
       const transferData = await transferRes.json();
       if (!transferRes.ok) {
-        setBridgeError(transferData.error ?? "Bridge transfer failed.");
+        setBridgeError(transferData.error ?? "Payout transfer failed.");
       } else if (transferData.transfer?.id) {
         setBridgeTransferId(transferData.transfer.id as string);
       }
       setBridgeStatus({
         configured: !transferData.demoMode,
         message: transferData.demoMode
-          ? "Bridge API not configured — mock transfer used."
-          : "Bridge transfer created.",
+          ? "Payout partner API not configured — mock transfer used."
+          : "Payout transfer created.",
       });
     } catch (e) {
-      setBridgeError(e instanceof Error ? e.message : "Failed to reach Bridge API.");
+      setBridgeError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
     } finally {
       setBridgeLoading(false);
     }
@@ -239,7 +239,7 @@ export default function SendPage() {
             Send a demo transfer
           </h1>
           <p className="text-muted-foreground mt-2">
-            Six steps. All mock data unless Bridge API is connected. No real crypto, KYC, or fiat
+            Six steps. All mock data unless Payout partner API is connected. No real crypto, KYC, or fiat
             moves without partner approval.
           </p>
         </div>
@@ -254,9 +254,9 @@ export default function SendPage() {
               )}
             </div>
             <div>
-              <div className="font-semibold text-sm">Bridge API mode</div>
+              <div className="font-semibold text-sm">Payout partner API mode</div>
               <p className="text-xs text-muted-foreground mt-1">
-                When enabled, the demo tries to call real Bridge sandbox endpoints. If
+                When enabled, the demo tries to call real payout partner sandbox endpoints. If
                 BRIDGE_API_KEY is missing, it falls back to mock data.
               </p>
             </div>
@@ -269,7 +269,7 @@ export default function SendPage() {
             }}
             className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${bridgeMode ? "bg-primary text-white" : "bg-card border border-border hover:bg-secondary"}`}
           >
-            {bridgeMode ? "Bridge mode on" : "Bridge mode off"}
+            {bridgeMode ? "Payout partner mode on" : "Payout partner mode off"}
           </button>
         </div>
 
@@ -277,15 +277,15 @@ export default function SendPage() {
           <div className="rounded-2xl border border-border/60 bg-card p-5 mb-6 space-y-2">
             <div className="flex items-center gap-2 text-sm font-semibold">
               <AlertCircle className="w-4 h-4 text-primary" />
-              Bridge integration status
+              Payout partner integration status
             </div>
             <div className="text-sm text-muted-foreground">
               {bridgeStatus.configured === null
-                ? "Not tested yet. Continue to the quote step to probe the Bridge API."
+                ? "Not tested yet. Continue to the quote step to probe the Payout partner API."
                 : bridgeStatus.message}
             </div>
             {bridgeLoading && (
-              <div className="text-xs text-muted-foreground">Calling Bridge API…</div>
+              <div className="text-xs text-muted-foreground">Calling Payout partner API…</div>
             )}
             {bridgeError && (
               <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm">
@@ -410,14 +410,14 @@ export default function SendPage() {
 
           {step === 2 && (
             <div className="space-y-6">
-              <SectionTitle title="2. Bridge quote" />
+              <SectionTitle title="2. Payout quote" />
               {bridgeMode && (
                 <button
                   onClick={getBridgeQuote}
                   disabled={bridgeLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {bridgeLoading ? "Calling Bridge…" : "Fetch real Bridge quote"}
+                  {bridgeLoading ? "Calling partner API…" : "Fetch real Payout quote"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
@@ -430,7 +430,7 @@ export default function SendPage() {
                   k="FX rate"
                   v={`1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`}
                 />
-                <KV k="Bridge fee" v={`$${fmt(quote.bridgeFee)}`} />
+                <KV k="Partner payout fee" v={`$${fmt(quote.bridgeFee)}`} />
                 <KV k="LamportPay platform fee" v={`$${fmt(quote.platformFee)}`} />
                 <KV k="Total fee" v={`$${fmt(quote.totalFee)}`} />
                 <KV
@@ -438,12 +438,12 @@ export default function SendPage() {
                   v={`${fmt(quote.recipientAmount)} ${corridor.currency}`}
                 />
                 <KV k="Estimated delivery" v="Under 5 minutes" />
-                <KV k="KYC method" v="Bridge-hosted KYC" />
+                <KV k="KYC method" v="Partner-hosted KYC" />
                 <KV k="Payout method" v={method} />
                 <KV k="Corridor support" v="Demo supported" />
                 {bridgeMode && bridgeTransferId && (
                   <KV
-                    k="Bridge transfer id"
+                    k="Payout transfer id"
                     v={<span className="font-mono text-xs">{bridgeTransferId}</span>}
                   />
                 )}
@@ -451,20 +451,20 @@ export default function SendPage() {
               <div className="text-xs text-muted-foreground">
                 Status note:{" "}
                 {bridgeMode
-                  ? "Attempting real Bridge quote; falls back to mock if API is not configured."
+                  ? "Attempting real Payout quote; falls back to mock if API is not configured."
                   : "Mock quote for demo only."}
               </div>
               <NavButtons
                 onBack={() => setStep(1)}
                 onNext={() => setStep(3)}
-                nextLabel="Continue to Bridge KYC"
+                nextLabel="Continue to Partner KYC"
               />
             </div>
           )}
 
           {step === 3 && (
             <div className="space-y-6">
-              <SectionTitle title="3. Bridge KYC" />
+              <SectionTitle title="3. Partner KYC" />
               <div className="rounded-2xl bg-secondary/60 p-5 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <p className="text-sm leading-relaxed">
@@ -478,7 +478,7 @@ export default function SendPage() {
                   disabled={bridgeLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {bridgeLoading ? "Creating…" : "Create real Bridge customer"}
+                  {bridgeLoading ? "Creating…" : "Create real Payout partner customer"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
@@ -486,7 +486,7 @@ export default function SendPage() {
                 <KV k="KYC status" v={kycApproved ? "Approved" : "Not started"} />
                 {bridgeMode && bridgeCustomerId && (
                   <KV
-                    k="Bridge customer id"
+                    k="Payout partner customer id"
                     v={<span className="font-mono text-xs">{bridgeCustomerId}</span>}
                   />
                 )}
@@ -499,7 +499,7 @@ export default function SendPage() {
                     if (bridgeMode) void createBridgeCustomer();
                   }}
                 >
-                  Complete Mock Bridge KYC
+                  Complete Mock partner KYC
                 </PrimaryButton>
               ) : (
                 <NavButtons
@@ -520,7 +520,7 @@ export default function SendPage() {
                   disabled={bridgeLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {bridgeLoading ? "Creating…" : "Create Bridge external account + transfer"}
+                  {bridgeLoading ? "Creating…" : "Create Payout partner account + transfer"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
@@ -531,7 +531,7 @@ export default function SendPage() {
                 <KV k="Receiver currency" v={corridor.currency} />
                 <KV k="Recipient name" v={recipientName} />
                 <KV k="Selected partner" v="Bridge" />
-                <KV k="Bridge fee" v={`$${fmt(quote.bridgeFee)}`} />
+                <KV k="Partner payout fee" v={`$${fmt(quote.bridgeFee)}`} />
                 <KV k="LamportPay fee" v={`$${fmt(quote.platformFee)}`} />
                 <KV
                   k="Recipient receives"
@@ -541,13 +541,13 @@ export default function SendPage() {
                 <KV k="Payout method" v={method} />
                 {bridgeMode && bridgeExternalAccountId && (
                   <KV
-                    k="Bridge external account"
+                    k="Payout partner account"
                     v={<span className="font-mono text-xs">{bridgeExternalAccountId}</span>}
                   />
                 )}
                 {bridgeMode && bridgeTransferId && (
                   <KV
-                    k="Bridge transfer id"
+                    k="Payout transfer id"
                     v={<span className="font-mono text-xs">{bridgeTransferId}</span>}
                   />
                 )}
@@ -674,16 +674,16 @@ function Receipt(props: ReceiptProps) {
     `Country: ${corridor.country} (${corridor.currency})`,
     `Recipient receives: ${fmt(quote.recipientAmount)} ${corridor.currency}`,
     `Partner: Bridge`,
-    `Bridge reference: ${bridgeRef}`,
-    `Bridge fee: $${fmt(quote.bridgeFee)}`,
+    `Payout reference: ${bridgeRef}`,
+    `Partner payout fee: $${fmt(quote.bridgeFee)}`,
     `LamportPay fee: $${fmt(quote.platformFee)}`,
     `FX rate: 1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`,
     `Payout method: ${method}`,
     `Solana tx (mock): ${txHash}`,
     `Status: Paid`,
-    bridgeMode ? `Bridge transfer id: ${bridgeTransferId || "n/a"}` : "",
+    bridgeMode ? `Payout transfer id: ${bridgeTransferId || "n/a"}` : "",
     bridgeMode
-      ? "Note: Bridge mode was on; real transfer may not have been created if API key was missing."
+      ? "Note: Payout partner mode was on; real transfer may not have been created if API key was missing."
       : "",
   ]
     .filter(Boolean)
@@ -715,8 +715,8 @@ function Receipt(props: ReceiptProps) {
           <KV k="Recipient name" v={recipientName} />
           <KV k="Recipient receives" v={`${fmt(quote.recipientAmount)} ${corridor.currency}`} />
           <KV k="Selected partner" v="Bridge" />
-          <KV k="Bridge reference" v={<span className="font-mono text-xs">{bridgeRef}</span>} />
-          <KV k="Bridge fee" v={`$${fmt(quote.bridgeFee)}`} />
+          <KV k="Payout reference" v={<span className="font-mono text-xs">{bridgeRef}</span>} />
+          <KV k="Partner payout fee" v={`$${fmt(quote.bridgeFee)}`} />
           <KV k="LamportPay platform fee" v={`$${fmt(quote.platformFee)}`} />
           <KV
             k="FX rate used"
@@ -729,7 +729,7 @@ function Receipt(props: ReceiptProps) {
           />
           {bridgeMode && (
             <KV
-              k="Bridge transfer id"
+              k="Payout transfer id"
               v={
                 <span className="font-mono text-[10px] break-all">{bridgeTransferId || "n/a"}</span>
               }

@@ -4,7 +4,7 @@ import { CheckCircle2, Globe2, ShieldCheck, Route } from "lucide-react";
 const PEOPLE = [
   { name: "Jupiter route preview", city: "Demo mode", corridor: "SOL → USDC" },
   { name: "Output: connected wallet", city: "No custody", corridor: "SOL → USDC" },
-  { name: "Bridge payout disabled", city: "Fiat off", corridor: "SOL → USDC" },
+  { name: "Fiat payout disabled", city: "Fiat off", corridor: "SOL → USDC" },
   { name: "Built using Jupiter Swap API", city: "Solana", corridor: "SOL → USDC" },
   { name: "Best-route scan", city: "Liquidity sources", corridor: "SOL → USDC" },
   { name: "Test amount 0.001 SOL", city: "Limit 0.01 SOL", corridor: "SOL → USDC" },
@@ -90,7 +90,7 @@ export function VerifiedUsers() {
             </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Bridge payout
+              <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Partner payout
               disabled
             </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />

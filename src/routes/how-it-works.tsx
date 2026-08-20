@@ -24,11 +24,11 @@ export const Route = createFileRoute("/how-it-works")({
 const userFlow = [
   "User enters transfer details",
   "LamportPay creates payment record",
-  "Bridge quote generated",
+  "Payout quote generated",
   "Partner KYC",
   "Jupiter swap to USDC planned",
   "USDC settlement verified",
-  "Bridge payout processing",
+  "Partner payout processing",
   "Receipt shown",
 ];
 

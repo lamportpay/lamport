@@ -30,7 +30,7 @@ function Compliance() {
   const positives = [
     "LamportPay is a technology platform.",
     "Licensed partners handle regulated payout activity.",
-    "Bridge is a candidate settlement provider under evaluation. No agreement is in place.",
+    "LamportPay is evaluating regulated infrastructure partners for future fiat conversion and payout services. No agreement is in place.",
     "Real launch requires partner approval, KYB, legal review, and corridor approval.",
   ];
   return (
@@ -80,7 +80,7 @@ function Compliance() {
             <div className="font-semibold">Partner-led compliance</div>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               KYC, KYB, AML, sanctions screening, Travel Rule, FX/off-ramp, payout processing, and
-              settlement are performed by licensed partners such as Bridge — not by LamportPay. This
+              settlement are performed by licensed regulated settlement partners — not by LamportPay. This
               posture is intentional: it keeps the surface area of the platform narrow and
               defensible.
             </p>

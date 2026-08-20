@@ -35,7 +35,7 @@ export const Route = createFileRoute("/api/integration-status")({
                 configured: bridgeConfigured,
                 mode: bridgeMode,
                 note: bridgeConfigured
-                  ? "Bridge sandbox endpoints are reachable."
+                  ? "payout partner sandbox endpoints are reachable."
                   : "Payout steps are simulated. No fiat payout is possible.",
               },
             ],

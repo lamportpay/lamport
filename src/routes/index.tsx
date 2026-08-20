@@ -172,8 +172,8 @@ function WhySection() {
     },
     {
       icon: Globe2,
-      title: "Bridge-first partner flow",
-      desc: "Bridge-style payout flow is shown as a mock placeholder. Real Bridge payout is disabled until partner approval.",
+      title: "Partner-first partner flow",
+      desc: "Partner-style payout flow is shown as a mock placeholder. Real Fiat payout is disabled until partner approval.",
       stat: "10+",
       statLabel: "corridors",
     },
@@ -402,7 +402,7 @@ function KV({ k, v }: { k: string; v: string }) {
 function FeeExplainer() {
   const rows = [
     {
-      k: "Bridge fee",
+      k: "Partner payout fee",
       v: "A small fee (1% of amount, minimum $1) charged by our settlement partner Bridge for processing the local-currency payout.",
     },
     {

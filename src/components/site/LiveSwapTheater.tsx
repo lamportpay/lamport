@@ -175,7 +175,7 @@ export function LiveSwapTheater() {
             />
             <Counter label="Output" value="Connected wallet" icon={<Zap className="w-3 h-3" />} />
             <Counter
-              label="Bridge payout"
+              label="Partner payout"
               value="Disabled"
               icon={<CheckCircle2 className="w-3 h-3" />}
               sub="No fiat payout"
@@ -344,7 +344,7 @@ export function LiveSwapTheater() {
 
               <div className="mt-5 text-[11px] text-white/40 font-mono leading-relaxed">
                 * Illustrative route preview only — not LamportPay customer activity. Live swaps use
-                the Jupiter Swap API; Bridge payout is disabled.
+                the Jupiter Swap API; Fiat payout is disabled.
               </div>
             </div>
           </div>
@@ -468,7 +468,7 @@ function JustSentMarquee() {
             <span className="text-white/30">·</span>
             <span className="text-white">Output: connected wallet</span>
             <span className="text-white/30">·</span>
-            <span className="text-white/40">Bridge payout disabled</span>
+            <span className="text-white/40">Fiat payout disabled</span>
             <span className="text-white/30">·</span>
             <span className="text-white/40">Demo mode</span>
             <span className="text-white/20">·</span>
@@ -526,7 +526,7 @@ export function HeroFloatingCards() {
             <span className="font-semibold">USDC</span>
           </div>
           <div className="mt-1.5 text-[10px] font-mono text-muted-foreground">
-            Output: connected wallet · Bridge payout disabled
+            Output: connected wallet · Fiat payout disabled
           </div>
         </div>
       ))}

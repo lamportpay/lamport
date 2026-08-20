@@ -12,12 +12,12 @@ export const Route = createFileRoute("/workflow")({
       {
         name: "description",
         content:
-          "How Jupiter swap routing and Bridge payout orchestration map to each step of the LamportPay demo, with no real fiat payout.",
+          "How Jupiter swap routing and Partner payout orchestration map to each step of the LamportPay demo, with no real fiat payout.",
       },
       { property: "og:title", content: "Workflow overview — LamportPay demo architecture" },
       {
         property: "og:description",
-        content: "Jupiter handles SOL → USDC routing; Bridge would handle USDC → local currency.",
+        content: "Jupiter handles SOL → USDC routing; a regulated payout partner would handle USDC → local currency.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -48,20 +48,20 @@ const STAGES = [
   {
     stage: "4. Identity check",
     demo: "Mock KYC screen only. No documents are collected or stored.",
-    provider: "Bridge (disabled)",
-    real: "Bridge-hosted KYC/KYB runs on the licensed partner side, never inside LamportPay.",
+    provider: "Regulated payout partner (disabled)",
+    real: "Partner-hosted KYC/KYB runs on the licensed partner side, never inside LamportPay.",
   },
   {
     stage: "5. Payout request",
-    demo: "Bridge API mode can call sandbox endpoints; without a key everything stays mock.",
+    demo: "Payout partner API mode can call sandbox endpoints; without a key everything stays mock.",
     provider: "Bridge",
-    real: "Bridge transfer endpoint moves USDC to the recipient's bank rail in local currency.",
+    real: "Payout transfer endpoint moves USDC to the recipient's bank rail in local currency.",
   },
   {
     stage: "6. Tracking and receipt",
     demo: "Timeline and receipt are generated from mock identifiers.",
-    provider: "Bridge webhooks",
-    real: "Signed Bridge webhooks update the transfer status in real time.",
+    provider: "Partner webhooks",
+    real: "Signed Partner webhooks update the transfer status in real time.",
   },
 ];
 
@@ -77,7 +77,7 @@ function WorkflowPage() {
         </h1>
         <p className="text-muted-foreground mt-3 max-w-2xl">
           LamportPay splits the flow into a swap layer and a payout layer. Jupiter handles SOL → USDC
-          routing on Solana. Bridge would handle USDC → local currency. In this demo the payout layer
+          routing on Solana. a regulated payout partner would handle USDC → local currency. In this demo the payout layer
           never moves fiat, and identity checks are simulated.
         </p>
 
