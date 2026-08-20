@@ -403,7 +403,7 @@ function FeeExplainer() {
   const rows = [
     {
       k: "Partner payout fee",
-      v: "A small fee (1% of amount, minimum $1) charged by our settlement partner Bridge for processing the local-currency payout.",
+      v: "A small fee (1% of amount, minimum $1) charged by the regulated settlement partner for processing the local-currency payout.",
     },
     {
       k: "LamportPay platform fee",

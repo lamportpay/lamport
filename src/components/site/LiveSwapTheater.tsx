@@ -140,7 +140,7 @@ export function LiveSwapTheater() {
     "Wallet",
     "Jupiter",
     "USDC",
-    "Bridge",
+    "Payout partner",
     `${current.corridor.flag} ${current.corridor.currency}`,
   ];
   const activeIdx = Math.min(nodes.length - 1, Math.floor(progress * nodes.length));

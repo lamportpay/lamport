@@ -491,7 +491,7 @@ export default function SendPage() {
                   />
                 )}
               </div>
-              {kycApproved && <LammyCheck label="Mock KYC approved by Bridge" />}
+              {kycApproved && <LammyCheck label="Mock KYC approved by settlement partner" />}
               {!kycApproved ? (
                 <PrimaryButton
                   onClick={() => {

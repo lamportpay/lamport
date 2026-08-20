@@ -138,8 +138,8 @@ function Compliance() {
         <div className="mt-10 text-xs text-muted-foreground">
           Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected
           wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or
-          third-party recipient transfer. No partnership, agreement, or integration with Bridge,
-          Yellow Card, or any other payout provider is in place or claimed.
+          third-party recipient transfer. No partnership, agreement, or integration with any
+          payout provider is in place or claimed.
         </div>
 
       </section>
