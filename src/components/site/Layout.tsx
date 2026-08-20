@@ -226,12 +226,23 @@ function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-border/60">
-        <div className="max-w-7xl mx-auto px-5 py-5 text-xs text-muted-foreground">
-          Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected
-          wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or
-          third-party recipient transfer.
+        <div className="max-w-7xl mx-auto px-5 py-5 space-y-2 text-xs text-muted-foreground">
+          <div>
+            <span className="font-medium text-foreground">Lamport Pay Ltd</span> — legal entity
+            operating the <span className="font-medium text-foreground">LamportPay</span> platform.
+            Contact:{" "}
+            <a href={`mailto:${contactEmail}`} className="hover:text-foreground underline">
+              {contactEmail}
+            </a>
+          </div>
+          <div>
+            Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected
+            wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or
+            third-party recipient transfer.
+          </div>
         </div>
       </div>
+
     </footer>
   );
 }

@@ -30,7 +30,7 @@ function Compliance() {
   const positives = [
     "LamportPay is a technology platform.",
     "Licensed partners handle regulated payout activity.",
-    "Bridge is the first planned/demo settlement partner.",
+    "Bridge is a candidate settlement provider under evaluation. No agreement is in place.",
     "Real launch requires partner approval, KYB, legal review, and corridor approval.",
   ];
   return (
@@ -87,11 +87,61 @@ function Compliance() {
           </div>
         </div>
 
+        <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
+          <div className="font-semibold">Company information</div>
+          <dl className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
+            <div>
+              <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                Legal entity
+              </dt>
+              <dd className="mt-1 font-medium">Lamport Pay Ltd</dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                Product / platform
+              </dt>
+              <dd className="mt-1 font-medium">LamportPay</dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                Business email
+              </dt>
+              <dd className="mt-1">
+                <a href="mailto:hello@lamportpay.com" className="font-medium hover:underline">
+                  hello@lamportpay.com
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                Registration number
+              </dt>
+              <dd className="mt-1 text-muted-foreground">To be provided</dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                Registered address
+              </dt>
+              <dd className="mt-1 text-muted-foreground">To be provided</dd>
+            </div>
+            <div>
+              <dt className="text-xs uppercase tracking-wider text-muted-foreground">
+                Licenses / regulatory approvals
+              </dt>
+              <dd className="mt-1 text-muted-foreground">
+                None claimed. Regulated activity is performed by licensed partners.
+              </dd>
+            </div>
+          </dl>
+        </div>
+
         <div className="mt-10 text-xs text-muted-foreground">
           Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected
           wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or
-          third-party recipient transfer.
+          third-party recipient transfer. No partnership, agreement, or integration with Bridge,
+          Yellow Card, or any other payout provider is in place or claimed.
         </div>
+
       </section>
     </SiteLayout>
   );
