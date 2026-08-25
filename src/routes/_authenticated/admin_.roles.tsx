@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ArrowLeft, MailPlus, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
+import { AdminSignOutButton } from "@/components/site/AdminSignOutButton";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,9 +107,12 @@ function RolesPage() {
         </div>
 
         <header className="space-y-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-            Access control
+          <div className="flex items-start justify-between gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-semibold">
+              <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+              Access control
+            </div>
+            <AdminSignOutButton />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Admin role management</h1>
           <p className="text-sm text-muted-foreground">

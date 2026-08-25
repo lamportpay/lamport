@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ShieldCheck, AlertTriangle, RefreshCw, Users, ScrollText, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
+import { AdminSignOutButton } from "@/components/site/AdminSignOutButton";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -338,9 +339,12 @@ function AdminPage() {
     <SiteLayout>
       <div className="mx-auto max-w-5xl px-4 py-12 space-y-8">
         <header className="space-y-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-            Internal demo console
+          <div className="flex items-start justify-between gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs font-semibold">
+              <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+              Internal demo console
+            </div>
+            <AdminSignOutButton />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Admin operations</h1>
           <p className="text-sm text-muted-foreground max-w-2xl">
