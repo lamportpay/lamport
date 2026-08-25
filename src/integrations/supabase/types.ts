@@ -14,16 +14,158 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      mock_kyc_submissions: {
+        Row: {
+          country: string
+          created_at: string
+          document_type: string
+          email: string
+          full_name: string
+          id: string
+          reference: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          document_type?: string
+          email: string
+          full_name: string
+          id?: string
+          reference: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          document_type?: string
+          email?: string
+          full_name?: string
+          id?: string
+          reference?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mock_payout_transfers: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          fx_rate: number
+          id: string
+          kyc_submission_id: string | null
+          payment_rail: string
+          payment_status: string
+          payout_amount: number
+          payout_currency: string
+          quote_status: string
+          recipient_name: string
+          reference: string
+          send_amount: number
+          send_currency: string
+          sender_name: string
+          total_fee: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          fx_rate: number
+          id?: string
+          kyc_submission_id?: string | null
+          payment_rail?: string
+          payment_status?: string
+          payout_amount: number
+          payout_currency: string
+          quote_status?: string
+          recipient_name: string
+          reference: string
+          send_amount: number
+          send_currency?: string
+          sender_name: string
+          total_fee?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          fx_rate?: number
+          id?: string
+          kyc_submission_id?: string | null
+          payment_rail?: string
+          payment_status?: string
+          payout_amount?: number
+          payout_currency?: string
+          quote_status?: string
+          recipient_name?: string
+          reference?: string
+          send_amount?: number
+          send_currency?: string
+          sender_name?: string
+          total_fee?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mock_payout_transfers_kyc_submission_id_fkey"
+            columns: ["kyc_submission_id"]
+            isOneToOne: false
+            referencedRelation: "mock_kyc_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "reviewer" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +292,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "reviewer", "user"],
+    },
   },
 } as const
