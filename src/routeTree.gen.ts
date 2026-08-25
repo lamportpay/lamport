@@ -35,6 +35,7 @@ import { Route as ApiPayoutCustomerRouteImport } from './routes/api/payout/custo
 import { Route as ApiJupiterQuoteRouteImport } from './routes/api/jupiter/quote'
 import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
 import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
+import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin_.roles'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedAdminPaymentsIdRouteImport } from './routes/_authenticated/admin_.payments.$id'
@@ -171,6 +172,11 @@ const ApiJupiterExecuteRoute = ApiJupiterExecuteRouteImport.update({
   path: '/api/jupiter/execute',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRolesRoute = AuthenticatedAdminRolesRouteImport.update({
+  id: '/admin_/roles',
+  path: '/admin/roles',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -269,6 +277,7 @@ export interface FileRoutesById {
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/_authenticated/admin_/roles': typeof AuthenticatedAdminRolesRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/api/integration-status'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/roles'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -331,6 +341,7 @@ export interface FileRouteTypes {
     | '/api/integration-status'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/roles'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -362,6 +373,7 @@ export interface FileRouteTypes {
     | '/api/integration-status'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/_authenticated/admin_/roles'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -589,6 +601,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiJupiterExecuteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin_/roles': {
+      id: '/_authenticated/admin_/roles'
+      path: '/admin/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AuthenticatedAdminRolesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -615,11 +634,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
   AuthenticatedAdminPaymentsIdRoute: typeof AuthenticatedAdminPaymentsIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
   AuthenticatedAdminPaymentsIdRoute: AuthenticatedAdminPaymentsIdRoute,
 }
 
