@@ -25,6 +25,7 @@ import {
   type QuoteStatus,
 } from "@/lib/admin.constants";
 import {
+  claimFirstAdminRole,
   getAdminOverview,
   reviewKycSubmission,
   updateTransferStatus,
@@ -233,6 +234,7 @@ function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const reviewKyc = useServerFn(reviewKycSubmission);
   const updateTransfer = useServerFn(updateTransferStatus);
+  const claimAdmin = useServerFn(claimFirstAdminRole);
 
   const overview = useQuery({
     queryKey: ["admin-overview"],
@@ -261,6 +263,15 @@ function AdminPage() {
     }) => updateTransfer({ data: input }),
     onSuccess: () => {
       toast.success("Transfer updated");
+      void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const claimMutation = useMutation({
+    mutationFn: () => claimAdmin(),
+    onSuccess: () => {
+      toast.success("Admin role granted to your account");
       void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
     },
     onError: (error: Error) => toast.error(error.message),
@@ -307,6 +318,14 @@ function AdminPage() {
               visible. An existing admin has to grant your account the admin role before this
               console shows data.
             </p>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={claimMutation.isPending}
+              onClick={() => claimMutation.mutate()}
+            >
+              Claim admin role (only works while no admin exists)
+            </Button>
           </div>
         )}
 
