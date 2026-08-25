@@ -65,3 +65,54 @@ export const STATUS_LABELS: Record<string, string> = {
   failed: "Failed",
   refunded: "Refunded",
 };
+
+export type AdminTransferDetail = AdminTransferRow & {
+  kyc_submission_id: string | null;
+  partner_reference: string | null;
+  solana_tx_signature: string | null;
+  funded_at: string | null;
+  settled_at: string | null;
+  timeline_note: string | null;
+  created_at: string;
+};
+
+export type AdminAuditRow = {
+  id: string;
+  actor_email: string | null;
+  entity_type: string;
+  entity_id: string | null;
+  entity_reference: string | null;
+  action: string;
+  field: string | null;
+  old_value: string | null;
+  new_value: string | null;
+  note: string | null;
+  created_at: string;
+};
+
+export type AdminRoleRow = {
+  id: string;
+  user_id: string;
+  role: string;
+  email: string | null;
+  created_at: string;
+};
+
+export type AdminInviteRow = {
+  id: string;
+  email: string;
+  role: string;
+  status: string;
+  accepted_at: string | null;
+  created_at: string;
+};
+
+export const ASSIGNABLE_ROLES = ["admin", "reviewer"] as const;
+export type AssignableRole = (typeof ASSIGNABLE_ROLES)[number];
+
+export const ENTITY_LABELS: Record<string, string> = {
+  kyc_submission: "Identity check",
+  payout_transfer: "Payout",
+  user_role: "Role",
+  admin_invite: "Invite",
+};
