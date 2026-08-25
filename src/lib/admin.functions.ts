@@ -105,11 +105,16 @@ export const updateTransferStatus = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
-    const patch: Record<string, unknown> = { updated_by: userId };
-    if (data.quoteStatus) patch["quote_status"] = data.quoteStatus;
-    if (data.paymentStatus) patch["payment_status"] = data.paymentStatus;
+    const patch: {
+      updated_by: string;
+      quote_status?: QuoteStatus;
+      payment_status?: PaymentStatus;
+      admin_note?: string | null;
+    } = { updated_by: userId };
+    if (data.quoteStatus) patch.quote_status = data.quoteStatus;
+    if (data.paymentStatus) patch.payment_status = data.paymentStatus;
     if (data.adminNote !== undefined) {
-      patch["admin_note"] = data.adminNote.trim() ? data.adminNote.trim() : null;
+      patch.admin_note = data.adminNote.trim() ? data.adminNote.trim() : null;
     }
 
     const { data: updated, error } = await supabase
