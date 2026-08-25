@@ -21,7 +21,9 @@ export const Route = createFileRoute("/workflow")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+          { property: "og:url", content: "https://lamportpay.lovable.app/workflow" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/workflow" }],
   }),
   component: WorkflowPage,
 });

@@ -16,7 +16,11 @@ export const Route = createFileRoute("/compliance")({
         property: "og:description",
         content: "Partner-led KYC, no custody, no direct money transmission.",
       },
+          { property: "og:url", content: "https://lamportpay.lovable.app/compliance" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/compliance" }],
   }),
   component: Compliance,
 });
@@ -49,9 +53,9 @@ function Compliance() {
 
         <div className="mt-12 grid md:grid-cols-2 gap-4">
           <div className="rounded-2xl border border-border/60 bg-card p-6">
-            <div className="flex items-center gap-2 font-semibold mb-4">
+            <h2 className="flex items-center gap-2 font-semibold mb-4">
               <XCircle className="w-5 h-5 text-destructive" /> What LamportPay does not do
-            </div>
+            </h2>
             <ul className="space-y-3 text-sm">
               {negatives.map((n) => (
                 <li key={n} className="text-muted-foreground">
@@ -61,9 +65,9 @@ function Compliance() {
             </ul>
           </div>
           <div className="rounded-2xl border border-border/60 bg-card p-6">
-            <div className="flex items-center gap-2 font-semibold mb-4">
+            <h2 className="flex items-center gap-2 font-semibold mb-4">
               <CheckCircle2 className="w-5 h-5 text-[color:var(--success)]" /> What LamportPay does
-            </div>
+            </h2>
             <ul className="space-y-3 text-sm">
               {positives.map((n) => (
                 <li key={n} className="text-muted-foreground">
@@ -77,7 +81,7 @@ function Compliance() {
         <div className="mt-10 rounded-2xl bg-[image:var(--gradient-card)] border border-border/60 p-6 flex items-start gap-4">
           <ShieldCheck className="w-6 h-6 text-primary shrink-0 mt-1" />
           <div>
-            <div className="font-semibold">Partner-led compliance</div>
+            <h2 className="font-semibold">Partner-led compliance</h2>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               KYC, KYB, AML, sanctions screening, Travel Rule, FX/off-ramp, payout processing, and
               settlement are performed by licensed regulated settlement partners — not by LamportPay. This
@@ -88,7 +92,7 @@ function Compliance() {
         </div>
 
         <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
-          <div className="font-semibold">Company information</div>
+          <h2 className="font-semibold">Company information</h2>
           <dl className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
             <div>
               <dt className="text-xs uppercase tracking-wider text-muted-foreground">

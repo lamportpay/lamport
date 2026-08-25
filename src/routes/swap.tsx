@@ -22,7 +22,9 @@ export const Route = createFileRoute("/swap")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+          { property: "og:url", content: "https://lamportpay.lovable.app/swap" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/swap" }],
   }),
   component: SwapPage,
 });

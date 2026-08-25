@@ -77,14 +77,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "LamportPay — Crypto in. Local money out." },
+      {
+        name: "description",
+        content:
+          "LamportPay is a Solana-first demo that routes crypto payments toward local currency payouts through regulated partners.",
+      },
+      { name: "author", content: "Lamport Pay Ltd" },
+      { property: "og:title", content: "LamportPay — Fast crypto to local currency payouts" },
+      {
+        property: "og:description",
+        content:
+          "A Solana-first crypto-to-local-currency routing demo: Jupiter-powered SOL → USDC swaps with partner-led payout architecture.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { property: "og:site_name", content: "LamportPay" },
       { name: "theme-color", content: "#6b46e5" },
     ],
     links: [

@@ -15,7 +15,11 @@ export const Route = createFileRoute("/whitepaper")({
         property: "og:description",
         content: "Solana-first crypto-to-local-currency payment routing.",
       },
+          { property: "og:url", content: "https://lamportpay.lovable.app/whitepaper" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/whitepaper" }],
   }),
   component: Whitepaper,
 });

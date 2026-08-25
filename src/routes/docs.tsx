@@ -11,7 +11,11 @@ export const Route = createFileRoute("/docs")({
       },
       { property: "og:title", content: "Developer docs — LamportPay" },
       { property: "og:description", content: "Architecture overview and API surface." },
+          { property: "og:url", content: "https://lamportpay.lovable.app/docs" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/docs" }],
   }),
   component: Docs,
 });

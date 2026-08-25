@@ -43,7 +43,11 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Solana-first crypto-to-local-currency payment routing demo.",
       },
+          { property: "og:url", content: "https://lamportpay.lovable.app/" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/" }],
   }),
   component: Index,
 });
@@ -350,6 +354,7 @@ function AIAssistant() {
               <Lammy size={44} className="shrink-0" />
               <div className="flex-1">
                 <textarea
+                  aria-label="Ask the LamportPay AI transfer assistant a question"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   rows={2}
