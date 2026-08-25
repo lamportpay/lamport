@@ -1,0 +1,173 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+
+import { supabase } from "@/integrations/supabase/client";
+
+export const Route = createFileRoute("/auth")({
+  ssr: false,
+  validateSearch: (search: Record<string, unknown>) => ({
+    next: typeof search.next === "string" ? search.next : "/",
+  }),
+  head: () => ({
+    meta: [
+      { title: "Sign in — LamportPay" },
+      {
+        name: "description",
+        content: "Sign in to approve a secure LamportPay agent integration connection.",
+      },
+      { property: "og:title", content: "Sign in — LamportPay" },
+      {
+        property: "og:description",
+        content: "Approve a protected LamportPay agent integration connection.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: AuthPage,
+});
+
+function sanitizeNext(rawNext: string | undefined) {
+  const fallback = "/";
+  if (!rawNext || !rawNext.startsWith("/") || rawNext.startsWith("//")) return fallback;
+  try {
+    const parsed = new URL(rawNext, window.location.origin);
+    if (parsed.origin !== window.location.origin) return fallback;
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return fallback;
+  }
+}
+
+function AuthPage() {
+  const { next } = Route.useSearch();
+  const safeNext = useMemo(() => sanitizeNext(next), [next]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (active && data.session) window.location.assign(safeNext);
+    });
+    return () => {
+      active = false;
+    };
+  }, [safeNext]);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true);
+    setError(null);
+    setMessage(null);
+
+    const credentials = { email: email.trim(), password };
+    const result =
+      mode === "signin"
+        ? await supabase.auth.signInWithPassword(credentials)
+        : await supabase.auth.signUp({
+            ...credentials,
+            options: { emailRedirectTo: `${window.location.origin}${safeNext}` },
+          });
+
+    setBusy(false);
+    if (result.error) {
+      setError(result.error.message);
+      return;
+    }
+
+    if (result.data.session) {
+      window.location.assign(safeNext);
+      return;
+    }
+
+    setMessage("Check your email to finish creating your account, then return to this connection page.");
+  }
+
+  return (
+    <main className="min-h-screen bg-background px-5 py-12 text-foreground">
+      <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-md items-center">
+        <section className="w-full rounded-3xl border border-border/60 bg-card p-6 shadow-[var(--shadow-soft)] md:p-8">
+          <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+            LamportPay secure connection
+          </div>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight">Sign in to continue.</h1>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            Agent integrations are protected with account sign-in before any LamportPay tools can be
+            connected.
+          </p>
+
+          <div className="mt-6 grid grid-cols-2 rounded-full bg-muted p-1 text-sm font-semibold">
+            <button
+              type="button"
+              onClick={() => setMode("signin")}
+              className={`rounded-full px-4 py-2 transition ${
+                mode === "signin" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
+              }`}
+            >
+              Sign in
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("signup")}
+              className={`rounded-full px-4 py-2 transition ${
+                mode === "signup" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
+              }`}
+            >
+              Create account
+            </button>
+          </div>
+
+          <form onSubmit={submit} className="mt-6 space-y-4">
+            <label className="block text-sm font-medium">
+              Email
+              <input
+                required
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
+              />
+            </label>
+            <label className="block text-sm font-medium">
+              Password
+              <input
+                required
+                type="password"
+                minLength={6}
+                autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
+              />
+            </label>
+
+            {error && (
+              <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                {error}
+              </p>
+            )}
+            {message && (
+              <p role="status" className="rounded-xl border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
+                {message}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={busy}
+              className="w-full rounded-full bg-foreground px-5 py-3 font-semibold text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {busy ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}
+            </button>
+          </form>
+        </section>
+      </div>
+    </main>
+  );
+}
