@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { payoutError, payoutHeaders, getPayoutConfig } from "@/lib/payout.config";
-import { auditPayoutAction, authorizePayoutRequest } from "@/lib/payout.auth.server";
+import { authorizePayoutRequest } from "@/lib/payout.auth.server";
 
 const QuoteInput = z
   .object({
