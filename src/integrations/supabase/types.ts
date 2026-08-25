@@ -14,6 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_reference: string | null
+          entity_type: string
+          field: string | null
+          id: string
+          new_value: string | null
+          note: string | null
+          old_value: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_reference?: string | null
+          entity_type: string
+          field?: string | null
+          id?: string
+          new_value?: string | null
+          note?: string | null
+          old_value?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_reference?: string | null
+          entity_type?: string
+          field?: string | null
+          id?: string
+          new_value?: string | null
+          note?: string | null
+          old_value?: string | null
+        }
+        Relationships: []
+      }
+      admin_invites: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          email: string
+          id: string
+          invited_by: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       mock_kyc_submissions: {
         Row: {
           country: string
@@ -63,9 +144,11 @@ export type Database = {
         Row: {
           admin_note: string | null
           created_at: string
+          funded_at: string | null
           fx_rate: number
           id: string
           kyc_submission_id: string | null
+          partner_reference: string | null
           payment_rail: string
           payment_status: string
           payout_amount: number
@@ -76,6 +159,9 @@ export type Database = {
           send_amount: number
           send_currency: string
           sender_name: string
+          settled_at: string | null
+          solana_tx_signature: string | null
+          timeline_note: string | null
           total_fee: number
           updated_at: string
           updated_by: string | null
@@ -83,9 +169,11 @@ export type Database = {
         Insert: {
           admin_note?: string | null
           created_at?: string
+          funded_at?: string | null
           fx_rate: number
           id?: string
           kyc_submission_id?: string | null
+          partner_reference?: string | null
           payment_rail?: string
           payment_status?: string
           payout_amount: number
@@ -96,6 +184,9 @@ export type Database = {
           send_amount: number
           send_currency?: string
           sender_name: string
+          settled_at?: string | null
+          solana_tx_signature?: string | null
+          timeline_note?: string | null
           total_fee?: number
           updated_at?: string
           updated_by?: string | null
@@ -103,9 +194,11 @@ export type Database = {
         Update: {
           admin_note?: string | null
           created_at?: string
+          funded_at?: string | null
           fx_rate?: number
           id?: string
           kyc_submission_id?: string | null
+          partner_reference?: string | null
           payment_rail?: string
           payment_status?: string
           payout_amount?: number
@@ -116,6 +209,9 @@ export type Database = {
           send_amount?: number
           send_currency?: string
           sender_name?: string
+          settled_at?: string | null
+          solana_tx_signature?: string | null
+          timeline_note?: string | null
           total_fee?: number
           updated_at?: string
           updated_by?: string | null
