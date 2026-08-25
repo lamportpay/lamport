@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { ShieldCheck, AlertTriangle, RefreshCw } from "lucide-react";
+import { ShieldCheck, AlertTriangle, RefreshCw, Users, ScrollText, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 import { SiteLayout } from "@/components/site/Layout";
@@ -18,7 +18,9 @@ import {
 import {
   ADMIN_PAYMENT_STATUSES,
   ADMIN_QUOTE_STATUSES,
+  ENTITY_LABELS,
   STATUS_LABELS,
+  type AdminAuditRow,
   type AdminKycRow,
   type AdminTransferRow,
   type PaymentStatus,
@@ -27,6 +29,7 @@ import {
 import {
   claimFirstAdminRole,
   getAdminOverview,
+  redeemAdminInvite,
   reviewKycSubmission,
   updateTransferStatus,
 } from "@/lib/admin.functions";
@@ -157,6 +160,14 @@ function TransferCard({
           <div className="text-[11px] font-mono text-muted-foreground mt-1">
             {row.reference} · {row.payment_rail.replace(/_/g, " ")}
           </div>
+          <Link
+            to="/admin/payments/$id"
+            params={{ id: row.id }}
+            className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+          >
+            View tracking timeline
+            <ArrowRight className="w-3 h-3" />
+          </Link>
         </div>
         <div className="flex flex-col items-end gap-1">
           <StatusPill value={row.quote_status} />
@@ -229,12 +240,47 @@ function TransferCard({
   );
 }
 
+function AuditList({ rows }: { rows: AdminAuditRow[] }) {
+  if (rows.length === 0) {
+    return <p className="text-sm text-muted-foreground">No admin actions recorded yet.</p>;
+  }
+  return (
+    <div className="rounded-2xl border border-border/60 bg-background divide-y divide-border/50">
+      {rows.map((entry) => (
+        <div key={entry.id} className="p-3 text-xs">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-border/60 bg-muted px-2 py-0.5 font-semibold">
+              {ENTITY_LABELS[entry.entity_type] ?? entry.entity_type}
+            </span>
+            <span className="font-semibold text-foreground">
+              {entry.action.replace(/_/g, " ")}
+            </span>
+            {entry.entity_reference && (
+              <span className="font-mono text-muted-foreground">{entry.entity_reference}</span>
+            )}
+          </div>
+          {entry.field && (
+            <div className="text-muted-foreground mt-1">
+              {entry.field}: {entry.old_value ?? "—"} → {entry.new_value ?? "—"}
+            </div>
+          )}
+          {entry.note && <div className="text-muted-foreground mt-1">Note: {entry.note}</div>}
+          <div className="text-muted-foreground mt-1">
+            {new Date(entry.created_at).toLocaleString()} · {entry.actor_email ?? "unknown admin"}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function AdminPage() {
   const queryClient = useQueryClient();
   const fetchOverview = useServerFn(getAdminOverview);
   const reviewKyc = useServerFn(reviewKycSubmission);
   const updateTransfer = useServerFn(updateTransferStatus);
   const claimAdmin = useServerFn(claimFirstAdminRole);
+  const redeemInvite = useServerFn(redeemAdminInvite);
 
   const overview = useQuery({
     queryKey: ["admin-overview"],
@@ -272,6 +318,15 @@ function AdminPage() {
     mutationFn: () => claimAdmin(),
     onSuccess: () => {
       toast.success("Admin role granted to your account");
+      void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const redeemMutation = useMutation({
+    mutationFn: () => redeemInvite(),
+    onSuccess: (result) => {
+      toast.success(`Invite redeemed — ${result.role} role granted`);
       void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
     },
     onError: (error: Error) => toast.error(error.message),
@@ -318,21 +373,38 @@ function AdminPage() {
               visible. An existing admin has to grant your account the admin role before this
               console shows data.
             </p>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={claimMutation.isPending}
-              onClick={() => claimMutation.mutate()}
-            >
-              Claim admin role (only works while no admin exists)
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={redeemMutation.isPending}
+                onClick={() => redeemMutation.mutate()}
+              >
+                Redeem my invite
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={claimMutation.isPending}
+                onClick={() => claimMutation.mutate()}
+              >
+                Claim admin role (only works while no admin exists)
+              </Button>
+            </div>
           </div>
         )}
 
         {data?.isAdmin && (
           <>
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-lg font-semibold">Mock identity checks</h2>
+              <div className="flex items-center gap-2">
+              <Button asChild variant="outline" size="sm">
+                <Link to="/admin/roles">
+                  <Users className="w-3.5 h-3.5 mr-2" />
+                  Manage roles
+                </Link>
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -344,6 +416,7 @@ function AdminPage() {
                 />
                 Refresh
               </Button>
+              </div>
             </div>
 
             <div className="grid md:grid-cols-2 gap-3">
@@ -376,6 +449,16 @@ function AdminPage() {
                 />
               ))}
             </div>
+
+            <h2 className="text-lg font-semibold pt-4 flex items-center gap-2">
+              <ScrollText className="w-4 h-4 text-primary" />
+              Audit log
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Every identity-check decision and every quote or payment status change, with the
+              timestamp and the admin who made it.
+            </p>
+            <AuditList rows={data.audit} />
           </>
         )}
       </div>
