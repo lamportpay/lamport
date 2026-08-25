@@ -16,6 +16,9 @@ export const KYC_COLUMNS =
   "id, reference, full_name, email, country, document_type, status, review_note, reviewed_at, created_at";
 export const TRANSFER_COLUMNS =
   "id, reference, sender_name, recipient_name, send_amount, send_currency, payout_currency, payout_amount, fx_rate, total_fee, payment_rail, quote_status, payment_status, admin_note, updated_at";
+export const TRANSFER_DETAIL_COLUMNS = `${TRANSFER_COLUMNS}, kyc_submission_id, partner_reference, solana_tx_signature, funded_at, settled_at, timeline_note, created_at`;
+export const AUDIT_COLUMNS =
+  "id, actor_email, entity_type, entity_id, entity_reference, action, field, old_value, new_value, note, created_at";
 
 export type AdminKycRow = {
   id: string;
