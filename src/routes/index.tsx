@@ -354,6 +354,7 @@ function AIAssistant() {
               <Lammy size={44} className="shrink-0" />
               <div className="flex-1">
                 <textarea
+                  aria-label="Ask the LamportPay AI transfer assistant a question"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   rows={2}

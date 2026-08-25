@@ -92,16 +92,18 @@ function Contact() {
             className="mt-12 rounded-3xl border border-border/60 bg-card p-6 md:p-10 shadow-[var(--shadow-soft)] space-y-5"
           >
             <div className="grid md:grid-cols-2 gap-5">
-              <Field label="Name">
+              <Field label="Name" htmlFor="contact-name">
                 <input
+                  id="contact-name"
                   required
                   value={form.name}
                   onChange={set("name")}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
                 />
               </Field>
-              <Field label="Email">
+              <Field label="Email" htmlFor="contact-email">
                 <input
+                  id="contact-email"
                   required
                   type="email"
                   value={form.email}
@@ -109,15 +111,17 @@ function Contact() {
                   className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
                 />
               </Field>
-              <Field label="Company">
+              <Field label="Company" htmlFor="contact-company">
                 <input
+                  id="contact-company"
                   value={form.company}
                   onChange={set("company")}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
                 />
               </Field>
-              <Field label="Role">
+              <Field label="Role" htmlFor="contact-role">
                 <select
+                  id="contact-role"
                   value={form.role}
                   onChange={set("role")}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
@@ -127,8 +131,9 @@ function Contact() {
                   ))}
                 </select>
               </Field>
-              <Field label="Interest">
+              <Field label="Interest" htmlFor="contact-interest">
                 <select
+                  id="contact-interest"
                   value={form.interest}
                   onChange={set("interest")}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
@@ -139,8 +144,9 @@ function Contact() {
                 </select>
               </Field>
             </div>
-            <Field label="Message">
+            <Field label="Message" htmlFor="contact-message">
               <textarea
+                id="contact-message"
                 rows={5}
                 value={form.message}
                 onChange={set("message")}
@@ -163,11 +169,21 @@ function Contact() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
   return (
-    <label className="block space-y-1.5">
-      <div className="text-xs font-medium text-muted-foreground">{label}</div>
+    <div className="block space-y-1.5">
+      <label htmlFor={htmlFor} className="text-xs font-medium text-muted-foreground">
+        {label}
+      </label>
       {children}
-    </label>
+    </div>
   );
 }
