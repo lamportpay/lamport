@@ -130,3 +130,28 @@ export const updateTransferStatus = createServerFn({ method: "POST" })
     if (!updated) throw new Error("Transfer not found or access denied.");
     return updated as unknown as AdminTransferRow;
   });
+
+/**
+ * Demo bootstrap: lets the first signed-in operator claim the admin role while
+ * no admin exists yet. Once an admin exists this always refuses.
+ */
+export const claimFirstAdminRole = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { count, error: countError } = await supabaseAdmin
+      .from("user_roles")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "admin");
+    if (countError) throw new Error(countError.message);
+    if ((count ?? 0) > 0) {
+      throw new Error("An admin already exists. Ask them to grant your account access.");
+    }
+
+    const { error } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: context.userId, role: "admin" });
+    if (error) throw new Error(error.message);
+    return { granted: true };
+  });
