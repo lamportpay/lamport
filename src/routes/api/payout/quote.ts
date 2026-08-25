@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { payoutError, payoutHeaders, getPayoutConfig } from "@/lib/payout.config";
+import { auditPayoutAction, authorizePayoutRequest } from "@/lib/payout.auth.server";
 
 const QuoteInput = z
   .object({
@@ -21,6 +22,11 @@ export const Route = createFileRoute("/api/payout/quote")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const auth = authorizePayoutRequest(request);
+        if (auth.denied) {
+          return auth.denied;
+        }
+
         const config = getPayoutConfig();
         if (!config.enabled) {
           return errorResponse(
