@@ -13,12 +13,15 @@ import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as SwapRouteImport } from './routes/swap'
 import { Route as SendRouteImport } from './routes/send'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ApiSolanaVerifyTxRouteImport } from './routes/api/solana/verify-tx'
 import { Route as ApiSolanaHealthRouteImport } from './routes/api/solana/health'
 import { Route as ApiPublicPayoutWebhookRouteImport } from './routes/api/public/payout-webhook'
@@ -29,6 +32,7 @@ import { Route as ApiPayoutCustomerRouteImport } from './routes/api/payout/custo
 import { Route as ApiJupiterQuoteRouteImport } from './routes/api/jupiter/quote'
 import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
 import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const WorkflowRoute = WorkflowRouteImport.update({
   id: '/workflow',
@@ -48,6 +52,11 @@ const SwapRoute = SwapRouteImport.update({
 const SendRoute = SendRouteImport.update({
   id: '/send',
   path: '/send',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -80,6 +89,18 @@ const ApiIntegrationStatusRoute = ApiIntegrationStatusRouteImport.update({
   path: '/api/integration-status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiSolanaVerifyTxRoute = ApiSolanaVerifyTxRouteImport.update({
   id: '/api/solana/verify-tx',
   path: '/api/solana/verify-tx',
@@ -131,6 +152,12 @@ const ApiJupiterExecuteRoute = ApiJupiterExecuteRouteImport.update({
   path: '/api/jupiter/execute',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -138,11 +165,15 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/mcp': typeof McpRoute
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -160,11 +191,15 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/mcp': typeof McpRoute
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -183,11 +218,15 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/mcp': typeof McpRoute
   '/send': typeof SendRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -207,11 +246,15 @@ export interface FileRouteTypes {
     | '/contact'
     | '/docs'
     | '/how-it-works'
+    | '/mcp'
     | '/send'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/api/integration-status'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -229,11 +272,15 @@ export interface FileRouteTypes {
     | '/contact'
     | '/docs'
     | '/how-it-works'
+    | '/mcp'
     | '/send'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/api/integration-status'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -251,11 +298,15 @@ export interface FileRouteTypes {
     | '/contact'
     | '/docs'
     | '/how-it-works'
+    | '/mcp'
     | '/send'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/api/integration-status'
+    | '/.mcp/invoke-tool/$tool'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -274,11 +325,15 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DocsRoute: typeof DocsRoute
   HowItWorksRoute: typeof HowItWorksRoute
+  McpRoute: typeof McpRoute
   SendRoute: typeof SendRoute
   SwapRoute: typeof SwapRoute
   WhitepaperRoute: typeof WhitepaperRoute
   WorkflowRoute: typeof WorkflowRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiJupiterExecuteRoute: typeof ApiJupiterExecuteRoute
   ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
   ApiJupiterQuoteRoute: typeof ApiJupiterQuoteRoute
@@ -321,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SendRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/how-it-works': {
       id: '/how-it-works'
       path: '/how-it-works'
@@ -361,6 +423,20 @@ declare module '@tanstack/react-router' {
       path: '/api/integration-status'
       fullPath: '/api/integration-status'
       preLoaderRoute: typeof ApiIntegrationStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/solana/verify-tx': {
@@ -433,6 +509,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiJupiterExecuteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -442,11 +525,16 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DocsRoute: DocsRoute,
   HowItWorksRoute: HowItWorksRoute,
+  McpRoute: McpRoute,
   SendRoute: SendRoute,
   SwapRoute: SwapRoute,
   WhitepaperRoute: WhitepaperRoute,
   WorkflowRoute: WorkflowRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiJupiterExecuteRoute: ApiJupiterExecuteRoute,
   ApiJupiterOrderRoute: ApiJupiterOrderRoute,
   ApiJupiterQuoteRoute: ApiJupiterQuoteRoute,
