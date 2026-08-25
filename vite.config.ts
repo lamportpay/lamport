@@ -6,6 +6,7 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { fileURLToPath } from "node:url";
+import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 
 // rpc-websockets (pulled in by @solana/web3.js) only declares "browser"/"node"
 // export conditions, neither of which the workerd SSR build matches. Resolve it
@@ -23,6 +24,7 @@ export default defineConfig({
   },
   vite: {
     plugins: [
+      mcpPlugin(),
       {
         name: "lamportpay-node-buffer-browser-shim",
         enforce: "pre",
