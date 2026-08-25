@@ -37,6 +37,7 @@ import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
 import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
+import { Route as AuthenticatedAdminPaymentsIdRouteImport } from './routes/_authenticated/admin_.payments.$id'
 
 const WorkflowRoute = WorkflowRouteImport.update({
   id: '/workflow',
@@ -181,6 +182,12 @@ const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminPaymentsIdRoute =
+  AuthenticatedAdminPaymentsIdRouteImport.update({
+    id: '/admin_/payments/$id',
+    path: '/admin/payments/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -210,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/api/public/payout-webhook': typeof ApiPublicPayoutWebhookRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
+  '/admin/payments/$id': typeof AuthenticatedAdminPaymentsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -239,6 +247,7 @@ export interface FileRoutesByTo {
   '/api/public/payout-webhook': typeof ApiPublicPayoutWebhookRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
+  '/admin/payments/$id': typeof AuthenticatedAdminPaymentsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -270,6 +279,7 @@ export interface FileRoutesById {
   '/api/public/payout-webhook': typeof ApiPublicPayoutWebhookRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
+  '/_authenticated/admin_/payments/$id': typeof AuthenticatedAdminPaymentsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -301,6 +311,7 @@ export interface FileRouteTypes {
     | '/api/public/payout-webhook'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
+    | '/admin/payments/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -330,6 +341,7 @@ export interface FileRouteTypes {
     | '/api/public/payout-webhook'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
+    | '/admin/payments/$id'
   id:
     | '__root__'
     | '/'
@@ -360,6 +372,7 @@ export interface FileRouteTypes {
     | '/api/public/payout-webhook'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
+    | '/_authenticated/admin_/payments/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -590,15 +603,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin_/payments/$id': {
+      id: '/_authenticated/admin_/payments/$id'
+      path: '/admin/payments/$id'
+      fullPath: '/admin/payments/$id'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAdminPaymentsIdRoute: typeof AuthenticatedAdminPaymentsIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAdminPaymentsIdRoute: AuthenticatedAdminPaymentsIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
