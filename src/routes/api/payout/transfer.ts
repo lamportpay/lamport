@@ -88,6 +88,16 @@ export const Route = createFileRoute("/api/payout/transfer")({
           payload.developer_fee = developerFee;
         }
 
+        auditPayoutAction("payout_transfer_create", auth.operatorId ?? "unknown", {
+          amount,
+          onBehalfOf,
+          destinationCurrency,
+          paymentRail,
+          externalAccountId: externalAccountId ?? null,
+          toAddress: toAddress ?? null,
+          idempotencyKey,
+        });
+
         const upstream = await fetch(`${config.apiUrl}/v0/transfers`, {
           method: "POST",
           headers: payoutHeaders(config, idempotencyKey),
