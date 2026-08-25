@@ -77,26 +77,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LamportPay — Crypto in. Local money out." },
-      {
-        name: "description",
-        content:
-          "LamportPay is a Solana-first demo that routes crypto payments toward local currency payouts through regulated partners.",
-      },
-      { name: "author", content: "Lamport Pay Ltd" },
-      { property: "og:title", content: "LamportPay — Fast crypto to local currency payouts" },
-      {
-        property: "og:description",
-        content:
-          "A Solana-first crypto-to-local-currency routing demo: Jupiter-powered SOL → USDC swaps with partner-led payout architecture.",
-      },
+      { title: "Lovable App" },
+      { name: "description", content: "Lovable Generated Project" },
+      { name: "author", content: "Lovable" },
+      { property: "og:title", content: "Lovable App" },
+      { property: "og:description", content: "Lovable Generated Project" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:site_name", content: "LamportPay" },
+      { name: "twitter:site", content: "@Lovable" },
       { name: "theme-color", content: "#6b46e5" },
     ],
     links: [
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      {
+        rel: "stylesheet",
+        href: appCss,
+      },
+      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,

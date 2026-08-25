@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as SwapRouteImport } from './routes/swap'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as DocsRouteImport } from './routes/docs'
@@ -44,11 +43,6 @@ const WhitepaperRoute = WhitepaperRouteImport.update({
 const SwapRoute = SwapRouteImport.update({
   id: '/swap',
   path: '/swap',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SendRoute = SendRouteImport.update({
@@ -145,7 +139,6 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
@@ -168,7 +161,6 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
@@ -192,7 +184,6 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/send': typeof SendRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
@@ -217,7 +208,6 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/send'
-    | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
@@ -240,7 +230,6 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/send'
-    | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
@@ -263,7 +252,6 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/send'
-    | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
@@ -287,7 +275,6 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   SendRoute: typeof SendRoute
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SwapRoute: typeof SwapRoute
   WhitepaperRoute: typeof WhitepaperRoute
   WorkflowRoute: typeof WorkflowRoute
@@ -325,13 +312,6 @@ declare module '@tanstack/react-router' {
       path: '/swap'
       fullPath: '/swap'
       preLoaderRoute: typeof SwapRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/send': {
@@ -463,7 +443,6 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   HowItWorksRoute: HowItWorksRoute,
   SendRoute: SendRoute,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SwapRoute: SwapRoute,
   WhitepaperRoute: WhitepaperRoute,
   WorkflowRoute: WorkflowRoute,
