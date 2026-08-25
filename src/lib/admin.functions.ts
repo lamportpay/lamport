@@ -187,7 +187,12 @@ export const updateTransferStatus = createServerFn({ method: "POST" })
     if (!updated) throw new Error("Transfer not found or access denied.");
 
     const row = updated as unknown as AdminTransferRow;
-    const entries = [];
+    const entries: {
+      field: string;
+      oldValue: string | null;
+      newValue: string | null;
+      action: string;
+    }[] = [];
     if (data.quoteStatus && data.quoteStatus !== previous.quote_status) {
       entries.push({
         field: "quote_status",
