@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { payoutError, payoutHeaders, getPayoutConfig } from "@/lib/payout.config";
+import { auditPayoutAction, authorizePayoutRequest } from "@/lib/payout.auth.server";
 
 const TransferInput = z
   .object({
@@ -27,6 +28,11 @@ export const Route = createFileRoute("/api/payout/transfer")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const auth = authorizePayoutRequest(request);
+        if (auth.denied) {
+          return auth.denied;
+        }
+
         const config = getPayoutConfig();
         if (!config.enabled) {
           return errorResponse(
@@ -81,6 +87,16 @@ export const Route = createFileRoute("/api/payout/transfer")({
         if (developerFee) {
           payload.developer_fee = developerFee;
         }
+
+        auditPayoutAction("payout_transfer_create", auth.operatorId ?? "unknown", {
+          amount,
+          onBehalfOf,
+          destinationCurrency,
+          paymentRail,
+          externalAccountId: externalAccountId ?? null,
+          toAddress: toAddress ?? null,
+          idempotencyKey,
+        });
 
         const upstream = await fetch(`${config.apiUrl}/v0/transfers`, {
           method: "POST",

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { payoutError, payoutHeaders, getPayoutConfig } from "@/lib/payout.config";
+import { authorizePayoutRequest } from "@/lib/payout.auth.server";
 
 const ExternalAccountInput = z
   .object({
@@ -23,6 +24,11 @@ export const Route = createFileRoute("/api/payout/external-account")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const auth = authorizePayoutRequest(request);
+        if (auth.denied) {
+          return auth.denied;
+        }
+
         const config = getPayoutConfig();
         if (!config.enabled) {
           return errorResponse(
