@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ShieldCheck, AlertTriangle, RefreshCw, Users, ScrollText, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
+import { AdminSignOutButton } from "@/components/site/AdminSignOutButton";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
