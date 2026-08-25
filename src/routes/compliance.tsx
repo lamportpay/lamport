@@ -16,7 +16,11 @@ export const Route = createFileRoute("/compliance")({
         property: "og:description",
         content: "Partner-led KYC, no custody, no direct money transmission.",
       },
+          { property: "og:url", content: "https://lamportpay.lovable.app/compliance" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/compliance" }],
   }),
   component: Compliance,
 });

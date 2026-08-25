@@ -13,7 +13,11 @@ export const Route = createFileRoute("/contact")({
       },
       { property: "og:title", content: "Contact / waitlist — LamportPay" },
       { property: "og:description", content: "Join the LamportPay waitlist." },
+          { property: "og:url", content: "https://lamportpay.lovable.app/contact" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/contact" }],
   }),
   component: Contact,
 });

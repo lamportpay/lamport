@@ -16,7 +16,11 @@ export const Route = createFileRoute("/how-it-works")({
         property: "og:description",
         content: "User flow and API sequence for LamportPay demo transfers.",
       },
+          { property: "og:url", content: "https://lamportpay.lovable.app/how-it-works" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/how-it-works" }],
   }),
   component: HowItWorks,
 });

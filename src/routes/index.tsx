@@ -43,7 +43,11 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Solana-first crypto-to-local-currency payment routing demo.",
       },
+          { property: "og:url", content: "https://lamportpay.lovable.app/" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/" }],
   }),
   component: Index,
 });

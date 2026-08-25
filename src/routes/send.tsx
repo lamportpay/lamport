@@ -39,7 +39,11 @@ export const Route = createFileRoute("/send")({
       },
       { property: "og:title", content: "Send demo transfer — LamportPay" },
       { property: "og:description", content: "Mock quote, KYC, settlement, and receipt." },
+          { property: "og:url", content: "https://lamportpay.lovable.app/send" },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://lamportpay.lovable.app/send" }],
   }),
   component: SendPage,
 });
