@@ -65,14 +65,20 @@ function AuthPage() {
     setError(null);
     setMessage(null);
 
-    const credentials = { email: email.trim(), password };
-    const result =
-      mode === "signin"
-        ? await supabase.auth.signInWithPassword(credentials)
-        : await supabase.auth.signUp({
-            ...credentials,
-            options: { emailRedirectTo: `${window.location.origin}${safeNext}` },
-          });
+    if (mode === "reset") {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/auth/reset`,
+      });
+      setBusy(false);
+      if (resetError) {
+        setError(resetError.message);
+        return;
+      }
+      setMessage("If an account exists for that email, a password reset link is on its way.");
+      return;
+    }
+
+    const result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
 
     setBusy(false);
     if (result.error) {
@@ -85,7 +91,7 @@ function AuthPage() {
       return;
     }
 
-    setMessage("Check your email to finish creating your account, then return to this connection page.");
+    setError("Sign in did not complete. Please try again.");
   }
 
   return (
