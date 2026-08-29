@@ -28,9 +28,7 @@ import {
   type QuoteStatus,
 } from "@/lib/admin.constants";
 import {
-  claimFirstAdminRole,
   getAdminOverview,
-  redeemAdminInvite,
   reviewKycSubmission,
   updateTransferStatus,
 } from "@/lib/admin.functions";
@@ -280,8 +278,6 @@ function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const reviewKyc = useServerFn(reviewKycSubmission);
   const updateTransfer = useServerFn(updateTransferStatus);
-  const claimAdmin = useServerFn(claimFirstAdminRole);
-  const redeemInvite = useServerFn(redeemAdminInvite);
 
   const overview = useQuery({
     queryKey: ["admin-overview"],
