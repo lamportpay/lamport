@@ -156,7 +156,23 @@ function AuthPage() {
               disabled={busy}
               className="w-full rounded-full bg-foreground px-5 py-3 font-semibold text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {busy ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}
+              {busy
+                ? "Please wait..."
+                : mode === "signin"
+                  ? "Sign in"
+                  : "Send password reset link"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setError(null);
+                setMessage(null);
+                setMode(mode === "signin" ? "reset" : "signin");
+              }}
+              className="w-full text-center text-sm font-semibold text-primary hover:underline"
+            >
+              {mode === "signin" ? "Forgot your password?" : "Back to sign in"}
             </button>
           </form>
         </section>
