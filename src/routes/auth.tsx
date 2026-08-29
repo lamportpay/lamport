@@ -124,18 +124,21 @@ function AuthPage() {
                 className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
               />
             </label>
-            <label className="block text-sm font-medium">
-              Password
-              <input
-                required
-                type="password"
-                minLength={6}
-                autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
-              />
-            </label>
+            {mode === "signin" && (
+              <label className="block text-sm font-medium">
+                Password
+                <input
+                  required
+                  type="password"
+                  minLength={6}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
+                />
+              </label>
+            )}
+
 
             {error && (
               <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
