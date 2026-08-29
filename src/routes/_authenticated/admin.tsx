@@ -352,27 +352,9 @@ function AdminPage() {
             </div>
             <p className="text-sm text-muted-foreground">
               Your account is signed in but does not have the admin role, so no records are
-              visible. An existing admin has to grant your account the admin role before this
-              console shows data.
+              visible. Admin roles are granted directly in the backend database — contact an
+              existing operator to have your account added.
             </p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={redeemMutation.isPending}
-                onClick={() => redeemMutation.mutate()}
-              >
-                Redeem my invite
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={claimMutation.isPending}
-                onClick={() => claimMutation.mutate()}
-              >
-                Claim admin role (only works while no admin exists)
-              </Button>
-            </div>
           </div>
         )}
 
