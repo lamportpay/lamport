@@ -311,24 +311,6 @@ function AdminPage() {
     onError: (error: Error) => toast.error(error.message),
   });
 
-  const claimMutation = useMutation({
-    mutationFn: () => claimAdmin(),
-    onSuccess: () => {
-      toast.success("Admin role granted to your account");
-      void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-
-  const redeemMutation = useMutation({
-    mutationFn: () => redeemInvite(),
-    onSuccess: (result) => {
-      toast.success(`Invite redeemed — ${result.role} role granted`);
-      void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-
   const data = overview.data;
 
   return (
