@@ -28,9 +28,7 @@ import {
   type QuoteStatus,
 } from "@/lib/admin.constants";
 import {
-  claimFirstAdminRole,
   getAdminOverview,
-  redeemAdminInvite,
   reviewKycSubmission,
   updateTransferStatus,
 } from "@/lib/admin.functions";
@@ -280,8 +278,6 @@ function AdminPage() {
   const fetchOverview = useServerFn(getAdminOverview);
   const reviewKyc = useServerFn(reviewKycSubmission);
   const updateTransfer = useServerFn(updateTransferStatus);
-  const claimAdmin = useServerFn(claimFirstAdminRole);
-  const redeemInvite = useServerFn(redeemAdminInvite);
 
   const overview = useQuery({
     queryKey: ["admin-overview"],
@@ -310,24 +306,6 @@ function AdminPage() {
     }) => updateTransfer({ data: input }),
     onSuccess: () => {
       toast.success("Transfer updated");
-      void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-
-  const claimMutation = useMutation({
-    mutationFn: () => claimAdmin(),
-    onSuccess: () => {
-      toast.success("Admin role granted to your account");
-      void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-
-  const redeemMutation = useMutation({
-    mutationFn: () => redeemInvite(),
-    onSuccess: (result) => {
-      toast.success(`Invite redeemed — ${result.role} role granted`);
       void queryClient.invalidateQueries({ queryKey: ["admin-overview"] });
     },
     onError: (error: Error) => toast.error(error.message),
@@ -374,27 +352,9 @@ function AdminPage() {
             </div>
             <p className="text-sm text-muted-foreground">
               Your account is signed in but does not have the admin role, so no records are
-              visible. An existing admin has to grant your account the admin role before this
-              console shows data.
+              visible. Admin roles are granted directly in the backend database — contact an
+              existing operator to have your account added.
             </p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={redeemMutation.isPending}
-                onClick={() => redeemMutation.mutate()}
-              >
-                Redeem my invite
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={claimMutation.isPending}
-                onClick={() => claimMutation.mutate()}
-              >
-                Claim admin role (only works while no admin exists)
-              </Button>
-            </div>
           </div>
         )}
 

@@ -44,7 +44,7 @@ function AuthPage() {
   const safeNext = useMemo(() => sanitizeNext(next), [next]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "reset">("signin");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -65,14 +65,20 @@ function AuthPage() {
     setError(null);
     setMessage(null);
 
-    const credentials = { email: email.trim(), password };
-    const result =
-      mode === "signin"
-        ? await supabase.auth.signInWithPassword(credentials)
-        : await supabase.auth.signUp({
-            ...credentials,
-            options: { emailRedirectTo: `${window.location.origin}${safeNext}` },
-          });
+    if (mode === "reset") {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/auth/reset`,
+      });
+      setBusy(false);
+      if (resetError) {
+        setError(resetError.message);
+        return;
+      }
+      setMessage("If an account exists for that email, a password reset link is on its way.");
+      return;
+    }
+
+    const result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
 
     setBusy(false);
     if (result.error) {
@@ -85,7 +91,7 @@ function AuthPage() {
       return;
     }
 
-    setMessage("Check your email to finish creating your account, then return to this connection page.");
+    setError("Sign in did not complete. Please try again.");
   }
 
   return (
@@ -101,26 +107,10 @@ function AuthPage() {
             connected.
           </p>
 
-          <div className="mt-6 grid grid-cols-2 rounded-full bg-muted p-1 text-sm font-semibold">
-            <button
-              type="button"
-              onClick={() => setMode("signin")}
-              className={`rounded-full px-4 py-2 transition ${
-                mode === "signin" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
-              }`}
-            >
-              Sign in
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("signup")}
-              className={`rounded-full px-4 py-2 transition ${
-                mode === "signup" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
-              }`}
-            >
-              Create account
-            </button>
-          </div>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Accounts are provisioned directly in the backend database — self-service sign-up is
+            disabled.
+          </p>
 
           <form onSubmit={submit} className="mt-6 space-y-4">
             <label className="block text-sm font-medium">
@@ -134,18 +124,21 @@ function AuthPage() {
                 className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
               />
             </label>
-            <label className="block text-sm font-medium">
-              Password
-              <input
-                required
-                type="password"
-                minLength={6}
-                autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
-              />
-            </label>
+            {mode === "signin" && (
+              <label className="block text-sm font-medium">
+                Password
+                <input
+                  required
+                  type="password"
+                  minLength={6}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
+                />
+              </label>
+            )}
+
 
             {error && (
               <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -163,7 +156,23 @@ function AuthPage() {
               disabled={busy}
               className="w-full rounded-full bg-foreground px-5 py-3 font-semibold text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {busy ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}
+              {busy
+                ? "Please wait..."
+                : mode === "signin"
+                  ? "Sign in"
+                  : "Send password reset link"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setError(null);
+                setMessage(null);
+                setMode(mode === "signin" ? "reset" : "signin");
+              }}
+              className="w-full text-center text-sm font-semibold text-primary hover:underline"
+            >
+              {mode === "signin" ? "Forgot your password?" : "Back to sign in"}
             </button>
           </form>
         </section>
