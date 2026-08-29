@@ -107,26 +107,10 @@ function AuthPage() {
             connected.
           </p>
 
-          <div className="mt-6 grid grid-cols-2 rounded-full bg-muted p-1 text-sm font-semibold">
-            <button
-              type="button"
-              onClick={() => setMode("signin")}
-              className={`rounded-full px-4 py-2 transition ${
-                mode === "signin" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
-              }`}
-            >
-              Sign in
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode("signup")}
-              className={`rounded-full px-4 py-2 transition ${
-                mode === "signup" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
-              }`}
-            >
-              Create account
-            </button>
-          </div>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Accounts are provisioned directly in the backend database — self-service sign-up is
+            disabled.
+          </p>
 
           <form onSubmit={submit} className="mt-6 space-y-4">
             <label className="block text-sm font-medium">
