@@ -5,25 +5,16 @@ import { SwapPanelIsland } from "@/components/site/wallet/WalletIsland";
 import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
 import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
 import { SolanaRpcVerifier } from "@/components/site/SolanaRpcVerifier";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/swap")({
-  head: () => ({
-    meta: [
-      { title: "SOL to USDC swap demo — LamportPay" },
-      {
-        name: "description",
-        content:
-          "Connect Phantom or Solflare and run a SOL to USDC swap routed through Jupiter. Test with a very small amount.",
-      },
-      { property: "og:title", content: "SOL to USDC swap demo — LamportPay" },
-      {
-        property: "og:description",
-        content: "Jupiter-routed SOL to USDC swap demo with wallet signing.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/swap",
+      title: "SOL to USDC Swap Demo | LamportPay",
+      description:
+        "Connect Phantom or Solflare and run a small, strictly limited SOL to USDC swap routed through Jupiter. Output returns to your own connected wallet.",
+    }),
   component: SwapPage,
 });
 

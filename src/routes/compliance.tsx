@@ -1,23 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { ShieldCheck, XCircle, CheckCircle2 } from "lucide-react";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/compliance")({
-  head: () => ({
-    meta: [
-      { title: "Compliance — LamportPay" },
-      {
-        name: "description",
-        content:
-          "LamportPay is a technology platform. Licensed partners handle regulated payout activity.",
-      },
-      { property: "og:title", content: "Compliance — LamportPay" },
-      {
-        property: "og:description",
-        content: "Partner-led KYC, no custody, no direct money transmission.",
-      },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/compliance",
+      title: "Compliance Position | LamportPay",
+      description:
+        "LamportPay is a technology platform. It does not custody funds, perform real KYC, convert to fiat, or transmit money. Licensed partners would handle regulated payout.",
+    }),
   component: Compliance,
 });
 

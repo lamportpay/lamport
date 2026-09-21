@@ -78,15 +78,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "LamportPay — Crypto in. Local money out." },
+      {
+        name: "description",
+        content:
+          "LamportPay is a Solana-first crypto-to-local-currency payment routing demo. Crypto in. Local money out.",
+      },
+      { name: "author", content: "LamportPay" },
+      { property: "og:site_name", content: "LamportPay" },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "en_GB" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "theme-color", content: "#6b46e5" },
+      { name: "twitter:site", content: "@LamportPay" },
+      { name: "theme-color", content: "#4C4EE4" },
     ],
     links: [
       {
@@ -100,7 +104,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", sizes: "512x512", href: "/favicon.png" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png", type: "image/png" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://lamportpay.com/#organization",
+              name: "LamportPay",
+              legalName: "Lamport Pay Ltd",
+              url: "https://lamportpay.com",
+              email: "hello@lamportpay.com",
+              description:
+                "LamportPay is a Solana-first crypto-to-local-currency payment routing platform, currently available as a demonstration product.",
+              sameAs: [
+                "https://x.com/LamportPay",
+                "https://www.linkedin.com/in/lamport-pay-31a564426/",
+                "https://github.com/lamportpay",
+              ],
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://lamportpay.com/#website",
+              name: "LamportPay",
+              url: "https://lamportpay.com",
+              inLanguage: "en",
+              publisher: { "@id": "https://lamportpay.com/#organization" },
+            },
+          ],
+        }),
+      },
+    ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

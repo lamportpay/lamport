@@ -28,19 +28,16 @@ import { WalletPanelIsland } from "@/components/site/wallet/WalletIsland";
 import { getPayoutPaymentRail, payoutCurrency } from "@/lib/payout.mapping";
 import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
 import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/send")({
-  head: () => ({
-    meta: [
-      { title: "Send demo transfer — LamportPay" },
-      {
-        name: "description",
-        content: "Walk through a mock partner-led crypto-to-local-currency transfer flow.",
-      },
-      { property: "og:title", content: "Send demo transfer — LamportPay" },
-      { property: "og:description", content: "Mock quote, KYC, settlement, and receipt." },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/send",
+      title: "Send a Demo Transfer | LamportPay",
+      description:
+        "Walk through a crypto-to-local-currency transfer demo: itemised quote, simulated identity check, settlement tracking and receipt.",
+    }),
   component: SendPage,
 });
 
