@@ -10,6 +10,7 @@ export const Route = createFileRoute("/auth")({
   }),
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Sign in — LamportPay" },
       {
         name: "description",

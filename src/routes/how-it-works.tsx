@@ -1,23 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { ArrowRight } from "lucide-react";
+import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/how-it-works")({
-  head: () => ({
-    meta: [
-      { title: "How it works — LamportPay" },
-      {
-        name: "description",
-        content:
-          "The full crypto-to-local-currency flow, from user input to receipt, plus the developer API sequence.",
-      },
-      { property: "og:title", content: "How it works — LamportPay" },
-      {
-        property: "og:description",
-        content: "User flow and API sequence for LamportPay demo transfers.",
-      },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/how-it-works",
+      title: "How LamportPay Works, Step by Step",
+      description:
+        "The full crypto-to-local-currency route, from wallet deposit to receipt, with the developer sequence and the live-or-simulated status of every step.",
+    }),
   component: HowItWorks,
 });
 
@@ -97,6 +91,7 @@ function HowItWorks() {
           </div>
         </div>
       </section>
+      <FurtherReading slugs={["crypto-to-fiat-payments-explained", "designing-transparent-payment-quotes", "web3-payment-rails-architecture"]} />
     </SiteLayout>
   );
 }

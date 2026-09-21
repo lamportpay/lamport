@@ -1,18 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
+import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/docs")({
-  head: () => ({
-    meta: [
-      { title: "Developer docs — LamportPay" },
-      {
-        name: "description",
-        content: "Architecture overview and planned API endpoints for LamportPay.",
-      },
-      { property: "og:title", content: "Developer docs — LamportPay" },
-      { property: "og:description", content: "Architecture overview and API surface." },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/docs",
+      title: "Developer Docs: Stack and API Surface | LamportPay",
+      description:
+        "Architecture overview, technology stack and the API surface behind the LamportPay demo, including Jupiter swap and Solana verification endpoints.",
+    }),
   component: Docs,
 });
 
@@ -87,6 +85,7 @@ function Docs() {
           </p>
         </div>
       </section>
+      <FurtherReading slugs={["solana-payments-for-developers", "web3-payment-rails-architecture", "why-stablecoins-settle-cross-border-payments"]} />
     </SiteLayout>
   );
 }

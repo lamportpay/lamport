@@ -1,22 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
+import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/whitepaper")({
-  head: () => ({
-    meta: [
-      { title: "White paper — LamportPay" },
-      {
-        name: "description",
-        content:
-          "Executive summary, architecture, compliance positioning, and roadmap for LamportPay.",
-      },
-      { property: "og:title", content: "White paper — LamportPay" },
-      {
-        property: "og:description",
-        content: "Solana-first crypto-to-local-currency payment routing.",
-      },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/whitepaper",
+      title: "LamportPay White Paper: Architecture and Roadmap",
+      description:
+        "Executive summary, settlement architecture, compliance positioning and roadmap for LamportPay's Solana-first payment routing platform.",
+    }),
   component: Whitepaper,
 });
 
@@ -266,6 +260,7 @@ function Whitepaper() {
           </div>
         </div>
       </section>
+      <FurtherReading slugs={["why-stablecoins-settle-cross-border-payments", "web3-payment-rails-architecture", "compliance-roles-in-crypto-payouts"]} />
     </SiteLayout>
   );
 }

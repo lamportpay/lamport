@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as SwapRouteImport } from './routes/swap'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
@@ -21,6 +22,8 @@ import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthResetRouteImport } from './routes/auth.reset'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -54,6 +57,11 @@ const WhitepaperRoute = WhitepaperRouteImport.update({
 const SwapRoute = SwapRouteImport.update({
   id: '/swap',
   path: '/swap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SendRoute = SendRouteImport.update({
@@ -98,6 +106,16 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthResetRoute = AuthResetRouteImport.update({
@@ -210,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/send': typeof SendRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
@@ -218,6 +237,8 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/auth/reset': typeof AuthResetRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
@@ -242,6 +263,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/send': typeof SendRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
@@ -250,6 +272,8 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/auth/reset': typeof AuthResetRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
@@ -276,6 +300,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/send': typeof SendRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
@@ -284,6 +309,8 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/auth/reset': typeof AuthResetRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin_/roles': typeof AuthenticatedAdminRolesRoute
@@ -310,6 +337,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/send'
+    | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
@@ -318,6 +346,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api/integration-status'
     | '/auth/reset'
+    | '/blog/$slug'
+    | '/blog/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/roles'
@@ -342,6 +372,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/send'
+    | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
@@ -350,6 +381,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api/integration-status'
     | '/auth/reset'
+    | '/blog/$slug'
+    | '/blog'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/roles'
@@ -375,6 +408,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/send'
+    | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
@@ -383,6 +417,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/api/integration-status'
     | '/auth/reset'
+    | '/blog/$slug'
+    | '/blog/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin_/roles'
@@ -409,12 +445,15 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   McpRoute: typeof McpRoute
   SendRoute: typeof SendRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SwapRoute: typeof SwapRoute
   WhitepaperRoute: typeof WhitepaperRoute
   WorkflowRoute: typeof WorkflowRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiJupiterExecuteRoute: typeof ApiJupiterExecuteRoute
@@ -450,6 +489,13 @@ declare module '@tanstack/react-router' {
       path: '/swap'
       fullPath: '/swap'
       preLoaderRoute: typeof SwapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/send': {
@@ -513,6 +559,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/reset': {
@@ -686,6 +746,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   McpRoute: McpRoute,
   SendRoute: SendRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SwapRoute: SwapRoute,
   WhitepaperRoute: WhitepaperRoute,
   WorkflowRoute: WorkflowRoute,
@@ -693,6 +754,8 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiJupiterExecuteRoute: ApiJupiterExecuteRoute,

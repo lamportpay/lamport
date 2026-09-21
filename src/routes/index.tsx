@@ -28,23 +28,17 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
+import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "LamportPay — Crypto in. Local money out." },
-      {
-        name: "description",
-        content:
-          "Send crypto, recipient receives local currency. A Solana-first crypto-to-local-currency payment routing demo.",
-      },
-      { property: "og:title", content: "LamportPay — Crypto in. Local money out." },
-      {
-        property: "og:description",
-        content: "Solana-first crypto-to-local-currency payment routing demo.",
-      },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/",
+      title: "LamportPay — Crypto in. Local money out.",
+      description:
+        "Send crypto, the recipient receives local currency. LamportPay is a Solana-first crypto-to-local-currency payment routing demo with a live SOL to USDC swap leg.",
+    }),
   component: Index,
 });
 
@@ -70,6 +64,7 @@ function Index() {
       <FeeExplainer />
       <SafetyAssistant />
       <FinalCTA />
+      <FurtherReading slugs={["crypto-to-fiat-payments-explained", "why-stablecoins-settle-cross-border-payments", "solana-payments-for-developers"]} />
     </SiteLayout>
   );
 }

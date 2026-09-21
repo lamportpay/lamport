@@ -2,19 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { useState } from "react";
 import { CheckCircle2, Mail } from "lucide-react";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact / waitlist — LamportPay" },
-      {
-        name: "description",
-        content: "Request demo access, partnership, API access, or investment info.",
-      },
-      { property: "og:title", content: "Contact / waitlist — LamportPay" },
-      { property: "og:description", content: "Join the LamportPay waitlist." },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/contact",
+      title: "Contact and Waitlist | LamportPay",
+      description:
+        "Request demo access, discuss a regulated payout partnership, ask about API access, or reach the LamportPay team at hello@lamportpay.com.",
+    }),
   component: Contact,
 });
 

@@ -4,25 +4,17 @@ import { ArrowRight, Route as RouteIcon, Landmark, ShieldCheck } from "lucide-re
 import { SiteLayout } from "@/components/site/Layout";
 import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
 import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
+import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/workflow")({
-  head: () => ({
-    meta: [
-      { title: "Workflow overview — LamportPay demo architecture" },
-      {
-        name: "description",
-        content:
-          "How Jupiter swap routing and Partner payout orchestration map to each step of the LamportPay demo, with no real fiat payout.",
-      },
-      { property: "og:title", content: "Workflow overview — LamportPay demo architecture" },
-      {
-        property: "og:description",
-        content: "Jupiter handles SOL → USDC routing; a regulated payout partner would handle USDC → local currency.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () =>
+    pageSeo({
+      path: "/workflow",
+      title: "Workflow and Integration Status | LamportPay",
+      description:
+        "How Jupiter swap routing and payout orchestration map to each stage of the LamportPay demo, with the current integration status of every component.",
+    }),
   component: WorkflowPage,
 });
 
@@ -164,6 +156,7 @@ function WorkflowPage() {
           </Link>
         </div>
       </div>
+      <FurtherReading slugs={["web3-payment-rails-architecture", "solana-payments-for-developers", "crypto-to-fiat-payments-explained"]} />
     </SiteLayout>
   );
 }
