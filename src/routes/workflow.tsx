@@ -5,6 +5,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
 import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
 import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/workflow")({
   head: () =>
@@ -155,6 +156,7 @@ function WorkflowPage() {
           </Link>
         </div>
       </div>
+      <FurtherReading slugs={["web3-payment-rails-architecture", "solana-payments-for-developers", "crypto-to-fiat-payments-explained"]} />
     </SiteLayout>
   );
 }

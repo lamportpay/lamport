@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -63,6 +64,7 @@ function Index() {
       <FeeExplainer />
       <SafetyAssistant />
       <FinalCTA />
+      <FurtherReading slugs={["crypto-to-fiat-payments-explained", "why-stablecoins-settle-cross-border-payments", "solana-payments-for-developers"]} />
     </SiteLayout>
   );
 }

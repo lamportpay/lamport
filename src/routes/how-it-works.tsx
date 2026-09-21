@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { ArrowRight } from "lucide-react";
 import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () =>
@@ -90,6 +91,7 @@ function HowItWorks() {
           </div>
         </div>
       </section>
+      <FurtherReading slugs={["crypto-to-fiat-payments-explained", "designing-transparent-payment-quotes", "web3-payment-rails-architecture"]} />
     </SiteLayout>
   );
 }

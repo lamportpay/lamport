@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { ShieldCheck, XCircle, CheckCircle2 } from "lucide-react";
 import { pageSeo } from "@/lib/seo";
+import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
 export const Route = createFileRoute("/compliance")({
   head: () =>
@@ -136,6 +137,7 @@ function Compliance() {
         </div>
 
       </section>
+      <FurtherReading slugs={["compliance-roles-in-crypto-payouts", "crypto-to-fiat-payments-explained", "designing-transparent-payment-quotes"]} />
     </SiteLayout>
   );
 }
