@@ -16,6 +16,14 @@ const rpcWebsocketsBrowser = fileURLToPath(
 );
 const browserBufferShim = fileURLToPath(new URL("./src/lib/buffer-polyfill.ts", import.meta.url));
 
+// @solana-mobile/wallet-adapter-mobile (pulled in by @solana/wallet-adapter-react)
+// calls Node's util.inherits at module scope, which throws in the workerd SSR
+// runtime and 500s every server-rendered page. It is browser-only code, so stub
+// it for SSR while the real module stays in the client bundle.
+const solanaMobileSsrStub = fileURLToPath(
+  new URL("./src/lib/solana-mobile-ssr-stub.ts", import.meta.url),
+);
+
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
@@ -25,6 +33,19 @@ export default defineConfig({
   vite: {
     plugins: [
       mcpPlugin(),
+      {
+        name: "lamportpay-solana-mobile-ssr-stub",
+        enforce: "pre",
+        resolveId(id, _importer, options) {
+          if (
+            options?.ssr &&
+            id.startsWith("@solana-mobile/wallet-adapter-mobile")
+          ) {
+            return solanaMobileSsrStub;
+          }
+          return null;
+        },
+      },
       {
         name: "lamportpay-node-buffer-browser-shim",
         enforce: "pre",
