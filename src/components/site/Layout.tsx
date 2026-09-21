@@ -24,6 +24,7 @@ const nav = [
   { to: "/whitepaper", label: "White paper" },
   { to: "/compliance", label: "Compliance" },
   { to: "/docs", label: "Docs" },
+  { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -200,6 +201,11 @@ function SiteFooter() {
             <li>
               <Link to="/docs" className="hover:text-foreground">
                 Developer docs
+              </Link>
+            </li>
+            <li>
+              <Link to="/blog" className="hover:text-foreground">
+                Blog
               </Link>
             </li>
           </ul>
