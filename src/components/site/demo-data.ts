@@ -79,7 +79,7 @@ export function mockSolanaHash() {
 }
 
 export function mockPayoutRef() {
-  return "brg_" + Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 6);
+  return "payout_" + Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 6);
 }
 
 export function mockPaymentId() {

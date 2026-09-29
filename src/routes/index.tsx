@@ -183,9 +183,9 @@ function WhySection() {
     {
       icon: FileText,
       title: "Local-currency payouts",
-      desc: "Support for bank, mobile wallet, card, and cash pickup corridors.",
-      stat: "4",
-      statLabel: "rails",
+      desc: "The demo models Stables-supported local and SWIFT bank payout rails.",
+      stat: "DEMO",
+      statLabel: "payout status",
     },
     {
       icon: ShieldCheck,

@@ -30,7 +30,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         Crypto is global and fast, but recipients usually want local currency in a bank account,
-        mobile wallet, card, or cash pickup channel. Existing flows are complex for normal users.
+        local or SWIFT bank rail. Existing flows are complex for normal users.
       </p>
     ),
   },
@@ -88,7 +88,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           v="Solana wallet connection, USDC settlement, Jupiter token-to-USDC swap, Solana transaction verification."
         />
         <ArchRow
-          k="Partner"
+          k="Payout provider"
           v="Stables customer/KYC flow, payout transfer flow, and Stables webhook/status updates."
         />
         <ArchRow
@@ -172,8 +172,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "14. Business model",
     body: (
       <p>
-        Small platform fee per completed transfer, SaaS/API fee for businesses, premium dashboard,
-        partner referral/commission where legally allowed.
+        Proposed platform fee per completed transfer, SaaS/API fee for businesses, premium dashboard,
+        and Stables referral/commission where legally allowed. Commercial terms are not finalized.
       </p>
     ),
   },
@@ -201,7 +201,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           slippage, wrong wallet, fraud, provider approval.
         </div>
         <div>
-          <span className="font-semibold">Mitigations: </span>partner-led KYC before payment, USDC
+          <span className="font-semibold">Mitigations: </span>Stables-led KYC before payment, USDC
           settlement, quote expiry, no custody, no user balances, clear refund/failure policy.
         </div>
       </div>

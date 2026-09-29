@@ -163,6 +163,32 @@ function SiteFooter() {
             </a>
             . Fiat payout remains disabled pending production approval.
           </p>
+          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+            <a
+              href="https://www.stables.money/legal/about-us"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              About Stables
+            </a>
+            <a
+              href="https://www.stables.money/products/transfers"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Stables Transfers
+            </a>
+            <a
+              href="https://docs.stables.money"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Stables Docs
+            </a>
+          </div>
           <div className="mt-4 flex items-center gap-2">
             {socialLinks.map(({ label, href, icon: Icon }) => (
               <a
