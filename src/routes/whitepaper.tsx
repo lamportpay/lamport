@@ -21,7 +21,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps
         users pay with supported crypto assets, settle through USDC, and route local-currency payout
-        requests through licensed Stables.
+        requests through Stables. Fiat payout and real KYC remain disabled in the current demo.
       </p>
     ),
   },
@@ -39,7 +39,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         LamportPay provides a simple transfer interface, AI assistant, USDC settlement model,
-        Partner-first payout simulation, and status tracking.
+        Stables payout simulation and status tracking.
       </p>
     ),
   },
@@ -64,7 +64,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           "User confirms crypto payment",
           "Jupiter swaps supported token into USDC (later)",
           "USDC settlement verified",
-          "Partner processes payout",
+          "Stables processes payout (planned)",
           "Recipient receives local currency",
           "LamportPay shows receipt",
         ]}
@@ -89,7 +89,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         />
         <ArchRow
           k="Partner"
-          v="Stables customer/KYC flow, Payout transfer flow, Partner webhook/status updates."
+          v="Stables customer/KYC flow, payout transfer flow, and Stables webhook/status updates."
         />
         <ArchRow
           k="Database"
@@ -119,13 +119,14 @@ const sections: { title: string; body: React.ReactNode }[] = [
       </p>
     ),
   },
-  { title: "10. Supported demo assets", body: <p>USDC, SOL, USDT, JUP, RAY, PYTH, BONK.</p> },
+  { title: "10. Supported demo assets", body: <p>USDC, SOL, USDT, JUP, RAY, PYTH, BONK. Stables publicly documents USDC and USDT support; LamportPay's live swap remains SOL to USDC only.</p> },
   {
     title: "11. Supported demo corridors",
     body: (
       <p>
-        Pakistan PKR, India INR, Nigeria NGN, Philippines PHP, Mexico MXN, Bangladesh BDT, Egypt
-        EGP, Colombia COP, Brazil BRL, Peru PEN.
+        AED, ARS, AUD, BRL, CNY, COP, EUR, GBP, GHS, HKD, IDR, INR, KES, MXN, NGN, PHP, RWF,
+        SGD, THB, TZS, UGX, USD, VND, XAF, XOF, ZAR, and ZMW. Availability follows Stables'
+        published payout-currency documentation; rates shown by LamportPay are indicative demo data.
       </p>
     ),
   },
@@ -162,8 +163,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         LamportPay does not custody user funds, control private keys, issue balances, perform KYC,
-        or independently transmit money. Licensed partners handle KYC, KYB, AML, sanctions
-        screening, Travel Rule, FX/off-ramp, payout processing, and settlement.
+        or independently transmit money. The planned Stables flow covers KYC, KYB, AML, sanctions
+        screening, FX/off-ramp, payout processing, and settlement, subject to production approval.
       </p>
     ),
   },

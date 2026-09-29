@@ -30,6 +30,7 @@ import {
 import { useState } from "react";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
+import { CORRIDORS } from "@/components/site/demo-data";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -169,8 +170,8 @@ function WhySection() {
       icon: Globe2,
       title: "Stables payout flow",
       desc: "A Stables-powered payout flow is shown as a demo. Real fiat payout remains disabled until production approval.",
-      stat: "10+",
-      statLabel: "corridors",
+      stat: "27",
+      statLabel: "supported currencies",
     },
     {
       icon: Bot,
@@ -289,7 +290,7 @@ function HowItWorksSection() {
 }
 
 function AIAssistant() {
-  const [input, setInput] = useState("I want to send 100 USDC to Pakistan.");
+  const [input, setInput] = useState("I want to send 100 USDC to the UAE.");
   const [result, setResult] = useState<null | {
     token: string;
     amount: string;
@@ -299,28 +300,20 @@ function AIAssistant() {
   }>({
     token: "USDC",
     amount: "100",
-    country: "Pakistan",
-    currency: "PKR",
+    country: "United Arab Emirates",
+    currency: "AED",
     method: "Bank account",
   });
 
   function parse() {
     const amountMatch = input.match(/(\d+(?:\.\d+)?)/);
     const tokenMatch = input.match(/\b(USDC|USDT|SOL|JUP|RAY|PYTH|BONK)\b/i);
-    const map: Record<string, [string, string]> = {
-      pakistan: ["Pakistan", "PKR"],
-      india: ["India", "INR"],
-      nigeria: ["Nigeria", "NGN"],
-      philippines: ["Philippines", "PHP"],
-      mexico: ["Mexico", "MXN"],
-      bangladesh: ["Bangladesh", "BDT"],
-      egypt: ["Egypt", "EGP"],
-      colombia: ["Colombia", "COP"],
-      brazil: ["Brazil", "BRL"],
-      peru: ["Peru", "PEN"],
-    };
+    const map = Object.fromEntries(
+      CORRIDORS.map((corridor) => [corridor.country.toLowerCase(), [corridor.country, corridor.currency]]),
+    ) as Record<string, [string, string]>;
+    map.uae = ["United Arab Emirates", "AED"];
     const key = Object.keys(map).find((k) => input.toLowerCase().includes(k));
-    const [country, currency] = key ? map[key] : ["Pakistan", "PKR"];
+    const [country, currency] = key ? map[key] : ["United Arab Emirates", "AED"];
     setResult({
       token: (tokenMatch?.[1] ?? "USDC").toUpperCase(),
       amount: amountMatch?.[1] ?? "100",
@@ -398,7 +391,7 @@ function FeeExplainer() {
   const rows = [
     {
       k: "Stables payout fee (demo)",
-      v: "A small fee (1% of amount, minimum $1) charged by the Stables for processing the local-currency payout.",
+      v: "An indicative demo fee of 1% (minimum $1) representing Stables payout processing; it is not a live Stables quote.",
     },
     {
       k: "LamportPay platform fee",
@@ -443,7 +436,7 @@ function SafetyAssistant() {
   const items = [
     "Never share your seed phrase.",
     "Crypto payments may be irreversible.",
-    "KYC is handled by the Stables.",
+    "The demo models KYC as a Stables-hosted step.",
     "Demo values are not live rates.",
   ];
   return (

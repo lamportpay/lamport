@@ -236,8 +236,8 @@ export default function SendPage() {
             Send a demo transfer
           </h1>
           <p className="text-muted-foreground mt-2">
-            Six steps. All payout data is simulated unless the Stables sandbox is connected. No real crypto, KYC, or fiat
-            moves without partner approval.
+            Six steps. All payout data is simulated unless the Stables sandbox is connected. No real
+            KYC or fiat payout occurs in this demo.
           </p>
         </div>
 
@@ -307,7 +307,7 @@ export default function SendPage() {
             {step === 1 && LAMMY_INTRO}
             {step === 2 &&
               "Here's your quote. Every fee is shown before you confirm — nothing is added later."}
-            {step === 3 && "Identity checks are done by the Stables, never by LamportPay."}
+            {step === 3 && "This demo models identity checks as a Stables-hosted step, never a LamportPay process."}
             {step === 4 && `Please double-check the recipient details. ${LAMMY_SAFETY}`}
             {step === 5 &&
               "I'm tracking your payout across the network. This usually settles in under 5 minutes."}
@@ -414,7 +414,7 @@ export default function SendPage() {
                   disabled={payoutLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {payoutLoading ? "Calling Stables API…" : "Fetch real Payout quote"}
+                  {payoutLoading ? "Calling Stables API…" : "Fetch Stables sandbox quote"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
@@ -434,7 +434,7 @@ export default function SendPage() {
                   k="Recipient receives"
                   v={`${fmt(quote.recipientAmount)} ${corridor.currency}`}
                 />
-                <KV k="Estimated delivery" v="Under 5 minutes" />
+                <KV k="Estimated delivery" v="Demo estimate only" />
                 <KV k="KYC method" v="Stables-hosted KYC (demo)" />
                 <KV k="Payout method" v={method} />
                 <KV k="Corridor support" v="Demo supported" />
@@ -448,7 +448,7 @@ export default function SendPage() {
               <div className="text-xs text-muted-foreground">
                 Status note:{" "}
                 {payoutMode
-                  ? "Attempting real Payout quote; falls back to mock if API is not configured."
+                  ? "Attempting a Stables sandbox quote; falls back to mock data if unavailable."
                   : "Mock quote for demo only."}
               </div>
               <NavButtons
@@ -465,7 +465,7 @@ export default function SendPage() {
               <div className="rounded-2xl bg-secondary/60 p-5 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <p className="text-sm leading-relaxed">
-                  Identity verification is handled by <strong>Stables</strong> or Stables, not by LamportPay.
+                  This simulated identity step represents a <strong>Stables-hosted</strong> compliance flow. LamportPay does not collect identity documents in this demo.
                 </p>
               </div>
               {payoutMode && !kycApproved && (
@@ -495,7 +495,7 @@ export default function SendPage() {
                     if (payoutMode) void createPayoutCustomer();
                   }}
                 >
-                  Complete Mock partner KYC
+                  Complete Mock Stables KYC
                 </PrimaryButton>
               ) : (
                 <NavButtons
@@ -533,7 +533,7 @@ export default function SendPage() {
                   k="Recipient receives"
                   v={`${fmt(quote.recipientAmount)} ${corridor.currency}`}
                 />
-                <KV k="Estimated delivery" v="Under 5 minutes" />
+                <KV k="Estimated delivery" v="Demo estimate only" />
                 <KV k="Payout method" v={method} />
                 {payoutMode && payoutExternalAccountId && (
                   <KV
