@@ -35,7 +35,7 @@ export default defineTool({
         payoutPartnerFee: Number(q.payoutFee.toFixed(2)),
         lamportpayFee: Number(q.platformFee.toFixed(2)),
         totalFee: Number(q.totalFee.toFixed(2)),
-        model: "Payout partner 1% (min $1) + LamportPay 0.5%",
+        model: "Stables 1% (min $1) + LamportPay 0.5%",
       },
       fx: { currency: code, country: corridor.country, rate: q.fxRate },
       recipientReceives: Number(q.recipientAmount.toFixed(2)),

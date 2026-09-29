@@ -95,7 +95,7 @@ function Hero() {
         </h1>
         <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           LamportPay helps users pay with supported crypto assets, settle through USDC, and route
-          local-currency payout requests through licensed settlement partners.
+          local-currency payout requests through Stables.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
@@ -167,8 +167,8 @@ function WhySection() {
     },
     {
       icon: Globe2,
-      title: "Partner-first partner flow",
-      desc: "Partner-style payout flow is shown as a mock placeholder. Real Fiat payout is disabled until partner approval.",
+      title: "Stables payout flow",
+      desc: "A Stables-powered payout flow is shown as a demo. Real fiat payout remains disabled until production approval.",
       stat: "10+",
       statLabel: "corridors",
     },
@@ -189,7 +189,7 @@ function WhySection() {
     {
       icon: ShieldCheck,
       title: "Compliance-aware design",
-      desc: "Partner-led KYC, no custody, no direct money transmission.",
+      desc: "Stables-led compliance flow, no LamportPay custody, no direct money transmission.",
       stat: "0",
       statLabel: "custody",
     },
@@ -371,7 +371,7 @@ function AIAssistant() {
               <KV k="Receiver country" v={result.country} />
               <KV k="Receiver currency" v={result.currency} />
               <KV k="Suggested payout method" v={result.method} />
-              <KV k="Partner" v="Regulated payout partner (TBD)" />
+              <KV k="Partner" v="Stables" />
               <div className="md:col-span-2 text-xs text-muted-foreground flex gap-1.5 items-center pt-2">
                 <Info className="w-3.5 h-3.5" /> This is a demo suggestion only.
               </div>
@@ -397,8 +397,8 @@ function KV({ k, v }: { k: string; v: string }) {
 function FeeExplainer() {
   const rows = [
     {
-      k: "Partner payout fee",
-      v: "A small fee (1% of amount, minimum $1) charged by the regulated settlement partner for processing the local-currency payout.",
+      k: "Stables payout fee (demo)",
+      v: "A small fee (1% of amount, minimum $1) charged by the Stables for processing the local-currency payout.",
     },
     {
       k: "LamportPay platform fee",
@@ -443,7 +443,7 @@ function SafetyAssistant() {
   const items = [
     "Never share your seed phrase.",
     "Crypto payments may be irreversible.",
-    "KYC is handled by the licensed partner.",
+    "KYC is handled by the Stables.",
     "Demo values are not live rates.",
   ];
   return (

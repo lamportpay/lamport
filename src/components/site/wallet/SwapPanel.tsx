@@ -407,8 +407,8 @@ export function SwapPanel() {
                 Fiat payout disabled
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                USDC swap completed. Fiat payout is disabled for now. Partner KYC and
-                local-currency payout will be added only after licensed partner approval.
+                USDC swap completed. Fiat payout is disabled for now. Stables KYC (demo) and
+                local-currency payout will be added only after Stables approval.
               </p>
             </div>
           )}

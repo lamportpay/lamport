@@ -19,10 +19,10 @@ const userFlow = [
   "User enters transfer details",
   "LamportPay creates payment record",
   "Payout quote generated",
-  "Partner KYC",
+  "Stables KYC (demo)",
   "Jupiter swap to USDC planned",
   "USDC settlement verified",
-  "Partner payout processing",
+  "Stables payout processing",
   "Receipt shown",
 ];
 
@@ -51,7 +51,7 @@ function HowItWorks() {
           From crypto tap to local payout.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
-          Every LamportPay transfer follows a predictable, partner-led flow — from the moment a user
+          Every LamportPay transfer follows a predictable, Stables-led flow — from the moment a user
           enters details to when the recipient sees local currency.
         </p>
 

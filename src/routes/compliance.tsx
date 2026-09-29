@@ -74,7 +74,7 @@ function Compliance() {
             <div className="font-semibold">Partner-led compliance</div>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               KYC, KYB, AML, sanctions screening, Travel Rule, FX/off-ramp, payout processing, and
-              settlement are performed by licensed regulated settlement partners — not by LamportPay. This
+              settlement are performed by licensed Stables — not by LamportPay. This
               posture is intentional: it keeps the surface area of the platform narrow and
               defensible.
             </p>
@@ -123,7 +123,7 @@ function Compliance() {
                 Licenses / regulatory approvals
               </dt>
               <dd className="mt-1 text-muted-foreground">
-                None claimed. Regulated activity is performed by licensed partners.
+                None claimed. Regulated activity is performed by Stables.
               </dd>
             </div>
           </dl>

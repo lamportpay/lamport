@@ -21,7 +21,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps
         users pay with supported crypto assets, settle through USDC, and route local-currency payout
-        requests through licensed regulated settlement partners.
+        requests through licensed Stables.
       </p>
     ),
   },
@@ -60,7 +60,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           "Sender enters transfer details",
           "LamportPay creates payment",
           "Payout quote generated",
-          "Partner KYC",
+          "Stables KYC (demo)",
           "User confirms crypto payment",
           "Jupiter swaps supported token into USDC (later)",
           "USDC settlement verified",
@@ -81,7 +81,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         />
         <ArchRow
           k="Backend"
-          v="API routes, payment state machine, Payout partner adapter, Jupiter adapter, Solana verifier, webhook handler, database layer."
+          v="API routes, payment state machine, Stables adapter, Jupiter adapter, Solana verifier, webhook handler, database layer."
         />
         <ArchRow
           k="Blockchain"
@@ -89,7 +89,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         />
         <ArchRow
           k="Partner"
-          v="Payout partner customer/KYC flow, Payout transfer flow, Partner webhook/status updates."
+          v="Stables customer/KYC flow, Payout transfer flow, Partner webhook/status updates."
         />
         <ArchRow
           k="Database"
@@ -115,8 +115,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "9. Settlement partner layer",
     body: (
       <p>
-        Start with a single regulated payout infrastructure partner, then add further partners later,
-        Bitso, and Yellow Card.
+        Use Stables as the sole payout infrastructure provider for supported payout currencies.
       </p>
     ),
   },
@@ -186,7 +185,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           "Phase 2: Backend MVP",
           "Phase 3: Phantom wallet + Solana devnet",
           "Phase 4: Jupiter quote/swap integration",
-          "Phase 5: payout partner sandbox integration",
+          "Phase 5: Stables sandbox integration",
           "Phase 6: Controlled live pilot after legal and partner approval",
         ]}
       />

@@ -52,7 +52,7 @@ export default function SendPage() {
   const [step, setStep] = useState<Step>(1);
   const [amount, setAmount] = useState("500");
   const [token, setToken] = useState<Token>("USDC");
-  const [senderCurrency, setSenderCurrency] = useState<string>("USD");
+  const [senderCurrency, setSenderCurrency] = useState<string>("AUD");
   const [corridorIdx, setCorridorIdx] = useState(0);
   const [recipientName, setRecipientName] = useState("Ayesha Khan");
   const [method, setMethod] = useState<(typeof PAYOUT_METHODS)[number]>("Bank account");
@@ -79,12 +79,12 @@ export default function SendPage() {
 
   const timeline = [
     "Payment created",
-    "Regulated settlement partner selected",
-    "Mock partner KYC approved",
+    "Stables selected",
+    "Mock Stables KYC approved",
     "Crypto converted to USDC",
     "USDC settlement confirmed",
-    "Payout request sent to settlement partner",
-    "Partner processing payout",
+    "Payout request sent to Stables",
+    "Stables processing payout",
     "Recipient paid",
   ];
 
@@ -125,15 +125,15 @@ export default function SendPage() {
         setPayoutStatus({
           configured: !data.demoMode,
           message: data.demoMode
-            ? "Payout partner API not configured — using demo quote."
-            : "Payout partner API connected — real quote received.",
+            ? "Stables API not configured — using demo quote."
+            : "Stables API connected — real quote received.",
         });
         if (data.transfer?.id) {
           setPayoutRef(data.transfer.id as string);
         }
       }
     } catch (e) {
-      setPayoutError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
+      setPayoutError(e instanceof Error ? e.message : "Failed to reach Stables API.");
     } finally {
       setPayoutLoading(false);
     }
@@ -154,18 +154,18 @@ export default function SendPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setPayoutError(data.error ?? "Payout partner customer creation failed.");
+        setPayoutError(data.error ?? "Stables customer creation failed.");
       } else if (data.customer?.id) {
         setPayoutCustomerId(data.customer.id as string);
       }
       setPayoutStatus({
         configured: !data.demoMode,
         message: data.demoMode
-          ? "Payout partner API not configured — mock KYC used."
-          : "Payout partner customer created.",
+          ? "Stables API not configured — mock KYC used."
+          : "Stables customer created.",
       });
     } catch (e) {
-      setPayoutError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
+      setPayoutError(e instanceof Error ? e.message : "Failed to reach Stables API.");
     } finally {
       setPayoutLoading(false);
     }
@@ -215,11 +215,11 @@ export default function SendPage() {
       setPayoutStatus({
         configured: !transferData.demoMode,
         message: transferData.demoMode
-          ? "Payout partner API not configured — mock transfer used."
+          ? "Stables API not configured — mock transfer used."
           : "Payout transfer created.",
       });
     } catch (e) {
-      setPayoutError(e instanceof Error ? e.message : "Failed to reach Payout partner API.");
+      setPayoutError(e instanceof Error ? e.message : "Failed to reach Stables API.");
     } finally {
       setPayoutLoading(false);
     }
@@ -236,7 +236,7 @@ export default function SendPage() {
             Send a demo transfer
           </h1>
           <p className="text-muted-foreground mt-2">
-            Six steps. All mock data unless Payout partner API is connected. No real crypto, KYC, or fiat
+            Six steps. All payout data is simulated unless the Stables sandbox is connected. No real crypto, KYC, or fiat
             moves without partner approval.
           </p>
         </div>
@@ -251,9 +251,9 @@ export default function SendPage() {
               )}
             </div>
             <div>
-              <div className="font-semibold text-sm">Payout partner API mode</div>
+              <div className="font-semibold text-sm">Stables API mode</div>
               <p className="text-xs text-muted-foreground mt-1">
-                When enabled, the demo tries to call real payout partner sandbox endpoints. If
+                When enabled, the demo tries to call Stables sandbox endpoints. If
                 PAYOUT_API_KEY is missing, it falls back to mock data.
               </p>
             </div>
@@ -266,7 +266,7 @@ export default function SendPage() {
             }}
             className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${payoutMode ? "bg-primary text-white" : "bg-card border border-border hover:bg-secondary"}`}
           >
-            {payoutMode ? "Payout partner mode on" : "Payout partner mode off"}
+            {payoutMode ? "Stables mode on" : "Stables mode off"}
           </button>
         </div>
 
@@ -274,15 +274,15 @@ export default function SendPage() {
           <div className="rounded-2xl border border-border/60 bg-card p-5 mb-6 space-y-2">
             <div className="flex items-center gap-2 text-sm font-semibold">
               <AlertCircle className="w-4 h-4 text-primary" />
-              Payout partner integration status
+              Stables integration status
             </div>
             <div className="text-sm text-muted-foreground">
               {payoutStatus.configured === null
-                ? "Not tested yet. Continue to the quote step to probe the Payout partner API."
+                ? "Not tested yet. Continue to the quote step to check the Stables API."
                 : payoutStatus.message}
             </div>
             {payoutLoading && (
-              <div className="text-xs text-muted-foreground">Calling Payout partner API…</div>
+              <div className="text-xs text-muted-foreground">Calling Stables API…</div>
             )}
             {payoutError && (
               <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm">
@@ -307,7 +307,7 @@ export default function SendPage() {
             {step === 1 && LAMMY_INTRO}
             {step === 2 &&
               "Here's your quote. Every fee is shown before you confirm — nothing is added later."}
-            {step === 3 && "Identity checks are done by the licensed partner, never by LamportPay."}
+            {step === 3 && "Identity checks are done by the Stables, never by LamportPay."}
             {step === 4 && `Please double-check the recipient details. ${LAMMY_SAFETY}`}
             {step === 5 &&
               "I'm tracking your payout across the network. This usually settles in under 5 minutes."}
@@ -414,12 +414,12 @@ export default function SendPage() {
                   disabled={payoutLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {payoutLoading ? "Calling partner API…" : "Fetch real Payout quote"}
+                  {payoutLoading ? "Calling Stables API…" : "Fetch real Payout quote"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
-                <KV k="Provider" v="Regulated payout partner (TBD)" />
-                <KV k="Provider type" v="Stablecoin orchestration / settlement partner" />
+                <KV k="Provider" v="Stables" />
+                <KV k="Provider type" v="Stablecoin payments infrastructure" />
                 <KV k="Input token" v={token} />
                 <KV k="Input amount" v={amount} />
                 <KV k="Estimated USDC settlement" v={`${fmt(quote.usdcSettlement)} USDC`} />
@@ -427,7 +427,7 @@ export default function SendPage() {
                   k="FX rate"
                   v={`1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`}
                 />
-                <KV k="Partner payout fee" v={`$${fmt(quote.payoutFee)}`} />
+                <KV k="Stables payout fee (demo)" v={`$${fmt(quote.payoutFee)}`} />
                 <KV k="LamportPay platform fee" v={`$${fmt(quote.platformFee)}`} />
                 <KV k="Total fee" v={`$${fmt(quote.totalFee)}`} />
                 <KV
@@ -435,7 +435,7 @@ export default function SendPage() {
                   v={`${fmt(quote.recipientAmount)} ${corridor.currency}`}
                 />
                 <KV k="Estimated delivery" v="Under 5 minutes" />
-                <KV k="KYC method" v="Partner-hosted KYC" />
+                <KV k="KYC method" v="Stables-hosted KYC (demo)" />
                 <KV k="Payout method" v={method} />
                 <KV k="Corridor support" v="Demo supported" />
                 {payoutMode && payoutTransferId && (
@@ -454,19 +454,18 @@ export default function SendPage() {
               <NavButtons
                 onBack={() => setStep(1)}
                 onNext={() => setStep(3)}
-                nextLabel="Continue to Partner KYC"
+                nextLabel="Continue to Mock KYC"
               />
             </div>
           )}
 
           {step === 3 && (
             <div className="space-y-6">
-              <SectionTitle title="3. Partner KYC" />
+              <SectionTitle title="3. Stables KYC (demo)" />
               <div className="rounded-2xl bg-secondary/60 p-5 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <p className="text-sm leading-relaxed">
-                  Identity verification is handled by <strong>a regulated payout partner</strong> or the selected
-                  licensed payout partner, not by LamportPay.
+                  Identity verification is handled by <strong>Stables</strong> or Stables, not by LamportPay.
                 </p>
               </div>
               {payoutMode && !kycApproved && (
@@ -475,20 +474,20 @@ export default function SendPage() {
                   disabled={payoutLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {payoutLoading ? "Creating…" : "Create real Payout partner customer"}
+                  {payoutLoading ? "Creating…" : "Create Stables sandbox customer"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
-                <KV k="Selected partner" v="Regulated payout partner (TBD)" />
+                <KV k="Payout provider" v="Stables" />
                 <KV k="KYC status" v={kycApproved ? "Approved" : "Not started"} />
                 {payoutMode && payoutCustomerId && (
                   <KV
-                    k="Payout partner customer id"
+                    k="Stables customer ID"
                     v={<span className="font-mono text-xs">{payoutCustomerId}</span>}
                   />
                 )}
               </div>
-              {kycApproved && <LammyCheck label="Mock KYC approved by settlement partner" />}
+              {kycApproved && <LammyCheck label="Mock KYC approved in Stables flow" />}
               {!kycApproved ? (
                 <PrimaryButton
                   onClick={() => {
@@ -517,7 +516,7 @@ export default function SendPage() {
                   disabled={payoutLoading}
                   className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary transition disabled:opacity-50"
                 >
-                  {payoutLoading ? "Creating…" : "Create Payout partner account + transfer"}
+                  {payoutLoading ? "Creating…" : "Create Stables sandbox transfer"}
                 </button>
               )}
               <div className="grid md:grid-cols-2 gap-3">
@@ -527,8 +526,8 @@ export default function SendPage() {
                 <KV k="Receiver country" v={corridor.country} />
                 <KV k="Receiver currency" v={corridor.currency} />
                 <KV k="Recipient name" v={recipientName} />
-                <KV k="Selected partner" v="Regulated payout partner (TBD)" />
-                <KV k="Partner payout fee" v={`$${fmt(quote.payoutFee)}`} />
+                <KV k="Payout provider" v="Stables" />
+                <KV k="Stables payout fee (demo)" v={`$${fmt(quote.payoutFee)}`} />
                 <KV k="LamportPay fee" v={`$${fmt(quote.platformFee)}`} />
                 <KV
                   k="Recipient receives"
@@ -538,7 +537,7 @@ export default function SendPage() {
                 <KV k="Payout method" v={method} />
                 {payoutMode && payoutExternalAccountId && (
                   <KV
-                    k="Payout partner account"
+                    k="Stables payout account"
                     v={<span className="font-mono text-xs">{payoutExternalAccountId}</span>}
                   />
                 )}
@@ -670,9 +669,9 @@ function Receipt(props: ReceiptProps) {
     `Recipient: ${recipientName}`,
     `Country: ${corridor.country} (${corridor.currency})`,
     `Recipient receives: ${fmt(quote.recipientAmount)} ${corridor.currency}`,
-    `Partner: regulated payout partner (TBD)`,
+    `Partner: regulated Stables (TBD)`,
     `Payout reference: ${payoutRef}`,
-    `Partner payout fee: $${fmt(quote.payoutFee)}`,
+    `Stables payout fee (demo): $${fmt(quote.payoutFee)}`,
     `LamportPay fee: $${fmt(quote.platformFee)}`,
     `FX rate: 1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`,
     `Payout method: ${method}`,
@@ -680,7 +679,7 @@ function Receipt(props: ReceiptProps) {
     `Status: Paid`,
     payoutMode ? `Payout transfer id: ${payoutTransferId || "n/a"}` : "",
     payoutMode
-      ? "Note: Payout partner mode was on; real transfer may not have been created if API key was missing."
+      ? "Note: Stables mode was on; real transfer may not have been created if API key was missing."
       : "",
   ]
     .filter(Boolean)
@@ -711,9 +710,9 @@ function Receipt(props: ReceiptProps) {
           <KV k="Receiver currency" v={corridor.currency} />
           <KV k="Recipient name" v={recipientName} />
           <KV k="Recipient receives" v={`${fmt(quote.recipientAmount)} ${corridor.currency}`} />
-          <KV k="Selected partner" v="Regulated payout partner (TBD)" />
+          <KV k="Payout provider" v="Stables" />
           <KV k="Payout reference" v={<span className="font-mono text-xs">{payoutRef}</span>} />
-          <KV k="Partner payout fee" v={`$${fmt(quote.payoutFee)}`} />
+          <KV k="Stables payout fee (demo)" v={`$${fmt(quote.payoutFee)}`} />
           <KV k="LamportPay platform fee" v={`$${fmt(quote.platformFee)}`} />
           <KV
             k="FX rate used"

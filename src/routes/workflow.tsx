@@ -23,7 +23,7 @@ const STAGES = [
     stage: "1. Transfer details",
     demo: "You choose token, amount, corridor and payout method on /send.",
     provider: "None",
-    real: "Same form, but corridor availability would be validated against a regulated payout partner's supported rails.",
+    real: "Same form, but corridor availability would be validated against Stables's supported rails.",
   },
   {
     stage: "2. Swap routing",
@@ -40,13 +40,13 @@ const STAGES = [
   {
     stage: "4. Identity check",
     demo: "Mock KYC screen only. No documents are collected or stored.",
-    provider: "Regulated payout partner (disabled)",
-    real: "Partner-hosted KYC/KYB runs on the licensed partner side, never inside LamportPay.",
+    provider: "Stables payout (disabled)",
+    real: "Stables-hosted KYC (demo)/KYB runs on the Stables side, never inside LamportPay.",
   },
   {
     stage: "5. Payout request",
-    demo: "Payout partner API mode can call sandbox endpoints; without a key everything stays mock.",
-    provider: "Regulated payout partner",
+    demo: "Stables API mode can call sandbox endpoints; without a key everything stays mock.",
+    provider: "Stables",
     real: "Payout transfer endpoint moves USDC to the recipient's bank rail in local currency.",
   },
   {
@@ -69,7 +69,7 @@ function WorkflowPage() {
         </h1>
         <p className="text-muted-foreground mt-3 max-w-2xl">
           LamportPay splits the flow into a swap layer and a payout layer. Jupiter handles SOL → USDC
-          routing on Solana. a regulated payout partner would handle USDC → local currency. In this demo the payout layer
+          routing on Solana. Stables would handle USDC → local currency. In this demo the payout layer
           never moves fiat, and identity checks are simulated.
         </p>
 
@@ -125,7 +125,7 @@ function WorkflowPage() {
 
         <h2 className="text-xl font-semibold mt-12">Current integration status</h2>
         <p className="text-sm text-muted-foreground mt-2">
-          Shows whether Jupiter and payout partner keys are configured and which endpoints serve mock versus
+          Shows whether Jupiter and Stables keys are configured and which endpoints serve mock versus
           sandbox data.
         </p>
         <div className="mt-4">

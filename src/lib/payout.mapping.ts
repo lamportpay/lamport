@@ -1,40 +1,23 @@
-/**
- * Maps LamportPay demo corridors and payout methods to Payout payment rails.
- * These mappings are approximate and will need to be updated as Payout
- * expands corridor coverage.
- */
-
+/** Maps Stables-supported payout currencies to the demo rail labels. */
 export const PAYOUT_PAYMENT_RAILS: Record<string, string> = {
-  USD: "ach",
-  EUR: "iban",
-  GBP: "iban",
-  MXN: "clabe",
-  BRL: "pix_key",
-  COP: "co_bank_transfer",
-  INR: "iban", // Payout may support local rails; fallback to iban for demo.
-  PHP: "iban", // Fallback for demo.
-  NGN: "iban", // Fallback for demo.
-  PKR: "iban", // Fallback for demo.
-  BDT: "iban", // Fallback for demo.
-  EGP: "iban", // Fallback for demo.
-  PEN: "iban", // Fallback for demo.
-  CAD: "ach",
-  AUD: "ach",
-  AED: "iban",
+  AED: "local", ARS: "local", AUD: "local", BRL: "local", CNY: "local",
+  COP: "local", EUR: "local", GBP: "local", GHS: "local", HKD: "swift",
+  IDR: "local", INR: "local", KES: "local", MXN: "local", NGN: "local",
+  PHP: "local", RWF: "local", SGD: "swift", THB: "local", TZS: "local",
+  UGX: "local", USD: "local", VND: "local", XAF: "local", XOF: "local",
+  ZAR: "local", ZMW: "local",
 };
 
 export const PAYOUT_RAIL_BY_METHOD: Record<string, string> = {
-  "Bank account": "ach",
+  "Bank account": "local",
   "Mobile wallet": "mobile_wallet",
   Card: "card",
   "Cash pickup": "cash_pickup",
 };
 
 export function getPayoutPaymentRail(currency: string, method?: string): string {
-  if (method && PAYOUT_RAIL_BY_METHOD[method]) {
-    return PAYOUT_RAIL_BY_METHOD[method];
-  }
-  return PAYOUT_PAYMENT_RAILS[currency] || "ach";
+  if (method && PAYOUT_RAIL_BY_METHOD[method]) return PAYOUT_RAIL_BY_METHOD[method];
+  return PAYOUT_PAYMENT_RAILS[currency] || "local";
 }
 
 export function payoutCurrency(currency: string): string {

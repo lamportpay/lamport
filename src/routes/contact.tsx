@@ -10,7 +10,7 @@ export const Route = createFileRoute("/contact")({
       path: "/contact",
       title: "Contact and Waitlist | LamportPay",
       description:
-        "Request demo access, discuss a regulated payout partnership, ask about API access, or reach the LamportPay team at hello@lamportpay.com.",
+        "Request demo access, discuss Stablesship, ask about API access, or reach the LamportPay team at hello@lamportpay.com.",
     }),
   component: Contact,
 });
