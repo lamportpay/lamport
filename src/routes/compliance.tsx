@@ -77,6 +77,14 @@ function Compliance() {
               settlement are planned through Stables — not performed by LamportPay. The current
               website only simulates these steps; real KYC and fiat payout remain disabled.
             </p>
+            <a
+              href="https://www.stables.money/legal/about-us"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex text-sm font-medium text-primary hover:underline"
+            >
+              About Stables
+            </a>
           </div>
         </div>
 

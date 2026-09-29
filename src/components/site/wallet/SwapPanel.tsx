@@ -452,7 +452,7 @@ export function SwapPanel() {
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              LamportPay will never ask for your seed phrase or private key. Partner payout, fiat
+              LamportPay will never ask for your seed phrase or private key. Stables payout, fiat
               payout and KYC remain disabled.
             </p>
             <div className="flex gap-2 justify-end">

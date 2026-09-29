@@ -43,7 +43,7 @@ export const CORRIDORS = [
   { country: "Zambia", currency: "ZMW", rate: 27.5, flag: "🇿🇲" },
 ] as const;
 
-export const PAYOUT_METHODS = ["Bank account", "Mobile wallet", "Card", "Cash pickup"] as const;
+export const PAYOUT_METHODS = ["Bank account"] as const;
 export const SENDER_CURRENCIES = ["AUD", "AED"] as const;
 
 export function calcQuote(amount: number, token: Token, currency: string) {
