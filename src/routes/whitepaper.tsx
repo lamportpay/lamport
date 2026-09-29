@@ -119,7 +119,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       </p>
     ),
   },
-  { title: "10. Supported demo assets", body: <p>USDC, SOL, USDT, JUP, RAY, PYTH, BONK. Stables publicly documents USDC and USDT support; LamportPay's live swap remains SOL to USDC only.</p> },
+  { title: "10. Supported demo assets", body: <p>USDC and USDT are Stables-supported stablecoins. SOL is shown only as the input to LamportPay's separate SOL-to-USDC Jupiter swap demo.</p> },
   {
     title: "11. Supported demo corridors",
     body: (

@@ -1,14 +1,10 @@
-export const TOKENS = ["USDC", "SOL", "USDT", "JUP", "RAY", "PYTH", "BONK"] as const;
+export const TOKENS = ["USDC", "USDT", "SOL"] as const;
 export type Token = (typeof TOKENS)[number];
 
 export const TOKEN_USD: Record<Token, number> = {
   USDC: 1,
   USDT: 1,
   SOL: 165,
-  JUP: 0.85,
-  RAY: 2.4,
-  PYTH: 0.42,
-  BONK: 0.000025,
 };
 
 // Stables-supported payout currencies, per its public developer documentation.

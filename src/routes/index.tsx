@@ -307,7 +307,7 @@ function AIAssistant() {
 
   function parse() {
     const amountMatch = input.match(/(\d+(?:\.\d+)?)/);
-    const tokenMatch = input.match(/\b(USDC|USDT|SOL|JUP|RAY|PYTH|BONK)\b/i);
+    const tokenMatch = input.match(/\b(USDC|USDT|SOL)\b/i);
     const map = Object.fromEntries(
       CORRIDORS.map((corridor) => [corridor.country.toLowerCase(), [corridor.country, corridor.currency]]),
     ) as Record<string, [string, string]>;
