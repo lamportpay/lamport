@@ -115,7 +115,7 @@ function Contact() {
                   onChange={set("role")}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
                 >
-                  {["User", "Developer", "Investor", "Payout Partner", "Other"].map((r) => (
+                  {["User", "Developer", "Investor", "Stables", "Other"].map((r) => (
                     <option key={r}>{r}</option>
                   ))}
                 </select>
