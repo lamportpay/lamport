@@ -175,7 +175,7 @@ export function LiveSwapTheater() {
             />
             <Counter label="Output" value="Connected wallet" icon={<Zap className="w-3 h-3" />} />
             <Counter
-              label="Partner payout"
+              label="Stables payout"
               value="Disabled"
               icon={<CheckCircle2 className="w-3 h-3" />}
               sub="No fiat payout"

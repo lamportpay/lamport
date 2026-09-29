@@ -5,7 +5,7 @@ export default defineTool({
   name: "list_corridors",
   title: "List payout corridors",
   description:
-    "List the demo payout corridors LamportPay supports, with their demo FX rate against USD, plus supported payout methods and sender currencies.",
+    "List Stables-supported payout currencies used by the LamportPay demo, with indicative demo FX rates, payout methods, and Stables-supported pay-in currencies.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: () => {
@@ -20,7 +20,7 @@ export default defineTool({
           type: "text",
           text: JSON.stringify(
             {
-              note: "Demo FX rates only — indicative, not live market data.",
+              note: "Currency availability follows Stables' public documentation. FX rates are indicative LamportPay demo data, not live Stables quotes.",
               corridors,
               payoutMethods: PAYOUT_METHODS,
               senderCurrencies: SENDER_CURRENCIES,

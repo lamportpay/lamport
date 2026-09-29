@@ -23,7 +23,7 @@ const STAGES = [
     stage: "1. Transfer details",
     demo: "You choose token, amount, corridor and payout method on /send.",
     provider: "None",
-    real: "Same form, but corridor availability would be validated against Stables's supported rails.",
+    real: "Same form, with currency availability validated against Stables-supported rails.",
   },
   {
     stage: "2. Swap routing",
@@ -41,7 +41,7 @@ const STAGES = [
     stage: "4. Identity check",
     demo: "Mock KYC screen only. No documents are collected or stored.",
     provider: "Stables payout (disabled)",
-    real: "Stables-hosted KYC (demo)/KYB runs on the Stables side, never inside LamportPay.",
+    real: "Stables-hosted KYC/KYB would run on the Stables side, never inside LamportPay.",
   },
   {
     stage: "5. Payout request",
@@ -52,8 +52,8 @@ const STAGES = [
   {
     stage: "6. Tracking and receipt",
     demo: "Timeline and receipt are generated from mock identifiers.",
-    provider: "Partner webhooks",
-    real: "Signed Partner webhooks update the transfer status in real time.",
+    provider: "Stables webhooks",
+    real: "Signed Stables webhooks update the transfer status in real time.",
   },
 ];
 
@@ -82,7 +82,7 @@ function WorkflowPage() {
             },
             {
               icon: Landmark,
-              title: "Payout layer — regulated partner",
+              title: "Payout layer — Stables",
               body: "Customer orchestration, external bank accounts, transfers and webhooks. Disabled in this demo.",
             },
             {

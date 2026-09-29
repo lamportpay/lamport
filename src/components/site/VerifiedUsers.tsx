@@ -90,7 +90,7 @@ export function VerifiedUsers() {
             </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Partner payout
+              <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Stables payout
               disabled
             </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />

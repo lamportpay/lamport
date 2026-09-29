@@ -20,7 +20,7 @@ export default defineTool({
         "Demo transfer simulator with indicative FX rates and fee breakdown",
       ],
       disabledCapabilities: [
-        "Fiat conversion and payout — LamportPay is evaluating regulated payout infrastructure partners",
+        "Stables fiat conversion and payout — disabled pending production approval",
         "KYC verification (mock only in the demo flow)",
       ],
       demoTransferFlow: ["Details", "Quote", "Mock KYC", "Confirmation", "Tracking", "Receipt"],

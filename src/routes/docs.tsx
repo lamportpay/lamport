@@ -51,7 +51,7 @@ function Docs() {
           Developer docs
         </div>
         <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">
-          Build against a partner-led payment routing layer.
+          Build against a Stables-led payment routing layer.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
           The demo ships with a clear architecture and a planned API surface. Real integrations plug

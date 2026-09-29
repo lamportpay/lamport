@@ -51,8 +51,8 @@ function HowItWorks() {
           From crypto tap to local payout.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
-          Every LamportPay transfer follows a predictable, Stables-led flow — from the moment a user
-          enters details to when the recipient sees local currency.
+          The demo models a predictable Stables-led flow — from transfer details to a simulated
+          local-currency payout and receipt.
         </p>
 
         <div className="mt-14">

@@ -170,7 +170,7 @@ export function WorldPulse() {
           </h2>
           <p className="mt-3 text-muted-foreground">
             This demo shows how a Solana wallet can swap SOL to USDC through Jupiter. Local-currency
-            payout remains disabled until licensed partner approval.
+            payout through Stables remains disabled until production approval.
           </p>
         </div>
 

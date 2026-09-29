@@ -102,7 +102,7 @@ export function StatsStrip() {
     {
       k: "Demo only",
       v: "LamportPay status",
-      sub: "Real fiat payout is disabled until licensed partner approval.",
+      sub: "Real fiat payout is disabled until Stables production approval.",
     },
   ];
   return (
