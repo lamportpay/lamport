@@ -21,7 +21,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps
         users pay with supported crypto assets, settle through USDC, and route local-currency payout
-        requests through licensed regulated settlement partners.
+        requests through Stables. Fiat payout and real KYC remain disabled in the current demo.
       </p>
     ),
   },
@@ -30,7 +30,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         Crypto is global and fast, but recipients usually want local currency in a bank account,
-        mobile wallet, card, or cash pickup channel. Existing flows are complex for normal users.
+        local or SWIFT bank rail. Existing flows are complex for normal users.
       </p>
     ),
   },
@@ -39,7 +39,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         LamportPay provides a simple transfer interface, AI assistant, USDC settlement model,
-        Partner-first payout simulation, and status tracking.
+        Stables payout simulation and status tracking.
       </p>
     ),
   },
@@ -60,11 +60,11 @@ const sections: { title: string; body: React.ReactNode }[] = [
           "Sender enters transfer details",
           "LamportPay creates payment",
           "Payout quote generated",
-          "Partner KYC",
+          "Stables KYC (demo)",
           "User confirms crypto payment",
           "Jupiter swaps supported token into USDC (later)",
           "USDC settlement verified",
-          "Partner processes payout",
+          "Stables processes payout (planned)",
           "Recipient receives local currency",
           "LamportPay shows receipt",
         ]}
@@ -81,15 +81,15 @@ const sections: { title: string; body: React.ReactNode }[] = [
         />
         <ArchRow
           k="Backend"
-          v="API routes, payment state machine, Payout partner adapter, Jupiter adapter, Solana verifier, webhook handler, database layer."
+          v="API routes, payment state machine, Stables adapter, Jupiter adapter, Solana verifier, webhook handler, database layer."
         />
         <ArchRow
           k="Blockchain"
           v="Solana wallet connection, USDC settlement, Jupiter token-to-USDC swap, Solana transaction verification."
         />
         <ArchRow
-          k="Partner"
-          v="Payout partner customer/KYC flow, Payout transfer flow, Partner webhook/status updates."
+          k="Payout provider"
+          v="Stables customer/KYC flow, payout transfer flow, and Stables webhook/status updates."
         />
         <ArchRow
           k="Database"
@@ -115,18 +115,18 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "9. Settlement partner layer",
     body: (
       <p>
-        Start with a single regulated payout infrastructure partner, then add further partners later,
-        Bitso, and Yellow Card.
+        Use Stables as the sole payout infrastructure provider for supported payout currencies.
       </p>
     ),
   },
-  { title: "10. Supported demo assets", body: <p>USDC, SOL, USDT, JUP, RAY, PYTH, BONK.</p> },
+  { title: "10. Supported demo assets", body: <p>USDC and USDT are Stables-supported stablecoins. SOL is shown only as the input to LamportPay's separate SOL-to-USDC Jupiter swap demo.</p> },
   {
     title: "11. Supported demo corridors",
     body: (
       <p>
-        Pakistan PKR, India INR, Nigeria NGN, Philippines PHP, Mexico MXN, Bangladesh BDT, Egypt
-        EGP, Colombia COP, Brazil BRL, Peru PEN.
+        AED, ARS, AUD, BRL, CNY, COP, EUR, GBP, GHS, HKD, IDR, INR, KES, MXN, NGN, PHP, RWF,
+        SGD, THB, TZS, UGX, USD, VND, XAF, XOF, ZAR, and ZMW. Availability follows Stables'
+        published payout-currency documentation; rates shown by LamportPay are indicative demo data.
       </p>
     ),
   },
@@ -163,8 +163,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         LamportPay does not custody user funds, control private keys, issue balances, perform KYC,
-        or independently transmit money. Licensed partners handle KYC, KYB, AML, sanctions
-        screening, Travel Rule, FX/off-ramp, payout processing, and settlement.
+        or independently transmit money. The planned Stables flow covers KYC, KYB, AML, sanctions
+        screening, FX/off-ramp, payout processing, and settlement, subject to production approval.
       </p>
     ),
   },
@@ -172,8 +172,8 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "14. Business model",
     body: (
       <p>
-        Small platform fee per completed transfer, SaaS/API fee for businesses, premium dashboard,
-        partner referral/commission where legally allowed.
+        Proposed platform fee per completed transfer, SaaS/API fee for businesses, premium dashboard,
+        and Stables referral/commission where legally allowed. Commercial terms are not finalized.
       </p>
     ),
   },
@@ -186,7 +186,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           "Phase 2: Backend MVP",
           "Phase 3: Phantom wallet + Solana devnet",
           "Phase 4: Jupiter quote/swap integration",
-          "Phase 5: payout partner sandbox integration",
+          "Phase 5: Stables sandbox integration",
           "Phase 6: Controlled live pilot after legal and partner approval",
         ]}
       />
@@ -201,7 +201,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           slippage, wrong wallet, fraud, provider approval.
         </div>
         <div>
-          <span className="font-semibold">Mitigations: </span>partner-led KYC before payment, USDC
+          <span className="font-semibold">Mitigations: </span>Stables-led KYC before payment, USDC
           settlement, quote expiry, no custody, no user balances, clear refund/failure policy.
         </div>
       </div>

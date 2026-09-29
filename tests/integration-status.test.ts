@@ -10,7 +10,7 @@ describe("GET /api/integration-status", () => {
 
     const names = res.body.providers.map((p) => p.name);
     expect(names).toContain("Jupiter");
-    expect(names).toContain("Payout partner");
+    expect(names).toContain("Stables");
 
     for (const provider of res.body.providers) {
       expect(["sandbox", "mock"]).toContain(provider.mode);

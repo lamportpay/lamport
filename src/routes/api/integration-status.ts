@@ -30,12 +30,12 @@ export const Route = createFileRoute("/api/integration-status")({
                   : "Route previews fall back to local mock routing.",
               },
               {
-                name: "Payout partner",
+                name: "Stables",
                 role: "USDC → local currency payout",
                 configured: payoutConfigured,
                 mode: payoutMode,
                 note: payoutConfigured
-                  ? "payout partner sandbox endpoints are reachable."
+                  ? "Stables sandbox endpoints are reachable."
                   : "Payout steps are simulated. No fiat payout is possible.",
               },
             ],
@@ -43,11 +43,11 @@ export const Route = createFileRoute("/api/integration-status")({
               { path: "POST /api/jupiter/quote", provider: "Jupiter", mode: jupiterMode },
               { path: "POST /api/jupiter/order", provider: "Jupiter", mode: jupiterMode },
               { path: "POST /api/jupiter/execute", provider: "Jupiter", mode: jupiterMode },
-              { path: "POST /api/payout/quote", provider: "Regulated payout partner", mode: payoutMode },
-              { path: "POST /api/payout/customer", provider: "Regulated payout partner", mode: payoutMode },
-              { path: "POST /api/payout/external-account", provider: "Regulated payout partner", mode: payoutMode },
-              { path: "POST /api/payout/transfer", provider: "Regulated payout partner", mode: payoutMode },
-              { path: "POST /api/public/payout-webhook", provider: "Regulated payout partner", mode: payoutMode },
+              { path: "POST /api/payout/quote", provider: "Stables", mode: payoutMode },
+              { path: "POST /api/payout/customer", provider: "Stables", mode: payoutMode },
+              { path: "POST /api/payout/external-account", provider: "Stables", mode: payoutMode },
+              { path: "POST /api/payout/transfer", provider: "Stables", mode: payoutMode },
+              { path: "POST /api/public/payout-webhook", provider: "Stables", mode: payoutMode },
             ],
             guards: {
               fiatPayoutEnabled: false,

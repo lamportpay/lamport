@@ -11,9 +11,9 @@
   },
   "mcp": {
     "server": {
-      "name": "lamportpay-bridge",
+      "name": "lamportpay-routing",
       "version": "0.1.0",
-      "title": "LamportPay Bridge"
+      "title": "LamportPay Routing"
     },
     "tools": [
       {
@@ -35,7 +35,7 @@
       {
         "name": "list_corridors",
         "title": "List payout corridors",
-        "description": "List the demo payout corridors LamportPay supports, with their demo FX rate against USD, plus supported payout methods and sender currencies.",
+        "description": "List Stables-supported payout currencies used by the LamportPay demo, with indicative demo FX rates, payout methods, and Stables-supported pay-in currencies.",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -70,19 +70,15 @@
               "type": "string",
               "enum": [
                 "USDC",
-                "SOL",
                 "USDT",
-                "JUP",
-                "RAY",
-                "PYTH",
-                "BONK"
+                "SOL"
               ],
               "description": "Input crypto token symbol, e.g. SOL or USDC."
             },
             "currency": {
               "type": "string",
               "minLength": 3,
-              "description": "Destination local currency code, e.g. PKR, INR, NGN."
+              "description": "Stables-supported payout currency code, e.g. AED, AUD, PHP."
             }
           },
           "required": [

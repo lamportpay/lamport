@@ -16,7 +16,7 @@ export default defineTool({
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: ({ usdAmount }) => {
     const model = {
-      payoutPartnerFee: "1% of the USD value, minimum $1",
+      stablesPayoutFee: "Indicative demo fee: 1% of the USD value, minimum $1; not a live Stables quote",
       lamportpayFee: "0.5% of the USD value",
       fxSpread: "None in the demo — indicative mid-market demo rates are used",
       networkFee: "Solana network fees are paid by the sender's wallet (fractions of a cent)",
@@ -27,7 +27,7 @@ export default defineTool({
           const platform = usdAmount * 0.005;
           return {
             usdAmount,
-            payoutPartnerFee: Number(payout.toFixed(2)),
+            stablesPayoutFee: Number(payout.toFixed(2)),
             lamportpayFee: Number(platform.toFixed(2)),
             totalFee: Number((payout + platform).toFixed(2)),
             netSettled: Number((usdAmount - payout - platform).toFixed(2)),

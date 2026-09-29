@@ -10,7 +10,7 @@ export const Route = createFileRoute("/compliance")({
       path: "/compliance",
       title: "Compliance Position | LamportPay",
       description:
-        "LamportPay is a technology platform. It does not custody funds, perform real KYC, convert to fiat, or transmit money. Licensed partners would handle regulated payout.",
+        "LamportPay is a technology platform. It does not custody funds, perform real KYC, convert to fiat, or transmit money. The planned Stables integration would handle regulated payout functions.",
     }),
   component: Compliance,
 });
@@ -23,9 +23,9 @@ function Compliance() {
   ];
   const positives = [
     "LamportPay is a technology platform.",
-    "Licensed partners handle regulated payout activity.",
-    "LamportPay is evaluating regulated infrastructure partners for future fiat conversion and payout services. No agreement is in place.",
-    "Real launch requires partner approval, KYB, legal review, and corridor approval.",
+    "Stables is LamportPay's selected payout infrastructure provider.",
+    "Stables supports stablecoin payment infrastructure, compliance flows, and documented payout currencies.",
+    "Real launch requires Stables production approval, KYB, legal review, and corridor approval.",
   ];
   return (
     <SiteLayout>
@@ -71,13 +71,20 @@ function Compliance() {
         <div className="mt-10 rounded-2xl bg-[image:var(--gradient-card)] border border-border/60 p-6 flex items-start gap-4">
           <ShieldCheck className="w-6 h-6 text-primary shrink-0 mt-1" />
           <div>
-            <div className="font-semibold">Partner-led compliance</div>
+            <div className="font-semibold">Stables-led compliance</div>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               KYC, KYB, AML, sanctions screening, Travel Rule, FX/off-ramp, payout processing, and
-              settlement are performed by licensed regulated settlement partners — not by LamportPay. This
-              posture is intentional: it keeps the surface area of the platform narrow and
-              defensible.
+              settlement are planned through Stables — not performed by LamportPay. The current
+              website only simulates these steps; real KYC and fiat payout remain disabled.
             </p>
+            <a
+              href="https://www.stables.money/legal/about-us"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex text-sm font-medium text-primary hover:underline"
+            >
+              About Stables
+            </a>
           </div>
         </div>
 
@@ -123,7 +130,7 @@ function Compliance() {
                 Licenses / regulatory approvals
               </dt>
               <dd className="mt-1 text-muted-foreground">
-                None claimed. Regulated activity is performed by licensed partners.
+                None claimed by LamportPay. Stables production access remains subject to approval.
               </dd>
             </div>
           </dl>
@@ -132,8 +139,8 @@ function Compliance() {
         <div className="mt-10 text-xs text-muted-foreground">
           Demo only. /swap may execute a small real Jupiter SOL-to-USDC swap back to the connected
           wallet. LamportPay does not process fiat payout, KYC, FX conversion, bank payout, or
-          third-party recipient transfer. No partnership, agreement, or integration with any
-          payout provider is in place or claimed.
+          third-party recipient transfer. Stables is the selected payout infrastructure provider;
+          production access and corridor availability remain subject to approval.
         </div>
 
       </section>

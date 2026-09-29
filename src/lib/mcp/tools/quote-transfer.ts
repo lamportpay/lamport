@@ -15,7 +15,7 @@ export default defineTool({
     currency: z
       .string()
       .min(3)
-      .describe("Destination local currency code, e.g. PKR, INR, NGN."),
+      .describe("Stables-supported payout currency code, e.g. AED, AUD, PHP."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
   handler: ({ amount, token, currency }) => {
@@ -32,15 +32,15 @@ export default defineTool({
       usdValue: Number(q.usdValue.toFixed(2)),
       usdcSettlement: Number(q.usdcSettlement.toFixed(2)),
       fees: {
-        payoutPartnerFee: Number(q.payoutFee.toFixed(2)),
+        stablesPayoutFee: Number(q.payoutFee.toFixed(2)),
         lamportpayFee: Number(q.platformFee.toFixed(2)),
         totalFee: Number(q.totalFee.toFixed(2)),
-        model: "Payout partner 1% (min $1) + LamportPay 0.5%",
+        model: "Indicative Stables payout fee 1% (min $1) + LamportPay 0.5%; demo only",
       },
       fx: { currency: code, country: corridor.country, rate: q.fxRate },
       recipientReceives: Number(q.recipientAmount.toFixed(2)),
       disclaimer:
-        "Demo quote using indicative rates. Fiat payout is disabled; LamportPay is evaluating regulated payout infrastructure partners.",
+        "Demo quote using indicative rates. Stables is the selected payout provider, but fiat payout remains disabled pending production approval.",
     };
     return {
       content: [{ type: "text", text: JSON.stringify(quote, null, 2) }],

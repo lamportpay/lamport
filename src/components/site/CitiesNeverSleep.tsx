@@ -3,18 +3,18 @@ import { Zap } from "lucide-react";
 import { useHydrated } from "@/hooks/use-hydrated";
 
 const CITIES = [
-  { name: "Karachi", tz: "PKT", cur: "PKR", lat: 24.86, lon: 67.01 },
+  { name: "Dubai", tz: "GST", cur: "AED", lat: 25.2, lon: 55.27 },
+  { name: "Sydney", tz: "AEST", cur: "AUD", lat: -33.87, lon: 151.21 },
   { name: "Mumbai", tz: "IST", cur: "INR", lat: 19.07, lon: 72.87 },
   { name: "Lagos", tz: "WAT", cur: "NGN", lat: 6.5, lon: 3.37 },
   { name: "Manila", tz: "PHT", cur: "PHP", lat: 14.6, lon: 120.98 },
   { name: "Mexico City", tz: "CST", cur: "MXN", lat: 19.43, lon: -99.13 },
-  { name: "Dhaka", tz: "BST", cur: "BDT", lat: 23.81, lon: 90.41 },
-  { name: "Cairo", tz: "EET", cur: "EGP", lat: 30.04, lon: 31.24 },
   { name: "São Paulo", tz: "BRT", cur: "BRL", lat: -23.55, lon: -46.63 },
   { name: "Bogotá", tz: "COT", cur: "COP", lat: 4.71, lon: -74.07 },
-  { name: "Lima", tz: "PET", cur: "PEN", lat: -12.05, lon: -77.04 },
   { name: "Jakarta", tz: "WIB", cur: "IDR", lat: -6.2, lon: 106.85 },
   { name: "Nairobi", tz: "EAT", cur: "KES", lat: -1.29, lon: 36.82 },
+  { name: "Singapore", tz: "SGT", cur: "SGD", lat: 1.35, lon: 103.82 },
+  { name: "London", tz: "GMT", cur: "GBP", lat: 51.51, lon: -0.13 },
 ];
 
 function nowInCity(offsetH: number) {
@@ -23,18 +23,18 @@ function nowInCity(offsetH: number) {
 }
 
 const OFFSETS: Record<string, number> = {
-  PKT: 5,
+  GST: 4,
+  AEST: 10,
   IST: 5.5,
   WAT: 1,
   PHT: 8,
   CST: -6,
-  BST: 6,
-  EET: 2,
   BRT: -3,
   COT: -5,
-  PET: -5,
   WIB: 7,
   EAT: 3,
+  SGT: 8,
+  GMT: 0,
 };
 
 export function CitiesNeverSleep() {

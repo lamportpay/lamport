@@ -407,8 +407,8 @@ export function SwapPanel() {
                 Fiat payout disabled
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                USDC swap completed. Fiat payout is disabled for now. Partner KYC and
-                local-currency payout will be added only after licensed partner approval.
+                USDC swap completed. Fiat payout is disabled for now. Stables KYC (demo) and
+                local-currency payout will be added only after Stables approval.
               </p>
             </div>
           )}
@@ -452,7 +452,7 @@ export function SwapPanel() {
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              LamportPay will never ask for your seed phrase or private key. Partner payout, fiat
+              LamportPay will never ask for your seed phrase or private key. Stables payout, fiat
               payout and KYC remain disabled.
             </p>
             <div className="flex gap-2 justify-end">

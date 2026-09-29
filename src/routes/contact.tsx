@@ -10,7 +10,7 @@ export const Route = createFileRoute("/contact")({
       path: "/contact",
       title: "Contact and Waitlist | LamportPay",
       description:
-        "Request demo access, discuss a regulated payout partnership, ask about API access, or reach the LamportPay team at hello@lamportpay.com.",
+        "Request demo access, discuss Stablesship, ask about API access, or reach the LamportPay team at hello@lamportpay.com.",
     }),
   component: Contact,
 });
@@ -115,7 +115,7 @@ function Contact() {
                   onChange={set("role")}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2.5"
                 >
-                  {["User", "Developer", "Investor", "Payout Partner", "Other"].map((r) => (
+                  {["User", "Developer", "Investor", "Stables", "Other"].map((r) => (
                     <option key={r}>{r}</option>
                   ))}
                 </select>

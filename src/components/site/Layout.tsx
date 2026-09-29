@@ -151,6 +151,44 @@ function SiteFooter() {
             Crypto in. Local money out. A Solana-first crypto-to-local-currency payment routing
             demo.
           </p>
+          <p className="mt-3 text-sm text-muted-foreground max-w-sm">
+            Payout infrastructure provider: {" "}
+            <a
+              href="https://www.stables.money/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-foreground hover:underline"
+            >
+              Stables
+            </a>
+            . Fiat payout remains disabled pending production approval.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+            <a
+              href="https://www.stables.money/legal/about-us"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              About Stables
+            </a>
+            <a
+              href="https://www.stables.money/products/transfers"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Stables Transfers
+            </a>
+            <a
+              href="https://docs.stables.money"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              Stables Docs
+            </a>
+          </div>
           <div className="mt-4 flex items-center gap-2">
             {socialLinks.map(({ label, href, icon: Icon }) => (
               <a

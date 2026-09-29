@@ -105,9 +105,9 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
                 k="FX rate"
                 v={`1 USD = ${fmt(quote.fxRate, quote.fxRate > 100 ? 0 : 2)} ${corridor.currency}`}
               />
-              <Row k="Partner payout fee" v={`$${fmt(quote.payoutFee)}`} />
+              <Row k="Stables payout fee (demo)" v={`$${fmt(quote.payoutFee)}`} />
               <Row k="LamportPay fee" v={`$${fmt(quote.platformFee)}`} />
-              <Row k="Estimated delivery" v="Under 5 minutes" />
+              <Row k="Estimated delivery" v="Demo estimate" />
             </div>
             {!compact && (
               <Link
@@ -119,7 +119,7 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
             )}
             <p className="text-[11px] text-muted-foreground flex items-start gap-1.5 leading-relaxed">
               <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              Demo values only. No real crypto, fiat, or KYC is processed.
+              Stables-supported payout currencies with indicative demo rates. No real fiat or KYC is processed.
             </p>
           </div>
         </div>
