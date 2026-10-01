@@ -84,10 +84,14 @@ console.error = (...args: unknown[]) => {
 };
 
 if (typeof globalThis.addEventListener === "function") {
-  globalThis.addEventListener("error", (event) => record((event as ErrorEvent).error ?? event));
-  globalThis.addEventListener("unhandledrejection", (event) =>
-    record((event as PromiseRejectionEvent).reason),
-  );
+  globalThis.addEventListener("error", (event) => {
+    const error = (event as ErrorEvent).error ?? event;
+    if (!isRequestAbort(error)) record(error);
+  });
+  globalThis.addEventListener("unhandledrejection", (event) => {
+    const error = (event as PromiseRejectionEvent).reason;
+    if (!isRequestAbort(error)) record(error);
+  });
 }
 
 export function consumeLastCapturedError(): unknown {
