@@ -9,93 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ComplianceRouteImport } from './routes/compliance'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DocsRouteImport } from './routes/docs'
-import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as SendRouteImport } from './routes/send'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SwapRouteImport } from './routes/swap'
-import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as WorkflowRouteImport } from './routes/workflow'
-import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
-import { Route as AuthResetRouteImport } from './routes/auth.reset'
+import { Route as WhitepaperRouteImport } from './routes/whitepaper'
+import { Route as SwapRouteImport } from './routes/swap'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SendRouteImport } from './routes/send'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
-import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin_.roles'
-import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
-import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
-import { Route as ApiJupiterQuoteRouteImport } from './routes/api/jupiter/quote'
-import { Route as ApiPayoutCustomerRouteImport } from './routes/api/payout/customer'
-import { Route as ApiPayoutExternalAccountRouteImport } from './routes/api/payout/external-account'
-import { Route as ApiPayoutQuoteRouteImport } from './routes/api/payout/quote'
-import { Route as ApiPayoutTransferRouteImport } from './routes/api/payout/transfer'
-import { Route as ApiPublicPayoutWebhookRouteImport } from './routes/api/public/payout-webhook'
-import { Route as ApiSolanaHealthRouteImport } from './routes/api/solana/health'
+import { Route as AuthResetRouteImport } from './routes/auth.reset'
+import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as ApiSolanaVerifyTxRouteImport } from './routes/api/solana/verify-tx'
+import { Route as ApiSolanaHealthRouteImport } from './routes/api/solana/health'
+import { Route as ApiPublicPayoutWebhookRouteImport } from './routes/api/public/payout-webhook'
+import { Route as ApiPayoutTransferRouteImport } from './routes/api/payout/transfer'
+import { Route as ApiPayoutQuoteRouteImport } from './routes/api/payout/quote'
+import { Route as ApiPayoutExternalAccountRouteImport } from './routes/api/payout/external-account'
+import { Route as ApiPayoutCustomerRouteImport } from './routes/api/payout/customer'
+import { Route as ApiJupiterQuoteRouteImport } from './routes/api/jupiter/quote'
+import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
+import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
+import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin_.roles'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedAdminPaymentsIdRouteImport } from './routes/_authenticated/admin_.payments.$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ComplianceRoute = ComplianceRouteImport.update({
-  id: '/compliance',
-  path: '/compliance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocsRoute = DocsRouteImport.update({
-  id: '/docs',
-  path: '/docs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HowItWorksRoute = HowItWorksRouteImport.update({
-  id: '/how-it-works',
-  path: '/how-it-works',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SendRoute = SendRouteImport.update({
-  id: '/send',
-  path: '/send',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SwapRoute = SwapRouteImport.update({
-  id: '/swap',
-  path: '/swap',
+const WorkflowRoute = WorkflowRouteImport.update({
+  id: '/workflow',
+  path: '/workflow',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WhitepaperRoute = WhitepaperRouteImport.update({
@@ -103,37 +54,59 @@ const WhitepaperRoute = WhitepaperRouteImport.update({
   path: '/whitepaper',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WorkflowRoute = WorkflowRouteImport.update({
-  id: '/workflow',
-  path: '/workflow',
+const SwapRoute = SwapRouteImport.update({
+  id: '/swap',
+  path: '/swap',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const ApiIntegrationStatusRoute = ApiIntegrationStatusRouteImport.update({
-  id: '/api/integration-status',
-  path: '/api/integration-status',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthResetRoute = AuthResetRouteImport.update({
-  id: '/reset',
-  path: '/reset',
-  getParentRoute: () => AuthRoute,
+const SendRoute = SendRouteImport.update({
+  id: '/send',
+  path: '/send',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComplianceRoute = ComplianceRouteImport.update({
+  id: '/compliance',
+  path: '/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
@@ -145,40 +118,56 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
+const AuthResetRoute = AuthResetRouteImport.update({
+  id: '/reset',
+  path: '/reset',
+  getParentRoute: () => AuthRoute,
+} as any)
+const ApiIntegrationStatusRoute = ApiIntegrationStatusRouteImport.update({
+  id: '/api/integration-status',
+  path: '/api/integration-status',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AuthenticatedAdminRolesRoute = AuthenticatedAdminRolesRouteImport.update({
-  id: '/admin_/roles',
-  path: '/admin/roles',
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ApiJupiterExecuteRoute = ApiJupiterExecuteRouteImport.update({
-  id: '/api/jupiter/execute',
-  path: '/api/jupiter/execute',
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiSolanaVerifyTxRoute = ApiSolanaVerifyTxRouteImport.update({
+  id: '/api/solana/verify-tx',
+  path: '/api/solana/verify-tx',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiJupiterOrderRoute = ApiJupiterOrderRouteImport.update({
-  id: '/api/jupiter/order',
-  path: '/api/jupiter/order',
+const ApiSolanaHealthRoute = ApiSolanaHealthRouteImport.update({
+  id: '/api/solana/health',
+  path: '/api/solana/health',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiJupiterQuoteRoute = ApiJupiterQuoteRouteImport.update({
-  id: '/api/jupiter/quote',
-  path: '/api/jupiter/quote',
+const ApiPublicPayoutWebhookRoute = ApiPublicPayoutWebhookRouteImport.update({
+  id: '/api/public/payout-webhook',
+  path: '/api/public/payout-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPayoutCustomerRoute = ApiPayoutCustomerRouteImport.update({
-  id: '/api/payout/customer',
-  path: '/api/payout/customer',
+const ApiPayoutTransferRoute = ApiPayoutTransferRouteImport.update({
+  id: '/api/payout/transfer',
+  path: '/api/payout/transfer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPayoutQuoteRoute = ApiPayoutQuoteRouteImport.update({
+  id: '/api/payout/quote',
+  path: '/api/payout/quote',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPayoutExternalAccountRoute =
@@ -187,29 +176,40 @@ const ApiPayoutExternalAccountRoute =
     path: '/api/payout/external-account',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPayoutQuoteRoute = ApiPayoutQuoteRouteImport.update({
-  id: '/api/payout/quote',
-  path: '/api/payout/quote',
+const ApiPayoutCustomerRoute = ApiPayoutCustomerRouteImport.update({
+  id: '/api/payout/customer',
+  path: '/api/payout/customer',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPayoutTransferRoute = ApiPayoutTransferRouteImport.update({
-  id: '/api/payout/transfer',
-  path: '/api/payout/transfer',
+const ApiJupiterQuoteRoute = ApiJupiterQuoteRouteImport.update({
+  id: '/api/jupiter/quote',
+  path: '/api/jupiter/quote',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPayoutWebhookRoute = ApiPublicPayoutWebhookRouteImport.update({
-  id: '/api/public/payout-webhook',
-  path: '/api/public/payout-webhook',
+const ApiJupiterOrderRoute = ApiJupiterOrderRouteImport.update({
+  id: '/api/jupiter/order',
+  path: '/api/jupiter/order',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSolanaHealthRoute = ApiSolanaHealthRouteImport.update({
-  id: '/api/solana/health',
-  path: '/api/solana/health',
+const ApiJupiterExecuteRoute = ApiJupiterExecuteRouteImport.update({
+  id: '/api/jupiter/execute',
+  path: '/api/jupiter/execute',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSolanaVerifyTxRoute = ApiSolanaVerifyTxRouteImport.update({
-  id: '/api/solana/verify-tx',
-  path: '/api/solana/verify-tx',
+const AuthenticatedAdminRolesRoute = AuthenticatedAdminRolesRouteImport.update({
+  id: '/admin_/roles',
+  path: '/admin/roles',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminPaymentsIdRoute =
@@ -470,81 +470,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compliance': {
-      id: '/compliance'
-      path: '/compliance'
-      fullPath: '/compliance'
-      preLoaderRoute: typeof ComplianceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs': {
-      id: '/docs'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof DocsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/how-it-works': {
-      id: '/how-it-works'
-      path: '/how-it-works'
-      fullPath: '/how-it-works'
-      preLoaderRoute: typeof HowItWorksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/send': {
-      id: '/send'
-      path: '/send'
-      fullPath: '/send'
-      preLoaderRoute: typeof SendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/swap': {
-      id: '/swap'
-      path: '/swap'
-      fullPath: '/swap'
-      preLoaderRoute: typeof SwapRouteImport
+    '/workflow': {
+      id: '/workflow'
+      path: '/workflow'
+      fullPath: '/workflow'
+      preLoaderRoute: typeof WorkflowRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/whitepaper': {
@@ -554,47 +484,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WhitepaperRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/workflow': {
-      id: '/workflow'
-      path: '/workflow'
-      fullPath: '/workflow'
-      preLoaderRoute: typeof WorkflowRouteImport
+    '/swap': {
+      id: '/swap'
+      path: '/swap'
+      fullPath: '/swap'
+      preLoaderRoute: typeof SwapRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/send': {
+      id: '/send'
+      path: '/send'
+      fullPath: '/send'
+      preLoaderRoute: typeof SendRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/api/integration-status': {
-      id: '/api/integration-status'
-      path: '/api/integration-status'
-      fullPath: '/api/integration-status'
-      preLoaderRoute: typeof ApiIntegrationStatusRouteImport
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/reset': {
-      id: '/auth/reset'
-      path: '/reset'
-      fullPath: '/auth/reset'
-      preLoaderRoute: typeof AuthResetRouteImport
-      parentRoute: typeof AuthRoute
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compliance': {
+      id: '/compliance'
+      path: '/compliance'
+      fullPath: '/compliance'
+      preLoaderRoute: typeof ComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/blog/': {
       id: '/blog/'
@@ -610,81 +575,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+    '/auth/reset': {
+      id: '/auth/reset'
+      path: '/reset'
+      fullPath: '/auth/reset'
+      preLoaderRoute: typeof AuthResetRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/api/integration-status': {
+      id: '/api/integration-status'
+      path: '/api/integration-status'
+      fullPath: '/api/integration-status'
+      preLoaderRoute: typeof ApiIntegrationStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/admin_/roles': {
-      id: '/_authenticated/admin_/roles'
-      path: '/admin/roles'
-      fullPath: '/admin/roles'
-      preLoaderRoute: typeof AuthenticatedAdminRolesRouteImport
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/jupiter/execute': {
-      id: '/api/jupiter/execute'
-      path: '/api/jupiter/execute'
-      fullPath: '/api/jupiter/execute'
-      preLoaderRoute: typeof ApiJupiterExecuteRouteImport
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/jupiter/order': {
-      id: '/api/jupiter/order'
-      path: '/api/jupiter/order'
-      fullPath: '/api/jupiter/order'
-      preLoaderRoute: typeof ApiJupiterOrderRouteImport
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/jupiter/quote': {
-      id: '/api/jupiter/quote'
-      path: '/api/jupiter/quote'
-      fullPath: '/api/jupiter/quote'
-      preLoaderRoute: typeof ApiJupiterQuoteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/payout/customer': {
-      id: '/api/payout/customer'
-      path: '/api/payout/customer'
-      fullPath: '/api/payout/customer'
-      preLoaderRoute: typeof ApiPayoutCustomerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/payout/external-account': {
-      id: '/api/payout/external-account'
-      path: '/api/payout/external-account'
-      fullPath: '/api/payout/external-account'
-      preLoaderRoute: typeof ApiPayoutExternalAccountRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/payout/quote': {
-      id: '/api/payout/quote'
-      path: '/api/payout/quote'
-      fullPath: '/api/payout/quote'
-      preLoaderRoute: typeof ApiPayoutQuoteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/payout/transfer': {
-      id: '/api/payout/transfer'
-      path: '/api/payout/transfer'
-      fullPath: '/api/payout/transfer'
-      preLoaderRoute: typeof ApiPayoutTransferRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/payout-webhook': {
-      id: '/api/public/payout-webhook'
-      path: '/api/public/payout-webhook'
-      fullPath: '/api/public/payout-webhook'
-      preLoaderRoute: typeof ApiPublicPayoutWebhookRouteImport
+    '/api/solana/verify-tx': {
+      id: '/api/solana/verify-tx'
+      path: '/api/solana/verify-tx'
+      fullPath: '/api/solana/verify-tx'
+      preLoaderRoute: typeof ApiSolanaVerifyTxRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/solana/health': {
@@ -694,11 +624,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSolanaHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/solana/verify-tx': {
-      id: '/api/solana/verify-tx'
-      path: '/api/solana/verify-tx'
-      fullPath: '/api/solana/verify-tx'
-      preLoaderRoute: typeof ApiSolanaVerifyTxRouteImport
+    '/api/public/payout-webhook': {
+      id: '/api/public/payout-webhook'
+      path: '/api/public/payout-webhook'
+      fullPath: '/api/public/payout-webhook'
+      preLoaderRoute: typeof ApiPublicPayoutWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payout/transfer': {
+      id: '/api/payout/transfer'
+      path: '/api/payout/transfer'
+      fullPath: '/api/payout/transfer'
+      preLoaderRoute: typeof ApiPayoutTransferRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payout/quote': {
+      id: '/api/payout/quote'
+      path: '/api/payout/quote'
+      fullPath: '/api/payout/quote'
+      preLoaderRoute: typeof ApiPayoutQuoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payout/external-account': {
+      id: '/api/payout/external-account'
+      path: '/api/payout/external-account'
+      fullPath: '/api/payout/external-account'
+      preLoaderRoute: typeof ApiPayoutExternalAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payout/customer': {
+      id: '/api/payout/customer'
+      path: '/api/payout/customer'
+      fullPath: '/api/payout/customer'
+      preLoaderRoute: typeof ApiPayoutCustomerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/jupiter/quote': {
+      id: '/api/jupiter/quote'
+      path: '/api/jupiter/quote'
+      fullPath: '/api/jupiter/quote'
+      preLoaderRoute: typeof ApiJupiterQuoteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/jupiter/order': {
+      id: '/api/jupiter/order'
+      path: '/api/jupiter/order'
+      fullPath: '/api/jupiter/order'
+      preLoaderRoute: typeof ApiJupiterOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/jupiter/execute': {
+      id: '/api/jupiter/execute'
+      path: '/api/jupiter/execute'
+      fullPath: '/api/jupiter/execute'
+      preLoaderRoute: typeof ApiJupiterExecuteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin_/roles': {
+      id: '/_authenticated/admin_/roles'
+      path: '/admin/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AuthenticatedAdminRolesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin_/payments/$id': {
