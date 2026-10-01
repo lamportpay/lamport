@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
-import { ShieldCheck, XCircle, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, XCircle, CheckCircle2, ExternalLink } from "lucide-react";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
@@ -87,6 +87,57 @@ function Compliance() {
             </a>
           </div>
         </div>
+
+        <section className="mt-10 border-y border-border/60 py-8" aria-labelledby="regulatory-context-heading">
+          <div className="flex items-start gap-4">
+            <ShieldCheck className="w-6 h-6 text-primary shrink-0 mt-1" />
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Verified source
+              </div>
+              <h2 id="regulatory-context-heading" className="mt-1 text-2xl font-semibold">
+                Infrastructure and regulatory context
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Stables Money is listed in the official Circle Alliance Directory. The listing
+                identifies Stables as using Circle products USDC, EURC, and CCTP, with payment,
+                remittance, and on/off-ramp use cases.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Circle publishes licenses and authorizations held by the relevant Circle entities.
+                Those licenses cover Circle&apos;s regulated activities; they do not automatically
+                license, authorize, endorse, or extend regulatory coverage to Stables or LamportPay.
+                LamportPay does not claim to be licensed by Circle.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-x-5 gap-y-3 text-sm font-medium">
+                <a
+                  href="https://partners.circle.com/partner/stables-money"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                >
+                  Circle Alliance listing <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                </a>
+                <a
+                  href="https://www.circle.com/legal/licenses"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                >
+                  Circle licenses <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                </a>
+                <a
+                  href="https://www.stables.money/legal/about-us"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-primary hover:underline"
+                >
+                  Stables legal information <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
           <div className="font-semibold">Company information</div>
