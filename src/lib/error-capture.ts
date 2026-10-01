@@ -8,6 +8,26 @@ function record(error: unknown) {
   lastCapturedError = { error, at: Date.now() };
 }
 
+export function isRequestAbort(error: unknown): boolean {
+  let current: unknown = error;
+  for (let depth = 0; depth < CAUSE_DEPTH_LIMIT && current != null; depth++) {
+    if (current instanceof Error) {
+      const code = (current as Error & { code?: unknown }).code;
+      if (
+        current.name === "AbortError" ||
+        current.message.toLowerCase() === "aborted" ||
+        code === "ECONNRESET"
+      ) {
+        return true;
+      }
+      current = current.cause;
+      continue;
+    }
+    break;
+  }
+  return false;
+}
+
 // h3's HTTPError serializes to {"status":500,"unhandled":true,"message":"HTTPError"} —
 // no stack, no cause — so a plain console.error(error) reaches the log pipeline with
 // the failure detail stripped. Expand Error-like args into a string that keeps the
@@ -54,6 +74,7 @@ function isErrorLike(value: unknown): value is Error {
 // recorded for consumeLastCapturedError and expanded before serialization.
 const originalConsoleError = console.error.bind(console);
 console.error = (...args: unknown[]) => {
+  if (args.some(isRequestAbort)) return;
   const expanded = args.map((arg) => {
     if (!isErrorLike(arg)) return arg;
     record(arg);
