@@ -125,7 +125,7 @@ export function CitiesNeverSleep() {
             DEMO MODE
           </span>
           <span>JUPITER ROUTE PREVIEW</span>
-          <span>SOL → USDC</span>
+          <span>LIVE ROUTE: SOLANA / SPL → USDC</span>
           <span>OUTPUT: CONNECTED WALLET</span>
           <span className="text-[color:var(--neon-cyan)]">FIAT PAYOUT DISABLED</span>
         </div>

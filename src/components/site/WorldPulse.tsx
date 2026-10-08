@@ -423,7 +423,7 @@ export function WorldPulse() {
                     style={{ opacity: 1 - idx * 0.14 }}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="font-mono text-white/90">SOL → USDC route preview</span>
+                      <span className="font-mono text-white/90">Solana route preview</span>
                       <span className="text-uv font-semibold text-xs">Demo</span>
                     </div>
                     <div className="text-[11px] text-white/50 mt-0.5 font-mono">
