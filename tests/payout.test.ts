@@ -24,22 +24,25 @@ const cases: Array<{ path: string; body: Record<string, unknown> }> = [
 ];
 
 describe("Partner payout endpoints — mock fallback", () => {
-  it("returns a clean demo-mode response for every endpoint when no key is configured", async () => {
-    const status = await getIntegrationStatus();
-    const configured = providerMode(status, "Payout partner") === "sandbox";
-
+  it("denies anonymous callers on every payout endpoint", async () => {
+    // Payout routes are operator-only: 403 when no PAYOUT_OPERATOR_TOKEN is
+    // configured server-side, 401 when one is configured but not presented.
     for (const c of cases) {
       const res = await post(c.path, c.body);
       assertNoSecretLeak(res.raw);
-
-      if (!configured) {
-        expect(res.status, `${c.path} should be demo-mode`).toBe(200);
-        expect(res.body.demoMode).toBe(true);
-        expect(res.body.error).toMatch(/PAYOUT_API_KEY|not configured/);
-      } else {
-        expect([200, 502]).toContain(res.status);
-      }
+      expect([401, 403], `${c.path} must reject anonymous calls`).toContain(res.status);
+      expect(res.body.demoMode).toBeUndefined();
+      expect(res.body.payoutMode).toBeUndefined();
     }
+  });
+
+  it("rejects a forged operator token", async () => {
+    const res = await api<PayoutResult>("/api/payout/quote", {
+      method: "POST",
+      body: cases[2].body,
+      headers: { "x-payout-operator-token": "forged-token-forged-token-forged" },
+    });
+    expect([401, 403]).toContain(res.status);
   });
 
   it("never returns a real payout confirmation in mock mode", async () => {
@@ -53,10 +56,10 @@ describe("Partner payout endpoints — mock fallback", () => {
   });
 
   it("validates payloads before touching the payout provider", async () => {
-    // Unknown fields and missing required fields are rejected by the schema
-    // whenever a key is configured; without a key the demo guard fires first.
+    // The operator check runs before payload validation, so an anonymous
+    // malformed request is rejected by access control and never reaches the provider.
     const res = await post("/api/payout/external-account", { customerId: "cus_demo" });
-    expect([200, 400]).toContain(res.status);
+    expect([401, 403]).toContain(res.status);
   });
 });
 
