@@ -73,7 +73,7 @@ export function VerifiedUsers() {
         <div className="text-center">
           <div className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-white/70 border border-white/10 rounded-full px-3 py-1.5 bg-black/40 backdrop-blur">
             <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" />
-            Jupiter-powered SOL → USDC swap demo
+            Current live route example · SOL → USDC via Jupiter
           </div>
           <h2 className="mt-6 text-6xl md:text-8xl font-semibold tracking-tight text-white tabular-nums">
             <span className="bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">

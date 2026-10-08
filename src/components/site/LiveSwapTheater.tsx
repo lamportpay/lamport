@@ -153,7 +153,7 @@ export function LiveSwapTheater() {
             <Flame className="w-3.5 h-3.5" /> Jupiter route preview · Demo mode
           </div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
-            See how a Jupiter SOL → USDC swap is routed.
+            Current live route example: SOL → USDC via Jupiter.
           </h2>
           <p className="mt-3 text-muted-foreground">
             Built using the Jupiter Swap API. Swap output returns to your connected wallet —

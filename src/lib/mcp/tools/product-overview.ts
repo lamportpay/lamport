@@ -13,9 +13,10 @@ export default defineTool({
       legalEntity: "Lamport Pay Ltd",
       contact: "hello@lamportpay.com",
       tagline: "Crypto in. Local money out.",
-      headline: "Send crypto. Recipient receives local currency.",
+      headline: "Crypto-to-Fiat Payments for Solana and Major Digital Assets",
+      model: "Multi-asset crypto → USDC settlement → local fiat. Live route: Solana/SPL → Jupiter → USDC. Planned: major digital assets → Hyperliquid integration → USDC (not live).",
       liveCapabilities: [
-        "Jupiter-powered SOL to USDC swap demo with wallet signing (Phantom, Solflare)",
+        "Live Solana route via Jupiter (example SOL to USDC) with wallet signing (Phantom, Solflare)",
         "Solana RPC health and transaction verification (mainnet, devnet, testnet)",
         "Demo transfer simulator with indicative FX rates and fee breakdown",
       ],
@@ -27,7 +28,7 @@ export default defineTool({
       pages: [
         { path: "/", name: "Home" },
         { path: "/send", name: "Send demo" },
-        { path: "/swap", name: "SOL to USDC swap demo" },
+        { path: "/swap", name: "Live Solana route demo (Jupiter)" },
         { path: "/how-it-works", name: "How it works" },
         { path: "/whitepaper", name: "White paper" },
         { path: "/compliance", name: "Compliance" },

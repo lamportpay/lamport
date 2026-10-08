@@ -186,7 +186,7 @@ export function WorldPulse() {
             Jupiter-powered swap demo — built for future payout routing.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            This demo shows how a Solana wallet can swap SOL to USDC through Jupiter. Local-currency
+            This demo shows the current live route — Solana / SPL assets converted to USDC through Jupiter (example: SOL → USDC). Major digital assets via a Hyperliquid integration are planned. Local-currency
             payout through Stables remains disabled until production approval.
           </p>
         </div>

@@ -9,7 +9,7 @@ export const Route = createFileRoute("/docs")({
       path: "/docs",
       title: "Developer Docs: Stack and API Surface | LamportPay",
       description:
-        "Architecture overview, technology stack and the API surface behind the LamportPay demo, including Jupiter swap and Solana verification endpoints.",
+        "Architecture overview, technology stack and the API surface behind the LamportPay demo, including multi-asset routing, the live Jupiter route and Solana verification endpoints.",
     }),
   component: Docs,
 });
@@ -17,9 +17,9 @@ export const Route = createFileRoute("/docs")({
 const stack = [
   { k: "Frontend", v: "Next.js + Tailwind CSS" },
   { k: "Backend", v: "API routes and payment state machine" },
-  { k: "Liquidity", v: "Jupiter (planned)" },
+  { k: "Conversion routes", v: "Jupiter (live, Solana / SPL) · Hyperliquid (planned)" },
   { k: "Settlement", v: "Stables (planned)" },
-  { k: "Blockchain", v: "Solana + USDC" },
+  { k: "Assets", v: "Multi-asset intake → USDC settlement (live: Solana)" },
   { k: "Database", v: "Supabase / PostgreSQL (planned)" },
 ];
 

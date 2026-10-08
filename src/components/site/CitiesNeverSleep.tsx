@@ -66,8 +66,8 @@ export function CitiesNeverSleep() {
             A demo built for <span className="text-uv">a future payout flow.</span>
           </h2>
           <p className="mt-3 text-muted-foreground">
-            LamportPay currently demonstrates wallet connection and Jupiter SOL-to-USDC swap
-            routing. Corridor payouts are not live.
+            LamportPay currently demonstrates wallet connection and its live Solana route (Solana / SPL
+            assets → Jupiter → USDC). Hyperliquid support for major digital assets is planned. Corridor payouts are not live.
           </p>
         </div>
 

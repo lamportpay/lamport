@@ -68,8 +68,9 @@ function WorkflowPage() {
           How Jupiter and the payout layer map to the demo
         </h1>
         <p className="text-muted-foreground mt-3 max-w-2xl">
-          LamportPay splits the flow into a swap layer and a payout layer. Jupiter handles SOL → USDC
-          routing on Solana. Stables would handle USDC → local currency. In this demo the payout layer
+          LamportPay accepts crypto from multiple digital asset ecosystems and routes supported assets
+          into USDC. Jupiter is the live conversion route for Solana / SPL assets; a Hyperliquid
+          integration is planned for major digital assets. Stables would handle USDC → local currency. In this demo the payout layer
           never moves fiat, and identity checks are simulated.
         </p>
 
@@ -146,7 +147,7 @@ function WorkflowPage() {
             to="/swap"
             className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold"
           >
-            Try SOL → USDC Swap Demo <ArrowRight className="w-4 h-4" />
+            Try the Live Solana Route Demo <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             to="/send"
