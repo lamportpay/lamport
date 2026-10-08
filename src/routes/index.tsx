@@ -48,6 +48,7 @@ function Index() {
     <SiteLayout>
       <LiveRatesTicker />
       <Hero />
+      <AssetFlowDiagram />
       <TrustStrip />
       <section className="max-w-7xl mx-auto px-5 -mt-4 md:-mt-10">
         <TransferSimulator />
@@ -86,15 +87,21 @@ function Hero() {
             <span className="absolute inset-0 rounded-full bg-[color:var(--success)] animate-live-dot" />
             <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
           </span>
-          <Sparkles className="w-3.5 h-3.5 text-primary" /> Multi-asset routing · Live: Solana via
-          Jupiter · Hyperliquid integration planned
+          <Sparkles className="w-3.5 h-3.5 text-primary" /> Multi-chain · Live: Solana via Jupiter ·
+          Hyperliquid integration in development
         </div>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.03] max-w-4xl mx-auto">
-          Crypto-to-Fiat Payments for{" "}
-          <span className="text-uv">Solana and Major Digital Assets</span>
+          <span className="text-uv">Multi-Asset</span> Crypto-to-Fiat Payments
         </h1>
-        <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          LamportPay enables crypto payments through Solana and is expanding support for major digital assets. Solana assets are currently routed through our Jupiter integration, while Hyperliquid is being prepared as an additional liquidity and asset-routing option for supported digital assets.
+        <p className="mt-6 text-lg md:text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
+          Accept major digital assets and Solana ecosystem tokens, route them through the appropriate
+          conversion and liquidity infrastructure, and settle into local currencies for bank and
+          payment-rail payouts.
+        </p>
+        <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          LamportPay is building multi-chain crypto-to-fiat payment infrastructure: Jupiter for Solana
+          ecosystem assets (live) and a Hyperliquid liquidity integration for major digital assets (in
+          development).
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
