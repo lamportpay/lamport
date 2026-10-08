@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { ArrowRight } from "lucide-react";
+import { MultiAssetFlow } from "@/components/site/MultiAssetFlow";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
@@ -55,6 +56,8 @@ function HowItWorks() {
           The demo models a predictable Stables-led flow — from transfer details to a simulated
           local-currency payout and receipt.
         </p>
+
+        <MultiAssetFlow />
 
         <div className="mt-14">
           <h2 className="text-2xl font-semibold tracking-tight">The user flow</h2>

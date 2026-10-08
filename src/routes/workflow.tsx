@@ -4,6 +4,7 @@ import { ArrowRight, Route as RouteIcon, Landmark, ShieldCheck } from "lucide-re
 import { SiteLayout } from "@/components/site/Layout";
 import { IntegrationStatusPanel } from "@/components/site/IntegrationStatusPanel";
 import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
+import { MultiAssetFlow } from "@/components/site/MultiAssetFlow";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
@@ -73,6 +74,8 @@ function WorkflowPage() {
           integration is planned for major digital assets. Stables would handle USDC → local currency. In this demo the payout layer
           never moves fiat, and identity checks are simulated.
         </p>
+
+        <MultiAssetFlow />
 
         <div className="grid md:grid-cols-3 gap-4 mt-8">
           {[
