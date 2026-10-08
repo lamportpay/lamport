@@ -131,28 +131,6 @@ function Hero() {
             wallet. LamportPay does not custody funds. Fiat payout remains disabled.
           </span>
         </div>
-        <div className="mt-4 max-w-3xl mx-auto grid sm:grid-cols-2 gap-3 text-left text-sm">
-          <div className="rounded-2xl border border-[color:var(--success)]/30 bg-card/70 backdrop-blur px-5 py-4">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-[color:var(--success)]">
-              Live
-            </div>
-            <div className="mt-1 font-semibold">Solana / SPL assets → Jupiter integration → USDC</div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              The only active crypto payment path today.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card/70 backdrop-blur px-5 py-4">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Planned
-            </div>
-            <div className="mt-1 font-semibold">
-              Major digital assets → Hyperliquid integration → USDC
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Integration in development. BTC, ETH, USDT and other major assets are not yet depositable.
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );
