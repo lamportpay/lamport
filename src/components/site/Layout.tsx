@@ -148,8 +148,8 @@ function SiteFooter() {
         <div className="md:col-span-2">
           <BrandLogo className="mb-3" />
           <p className="text-sm text-muted-foreground max-w-sm">
-            Crypto in. Local money out. A Solana-first crypto-to-local-currency payment routing
-            demo.
+            Crypto in. Local money out. Multi-asset crypto-to-fiat payment routing: Solana via
+            Jupiter today, Hyperliquid integration planned.
           </p>
           <p className="mt-3 text-sm text-muted-foreground max-w-sm">
             Payout infrastructure provider: {" "}

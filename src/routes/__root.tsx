@@ -83,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "LamportPay is a Solana-first crypto-to-local-currency payment routing demo. Crypto in. Local money out.",
+          "LamportPay is building multi-asset crypto-to-fiat payments, live today for Solana assets via Jupiter. Crypto in. Local money out.",
       },
       { name: "author", content: "LamportPay" },
       { property: "og:site_name", content: "LamportPay" },
@@ -119,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               url: "https://lamportpay.com",
               email: "hello@lamportpay.com",
               description:
-                "LamportPay is a Solana-first crypto-to-local-currency payment routing platform, currently available as a demonstration product.",
+                "LamportPay is building a multi-asset crypto-to-local-currency payment routing platform: Solana assets via Jupiter today, Hyperliquid integration planned. Currently available as a demonstration product.",
               sameAs: [
                 "https://x.com/LamportPay",
                 "https://www.linkedin.com/in/lamport-pay-31a564426/",
