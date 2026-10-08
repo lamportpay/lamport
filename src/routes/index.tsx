@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
       path: "/",
       title: "LamportPay — Crypto in. Local money out.",
       description:
-        "Send crypto, the recipient receives local currency. LamportPay is a Solana-first crypto-to-local-currency payment routing demo with a live SOL to USDC swap leg.",
+        "Send crypto, the recipient receives local currency. LamportPay is building multi-asset crypto-to-fiat payments: Solana assets route through Jupiter to USDC today, with a Hyperliquid integration planned for major digital assets.",
     }),
   component: Index,
 });
@@ -86,17 +86,15 @@ function Hero() {
             <span className="absolute inset-0 rounded-full bg-[color:var(--success)] animate-live-dot" />
             <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
           </span>
-          <Sparkles className="w-3.5 h-3.5 text-primary" /> Solana-first routing · Demo mode ·
-          Jupiter swap preview
+          <Sparkles className="w-3.5 h-3.5 text-primary" /> Multi-asset routing · Live: Solana via
+          Jupiter · Hyperliquid integration planned
         </div>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.03] max-w-4xl mx-auto">
-          Send crypto.
-          <br />
-          <span className="text-uv">Recipient receives local currency.</span>
+          Crypto-to-Fiat Payments for{" "}
+          <span className="text-uv">Solana and Major Digital Assets</span>
         </h1>
         <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          LamportPay helps users pay with supported crypto assets, settle through USDC, and route
-          local-currency payout requests through Stables.
+          LamportPay enables crypto payments through Solana and is expanding support for major digital assets. Solana assets are currently routed through our Jupiter integration, while Hyperliquid is being prepared as an additional liquidity and asset-routing option for supported digital assets.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
@@ -124,6 +122,28 @@ function Hero() {
             Current demo: small real Jupiter SOL-to-USDC swap only. USDC returns to the connected
             wallet. LamportPay does not custody funds. Fiat payout remains disabled.
           </span>
+        </div>
+        <div className="mt-4 max-w-3xl mx-auto grid sm:grid-cols-2 gap-3 text-left text-sm">
+          <div className="rounded-2xl border border-[color:var(--success)]/30 bg-card/70 backdrop-blur px-5 py-4">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-[color:var(--success)]">
+              Live
+            </div>
+            <div className="mt-1 font-semibold">Solana / SPL assets → Jupiter integration → USDC</div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              The only active crypto payment path today.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card/70 backdrop-blur px-5 py-4">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Planned
+            </div>
+            <div className="mt-1 font-semibold">
+              Major digital assets → Hyperliquid integration → USDC
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Hyperliquid support in development. BTC, ETH and other assets are not yet depositable.
+            </p>
+          </div>
         </div>
       </div>
     </section>

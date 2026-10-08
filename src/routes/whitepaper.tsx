@@ -9,7 +9,7 @@ export const Route = createFileRoute("/whitepaper")({
       path: "/whitepaper",
       title: "LamportPay White Paper: Architecture and Roadmap",
       description:
-        "Executive summary, settlement architecture, compliance positioning and roadmap for LamportPay's Solana-first payment routing platform.",
+        "Executive summary, settlement architecture, compliance positioning and roadmap for LamportPay's multi-asset crypto-to-fiat payment routing platform.",
     }),
   component: Whitepaper,
 });
@@ -19,8 +19,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "1. Executive summary",
     body: (
       <p>
-        LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps
-        users pay with supported crypto assets, settle through USDC, and route local-currency payout
+        LamportPay is building a multi-asset crypto-to-local-currency payment routing platform.
+        Solana/SPL assets are currently routed through the Jupiter integration to USDC; a
+        Hyperliquid liquidity integration is planned for supported major digital assets and is not
+        live. It helps users pay with supported crypto assets, settle through USDC, and route local-currency payout
         requests through Stables. Fiat payout and real KYC remain disabled in the current demo.
       </p>
     ),
@@ -229,7 +231,7 @@ function Whitepaper() {
           LamportPay: crypto-to-local-currency payment routing.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          A Solana-first, USDC-settled, partner-orchestrated payment routing platform.
+          A multi-asset, USDC-settled payment routing platform — live on Solana via Jupiter, with Hyperliquid integration planned.
         </p>
 
         <div className="mt-14 grid md:grid-cols-[220px_1fr] gap-10">
