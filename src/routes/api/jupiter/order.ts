@@ -125,7 +125,10 @@ export const Route = createFileRoute("/api/jupiter/order")({
         }
 
         if (!upstream.ok) {
-          return errorResponse(payload?.error ?? `Jupiter API error (${upstream.status}).`, 502);
+          // Jupiter rejected the order (e.g. insufficient balance): report as a
+          // request problem, not a server failure; keep 502 for upstream outages.
+          const status = upstream.status >= 400 && upstream.status < 500 ? 422 : 502;
+          return errorResponse(payload?.error ?? `Jupiter API error (${upstream.status}).`, status);
         }
 
         return Response.json({
