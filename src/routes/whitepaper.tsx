@@ -121,7 +121,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       </p>
     ),
   },
-  { title: "10. Supported demo assets", body: <p>USDC and USDT are Stables-supported stablecoins. SOL is shown only as the input to LamportPay's separate SOL-to-USDC Jupiter swap demo.</p> },
+  { title: "10. Supported demo assets", body: <p>LamportPay is designed as a multi-asset platform: supported Solana ecosystem assets (SOL, SPL tokens) route through Jupiter to USDC today, and major digital assets are planned through a Hyperliquid integration that is not live. The /swap demo uses SOL → USDC as an example of the live Jupiter route. USDC and USDT are Stables-supported stablecoins.</p> },
   {
     title: "11. Supported demo corridors",
     body: (

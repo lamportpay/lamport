@@ -11,7 +11,7 @@ export const Route = createFileRoute("/swap")({
   head: () =>
     pageSeo({
       path: "/swap",
-      title: "SOL to USDC Swap Demo | LamportPay",
+      title: "Live Solana Route Demo: SOL to USDC via Jupiter | LamportPay",
       description:
         "Connect Phantom or Solflare and run a small, strictly limited SOL to USDC swap routed through Jupiter. Output returns to your own connected wallet.",
     }),
@@ -23,14 +23,15 @@ function SwapPage() {
     <SiteLayout>
       <section className="max-w-3xl mx-auto px-5 py-16 md:py-24">
         <div className="text-xs font-semibold uppercase tracking-wider text-primary">
-          Jupiter swap
+          Current live route · Solana via Jupiter
         </div>
         <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">
           Swap SOL to USDC.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
           Connect Phantom or Solflare, create a Jupiter order, sign it in your wallet, and execute
-          the swap. Fiat payout stays disabled.
+          the swap. This is LamportPay's current live route for Solana assets; major digital assets
+          via a Hyperliquid integration are planned and not live. Fiat payout stays disabled.
         </p>
 
         <div className="mt-10">

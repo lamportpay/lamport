@@ -101,7 +101,7 @@ function Hero() {
             to="/swap"
             className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-hero)] text-white px-6 py-3 font-semibold shadow-[var(--shadow-elegant)] hover:opacity-95 transition"
           >
-            Try SOL → USDC Swap Demo <ArrowRight className="w-4 h-4" />
+            Try the Live Solana Route Demo <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             to="/send"
@@ -119,7 +119,7 @@ function Hero() {
         <div className="mt-8 max-w-3xl mx-auto rounded-2xl border border-[color:var(--warning)]/30 bg-card/70 backdrop-blur px-5 py-4 text-sm text-muted-foreground flex items-start gap-2.5 text-left">
           <AlertTriangle className="w-4 h-4 text-[color:var(--warning)] shrink-0 mt-0.5" />
           <span>
-            Current demo: small real Jupiter SOL-to-USDC swap only. USDC returns to the connected
+            Current live route example: a small real SOL-to-USDC swap via Jupiter. USDC returns to the connected
             wallet. LamportPay does not custody funds. Fiat payout remains disabled.
           </span>
         </div>
@@ -152,7 +152,7 @@ function Hero() {
 
 function TrustStrip() {
   const items = [
-    "Jupiter-powered SOL → USDC swap demo",
+    "Live route: Solana / SPL assets → Jupiter → USDC",
     "Output returns to your wallet",
     "Fiat payout disabled",
   ];
