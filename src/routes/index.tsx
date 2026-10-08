@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { TransferSimulator } from "@/components/site/TransferSimulator";
 import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
+import { AssetFlowDiagram } from "@/components/site/AssetFlowDiagram";
 import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater } from "@/components/site/LiveSwapTheater";
 import { CitiesNeverSleep } from "@/components/site/CitiesNeverSleep";
@@ -36,9 +37,9 @@ export const Route = createFileRoute("/")({
   head: () =>
     pageSeo({
       path: "/",
-      title: "LamportPay — Crypto in. Local money out.",
+      title: "LamportPay — Multi-Asset Crypto-to-Fiat Payments",
       description:
-        "Send crypto, the recipient receives local currency. LamportPay is building multi-asset crypto-to-fiat payments: Solana assets route through Jupiter to USDC today, with a Hyperliquid integration planned for major digital assets.",
+        "Accept major digital assets and supported Solana ecosystem assets, settle in USDC and pay out in local currency. Live today: Solana assets via Jupiter. Hyperliquid integration for major digital assets in development.",
     }),
   component: Index,
 });
@@ -48,6 +49,7 @@ function Index() {
     <SiteLayout>
       <LiveRatesTicker />
       <Hero />
+      <AssetFlowDiagram />
       <TrustStrip />
       <section className="max-w-7xl mx-auto px-5 -mt-4 md:-mt-10">
         <TransferSimulator />
@@ -86,15 +88,21 @@ function Hero() {
             <span className="absolute inset-0 rounded-full bg-[color:var(--success)] animate-live-dot" />
             <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
           </span>
-          <Sparkles className="w-3.5 h-3.5 text-primary" /> Multi-asset routing · Live: Solana via
-          Jupiter · Hyperliquid integration planned
+          <Sparkles className="w-3.5 h-3.5 text-primary" /> Multi-chain · Live: Solana via Jupiter ·
+          Hyperliquid integration in development
         </div>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.03] max-w-4xl mx-auto">
-          Crypto-to-Fiat Payments for{" "}
-          <span className="text-uv">Solana and Major Digital Assets</span>
+          <span className="text-uv">Multi-Asset</span> Crypto-to-Fiat Payments
         </h1>
-        <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          LamportPay enables crypto payments through Solana and is expanding support for major digital assets. Solana assets are currently routed through our Jupiter integration, while Hyperliquid is being prepared as an additional liquidity and asset-routing option for supported digital assets.
+        <p className="mt-6 text-lg md:text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
+          Accept major digital assets and Solana ecosystem tokens, route them through the appropriate
+          conversion and liquidity infrastructure, and settle into local currencies for bank and
+          payment-rail payouts.
+        </p>
+        <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          LamportPay is building multi-chain crypto-to-fiat payment infrastructure: Jupiter for Solana
+          ecosystem assets (live) and a Hyperliquid liquidity integration for major digital assets (in
+          development).
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
@@ -119,31 +127,9 @@ function Hero() {
         <div className="mt-8 max-w-3xl mx-auto rounded-2xl border border-[color:var(--warning)]/30 bg-card/70 backdrop-blur px-5 py-4 text-sm text-muted-foreground flex items-start gap-2.5 text-left">
           <AlertTriangle className="w-4 h-4 text-[color:var(--warning)] shrink-0 mt-0.5" />
           <span>
-            Current live route example: a small real SOL-to-USDC swap via Jupiter. USDC returns to the connected
+            Live route demo (Solana via Jupiter): a small real swap of SOL into USDC. USDC returns to the connected
             wallet. LamportPay does not custody funds. Fiat payout remains disabled.
           </span>
-        </div>
-        <div className="mt-4 max-w-3xl mx-auto grid sm:grid-cols-2 gap-3 text-left text-sm">
-          <div className="rounded-2xl border border-[color:var(--success)]/30 bg-card/70 backdrop-blur px-5 py-4">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-[color:var(--success)]">
-              Live
-            </div>
-            <div className="mt-1 font-semibold">Solana / SPL assets → Jupiter integration → USDC</div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              The only active crypto payment path today.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card/70 backdrop-blur px-5 py-4">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Planned
-            </div>
-            <div className="mt-1 font-semibold">
-              Major digital assets → Hyperliquid integration → USDC
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Hyperliquid support in development. BTC, ETH and other assets are not yet depositable.
-            </p>
-          </div>
         </div>
       </div>
     </section>
@@ -152,9 +138,10 @@ function Hero() {
 
 function TrustStrip() {
   const items = [
-    "Live route: Solana / SPL assets → Jupiter → USDC",
-    "Output returns to your wallet",
-    "Fiat payout disabled",
+    "Multi-asset intake → USDC settlement → local payout",
+    "Live today: Solana / SPL assets via Jupiter",
+    "Hyperliquid integration in development",
+        "Fiat payout disabled",
   ];
   return (
     <div className="max-w-7xl mx-auto px-5">
@@ -175,7 +162,7 @@ function WhySection() {
     {
       icon: Zap,
       title: "Fast crypto checkout",
-      desc: "Pay in seconds using supported Solana assets or stablecoins.",
+      desc: "Designed for major digital assets and supported Solana ecosystem assets; Solana route live today.",
       stat: "~400ms",
       statLabel: "avg swap",
     },
@@ -256,12 +243,13 @@ function WhySection() {
 
 function HowItWorksSection() {
   const steps = [
-    { t: "Choose crypto", sub: "USDC · USDT · SOL" },
+    { t: "Choose a supported asset", sub: "Multi-asset intake" },
+    { t: "Route to USDC", sub: "Jupiter live · Hyperliquid planned" },
     { t: "View mock payout quote", sub: "Mock FX + fees" },
     { t: "Mock KYC step", sub: "Demo only" },
-    { t: "Settle through USDC", sub: "On-chain, ~1s" },
+    { t: "USDC settlement", sub: "Settlement asset" },
     { t: "Mock payout placeholder", sub: "Payout disabled" },
-    { t: "Track receipt", sub: "Real-time hash" },
+    
   ];
   return (
     <section className="relative mt-32 overflow-hidden">

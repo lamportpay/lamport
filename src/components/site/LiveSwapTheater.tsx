@@ -153,10 +153,10 @@ export function LiveSwapTheater() {
             <Flame className="w-3.5 h-3.5" /> Jupiter route preview · Demo mode
           </div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
-            Current live route example: SOL → USDC via Jupiter.
+            Live Solana route: Solana / SPL assets → Jupiter → USDC.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Built using the Jupiter Swap API. Swap output returns to your connected wallet —
+            One route inside LamportPay's multi-asset model; major digital assets via Hyperliquid are in development. Built using the Jupiter Swap API. Swap output returns to your connected wallet —
             LamportPay does not custody funds and fiat payout is disabled.
           </p>
         </div>
@@ -170,7 +170,7 @@ export function LiveSwapTheater() {
           <div className="relative border-b border-white/10 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10 bg-black/20 backdrop-blur">
             <Counter
               label="Jupiter route preview"
-              value="SOL → USDC"
+              value="Solana / SPL → USDC"
               icon={<Activity className="w-3 h-3" />}
             />
             <Counter label="Output" value="Connected wallet" icon={<Zap className="w-3 h-3" />} />
