@@ -60,7 +60,17 @@ export const Route = createFileRoute("/api/jupiter/execute")({
 
         const parsed = ExecuteInput.safeParse(body);
         if (!parsed.success) {
-          return errorResponse(parsed.error.issues[0]?.message ?? "Invalid request.", 400);
+          const issue = parsed.error.issues[0];
+          // Missing fields: name the field instead of a generic type error.
+          const field = issue?.path?.[0];
+          const missing =
+            issue?.code === "invalid_type" &&
+            typeof field === "string" &&
+            (body as Record<string, unknown> | null)?.[field] === undefined;
+          return errorResponse(
+            missing ? `${field} is required.` : (issue?.message ?? "Invalid request."),
+            400,
+          );
         }
 
         const { signedTransaction, requestId, lastValidBlockHeight } = parsed.data;

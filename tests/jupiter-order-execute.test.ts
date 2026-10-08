@@ -100,8 +100,8 @@ describe("POST /api/jupiter/order — guards", () => {
       return;
     }
 
-    // 502 is acceptable: upstream routing can be temporarily unavailable.
-    expect([200, 502]).toContain(res.status);
+    // 502 = upstream unavailable; 422 = Jupiter rejected the order (e.g. unfunded test wallet).
+    expect([200, 422, 502]).toContain(res.status);
     if (res.status === 200) {
       expect(typeof res.body.transaction).toBe("string");
       expect(res.body.requestId).toBeTruthy();
