@@ -11,7 +11,7 @@ const ExecuteInput = z
       .refine((v) => v.length % 4 === 0 && BASE64_RE.test(v), {
         message: "signedTransaction must be a base64 string.",
       }),
-    requestId: z.string({ error: "requestId is required." }).min(1, "requestId is required."),
+    requestId: z.string().min(1, "requestId is required."),
     lastValidBlockHeight: z.union([z.string(), z.number()]).optional(),
   })
   // Never accept key material — reject any extra fields outright.
@@ -60,7 +60,17 @@ export const Route = createFileRoute("/api/jupiter/execute")({
 
         const parsed = ExecuteInput.safeParse(body);
         if (!parsed.success) {
-          return errorResponse(parsed.error.issues[0]?.message ?? "Invalid request.", 400);
+          const issue = parsed.error.issues[0];
+          // Missing fields: name the field instead of a generic type error.
+          const field = issue?.path?.[0];
+          const missing =
+            issue?.code === "invalid_type" &&
+            typeof field === "string" &&
+            (body as Record<string, unknown> | null)?.[field] === undefined;
+          return errorResponse(
+            missing ? `${field} is required.` : (issue?.message ?? "Invalid request."),
+            400,
+          );
         }
 
         const { signedTransaction, requestId, lastValidBlockHeight } = parsed.data;
