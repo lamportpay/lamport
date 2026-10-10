@@ -384,31 +384,46 @@ export type Database = {
       }
       payment_case_events: {
         Row: {
+          action: string | null
           actor_email: string | null
           actor_id: string | null
           case_id: string
+          changes: Json | null
           created_at: string
           detail: Json
           event: string
+          from_status: string | null
           id: number
+          note: string | null
+          to_status: string | null
         }
         Insert: {
+          action?: string | null
           actor_email?: string | null
           actor_id?: string | null
           case_id: string
+          changes?: Json | null
           created_at?: string
           detail?: Json
           event: string
+          from_status?: string | null
           id?: never
+          note?: string | null
+          to_status?: string | null
         }
         Update: {
+          action?: string | null
           actor_email?: string | null
           actor_id?: string | null
           case_id?: string
+          changes?: Json | null
           created_at?: string
           detail?: Json
           event?: string
+          from_status?: string | null
           id?: never
+          note?: string | null
+          to_status?: string | null
         }
         Relationships: [
           {
