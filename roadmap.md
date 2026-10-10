@@ -1,5 +1,11 @@
 # Roadmap
 
+## In progress: Public roadmap refresh
+
+- [ ] Replace internal sign-off language with clear public milestones, without changing launch safeguards
+- [ ] Add phase icons and a connected timeline with reduced-motion support
+- [ ] Verify the roadmap on desktop and small screens and the shared whitepaper wording
+
 ## Done: Import GitHub main (GhazanfarGw/lamportpay) into Lovable
 
 - [x] Fetch GitHub main and overlay its 353 files into the project; keep Lovable glue (.env, .lovable, Supabase auto-gen, MCP routes, error-capture, routeTree)
@@ -15,7 +21,7 @@
 - [x] Production build OK; typecheck clean; 489 unit tests pass; agent endpoints respond (protected, 401 without a sign-in; public info endpoint 200)
 - [ ] Automatic sync of this fix to GitHub (still waiting; it is the only difference left between the working copy and main)
 
-## Waiting on the owner
+## Waiting on team input
 
 - Social accounts: create/confirm X, LinkedIn and GitHub profiles, then send the final URLs so every link (footer, header, contact page) is updated in one pass
 - Publish the blog at lamportpay.com, submit the sitemap to Google Search Console, set social share images
