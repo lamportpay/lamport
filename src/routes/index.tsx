@@ -42,7 +42,7 @@ export const Route = createFileRoute("/")({
       path: "/",
       title: "LamportPay — Crypto in. Local money out.",
       description:
-        "Send crypto, the recipient receives local currency. LamportPay is a Solana-first crypto-to-local-currency payment routing demo with a live SOL to USDC swap leg.",
+        "Crypto-to-fiat payments for Solana and major digital assets. LamportPay routes supported Solana assets through Jupiter today, with Hyperliquid integration planned. Demo mode.",
     }),
   component: Index,
 });
