@@ -243,7 +243,7 @@ function WhySection() {
 
 function HowItWorksSection() {
   const steps = [
-    { t: "Choose crypto", sub: "SOL · USDC · JUP" },
+    { t: "Choose crypto", sub: "SOL · USDC · USDT" },
     { t: "View mock payout quote", sub: "Mock FX + fees" },
     { t: "Mock KYC step", sub: "Demo only" },
     { t: "Settle through USDC", sub: "On-chain, ~1s" },
