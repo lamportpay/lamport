@@ -10,7 +10,7 @@ export const Route = createFileRoute("/whitepaper")({
       path: "/whitepaper",
       title: "LamportPay White Paper: Architecture and Roadmap",
       description:
-        "Executive summary, settlement architecture, compliance positioning and roadmap for LamportPay's Solana-first payment routing platform.",
+        "Executive summary, settlement architecture, compliance positioning and roadmap for LamportPay's multi-asset payment routing platform.",
     }),
   component: Whitepaper,
 });
