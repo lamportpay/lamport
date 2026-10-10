@@ -114,7 +114,7 @@ export default defineConfig(({ command, mode }) => {
             nitro(
               // Lovable's publish pipeline deploys dist/ as a Cloudflare worker;
               // everywhere else (Vercel, local) keeps the Vercel preset.
-              process.env.LOVABLE_SANDBOX === "1" || process.env.SANDBOX
+              process.env.LOVABLE_SANDBOX === "1" || process.env.DEV_SERVER__PROJECT_PATH
                 ? {
                     preset: "cloudflare-module",
                     noExternals: true,
