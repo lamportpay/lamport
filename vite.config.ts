@@ -111,7 +111,17 @@ export default defineConfig(({ command, mode }) => {
       // more frequent; set RECONCILE_CRON_SCHEDULE (e.g. "*/10 * * * *") on Pro.
       ...(command === "build"
         ? [
-            nitro({
+            nitro(
+              // Lovable's publish pipeline deploys dist/ as a Cloudflare worker;
+              // everywhere else (Vercel, local) keeps the Vercel preset.
+              process.env.LOVABLE_SANDBOX === "1" || process.env.SANDBOX
+                ? {
+                    preset: "cloudflare-module",
+                    noExternals: true,
+                    output: { dir: "dist", serverDir: "dist/server", publicDir: "dist/client" },
+                    cloudflare: { nodeCompat: true, deployConfig: true },
+                  }
+                : {
               preset: process.env.NITRO_PRESET || "vercel",
               noExternals: process.env.NITRO_NO_EXTERNALS === "1",
               vercel: {
@@ -126,6 +136,7 @@ export default defineConfig(({ command, mode }) => {
                 },
               },
             }),
+            ),
           ]
         : []),
       viteReact(),
