@@ -1,6 +1,6 @@
 /**
  * Public roadmap and future vision, shared by the home page and the white paper.
- * Owner-supplied wording (9 Oct 2026). These are proposed stages, not delivery
+ * These are proposed stages, not delivery
  * commitments: do not add dates here until scope and dependencies are validated.
  */
 
@@ -9,7 +9,7 @@ export type RoadmapPhase = {
   title: string;
   status: "current" | "proposed";
   summary: string;
-  /** What must be true (or decided by the owner) before the stage can start. */
+  /** Public-facing readiness milestone, not an internal approval workflow. */
   dependsOn: string;
 };
 
@@ -20,7 +20,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     status: "current",
     summary:
       "Validate the Solana wallet flow, Jupiter-powered swap, USDC quote, verification, payout sandbox, transaction tracking and receipt.",
-    dependsOn: "Owner sign-off on test-mode results.",
+    dependsOn: "End-to-end test results and a validated payment experience.",
   },
   {
     phase: 2,
@@ -28,7 +28,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     status: "proposed",
     summary:
       "Complete security reviews, confirm partner requirements, validate payout corridors and prepare production readiness.",
-    dependsOn: "Funding, external security review, partner sign-off and the owner's LIVE approval.",
+    dependsOn: "Security assessment, payout readiness and production safeguards.",
   },
   {
     phase: 3,
@@ -36,7 +36,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     status: "proposed",
     summary:
       "Explore additional liquidity providers, supported tokens, stablecoins and potential Bitcoin / Ethereum integration paths.",
-    dependsOn: "A technical feasibility assessment before any delivery date is set.",
+    dependsOn: "Technical feasibility, liquidity coverage and supported asset routes.",
   },
   {
     phase: 4,
@@ -44,7 +44,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     status: "proposed",
     summary:
       "Develop payout-partner relationships, expand supported fiat currencies and countries, and explore integrations with relevant businesses and platforms.",
-    dependsOn: "Payout-partner support and local compliance review per corridor.",
+    dependsOn: "Payout coverage and local compliance requirements for each corridor.",
   },
   {
     phase: 5,
@@ -52,12 +52,12 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     status: "proposed",
     summary:
       "Explore B2B payout APIs, remittance use cases, wider blockchain support and a larger strategic partner network.",
-    dependsOn: "Partner-licensed products and the regulatory approvals they need.",
+    dependsOn: "Scalable infrastructure and the required regulatory permissions.",
   },
 ];
 
 export const ROADMAP_NOTE =
-  "These are proposed roadmap stages, not promises of completed work. Delivery dates are assigned only after scope and dependencies are validated.";
+  "A milestone-led roadmap. Phase 1 is in test mode; later phases are planned. Timing depends on technical readiness, payout coverage and compliance requirements.";
 
 /** What works today (test mode: Solana devnet + partner sandbox, no real funds). */
 export const CURRENT_FLOW = [

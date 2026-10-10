@@ -1,4 +1,5 @@
-import { ArrowRight, CheckCircle2, Compass, ExternalLink, Flag, Network } from "lucide-react";
+import { ArrowRight, CheckCircle2, Compass, ExternalLink, Globe2, Handshake, Layers3, Network, ShieldCheck, Wallet } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { CURRENT_FLOW, FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
 import {
   ECOSYSTEM_STATUS_LABEL,
@@ -77,46 +78,75 @@ export function FutureVisionSection() {
 }
 
 export function RoadmapSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    if (!("IntersectionObserver" in window)) {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) {
+        setVisible(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.15 });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+  const icons = [Wallet, ShieldCheck, Layers3, Handshake, Globe2];
   return (
-    <section className="relative mt-32 overflow-hidden" id="roadmap">
+    <section ref={sectionRef} className="relative mt-32 overflow-hidden" id="roadmap" data-visible={visible}>
       <div className="max-w-7xl mx-auto px-5">
         <Heading
           eyebrow="Roadmap"
-          title="Proposed stages, from a validated flow to global payouts."
+          title="The path to global payouts."
+          intro="Five milestones. A validated foundation, followed by security, broader asset routes and market expansion."
         />
-        <ol className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-          {ROADMAP_PHASES.map((p) => {
+        <ol className="roadmap-timeline mt-12 grid lg:grid-cols-5" aria-label="LamportPay development timeline">
+          {ROADMAP_PHASES.map((p, index) => {
             const current = p.status === "current";
+            const Icon = icons[index] ?? Globe2;
             return (
               <li
                 key={p.phase}
-                className={`relative flex flex-col rounded-2xl border p-5 bg-card/80 ${
-                  current ? "border-[color:var(--success)]/50" : "border-border/60"
-                }`}
+                className="roadmap-stage relative grid grid-cols-[3.5rem_minmax(0,1fr)] gap-x-5 pb-9 last:pb-0 lg:block lg:pb-0 lg:pr-6"
+                aria-current={current ? "step" : undefined}
               >
-                <div className="flex items-center justify-between gap-2">
+                <div className="roadmap-track relative flex justify-center lg:justify-start" aria-hidden="true">
+                  {index < ROADMAP_PHASES.length - 1 && <span className="roadmap-connector absolute bg-border"><span className="roadmap-flow absolute bg-primary/50" /></span>}
+                  <span className={`roadmap-node relative z-10 flex size-14 shrink-0 items-center justify-center rounded-full border-2 ${current ? "border-success bg-background text-success" : "border-border bg-background text-primary"}`}>
+                    <Icon className="size-6" strokeWidth={1.7} />
+                  </span>
+                </div>
+                <div className="min-w-0 lg:mt-7">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                    Phase {p.phase}
+                    Phase {String(p.phase).padStart(2, "0")}
                   </span>
                   <span
-                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                    className={`inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider ${
                       current
-                        ? "bg-[color:var(--success)]/15 text-[color:var(--success)]"
-                        : "bg-primary/10 text-primary"
+                        ? "text-success"
+                        : "text-muted-foreground"
                     }`}
                   >
-                    {current ? "Current focus" : "Proposed"}
+                    <span className={`size-1.5 rounded-full ${current ? "bg-success" : "bg-muted-foreground/50"}`} aria-hidden="true" />
+                    {current ? "DEMO / TEST MODE" : "PLANNED"}
                   </span>
                 </div>
                 <h3 className="mt-3 font-semibold leading-snug">{p.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">
                   {p.summary}
                 </p>
-                <div className="mt-4 border-t border-border/60 pt-3 text-xs">
-                  <div className="flex items-center gap-1.5 font-semibold uppercase tracking-wider text-[color:var(--warning)]">
-                    <Flag className="w-3 h-3" /> Depends on
+                <div className="mt-5 border-t border-border/60 pt-3 text-xs">
+                  <div className="flex items-center gap-1.5 font-semibold uppercase tracking-wider text-foreground">
+                    <CheckCircle2 className="size-3.5 text-primary" aria-hidden="true" /> Milestone
                   </div>
                   <div className="mt-1 text-muted-foreground">{p.dependsOn}</div>
+                </div>
                 </div>
               </li>
             );
