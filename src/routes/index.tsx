@@ -207,7 +207,7 @@ function WhySection() {
       <div className="max-w-7xl mx-auto px-5">
         <SectionHead
           eyebrow="Why LamportPay"
-          title="Built for a future payout flow, starting with a Jupiter swap demo."
+          title="Built for a multi-asset payout flow, starting with the live Solana route via Jupiter."
         />
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {items.map(({ icon: Icon, title, desc, stat, statLabel }) => (
