@@ -35,7 +35,7 @@ export default defineTool({
         stablesPayoutFee: Number(q.payoutFee.toFixed(2)),
         lamportpayFee: Number(q.platformFee.toFixed(2)),
         totalFee: Number(q.totalFee.toFixed(2)),
-        model: "Indicative Stables payout fee 1% (min $1) + LamportPay 0.5%; demo only",
+        model: "Indicative Stables payout fee 1% (min $1) + LamportPay 2% of the total sent; demo only",
       },
       fx: { currency: code, country: corridor.country, rate: q.fxRate },
       recipientReceives: Number(q.recipientAmount.toFixed(2)),
