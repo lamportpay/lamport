@@ -391,7 +391,7 @@ export type Database = {
           changes: Json | null
           created_at: string
           detail: Json
-          event: string
+          event: string | null
           from_status: string | null
           id: number
           note: string | null
@@ -405,7 +405,7 @@ export type Database = {
           changes?: Json | null
           created_at?: string
           detail?: Json
-          event: string
+          event?: string | null
           from_status?: string | null
           id?: never
           note?: string | null
@@ -419,7 +419,7 @@ export type Database = {
           changes?: Json | null
           created_at?: string
           detail?: Json
-          event?: string
+          event?: string | null
           from_status?: string | null
           id?: never
           note?: string | null
