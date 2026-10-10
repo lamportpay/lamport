@@ -17,7 +17,7 @@ export default defineTool({
   handler: ({ usdAmount }) => {
     const model = {
       stablesPayoutFee: "Indicative demo fee: 1% of the USD value, minimum $1; not a live Stables quote",
-      lamportpayFee: "0.5% of the USD value",
+      lamportpayFee: "2% of the total the user sends, taken out of it (demo model)",
       fxSpread: "None in the demo — indicative mid-market demo rates are used",
       networkFee: "Solana network fees are paid by the sender's wallet (fractions of a cent)",
     };
