@@ -299,8 +299,13 @@ describe("1. TEST MODE cannot call production endpoints", () => {
       expect.objectContaining({ status: 503, code: "mode_blocked" }),
     );
     vi.stubEnv("STABLES_API_URL", "https://api.sandbox.stables.money");
+    vi.stubEnv("LAMPORTPAY_SHARED_DB", "");
     vi.stubEnv("SUPABASE_URL", "https://zmcbnknjatrfwrcfvtzt.supabase.co");
     expect(currentMode().ok).toBe(false);
+    // Lovable's single backend: an explicit LAMPORTPAY_SHARED_DB=1 deployment
+    // acknowledges that TEST MODE runs against the one shared database.
+    vi.stubEnv("LAMPORTPAY_SHARED_DB", "1");
+    expect(currentMode().ok).toBe(true);
   });
 
   it("blocks on an unknown mode value instead of guessing", () => {
