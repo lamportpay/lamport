@@ -70,8 +70,8 @@
               "type": "string",
               "enum": [
                 "USDC",
-                "USDT",
-                "SOL"
+                "SOL",
+                "USDT"
               ],
               "description": "Input crypto token symbol, e.g. SOL or USDC."
             },
