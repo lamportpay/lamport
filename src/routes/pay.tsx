@@ -976,7 +976,8 @@ function ConvertForm({
                       </button>
                     )}
                   </>
-                ) : holdings.data?.status === "unavailable" ? (
+                ) : (holdings.data as { status?: string } | undefined)?.status ===
+                  "unavailable" ? (
                   <span className="text-destructive">Balance unavailable</span>
                 ) : null}
               </span>
