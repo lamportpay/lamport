@@ -1,10 +1,10 @@
 # Roadmap
 
-## In progress: Public roadmap refresh
+## Done: Public roadmap refresh
 
-- [ ] Replace internal sign-off language with clear public milestones, without changing launch safeguards
-- [ ] Add phase icons and a connected timeline with reduced-motion support
-- [ ] Verify the roadmap on desktop and small screens and the shared whitepaper wording
+- [x] Replace internal sign-off language with clear public milestones, without changing launch safeguards
+- [x] Add phase icons and a connected timeline with reduced-motion support
+- [x] Verify five phases, viewport-entry animation, reduced motion, small-screen timeline width and shared whitepaper wording; no page errors
 
 ## Done: Import GitHub main (GhazanfarGw/lamportpay) into Lovable
 
