@@ -24,7 +24,7 @@ export function calcQuote(amount: number, token: Token, currency: string) {
   const usdValue = amount * (TOKEN_USD[token] ?? 1);
   const corridor = CORRIDORS.find((c) => c.currency === currency) ?? CORRIDORS[0];
   const payoutFee = Math.max(1, usdValue * 0.01);
-  const platformFee = usdValue * 0.005;
+  const platformFee = Math.ceil((usdValue / 1.02) * 0.02 * 100) / 100;
   const totalFee = payoutFee + platformFee;
   const netUsdc = Math.max(0, usdValue - totalFee);
   const recipientAmount = netUsdc * corridor.rate;
