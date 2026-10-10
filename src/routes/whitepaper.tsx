@@ -237,7 +237,7 @@ function Whitepaper() {
           LamportPay: crypto-to-local-currency payment routing.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          A Solana-first, USDC-settled, partner-orchestrated payment routing platform.
+          A multi-asset, USDC-settled, partner-orchestrated payment routing platform.
         </p>
 
         <div className="mt-14 grid md:grid-cols-[220px_1fr] gap-10">
