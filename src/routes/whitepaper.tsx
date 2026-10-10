@@ -20,7 +20,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "1. Executive summary",
     body: (
       <p>
-        LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps
+        LamportPay is a multi-asset crypto-to-local-currency payment routing platform. It helps
         users pay with supported crypto assets, settle through USDC, and route local-currency payout
         requests through licensed regulated settlement partners.
       </p>
