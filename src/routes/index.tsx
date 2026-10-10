@@ -93,7 +93,7 @@ function Hero() {
             <span className="absolute inset-0 rounded-full bg-[color:var(--success)] animate-live-dot" />
             <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
           </span>
-          <Sparkles className="w-3.5 h-3.5 text-primary" /> Solana-first routing · Demo mode ·
+          <Sparkles className="w-3.5 h-3.5 text-primary" /> Multi-asset routing · Live: Solana via Jupiter · Hyperliquid planned ·
           Jupiter swap preview
         </div>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.03] max-w-4xl mx-auto">
