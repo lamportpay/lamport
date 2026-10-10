@@ -12,8 +12,23 @@ import {
   Wallet,
 } from "lucide-react";
 
+import { supabase } from "@/integrations/supabase/client";
 import { SOL_MINT, USDC_MINT } from "@/lib/tokens";
 import { WalletStatusCard } from "./SolanaWallet";
+
+/** POST to a swap route with the signed-in user's token; the routes refuse anonymous callers. */
+async function postSigned(path: string, body: unknown): Promise<Response> {
+  const { data: session } = await supabase.auth.getSession();
+  const token = session.session?.access_token;
+  if (!token) throw new Error("Sign in to swap.");
+  const res = await fetch(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify(body),
+  });
+  if (res.status === 401) throw new Error("Sign in to swap.");
+  return res;
+}
 
 const LAMPORTS_PER_SOL = 1_000_000_000;
 const MIN_SOL = 0.001;
@@ -83,7 +98,18 @@ function fromBase64(value: string): Uint8Array {
   return out;
 }
 
-export function SwapPanel() {
+export type SwapExecution = {
+  signature: string;
+  owner: string;
+  totalOutputAmount: string | null;
+};
+
+type SwapPanelProps = {
+  /** Called once a swap has executed and returned an on-chain signature. */
+  onExecuted?: (execution: SwapExecution) => void;
+};
+
+export function SwapPanel({ onExecuted }: SwapPanelProps = {}) {
   const { publicKey, connected, signTransaction } = useWallet();
   const address = publicKey?.toBase58() ?? "";
 
@@ -158,15 +184,11 @@ export function SwapPanel() {
 
     setBusy("order");
     try {
-      const res = await fetch("/api/jupiter/order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          inputMint: SOL_MINT,
-          outputMint: USDC_MINT,
-          amount: lamports,
-          taker: address,
-        }),
+      const res = await postSigned("/api/jupiter/order", {
+        inputMint: SOL_MINT,
+        outputMint: USDC_MINT,
+        amount: lamports,
+        taker: address,
       });
       const data = (await res.json()) as OrderResult & { error?: string };
       if (!res.ok || data.error) throw new Error(data.error ?? "Failed to create Jupiter order.");
@@ -202,26 +224,29 @@ export function SwapPanel() {
     setError(null);
     setBusy("execute");
     try {
-      const res = await fetch("/api/jupiter/execute", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          signedTransaction: signed,
-          requestId: order.requestId,
-          ...(order.lastValidBlockHeight != null
-            ? { lastValidBlockHeight: String(order.lastValidBlockHeight) }
-            : {}),
-        }),
+      const res = await postSigned("/api/jupiter/execute", {
+        signedTransaction: signed,
+        requestId: order.requestId,
+        ...(order.lastValidBlockHeight != null
+          ? { lastValidBlockHeight: String(order.lastValidBlockHeight) }
+          : {}),
       });
       const data = (await res.json()) as ExecuteResult & { error?: string };
       if (!res.ok || data.error) throw new Error(data.error ?? "Swap execution failed.");
       setResult(data);
+      if (data.signature) {
+        onExecuted?.({
+          signature: data.signature,
+          owner: address,
+          totalOutputAmount: data.totalOutputAmount,
+        });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Swap execution failed.");
     } finally {
       setBusy(null);
     }
-  }, [signed, order]);
+  }, [signed, order, onExecuted, address]);
 
   return (
     <div className="space-y-6">
@@ -407,8 +432,8 @@ export function SwapPanel() {
                 Fiat payout disabled
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                USDC swap completed. Fiat payout is disabled for now. Stables KYC (demo) and
-                local-currency payout will be added only after Stables approval.
+                USDC swap completed. Fiat payout is disabled for now. Partner KYC and local-currency
+                payout will be added only after licensed partner approval.
               </p>
             </div>
           )}
@@ -452,7 +477,7 @@ export function SwapPanel() {
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              LamportPay will never ask for your seed phrase or private key. Stables payout, fiat
+              LamportPay will never ask for your seed phrase or private key. Partner payout, fiat
               payout and KYC remain disabled.
             </p>
             <div className="flex gap-2 justify-end">

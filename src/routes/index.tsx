@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { TransferSimulator } from "@/components/site/TransferSimulator";
 import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
-import { AssetFlowDiagram } from "@/components/site/AssetFlowDiagram";
 import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater } from "@/components/site/LiveSwapTheater";
 import { CitiesNeverSleep } from "@/components/site/CitiesNeverSleep";
@@ -31,15 +30,19 @@ import {
 import { useState } from "react";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
-import { CORRIDORS } from "@/components/site/demo-data";
+import {
+  EcosystemSection,
+  FutureVisionSection,
+  RoadmapSection,
+} from "@/components/site/VisionRoadmapEcosystem";
 
 export const Route = createFileRoute("/")({
   head: () =>
     pageSeo({
       path: "/",
-      title: "LamportPay — Multi-Asset Crypto-to-Fiat Payments",
+      title: "LamportPay — Crypto in. Local money out.",
       description:
-        "Accept major digital assets and supported Solana ecosystem assets, settle in USDC and pay out in local currency. Live today: Solana assets via Jupiter. Hyperliquid integration for major digital assets in development.",
+        "Send crypto, the recipient receives local currency. LamportPay is a Solana-first crypto-to-local-currency payment routing demo with a live SOL to USDC swap leg.",
     }),
   component: Index,
 });
@@ -49,7 +52,6 @@ function Index() {
     <SiteLayout>
       <LiveRatesTicker />
       <Hero />
-      <AssetFlowDiagram />
       <TrustStrip />
       <section className="max-w-7xl mx-auto px-5 -mt-4 md:-mt-10">
         <TransferSimulator />
@@ -66,6 +68,9 @@ function Index() {
       <AIAssistant />
       <FeeExplainer />
       <SafetyAssistant />
+      <FutureVisionSection />
+      <RoadmapSection />
+      <EcosystemSection />
       <FinalCTA />
       <FurtherReading slugs={["crypto-to-fiat-payments-explained", "why-stablecoins-settle-cross-border-payments", "solana-payments-for-developers"]} />
     </SiteLayout>
@@ -88,34 +93,30 @@ function Hero() {
             <span className="absolute inset-0 rounded-full bg-[color:var(--success)] animate-live-dot" />
             <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
           </span>
-          <Sparkles className="w-3.5 h-3.5 text-primary" /> Multi-chain · Live: Solana via Jupiter ·
-          Hyperliquid integration in development
+          <Sparkles className="w-3.5 h-3.5 text-primary" /> Solana-first routing · Demo mode ·
+          Jupiter swap preview
         </div>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.03] max-w-4xl mx-auto">
-          <span className="text-uv">Multi-Asset</span> Crypto-to-Fiat Payments
+          Send crypto.
+          <br />
+          <span className="text-uv">Recipient receives local currency.</span>
         </h1>
-        <p className="mt-6 text-lg md:text-xl text-foreground/90 max-w-2xl mx-auto leading-relaxed">
-          Accept major digital assets and Solana ecosystem tokens, route them through the appropriate
-          conversion and liquidity infrastructure, and settle into local currencies for bank and
-          payment-rail payouts.
-        </p>
-        <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          LamportPay is building multi-chain crypto-to-fiat payment infrastructure: Jupiter for Solana
-          ecosystem assets (live) and a Hyperliquid liquidity integration for major digital assets (in
-          development).
+        <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          LamportPay helps users pay with supported crypto assets, settle through USDC, and route
+          local-currency payout requests through licensed settlement partners.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/swap"
             className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-hero)] text-white px-6 py-3 font-semibold shadow-[var(--shadow-elegant)] hover:opacity-95 transition"
           >
-            Try the Live Solana Route Demo <ArrowRight className="w-4 h-4" />
+            Try SOL → USDC Swap Demo <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            to="/send"
+            to="/pay"
             className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-6 py-3 font-semibold hover:bg-secondary transition"
           >
-            View Mock Fiat Payout Demo
+            Send a payment
           </Link>
           <Link
             to="/whitepaper"
@@ -127,7 +128,7 @@ function Hero() {
         <div className="mt-8 max-w-3xl mx-auto rounded-2xl border border-[color:var(--warning)]/30 bg-card/70 backdrop-blur px-5 py-4 text-sm text-muted-foreground flex items-start gap-2.5 text-left">
           <AlertTriangle className="w-4 h-4 text-[color:var(--warning)] shrink-0 mt-0.5" />
           <span>
-            Live route demo (Solana via Jupiter): a small real swap of SOL into USDC. USDC returns to the connected
+            Current demo: small real Jupiter SOL-to-USDC swap only. USDC returns to the connected
             wallet. LamportPay does not custody funds. Fiat payout remains disabled.
           </span>
         </div>
@@ -138,10 +139,9 @@ function Hero() {
 
 function TrustStrip() {
   const items = [
-    "Multi-asset intake → USDC settlement → local payout",
-    "Live today: Solana / SPL assets via Jupiter",
-    "Hyperliquid integration in development",
-        "Fiat payout disabled",
+    "Jupiter-powered SOL → USDC swap demo",
+    "Output returns to your wallet",
+    "Fiat payout disabled",
   ];
   return (
     <div className="max-w-7xl mx-auto px-5">
@@ -162,7 +162,7 @@ function WhySection() {
     {
       icon: Zap,
       title: "Fast crypto checkout",
-      desc: "Designed for major digital assets and supported Solana ecosystem assets; Solana route live today.",
+      desc: "Pay in seconds using supported Solana assets or stablecoins.",
       stat: "~400ms",
       statLabel: "avg swap",
     },
@@ -175,10 +175,10 @@ function WhySection() {
     },
     {
       icon: Globe2,
-      title: "Stables payout flow",
-      desc: "A Stables-powered payout flow is shown as a demo. Real fiat payout remains disabled until production approval.",
-      stat: "27",
-      statLabel: "supported currencies",
+      title: "Partner-first partner flow",
+      desc: "Partner-style payout flow is shown as a mock placeholder. Real Fiat payout is disabled until partner approval.",
+      stat: "10+",
+      statLabel: "corridors",
     },
     {
       icon: Bot,
@@ -190,14 +190,14 @@ function WhySection() {
     {
       icon: FileText,
       title: "Local-currency payouts",
-      desc: "The demo models Stables-supported local and SWIFT bank payout rails.",
-      stat: "DEMO",
-      statLabel: "payout status",
+      desc: "Payouts go bank to bank, into the recipient's own account.",
+      stat: "Bank",
+      statLabel: "payouts",
     },
     {
       icon: ShieldCheck,
       title: "Compliance-aware design",
-      desc: "Stables-led compliance flow, no LamportPay custody, no direct money transmission.",
+      desc: "Partner-led KYC, no custody, no direct money transmission.",
       stat: "0",
       statLabel: "custody",
     },
@@ -243,13 +243,12 @@ function WhySection() {
 
 function HowItWorksSection() {
   const steps = [
-    { t: "Choose a supported asset", sub: "Multi-asset intake" },
-    { t: "Route to USDC", sub: "Jupiter live · Hyperliquid planned" },
+    { t: "Choose crypto", sub: "SOL · USDC · JUP" },
     { t: "View mock payout quote", sub: "Mock FX + fees" },
     { t: "Mock KYC step", sub: "Demo only" },
-    { t: "USDC settlement", sub: "Settlement asset" },
+    { t: "Settle through USDC", sub: "On-chain, ~1s" },
     { t: "Mock payout placeholder", sub: "Payout disabled" },
-    
+    { t: "Track receipt", sub: "Real-time hash" },
   ];
   return (
     <section className="relative mt-32 overflow-hidden">
@@ -298,7 +297,7 @@ function HowItWorksSection() {
 }
 
 function AIAssistant() {
-  const [input, setInput] = useState("I want to send 100 USDC to the UAE.");
+  const [input, setInput] = useState("I want to send 100 USDC to Pakistan.");
   const [result, setResult] = useState<null | {
     token: string;
     amount: string;
@@ -308,20 +307,24 @@ function AIAssistant() {
   }>({
     token: "USDC",
     amount: "100",
-    country: "United Arab Emirates",
-    currency: "AED",
+    country: "Pakistan",
+    currency: "PKR",
     method: "Bank account",
   });
 
   function parse() {
     const amountMatch = input.match(/(\d+(?:\.\d+)?)/);
-    const tokenMatch = input.match(/\b(USDC|USDT|SOL)\b/i);
-    const map = Object.fromEntries(
-      CORRIDORS.map((corridor) => [corridor.country.toLowerCase(), [corridor.country, corridor.currency]]),
-    ) as Record<string, [string, string]>;
-    map.uae = ["United Arab Emirates", "AED"];
+    const tokenMatch = input.match(/\b(USDC|USDT|SOL|JUP|RAY|PYTH|BONK)\b/i);
+    const map: Record<string, [string, string]> = {
+      pakistan: ["Pakistan", "PKR"],
+      nigeria: ["Nigeria", "NGN"],
+      philippines: ["Philippines", "PHP"],
+      mexico: ["Mexico", "MXN"],
+      colombia: ["Colombia", "COP"],
+      brazil: ["Brazil", "BRL"],
+    };
     const key = Object.keys(map).find((k) => input.toLowerCase().includes(k));
-    const [country, currency] = key ? map[key] : ["United Arab Emirates", "AED"];
+    const [country, currency] = key ? map[key] : ["Pakistan", "PKR"];
     setResult({
       token: (tokenMatch?.[1] ?? "USDC").toUpperCase(),
       amount: amountMatch?.[1] ?? "100",
@@ -372,7 +375,7 @@ function AIAssistant() {
               <KV k="Receiver country" v={result.country} />
               <KV k="Receiver currency" v={result.currency} />
               <KV k="Suggested payout method" v={result.method} />
-              <KV k="Partner" v="Stables" />
+              <KV k="Partner" v="Regulated payout partner (TBD)" />
               <div className="md:col-span-2 text-xs text-muted-foreground flex gap-1.5 items-center pt-2">
                 <Info className="w-3.5 h-3.5" /> This is a demo suggestion only.
               </div>
@@ -398,12 +401,12 @@ function KV({ k, v }: { k: string; v: string }) {
 function FeeExplainer() {
   const rows = [
     {
-      k: "Stables payout fee (demo)",
-      v: "An indicative demo fee of 1% (minimum $1) representing Stables payout processing; it is not a live Stables quote.",
+      k: "Payout partner fee",
+      v: "The licensed payout partner's own fee for the local-currency payout, taken from its live quote and shown on a separate line.",
     },
     {
-      k: "LamportPay platform fee",
-      v: "A flat 0.5% platform fee that keeps the service running and improving.",
+      k: "LamportPay fee",
+      v: "One 2.0% fee on the total you send, taken out of it (send 150 USDC: 3.00 fee, 147.00 goes to the payout partner). Charged once per payment and shown as its own line in every quote.",
     },
     {
       k: "FX rate",
@@ -444,7 +447,7 @@ function SafetyAssistant() {
   const items = [
     "Never share your seed phrase.",
     "Crypto payments may be irreversible.",
-    "The demo models KYC as a Stables-hosted step.",
+    "KYC is handled by the licensed partner.",
     "Demo values are not live rates.",
   ];
   return (
@@ -489,10 +492,10 @@ function FinalCTA() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3 justify-center">
             <Link
-              to="/send"
+              to="/pay"
               className="inline-flex items-center gap-2 rounded-full bg-white text-primary px-6 py-3 font-semibold hover:bg-white/90 transition"
             >
-              Start demo transfer <ArrowRight className="w-4 h-4" />
+              Send a payment <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/contact"

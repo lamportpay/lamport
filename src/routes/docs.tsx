@@ -9,7 +9,7 @@ export const Route = createFileRoute("/docs")({
       path: "/docs",
       title: "Developer Docs: Stack and API Surface | LamportPay",
       description:
-        "Architecture overview, technology stack and the API surface behind the LamportPay demo, including multi-asset routing, the live Jupiter route and Solana verification endpoints.",
+        "Architecture overview, technology stack and the API surface behind the LamportPay demo, including Jupiter swap and Solana verification endpoints.",
     }),
   component: Docs,
 });
@@ -17,30 +17,25 @@ export const Route = createFileRoute("/docs")({
 const stack = [
   { k: "Frontend", v: "Next.js + Tailwind CSS" },
   { k: "Backend", v: "API routes and payment state machine" },
-  { k: "Conversion routes", v: "Jupiter (live, Solana / SPL) · Hyperliquid (planned)" },
-  { k: "Settlement", v: "Stables (planned)" },
-  { k: "Assets", v: "Multi-asset intake → USDC settlement (live: Solana)" },
+  { k: "Liquidity", v: "Jupiter (planned)" },
+  { k: "Settlement", v: "Regulated payout partner (planned)" },
+  { k: "Blockchain", v: "Solana + USDC" },
   { k: "Database", v: "Supabase / PostgreSQL (planned)" },
 ];
 
 const apis = [
-  "POST /api/payments",
-  "POST /api/payout-quote",
-  "POST /api/payout-kyc/start",
-  "POST /api/payout-kyc/complete",
-  "POST /api/payments/confirm",
-  "POST /api/jupiter/quote",
+  "GET  /api/kyc                                  partner KYC status",
+  "POST /api/kyc                                  hosted partner KYC link",
+  "POST /api/payments                             create payment",
+  "GET  /api/payments/[paymentId]                 status + timeline",
+  "POST /api/payments/[paymentId]/quote           partner quote",
+  "POST /api/payments/[paymentId]/transfer        partner transfer + deposit address",
+  "POST /api/jupiter/quote                        SOL → USDC route",
   "POST /api/jupiter/order",
   "POST /api/jupiter/execute",
-  "POST /api/solana/verify-transaction",
-  "POST /api/payout-transfer",
-  "GET /api/payments/[paymentId]",
-  "GET /api/receipt/[paymentId]",
-  "POST /api/payout/quote",
-  "POST /api/payout/customer",
-  "POST /api/payout/external-account",
-  "POST /api/payout/transfer",
-  "POST /api/public/payout-webhook",
+  "POST /api/payments/[paymentId]/funding-transaction   unsigned USDC transfer",
+  "POST /api/payments/[paymentId]/funding         verify Solana signature",
+  "POST /api/public/stables-webhook               partner status updates",
 ];
 
 function Docs() {
@@ -51,7 +46,7 @@ function Docs() {
           Developer docs
         </div>
         <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">
-          Build against a Stables-led payment routing layer.
+          Build against a partner-led payment routing layer.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
           The demo ships with a clear architecture and a planned API surface. Real integrations plug
@@ -80,8 +75,8 @@ function Docs() {
             </pre>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            All endpoints are conceptual until backend MVP. The demo UI is designed so real
-            implementations can slot in without changing user-visible flows.
+            Payment endpoints require a signed-in user. Funds never pass through LamportPay: the
+            user's wallet sends USDC straight to the partner's single-use deposit address.
           </p>
         </div>
       </section>
