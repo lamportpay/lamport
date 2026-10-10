@@ -95,11 +95,45 @@ export type Database = {
         }
         Relationships: []
       }
+      app_mode_events: {
+        Row: {
+          created_at: string
+          detail: Json
+          event: string
+          id: number
+          mode: string
+          ok: boolean
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: Json
+          event: string
+          id?: never
+          mode: string
+          ok: boolean
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: Json
+          event?: string
+          id?: never
+          mode?: string
+          ok?: boolean
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       business_settings: {
         Row: {
           conversion_fee_bps: number | null
           enabled_currencies: string[] | null
           id: boolean
+          payment_controls: Json | null
+          payment_limits: Json | null
+          platform_fee_max_minor: number | null
+          platform_fee_min_minor: number | null
           revenue_wallet: string | null
           swap_fee_bps: number | null
           updated_at: string
@@ -109,6 +143,10 @@ export type Database = {
           conversion_fee_bps?: number | null
           enabled_currencies?: string[] | null
           id?: boolean
+          payment_controls?: Json | null
+          payment_limits?: Json | null
+          platform_fee_max_minor?: number | null
+          platform_fee_min_minor?: number | null
           revenue_wallet?: string | null
           swap_fee_bps?: number | null
           updated_at?: string
@@ -118,10 +156,41 @@ export type Database = {
           conversion_fee_bps?: number | null
           enabled_currencies?: string[] | null
           id?: boolean
+          payment_controls?: Json | null
+          payment_limits?: Json | null
+          platform_fee_max_minor?: number | null
+          platform_fee_min_minor?: number | null
           revenue_wallet?: string | null
           swap_fee_bps?: number | null
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      identity_events: {
+        Row: {
+          created_at: string
+          detail: Json
+          event: string
+          id: number
+          user_id: string
+          wallet_address: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: Json
+          event: string
+          id?: never
+          user_id: string
+          wallet_address?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: Json
+          event?: string
+          id?: never
+          user_id?: string
+          wallet_address?: string | null
         }
         Relationships: []
       }
@@ -309,6 +378,115 @@ export type Database = {
             columns: ["kyc_submission_id"]
             isOneToOne: false
             referencedRelation: "mock_kyc_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_case_events: {
+        Row: {
+          actor_email: string | null
+          actor_id: string | null
+          case_id: string
+          created_at: string
+          detail: Json
+          event: string
+          id: number
+        }
+        Insert: {
+          actor_email?: string | null
+          actor_id?: string | null
+          case_id: string
+          created_at?: string
+          detail?: Json
+          event: string
+          id?: never
+        }
+        Update: {
+          actor_email?: string | null
+          actor_id?: string | null
+          case_id?: string
+          created_at?: string
+          detail?: Json
+          event?: string
+          id?: never
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_case_events_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "payment_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_cases: {
+        Row: {
+          asset: string | null
+          closed_at: string | null
+          created_at: string
+          customer_notified_at: string | null
+          id: string
+          kind: string
+          opened_by: string | null
+          original_amount_minor: number | null
+          original_wallet: string | null
+          payment_id: string
+          reason: string
+          refund_amount_minor: number | null
+          refund_destination: string | null
+          refund_tx_signature: string | null
+          stables_communication: string | null
+          stables_reference: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          asset?: string | null
+          closed_at?: string | null
+          created_at?: string
+          customer_notified_at?: string | null
+          id?: string
+          kind: string
+          opened_by?: string | null
+          original_amount_minor?: number | null
+          original_wallet?: string | null
+          payment_id: string
+          reason: string
+          refund_amount_minor?: number | null
+          refund_destination?: string | null
+          refund_tx_signature?: string | null
+          stables_communication?: string | null
+          stables_reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          asset?: string | null
+          closed_at?: string | null
+          created_at?: string
+          customer_notified_at?: string | null
+          id?: string
+          kind?: string
+          opened_by?: string | null
+          original_amount_minor?: number | null
+          original_wallet?: string | null
+          payment_id?: string
+          reason?: string
+          refund_amount_minor?: number | null
+          refund_destination?: string | null
+          refund_tx_signature?: string | null
+          stables_communication?: string | null
+          stables_reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_cases_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
             referencedColumns: ["id"]
           },
         ]
@@ -515,8 +693,11 @@ export type Database = {
           id: string
           payer_wallet: string | null
           platform_fee_bps: number | null
+          platform_fee_max_minor: number | null
+          platform_fee_min_minor: number | null
           platform_fee_minor: number | null
           platform_fee_received_minor: number | null
+          platform_fee_rule: string | null
           platform_fee_wallet: string | null
           pre_hold_status: string | null
           pricing_snapshot: Json | null
@@ -561,8 +742,11 @@ export type Database = {
           id?: string
           payer_wallet?: string | null
           platform_fee_bps?: number | null
+          platform_fee_max_minor?: number | null
+          platform_fee_min_minor?: number | null
           platform_fee_minor?: number | null
           platform_fee_received_minor?: number | null
+          platform_fee_rule?: string | null
           platform_fee_wallet?: string | null
           pre_hold_status?: string | null
           pricing_snapshot?: Json | null
@@ -607,8 +791,11 @@ export type Database = {
           id?: string
           payer_wallet?: string | null
           platform_fee_bps?: number | null
+          platform_fee_max_minor?: number | null
+          platform_fee_min_minor?: number | null
           platform_fee_minor?: number | null
           platform_fee_received_minor?: number | null
+          platform_fee_rule?: string | null
           platform_fee_wallet?: string | null
           pre_hold_status?: string | null
           pricing_snapshot?: Json | null
@@ -634,6 +821,27 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limit_buckets: {
+        Row: {
+          bucket: string
+          count: number
+          key: string
+          window_start: string
+        }
+        Insert: {
+          bucket: string
+          count?: number
+          key: string
+          window_start: string
+        }
+        Update: {
+          bucket?: string
+          count?: number
+          key?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       stables_customers: {
         Row: {
           base_payout_status: string | null
@@ -647,6 +855,7 @@ export type Database = {
           user_id: string
           verification_status: string | null
           verification_sub_status: string[] | null
+          verified_at: string | null
         }
         Insert: {
           base_payout_status?: string | null
@@ -660,6 +869,7 @@ export type Database = {
           user_id: string
           verification_status?: string | null
           verification_sub_status?: string[] | null
+          verified_at?: string | null
         }
         Update: {
           base_payout_status?: string | null
@@ -673,6 +883,7 @@ export type Database = {
           user_id?: string
           verification_status?: string | null
           verification_sub_status?: string[] | null
+          verified_at?: string | null
         }
         Relationships: []
       }
@@ -730,6 +941,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_wallets: {
+        Row: {
+          address: string
+          chain: string
+          id: string
+          last_authenticated_at: string | null
+          linked_at: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          chain: string
+          id?: string
+          last_authenticated_at?: string | null
+          linked_at?: string
+          source?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          chain?: string
+          id?: string
+          last_authenticated_at?: string | null
+          linked_at?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -742,6 +983,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      rate_limit_hit: {
+        Args: {
+          p_bucket: string
+          p_key: string
+          p_limit: number
+          p_window_seconds: number
+        }
+        Returns: boolean
+      }
+      rate_limit_prune: {
+        Args: { p_older_than_seconds?: number }
+        Returns: number
+      }
+      trigger_payment_reconciliation: { Args: never; Returns: number }
     }
     Enums: {
       app_role: "admin" | "reviewer" | "user"
