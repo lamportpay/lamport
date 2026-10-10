@@ -2,18 +2,18 @@ import { useMemo } from "react";
 import { CheckCircle2, Globe2, ShieldCheck, Route } from "lucide-react";
 
 const PEOPLE = [
-  { name: "Jupiter route preview", city: "Demo mode", corridor: "Solana route" },
-  { name: "Output: connected wallet", city: "No custody", corridor: "Solana route" },
-  { name: "Fiat payout disabled", city: "Fiat off", corridor: "Solana route" },
-  { name: "Built using Jupiter Swap API", city: "Solana", corridor: "Solana route" },
-  { name: "Best-route scan", city: "Liquidity sources", corridor: "Solana route" },
-  { name: "Test amount 0.001 SOL", city: "Limit 0.01 SOL", corridor: "Solana route" },
-  { name: "Slippage checked", city: "Pre-sign review", corridor: "Solana route" },
-  { name: "Signed in your wallet", city: "You approve", corridor: "Solana route" },
-  { name: "KYC disabled", city: "Demo only", corridor: "Solana route" },
-  { name: "No user funds held", city: "Non-custodial", corridor: "Solana route" },
-  { name: "On-chain receipt", city: "Solscan link", corridor: "Solana route" },
-  { name: "Mock fiat payout demo", city: "/send", corridor: "Solana route" },
+  { name: "Jupiter route preview", city: "Demo mode", corridor: "SOL → USDC" },
+  { name: "Output: connected wallet", city: "No custody", corridor: "SOL → USDC" },
+  { name: "Fiat payout disabled", city: "Fiat off", corridor: "SOL → USDC" },
+  { name: "Built using Jupiter Swap API", city: "Solana", corridor: "SOL → USDC" },
+  { name: "Best-route scan", city: "Liquidity sources", corridor: "SOL → USDC" },
+  { name: "Test amount 0.001 SOL", city: "Limit 0.01 SOL", corridor: "SOL → USDC" },
+  { name: "Slippage checked", city: "Pre-sign review", corridor: "SOL → USDC" },
+  { name: "Signed in your wallet", city: "You approve", corridor: "SOL → USDC" },
+  { name: "KYC disabled", city: "Demo only", corridor: "SOL → USDC" },
+  { name: "No user funds held", city: "Non-custodial", corridor: "SOL → USDC" },
+  { name: "On-chain receipt", city: "Solscan link", corridor: "SOL → USDC" },
+  { name: "Own-account bank payouts", city: "/pay", corridor: "USDC · USDT" },
 ];
 
 type Person = (typeof PEOPLE)[number];
@@ -73,16 +73,16 @@ export function VerifiedUsers() {
         <div className="text-center">
           <div className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-white/70 border border-white/10 rounded-full px-3 py-1.5 bg-black/40 backdrop-blur">
             <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" />
-            Multi-asset model · Live route: Solana via Jupiter
+            Jupiter-powered SOL → USDC swap demo
           </div>
           <h2 className="mt-6 text-6xl md:text-8xl font-semibold tracking-tight text-white tabular-nums">
             <span className="bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">
-              Crypto <span className="text-uv">→</span> USDC
+              SOL <span className="text-uv">→</span> USDC
             </span>
           </h2>
           <div className="mt-3 text-sm md:text-base text-white/60 flex items-center justify-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[color:var(--success)]" />
-            Solana assets via Jupiter today · Hyperliquid in development · output returns to your connected wallet
+            Built using the Jupiter Swap API · output returns to your connected wallet
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-[11px] font-mono uppercase tracking-widest text-white/50">
             <span className="flex items-center gap-1.5">
@@ -90,7 +90,7 @@ export function VerifiedUsers() {
             </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Stables payout
+              <CheckCircle2 className="w-3.5 h-3.5 text-[color:var(--success)]" /> Partner payout
               disabled
             </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />

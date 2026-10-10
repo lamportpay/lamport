@@ -1,28 +1,121 @@
 import { createServerFn } from "@tanstack/react-start";
+
+import { attentionSignals, reachedFunds } from "./payments/attention";
+import { stuckSignal } from "./payments/stuck";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { toPaymentView } from "@/lib/payments/view";
 import { logAdminActions } from "./admin.audit.server";
 import {
-  ADMIN_KYC_STATUSES,
-  ADMIN_PAYMENT_STATUSES,
-  ADMIN_QUOTE_STATUSES,
   ASSIGNABLE_ROLES,
-  AUDIT_COLUMNS,
-  KYC_COLUMNS,
-  TRANSFER_COLUMNS,
-  TRANSFER_DETAIL_COLUMNS,
-  type AdminAuditRow,
+  STABLES_PAYMENT_COLUMNS,
   type AdminInviteRow,
-  type AdminKycRow,
   type AdminRoleRow,
-  type AdminTransferDetail,
-  type AdminTransferRow,
-  type PaymentStatus,
-  type QuoteStatus,
+  type AdminStablesPaymentRow,
+  type AdminUnmatchedTravelRule,
 } from "./admin.constants";
 
-export const getAdminOverview = createServerFn({ method: "GET" })
+async function requireAdmin(context: {
+  supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => unknown };
+  userId: string;
+}) {
+  const { data: isAdmin, error } = (await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  })) as { data: boolean | null; error: unknown };
+  if (error) throw new Error("Could not verify admin access.");
+  if (!isAdmin) throw new Error("Admin role required.");
+}
+
+/**
+ * One live Stables payment for admins: the same view (and receipt) the user
+ * sees, plus the owner, the full timeline with details, and whether the
+ * Stables connection is the sandbox (deposit simulation is offered there only).
+ */
+export const getStablesPaymentDetailAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).strict().parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase } = context;
+    await requireAdmin(context);
+    // Show Stables' current status, not only what webhooks delivered (throttled).
+    const { syncPaymentById } = await import("@/lib/payments/service.server");
+    await syncPaymentById(data.id);
+
+    const [paymentResult, eventsResult, ledgerResult] = await Promise.all([
+      supabase.from("payments").select("*").eq("id", data.id).maybeSingle(),
+      supabase
+        .from("payment_events")
+        .select("created_at, kind, from_status, to_status, source, detail")
+        .eq("payment_id", data.id)
+        .order("id", { ascending: true }),
+      supabase
+        .from("payment_fee_ledger")
+        .select(
+          "category, entry_type, component, amount_minor, currency, bps, reference, created_at",
+        )
+        .eq("payment_id", data.id)
+        .order("id", { ascending: true }),
+    ]);
+    if (paymentResult.error) throw new Error(paymentResult.error.message);
+    if (eventsResult.error) throw new Error(eventsResult.error.message);
+    if (ledgerResult.error) throw new Error(ledgerResult.error.message);
+    const payment = paymentResult.data;
+    if (!payment) throw new Error("Payment not found.");
+    const events = eventsResult.data ?? [];
+
+    const { getStablesConfig } = await import("@/lib/stables/config.server");
+    const config = getStablesConfig();
+    return {
+      payment: toPaymentView(payment, events),
+      userId: payment.user_id,
+      timeline: events.map((e) => ({
+        at: e.created_at,
+        kind: e.kind,
+        from: e.from_status,
+        to: e.to_status,
+        source: e.source,
+        detail: e.detail === null ? null : JSON.stringify(e.detail),
+      })),
+      stablesEnvironment: config.configured ? config.environment : ("unconfigured" as const),
+      pricingSnapshot:
+        payment.pricing_snapshot === null
+          ? null
+          : JSON.stringify(payment.pricing_snapshot, null, 2),
+      feeLedger: ledgerResult.data ?? [],
+    };
+  });
+
+/**
+ * SANDBOX ONLY: simulate the incoming deposit of a payment's Stables transfer
+ * (POST /transfers/{id}/sandbox/simulate-deposit). Admins only; the service
+ * refuses with a live (sti_live_) key or a production URL.
+ */
+export const simulateSandboxDepositAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).strict().parse(input))
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context);
+    const { simulateSandboxDeposit, PaymentError } = await import("@/lib/payments/service.server");
+    try {
+      return await simulateSandboxDeposit(data.id, {
+        id: context.userId,
+        email: (context.claims as { email?: string } | null)?.email ?? null,
+      });
+    } catch (e) {
+      if (e instanceof PaymentError) throw new Error(e.message);
+      throw e;
+    }
+  });
+
+/**
+ * Live Stables payments for operations: the latest payments, every payment
+ * with an open Travel Rule wallet-verification request, and Travel Rule
+ * requests that matched no payment. Read through the admin's own session;
+ * RLS lets admins read payments and stored webhook deliveries.
+ */
+export const getStablesPaymentsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
@@ -35,242 +128,156 @@ export const getAdminOverview = createServerFn({ method: "GET" })
     if (!isAdmin) {
       return {
         isAdmin: false,
-        kyc: [] as AdminKycRow[],
-        transfers: [] as AdminTransferRow[],
-        audit: [] as AdminAuditRow[],
+        payments: [] as AdminStablesPaymentRow[],
+        travelRuleOpen: [] as AdminStablesPaymentRow[],
+        travelRuleUnmatched: [] as AdminUnmatchedTravelRule[],
       };
     }
+    // Refresh open transfers from Stables before listing (throttled per payment).
+    const { syncOpenPayments } = await import("@/lib/payments/service.server");
+    await syncOpenPayments(10);
 
-    const [kycResult, transferResult, auditResult] = await Promise.all([
+    const [recent, open, unmatched, rejectedDeposits] = await Promise.all([
       supabase
-        .from("mock_kyc_submissions")
-        .select(KYC_COLUMNS)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("mock_payout_transfers")
-        .select(TRANSFER_COLUMNS)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("admin_audit_log")
-        .select(AUDIT_COLUMNS)
+        .from("payments")
+        .select(STABLES_PAYMENT_COLUMNS)
         .order("created_at", { ascending: false })
-        .limit(100),
+        .limit(50),
+      supabase
+        .from("payments")
+        .select(STABLES_PAYMENT_COLUMNS)
+        .not("travel_rule_requested_at", "is", null)
+        .is("travel_rule_resolved_at", null)
+        .order("travel_rule_requested_at", { ascending: false })
+        .limit(50),
+      supabase
+        .from("stables_webhook_events")
+        .select("event_id, event_object_id, payload, received_at, process_error")
+        .eq("event_type", "travel_rule.wallet_verification_required")
+        .is("processed_at", null)
+        .order("received_at", { ascending: false })
+        .limit(50),
+      // Deposits we rejected although funds reached the deposit address.
+      supabase
+        .from("payment_events")
+        .select("payment_id, detail")
+        .eq("kind", "funding_rejected")
+        .order("id", { ascending: false })
+        .limit(200),
     ]);
+    for (const result of [recent, open, unmatched, rejectedDeposits]) {
+      if (result.error) throw new Error(result.error.message);
+    }
+    // Monitoring: when each listed payment last changed status.
+    const listedIds = [...(recent.data ?? []), ...(open.data ?? [])].map(
+      (r) => (r as { id: string }).id,
+    );
+    const listedTransfers = [...(recent.data ?? []), ...(open.data ?? [])]
+      .map((r) => (r as { transfer_id: string | null }).transfer_id)
+      .filter((t): t is string => Boolean(t));
+    const [transitions, openCases, webhookErrors] = listedIds.length
+      ? await Promise.all([
+          supabase
+            .from("payment_events")
+            .select("payment_id, created_at, to_status")
+            .in("payment_id", listedIds)
+            .not("to_status", "is", null)
+            .order("created_at", { ascending: false })
+            .limit(2000),
+          supabase
+            .from("payment_cases")
+            .select("payment_id, status")
+            .in("payment_id", listedIds)
+            .neq("status", "closed"),
+          listedTransfers.length
+            ? supabase
+                .from("stables_webhook_events")
+                .select("event_object_id")
+                .in("event_object_id", listedTransfers)
+                .is("processed_at", null)
+                .not("process_error", "is", null)
+                .limit(500)
+            : Promise.resolve({ data: [] as { event_object_id: string | null }[], error: null }),
+        ])
+      : [
+          { data: [], error: null },
+          { data: [], error: null },
+          { data: [], error: null },
+        ];
+    for (const r of [transitions, openCases, webhookErrors]) {
+      if (r.error) throw new Error(r.error.message);
+    }
+    const lastChange = new Map<string, string>();
+    const statusesSeen = new Map<string, string[]>();
+    for (const e of (transitions.data ?? []) as {
+      payment_id: string;
+      created_at: string;
+      to_status: string | null;
+    }[]) {
+      if (!lastChange.has(e.payment_id)) lastChange.set(e.payment_id, e.created_at);
+      if (e.to_status)
+        statusesSeen.set(e.payment_id, [...(statusesSeen.get(e.payment_id) ?? []), e.to_status]);
+    }
+    const caseStatus = new Map(
+      ((openCases.data ?? []) as { payment_id: string; status: string }[]).map((c) => [
+        c.payment_id,
+        c.status,
+      ]),
+    );
+    const failedTransfers = new Set(
+      ((webhookErrors.data ?? []) as { event_object_id: string | null }[]).map(
+        (e) => e.event_object_id,
+      ),
+    );
 
-    if (kycResult.error) throw new Error(kycResult.error.message);
-    if (transferResult.error) throw new Error(transferResult.error.message);
-    if (auditResult.error) throw new Error(auditResult.error.message);
-
+    const text = (value: unknown) => (typeof value === "string" ? value : null);
+    const fundsMoved = new Set(
+      (rejectedDeposits.data ?? [])
+        .filter((e) => {
+          const received = text((e.detail as Record<string, unknown> | null)?.["received_minor"]);
+          return received !== null && /^\d+$/.test(received) && BigInt(received) > 0n;
+        })
+        .map((e) => e.payment_id),
+    );
+    const withIssue = (rows: unknown[] | null) =>
+      ((rows ?? []) as AdminStablesPaymentRow[]).map((row) => {
+        const statusChangedAt = lastChange.get(row.id) ?? null;
+        const stuck = stuckSignal({ ...row, status_changed_at: statusChangedAt });
+        const depositIssue = !row.funding_signature && fundsMoved.has(row.id);
+        const openCaseStatus = caseStatus.get(row.id) ?? null;
+        const attention = attentionSignals({
+          ...row,
+          status_changed_at: statusChangedAt,
+          depositMismatch: depositIssue,
+          everCollectedFunds: reachedFunds(statusesSeen.get(row.id) ?? []),
+          webhookError: row.transfer_id ? failedTransfers.has(row.transfer_id) : false,
+          openCase: openCaseStatus !== null,
+        });
+        return {
+          ...row,
+          deposit_issue: depositIssue,
+          status_changed_at: statusChangedAt,
+          stuck: stuck && { waitingOn: stuck.waitingOn, label: stuck.label },
+          attention: attention.map(({ code, severity, label }) => ({ code, severity, label })),
+          open_case_status: openCaseStatus,
+        };
+      });
     return {
       isAdmin: true,
-      kyc: (kycResult.data ?? []) as unknown as AdminKycRow[],
-      transfers: (transferResult.data ?? []) as unknown as AdminTransferRow[],
-      audit: (auditResult.data ?? []) as unknown as AdminAuditRow[],
-    };
-  });
-
-export const reviewKycSubmission = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) =>
-    z
-      .object({
-        id: z.string().uuid(),
-        status: z.enum(ADMIN_KYC_STATUSES),
-        reviewNote: z.string().max(500).optional(),
-      })
-      .strict()
-      .parse(input),
-  )
-  .handler(async ({ data, context }) => {
-    const { supabase, userId, claims } = context;
-
-    const { data: previous } = await supabase
-      .from("mock_kyc_submissions")
-      .select("status")
-      .eq("id", data.id)
-      .maybeSingle();
-
-    const { data: updated, error } = await supabase
-      .from("mock_kyc_submissions")
-      .update({
-        status: data.status,
-        review_note: data.reviewNote?.trim() ? data.reviewNote.trim() : null,
-        reviewed_by: userId,
-        reviewed_at: new Date().toISOString(),
-      })
-      .eq("id", data.id)
-      .select(KYC_COLUMNS)
-      .maybeSingle();
-
-    if (error) throw new Error(error.message);
-    if (!updated) throw new Error("Submission not found or access denied.");
-
-    const row = updated as unknown as AdminKycRow;
-    await logAdminActions(
-      supabase,
-      { id: userId, email: (claims as { email?: string } | null)?.email ?? null },
-      [
-        {
-          entityType: "kyc_submission",
-          entityId: row.id,
-          entityReference: row.reference,
-          action: data.status === "approved" ? "kyc_approved" : `kyc_${data.status}`,
-          field: "status",
-          oldValue: (previous as { status?: string } | null)?.status ?? null,
-          newValue: data.status,
-          note: row.review_note,
-        },
-      ],
-    );
-
-    return row;
-  });
-
-export const updateTransferStatus = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) =>
-    z
-      .object({
-        id: z.string().uuid(),
-        quoteStatus: z.enum(ADMIN_QUOTE_STATUSES).optional(),
-        paymentStatus: z.enum(ADMIN_PAYMENT_STATUSES).optional(),
-        adminNote: z.string().max(500).optional(),
-      })
-      .strict()
-      .refine(
-        (value) =>
-          value.quoteStatus !== undefined ||
-          value.paymentStatus !== undefined ||
-          value.adminNote !== undefined,
-        { message: "Nothing to update." },
-      )
-      .parse(input),
-  )
-  .handler(async ({ data, context }) => {
-    const { supabase, userId, claims } = context;
-
-    const { data: previousRow } = await supabase
-      .from("mock_payout_transfers")
-      .select("quote_status, payment_status, admin_note")
-      .eq("id", data.id)
-      .maybeSingle();
-    const previous = (previousRow ?? {}) as {
-      quote_status?: string;
-      payment_status?: string;
-      admin_note?: string | null;
-    };
-
-    const patch: {
-      updated_by: string;
-      quote_status?: QuoteStatus;
-      payment_status?: PaymentStatus;
-      admin_note?: string | null;
-      funded_at?: string;
-      settled_at?: string;
-    } = { updated_by: userId };
-    if (data.quoteStatus) patch.quote_status = data.quoteStatus;
-    if (data.paymentStatus) patch.payment_status = data.paymentStatus;
-    if (data.adminNote !== undefined) {
-      patch.admin_note = data.adminNote.trim() ? data.adminNote.trim() : null;
-    }
-    if (data.paymentStatus === "processing") patch.funded_at = new Date().toISOString();
-    if (data.paymentStatus === "paid") patch.settled_at = new Date().toISOString();
-
-    const { data: updated, error } = await supabase
-      .from("mock_payout_transfers")
-      .update(patch)
-      .eq("id", data.id)
-      .select(TRANSFER_COLUMNS)
-      .maybeSingle();
-
-    if (error) throw new Error(error.message);
-    if (!updated) throw new Error("Transfer not found or access denied.");
-
-    const row = updated as unknown as AdminTransferRow;
-    const entries: {
-      field: string;
-      oldValue: string | null;
-      newValue: string | null;
-      action: string;
-    }[] = [];
-    if (data.quoteStatus && data.quoteStatus !== previous.quote_status) {
-      entries.push({
-        field: "quote_status",
-        oldValue: previous.quote_status ?? null,
-        newValue: data.quoteStatus,
-        action: "quote_status_changed",
-      });
-    }
-    if (data.paymentStatus && data.paymentStatus !== previous.payment_status) {
-      entries.push({
-        field: "payment_status",
-        oldValue: previous.payment_status ?? null,
-        newValue: data.paymentStatus,
-        action: "payment_status_changed",
-      });
-    }
-    if (data.adminNote !== undefined && (patch.admin_note ?? null) !== (previous.admin_note ?? null)) {
-      entries.push({
-        field: "admin_note",
-        oldValue: previous.admin_note ?? null,
-        newValue: patch.admin_note ?? null,
-        action: "note_updated",
-      });
-    }
-
-    await logAdminActions(
-      supabase,
-      { id: userId, email: (claims as { email?: string } | null)?.email ?? null },
-      entries.map((entry) => ({
-        ...entry,
-        entityType: "payout_transfer" as const,
-        entityId: row.id,
-        entityReference: row.reference,
-      })),
-    );
-
-    return row;
-  });
-
-export const getPaymentDetail = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) =>
-    z.object({ id: z.string().uuid() }).strict().parse(input),
-  )
-  .handler(async ({ data, context }) => {
-    const { supabase } = context;
-
-    const { data: transfer, error } = await supabase
-      .from("mock_payout_transfers")
-      .select(TRANSFER_DETAIL_COLUMNS)
-      .eq("id", data.id)
-      .maybeSingle();
-    if (error) throw new Error(error.message);
-    if (!transfer) throw new Error("Payment not found, or your account is not an admin.");
-
-    const detail = transfer as unknown as AdminTransferDetail;
-
-    const [kycResult, auditResult] = await Promise.all([
-      detail.kyc_submission_id
-        ? supabase
-            .from("mock_kyc_submissions")
-            .select(KYC_COLUMNS)
-            .eq("id", detail.kyc_submission_id)
-            .maybeSingle()
-        : Promise.resolve({ data: null, error: null }),
-      supabase
-        .from("admin_audit_log")
-        .select(AUDIT_COLUMNS)
-        .eq("entity_id", data.id)
-        .order("created_at", { ascending: false }),
-    ]);
-
-    if (auditResult.error) throw new Error(auditResult.error.message);
-
-    return {
-      transfer: detail,
-      kyc: (kycResult.data ?? null) as unknown as AdminKycRow | null,
-      audit: (auditResult.data ?? []) as unknown as AdminAuditRow[],
+      payments: withIssue(recent.data),
+      travelRuleOpen: withIssue(open.data),
+      travelRuleUnmatched: (unmatched.data ?? []).map((row): AdminUnmatchedTravelRule => {
+        const object = ((row.payload as { event_object?: unknown } | null)?.event_object ??
+          {}) as Record<string, unknown>;
+        return {
+          eventId: row.event_id,
+          reference: text(object["transaction_reference_id"]) ?? row.event_object_id,
+          verificationUrl: text(object["verification_url"]),
+          expiresAt: text(object["expires_at"]),
+          receivedAt: row.received_at,
+          note: row.process_error,
+        };
+      }),
     };
   });
 
@@ -544,4 +551,127 @@ export const claimFirstAdminRole = createServerFn({ method: "POST" })
       .insert({ user_id: context.userId, role: "admin" });
     if (error) throw new Error(error.message);
     return { granted: true };
+  });
+
+/**
+ * Business settings for the admin dashboard: LamportPay's conversion fee, the
+ * swap fee, the revenue wallet and the payment coins, each with where its value
+ * comes from (admin override or .env). No secrets: the revenue wallet and the
+ * Jupiter referral account are public addresses; API keys are never read here.
+ */
+export const getBusinessSettingsAdmin = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdmin(context);
+    const { getBusinessSettings } = await import("@/lib/business-settings.server");
+    let settings;
+    let error: string | null = null;
+    try {
+      settings = await getBusinessSettings();
+    } catch (e) {
+      error = e instanceof Error ? e.message : "Settings are invalid.";
+    }
+    const referral = process.env["JUPITER_REFERRAL_ACCOUNT"]?.trim() || null;
+    return { settings: settings ?? null, error, jupiterReferralAccount: referral };
+  });
+
+const PAYMENT_COIN = z.enum(["usdc", "usdt"]);
+function limitText(l: { min: string; max: string | null } | null): string {
+  return l ? `${l.min} – ${l.max ?? "no maximum"}` : "invalid";
+}
+
+const PAYMENT_LIMIT = z
+  .object({
+    minMinor: z.number().int().min(1).max(1_000_000_000_000_000),
+    maxMinor: z.number().int().min(1).max(1_000_000_000_000_000).nullable(),
+  })
+  .strict();
+
+export const updateBusinessSettingsAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        conversionFeeBps: z.number().int().min(0).max(1000).nullable().optional(),
+        /** Minor units (6 decimals); 0 = no bound, null = back to .env. */
+        feeMinMinor: z.number().int().min(0).max(1_000_000_000_000).nullable().optional(),
+        feeMaxMinor: z.number().int().min(0).max(1_000_000_000_000).nullable().optional(),
+        revenueWallet: z
+          .string()
+          .trim()
+          .regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/, "Enter a Solana address.")
+          .nullable()
+          .optional(),
+        enabledCurrencies: z.array(PAYMENT_COIN).min(1).max(2).nullable().optional(),
+        /** C07: per coin, minor units (6 decimals); maxMinor null = no LamportPay maximum; null = back to .env. */
+        paymentLimits: z
+          .object({
+            usdc: PAYMENT_LIMIT.nullable().optional(),
+            usdt: PAYMENT_LIMIT.nullable().optional(),
+          })
+          .strict()
+          .optional(),
+        note: z.string().trim().max(300).optional(),
+      })
+      .strict()
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context);
+    const { supabase, userId, claims } = context;
+    const actor = { id: userId, email: (claims as { email?: string } | null)?.email ?? null };
+    const { updateBusinessSettings, bpsLabel } = await import("@/lib/business-settings.server");
+    const { note, paymentLimits, ...rest } = data;
+    const patch = {
+      ...rest,
+      ...(paymentLimits && {
+        paymentLimits: Object.fromEntries(
+          Object.entries(paymentLimits).map(([coin, l]) => [
+            coin,
+            l ? { min_minor: l.minMinor, max_minor: l.maxMinor } : null,
+          ]),
+        ),
+      }),
+    };
+    // Fee and revenue-wallet changes move money: a reason is mandatory.
+    if (
+      (patch.revenueWallet !== undefined ||
+        patch.conversionFeeBps !== undefined ||
+        patch.feeMinMinor !== undefined ||
+        patch.feeMaxMinor !== undefined ||
+        paymentLimits !== undefined) &&
+      !note?.trim()
+    ) {
+      throw new Error("Give a reason for changing the fee, the limits or the revenue wallet.");
+    }
+
+    let result;
+    try {
+      result = await updateBusinessSettings(patch, userId);
+    } catch (e) {
+      throw new Error(e instanceof Error ? e.message : "Could not save the settings.");
+    }
+    const { before, after } = result;
+    const show = {
+      conversionFeeBps: (s: typeof before) => bpsLabel(s.conversionFeeBps),
+      feeMin: (s: typeof before) => s.feeMin ?? "none",
+      feeMax: (s: typeof before) => s.feeMax ?? "none",
+      revenueWallet: (s: typeof before) => s.revenueWallet ?? "none",
+      enabledCurrencies: (s: typeof before) => s.enabledCurrencies.join(","),
+      limitsUsdc: (s: typeof before) => limitText(s.paymentLimits.usdc),
+      limitsUsdt: (s: typeof before) => limitText(s.paymentLimits.usdt),
+    };
+    const entries = (Object.keys(show) as (keyof typeof show)[])
+      .filter((field) => show[field](before) !== show[field](after))
+      .map((field) => ({
+        entityType: "business_settings" as const,
+        entityReference: "business_settings",
+        action: "setting_changed",
+        field,
+        oldValue: show[field](before),
+        newValue: show[field](after),
+        note: note ?? null,
+      }));
+    await logAdminActions(supabase, actor, entries);
+    return { settings: after, changed: entries.length };
   });

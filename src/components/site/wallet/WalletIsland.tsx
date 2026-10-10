@@ -1,6 +1,11 @@
 import { Component, lazy, Suspense, useState, type ReactElement, type ReactNode } from "react";
 import { ClientOnly } from "@tanstack/react-router";
 
+import type { FundingPanelProps } from "./FundingPanel";
+import type { TestPayPanelProps } from "./TestPayPanel";
+import type { PaymentSwapPanelProps } from "./PaymentWallet";
+import type { SwapExecution } from "./SwapPanel";
+
 type WalletModule = {
   SolanaWalletProvider: ({ children }: { children: ReactNode }) => ReactElement;
   WalletConnectButton: () => ReactElement;
@@ -16,9 +21,11 @@ function WalletFallbackButton() {
     <button
       type="button"
       disabled
-      className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-muted-foreground opacity-70"
+      className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-border bg-card px-3 sm:px-4 py-2 text-sm font-semibold text-muted-foreground opacity-70"
     >
-      Connect wallet
+      <span>
+        Connect<span className="hidden sm:inline"> wallet</span>
+      </span>
     </button>
   );
 }
@@ -28,9 +35,11 @@ function WalletStartButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-2 rounded-full bg-[image:var(--gradient-hero)] text-white px-4 py-2 text-sm font-semibold shadow-[var(--shadow-soft)] hover:opacity-95 transition"
+      className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-[image:var(--gradient-hero)] text-white px-3 sm:px-4 py-2 text-sm font-semibold shadow-[var(--shadow-soft)] hover:opacity-95 transition"
     >
-      Connect wallet
+      <span>
+        Connect<span className="hidden sm:inline"> wallet</span>
+      </span>
     </button>
   );
 }
@@ -101,6 +110,28 @@ const Swap = lazy(async () => {
   const m = await import("./SwapPanel");
   return { default: m.SwapPanel };
 });
+const Funding = lazy(async () => {
+  if (typeof window === "undefined") return { default: WalletFallbackCard };
+  const polyfill = await import("@/lib/buffer-polyfill");
+  polyfill.installBufferPolyfill();
+  const m = await import("./FundingPanel");
+  return { default: m.FundingPanel };
+});
+
+const Key = lazy(async () => {
+  if (typeof window === "undefined") return { default: WalletFallbackCard };
+  const polyfill = await import("@/lib/buffer-polyfill");
+  polyfill.installBufferPolyfill();
+  const m = await import("./PaymentWallet");
+  return { default: m.WalletKey };
+});
+const PaymentSwap = lazy(async () => {
+  if (typeof window === "undefined") return { default: WalletFallbackCard };
+  const polyfill = await import("@/lib/buffer-polyfill");
+  polyfill.installBufferPolyfill();
+  const m = await import("./PaymentWallet");
+  return { default: m.PaymentSwapPanel };
+});
 
 function Island({ children, fallback }: { children: ReactNode; fallback: ReactNode }) {
   return (
@@ -139,6 +170,33 @@ function WalletButtonClient() {
   );
 }
 
+const AppControl = lazy(async () => {
+  if (typeof window === "undefined") return { default: WalletFallbackButton };
+  const polyfill = await import("@/lib/buffer-polyfill");
+  polyfill.installBufferPolyfill();
+  const m = await import("./AppWallet");
+  return { default: m.AppWalletControl };
+});
+
+/**
+ * The dApp header's wallet control. Unlike the marketing header, it loads the
+ * wallet right away (auto-reconnecting a trusted wallet) and shares the
+ * connection with the page, so /pay needs no connect UI of its own.
+ */
+export function AppWalletIsland() {
+  return (
+    <ClientOnly fallback={<WalletFallbackButton />}>
+      <WalletErrorBoundary fallback={<WalletFallbackButton />}>
+        <Suspense fallback={<WalletFallbackButton />}>
+          <Providers>
+            <AppControl />
+          </Providers>
+        </Suspense>
+      </WalletErrorBoundary>
+    </ClientOnly>
+  );
+}
+
 /** Full wallet panel: connect, address, safety warning. */
 export function WalletPanelIsland() {
   return (
@@ -149,10 +207,58 @@ export function WalletPanelIsland() {
 }
 
 /** SOL → USDC Jupiter swap demo panel. */
-export function SwapPanelIsland() {
+export function SwapPanelIsland({
+  onExecuted,
+}: {
+  onExecuted?: (execution: SwapExecution) => void;
+}) {
   return (
     <Island fallback={<WalletFallbackCard />}>
-      <Swap />
+      <Swap onExecuted={onExecuted} />
+    </Island>
+  );
+}
+
+/** Connect card that reports the connected public key (connecting is not signing). */
+export function WalletKeyIsland({ onChange }: { onChange: (publicKey: string | null) => void }) {
+  return (
+    <Island fallback={<WalletFallbackCard />}>
+      <Key onChange={onChange} />
+    </Island>
+  );
+}
+
+/** Swap the missing amount into a payment's coin, in the user's own wallet. */
+export function PaymentSwapIsland(props: PaymentSwapPanelProps) {
+  return (
+    <Island fallback={<WalletFallbackCard />}>
+      <PaymentSwap {...props} />
+    </Island>
+  );
+}
+
+const TestPay = lazy(async () => {
+  if (typeof window === "undefined") return { default: WalletFallbackCard };
+  const polyfill = await import("@/lib/buffer-polyfill");
+  polyfill.installBufferPolyfill();
+  const m = await import("./TestPayPanel");
+  return { default: m.TestPayPanel };
+});
+
+/** TEST MODE "Pay Now": a real devnet transaction that moves no funds. */
+export function TestPayIsland(props: TestPayPanelProps) {
+  return (
+    <Island fallback={<WalletFallbackCard />}>
+      <TestPay {...props} />
+    </Island>
+  );
+}
+
+/** Sends a payment's USDC deposit from the connected wallet. */
+export function FundingPanelIsland(props: FundingPanelProps) {
+  return (
+    <Island fallback={<WalletFallbackCard />}>
+      <Funding {...props} />
     </Island>
   );
 }

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { ArrowRight } from "lucide-react";
-import { MultiAssetFlow } from "@/components/site/MultiAssetFlow";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 
@@ -20,11 +19,10 @@ const userFlow = [
   "User enters transfer details",
   "LamportPay creates payment record",
   "Payout quote generated",
-  "Stables KYC (demo)",
-  "Asset + network detection",
-  "Conversion to USDC (Jupiter live for Solana assets; Hyperliquid planned)",
+  "Partner KYC",
+  "Jupiter swap to USDC planned",
   "USDC settlement verified",
-  "Stables payout processing",
+  "Partner payout processing",
   "Receipt shown",
 ];
 
@@ -53,11 +51,9 @@ function HowItWorks() {
           From crypto tap to local payout.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
-          The demo models a predictable Stables-led flow — from transfer details to a simulated
-          local-currency payout and receipt.
+          Every LamportPay transfer follows a predictable, partner-led flow — from the moment a user
+          enters details to when the recipient sees local currency.
         </p>
-
-        <MultiAssetFlow />
 
         <div className="mt-14">
           <h2 className="text-2xl font-semibold tracking-tight">The user flow</h2>

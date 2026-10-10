@@ -8,11 +8,10 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
   return (
@@ -39,9 +38,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -78,12 +74,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "LamportPay — Crypto in. Local money out." },
       {
         name: "description",
         content:
-          "LamportPay is building multi-asset crypto-to-fiat payments, live today for Solana assets via Jupiter. Crypto in. Local money out.",
+          "LamportPay is a Solana-first crypto-to-local-currency payment routing demo. Crypto in. Local money out.",
       },
       { name: "author", content: "LamportPay" },
       { property: "og:site_name", content: "LamportPay" },
@@ -103,7 +99,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
       { rel: "icon", type: "image/png", sizes: "48x48", href: "/favicon-48x48.png" },
       { rel: "icon", type: "image/png", sizes: "512x512", href: "/favicon.png" },
-      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png", type: "image/png" },
+      {
+        rel: "apple-touch-icon",
+        sizes: "180x180",
+        href: "/apple-touch-icon.png",
+        type: "image/png",
+      },
     ],
     scripts: [
       {
@@ -119,7 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               url: "https://lamportpay.com",
               email: "hello@lamportpay.com",
               description:
-                "LamportPay is building a multi-asset crypto-to-local-currency payment routing platform: Solana assets via Jupiter today, Hyperliquid integration planned. Currently available as a demonstration product.",
+                "LamportPay is a Solana-first crypto-to-local-currency payment routing platform, currently available as a demonstration product.",
               sameAs: [
                 "https://x.com/LamportPay",
                 "https://www.linkedin.com/in/lamport-pay-31a564426/",

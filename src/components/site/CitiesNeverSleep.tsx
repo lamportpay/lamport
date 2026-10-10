@@ -3,18 +3,13 @@ import { Zap } from "lucide-react";
 import { useHydrated } from "@/hooks/use-hydrated";
 
 const CITIES = [
-  { name: "Dubai", tz: "GST", cur: "AED", lat: 25.2, lon: 55.27 },
-  { name: "Sydney", tz: "AEST", cur: "AUD", lat: -33.87, lon: 151.21 },
-  { name: "Mumbai", tz: "IST", cur: "INR", lat: 19.07, lon: 72.87 },
+  { name: "Karachi", tz: "PKT", cur: "PKR", lat: 24.86, lon: 67.01 },
   { name: "Lagos", tz: "WAT", cur: "NGN", lat: 6.5, lon: 3.37 },
   { name: "Manila", tz: "PHT", cur: "PHP", lat: 14.6, lon: 120.98 },
   { name: "Mexico City", tz: "CST", cur: "MXN", lat: 19.43, lon: -99.13 },
   { name: "São Paulo", tz: "BRT", cur: "BRL", lat: -23.55, lon: -46.63 },
   { name: "Bogotá", tz: "COT", cur: "COP", lat: 4.71, lon: -74.07 },
-  { name: "Jakarta", tz: "WIB", cur: "IDR", lat: -6.2, lon: 106.85 },
   { name: "Nairobi", tz: "EAT", cur: "KES", lat: -1.29, lon: 36.82 },
-  { name: "Singapore", tz: "SGT", cur: "SGD", lat: 1.35, lon: 103.82 },
-  { name: "London", tz: "GMT", cur: "GBP", lat: 51.51, lon: -0.13 },
 ];
 
 function nowInCity(offsetH: number) {
@@ -23,18 +18,18 @@ function nowInCity(offsetH: number) {
 }
 
 const OFFSETS: Record<string, number> = {
-  GST: 4,
-  AEST: 10,
+  PKT: 5,
   IST: 5.5,
   WAT: 1,
   PHT: 8,
   CST: -6,
+  BST: 6,
+  EET: 2,
   BRT: -3,
   COT: -5,
+  PET: -5,
   WIB: 7,
   EAT: 3,
-  SGT: 8,
-  GMT: 0,
 };
 
 export function CitiesNeverSleep() {
@@ -66,8 +61,8 @@ export function CitiesNeverSleep() {
             A demo built for <span className="text-uv">a future payout flow.</span>
           </h2>
           <p className="mt-3 text-muted-foreground">
-            LamportPay currently demonstrates wallet connection and its live Solana route (Solana / SPL
-            assets → Jupiter → USDC). Hyperliquid support for major digital assets is planned. Corridor payouts are not live.
+            LamportPay currently demonstrates wallet connection and Jupiter SOL-to-USDC swap
+            routing. Corridor payouts are not live.
           </p>
         </div>
 
@@ -125,7 +120,7 @@ export function CitiesNeverSleep() {
             DEMO MODE
           </span>
           <span>JUPITER ROUTE PREVIEW</span>
-          <span>LIVE ROUTE: SOLANA / SPL → USDC</span>
+          <span>SOL → USDC</span>
           <span>OUTPUT: CONNECTED WALLET</span>
           <span className="text-[color:var(--neon-cyan)]">FIAT PAYOUT DISABLED</span>
         </div>

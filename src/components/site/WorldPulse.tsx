@@ -4,33 +4,16 @@ import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
 
 // Approximate lon/lat for corridor countries + a few sender hubs
 const COORDS: Record<string, [number, number]> = {
-  AED: [54, 24],
-  ARS: [-64, -34],
-  AUD: [134, -25],
-  BRL: [-52, -10],
-  CNY: [104, 35],
-  COP: [-74, 4],
-  EUR: [10, 50],
-  GBP: [-2, 54],
-  GHS: [-2, 8],
-  HKD: [114, 22],
-  IDR: [118, -2],
+  PKR: [69, 30],
   INR: [78, 22],
-  KES: [38, 1],
-  MXN: [-102, 23],
   NGN: [8, 9],
   PHP: [122, 13],
-  RWF: [30, -2],
-  SGD: [104, 1],
-  THB: [101, 15],
-  TZS: [35, -6],
-  UGX: [32, 1],
-  USD: [-98, 39],
-  VND: [108, 16],
-  XAF: [20, 5],
-  XOF: [-3, 12],
-  ZAR: [24, -29],
-  ZMW: [28, -14],
+  MXN: [-102, 23],
+  BDT: [90, 24],
+  EGP: [30, 27],
+  COP: [-74, 4],
+  BRL: [-52, -10],
+  PEN: [-75, -10],
 };
 const HUBS: [number, number, string][] = [
   [-74, 40, "NYC"],
@@ -186,8 +169,8 @@ export function WorldPulse() {
             Jupiter-powered swap demo — built for future payout routing.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            This demo shows the current live route — Solana / SPL assets converted to USDC through Jupiter (example: SOL → USDC). Major digital assets via a Hyperliquid integration are planned. Local-currency
-            payout through Stables remains disabled until production approval.
+            This demo shows how a Solana wallet can swap SOL to USDC through Jupiter. Local-currency
+            payout remains disabled until licensed partner approval.
           </p>
         </div>
 
@@ -423,7 +406,7 @@ export function WorldPulse() {
                     style={{ opacity: 1 - idx * 0.14 }}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="font-mono text-white/90">Solana route preview</span>
+                      <span className="font-mono text-white/90">SOL → USDC route preview</span>
                       <span className="text-uv font-semibold text-xs">Demo</span>
                     </div>
                     <div className="text-[11px] text-white/50 mt-0.5 font-mono">
