@@ -314,7 +314,7 @@ function AIAssistant() {
 
   function parse() {
     const amountMatch = input.match(/(\d+(?:\.\d+)?)/);
-    const tokenMatch = input.match(/\b(USDC|USDT|SOL|JUP|RAY|PYTH|BONK)\b/i);
+    const tokenMatch = input.match(/\b(USDC|USDT|SOL)\b/i);
     const map: Record<string, [string, string]> = {
       pakistan: ["Pakistan", "PKR"],
       nigeria: ["Nigeria", "NGN"],
