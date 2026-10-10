@@ -498,19 +498,17 @@ function KycCard({ compact = false }: { compact?: boolean }) {
 
 type Preference = "auto" | PaymentCurrency;
 
-type WalletHoldingsView =
-  | {
-      status: "ok";
-      wallet: string;
-      readAt: string;
-      sol: string;
-      tokens: Record<string, string>;
-      maxConvertible: Record<string, string>;
-      feeBps: number;
-      feeMin: string | null;
-      feeMax: string | null;
-    }
-  | { status: "unavailable"; wallet: string; reason: string };
+type WalletHoldingsView = {
+  status: "ok";
+  wallet: string;
+  readAt: string;
+  sol: string;
+  tokens: Record<string, string>;
+  maxConvertible: Record<string, string>;
+  feeBps: number;
+  feeMin: string | null;
+  feeMax: string | null;
+}
 
 /** `value`, once it has stopped changing for `ms` (for live quotes while typing). */
 function useDebounced<T>(value: T, ms: number): T {
@@ -978,7 +976,7 @@ function ConvertForm({
                       </button>
                     )}
                   </>
-                ) : holdings.data?.status === "unavailable" ? (
+                ) : holdings.error ? (
                   <span className="text-destructive">Balance unavailable</span>
                 ) : null}
               </span>

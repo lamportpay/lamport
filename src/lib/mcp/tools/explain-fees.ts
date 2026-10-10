@@ -17,20 +17,20 @@ export default defineTool({
   handler: ({ usdAmount }) => {
     const model = {
       stablesPayoutFee: "Indicative demo fee: 1% of the USD value, minimum $1; not a live Stables quote",
-      lamportpayFee: "0.5% of the USD value",
+      lamportpayFee: "2% of the total the user sends, taken out of it (demo model)",
       fxSpread: "None in the demo — indicative mid-market demo rates are used",
       networkFee: "Solana network fees are paid by the sender's wallet (fractions of a cent)",
     };
     const breakdown = usdAmount
       ? (() => {
           const payout = Math.max(1, usdAmount * 0.01);
-          const platform = usdAmount * 0.005;
+          const lamportpay = Math.ceil((usdAmount / 1.02) * 0.02 * 100) / 100;
           return {
             usdAmount,
             stablesPayoutFee: Number(payout.toFixed(2)),
-            lamportpayFee: Number(platform.toFixed(2)),
-            totalFee: Number((payout + platform).toFixed(2)),
-            netSettled: Number((usdAmount - payout - platform).toFixed(2)),
+            lamportpayFee: Number(lamportpay.toFixed(2)),
+            totalFee: Number((payout + lamportpay).toFixed(2)),
+            netSettled: Number((usdAmount - payout - lamportpay).toFixed(2)),
           };
         })()
       : null;

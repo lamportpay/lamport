@@ -18,10 +18,6 @@ const TOKEN_COLOR: Record<string, string> = {
   SOL: "oklch(0.72 0.2 285)",
   USDC: "oklch(0.72 0.16 220)",
   USDT: "oklch(0.78 0.18 160)",
-  JUP: "oklch(0.82 0.2 55)",
-  RAY: "oklch(0.72 0.22 305)",
-  PYTH: "oklch(0.78 0.2 340)",
-  BONK: "oklch(0.82 0.2 75)",
 };
 
 // Photo-realistic sender faces (MoonPay-style), generated for LamportPay.
