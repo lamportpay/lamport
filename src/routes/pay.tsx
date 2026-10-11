@@ -296,7 +296,7 @@ function TrustList({ row = false }: { row?: boolean }) {
     >
       {[
         "Non-custodial",
-        "Your own bank account only",
+        "Your own account, or a beneficiary's",
         "You sign every transaction",
       ].map((t) => (
         <li key={t} className="flex items-start gap-2">
@@ -2451,7 +2451,7 @@ function CheckoutFlow({
                   )}
                   <p className="flex items-start gap-2 text-xs text-muted-foreground">
                     <ShieldCheck className="w-4 h-4 shrink-0 text-primary" />
-                    Paid only to your own account. Check the account number before you pay.
+                    Paid to the bank account you entered. Check the account number before you pay.
                   </p>
                 </div>
                 <div className="sm:sticky sm:bottom-4 sm:z-20 sm:-mx-2 sm:rounded-2xl sm:border sm:border-border/60 sm:bg-card/95 sm:p-3 sm:shadow-[var(--shadow-elegant)] sm:backdrop-blur-xl space-y-2">

@@ -154,8 +154,9 @@ export type SwapView = {
 /** `payments.beneficiary_summary`: never the full account number. */
 export type BeneficiarySummary = {
   recipient_type: string;
-  /** Payouts go to the user's own account only (set on payments since this rule). */
+  /** True when the payout goes to the sender's own account; false for a beneficiary. */
   own_account?: boolean;
+
   account_holder_name: string;
   bank_name: string;
   bank_country: string;
@@ -234,10 +235,11 @@ export type KycStatus = {
   kycLink: string | null;
   kycLinkExpiresAt: string | null;
   /**
-   * Name on the approved Stables customer record: the only account holder name
-   * payouts can use (own account only). Null until approved, or if Stables
+   * Name on the approved Stables customer record: the account holder name an
+   * own-account payout must use. Null until approved, or if Stables
    * holds no name.
    */
+
   verifiedName: string | null;
   /** Derived customer state (lib/identity/kyc-state): never from a wallet alone. */
   state: KycState;

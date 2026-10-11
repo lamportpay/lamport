@@ -139,7 +139,8 @@ function SiteFooter() {
           <BrandLogo className="mb-3" />
           <p className="text-sm text-muted-foreground max-w-sm">
             Crypto in. Local money out. Convert USDC from your own Solana wallet into local currency
-            in your own bank account.
+            in the bank account you choose.
+
           </p>
           <div className="mt-4 flex items-center gap-2">
             {socialLinks.map(({ label, href, icon: Icon }) => (

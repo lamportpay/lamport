@@ -389,8 +389,12 @@ export function CostSummary({ payment: p }: { payment: PaymentView }) {
           {money(receives.minor, receives.currency)}
         </div>
         <div className="text-xs text-muted-foreground mt-0.5">
-          Your own account · {regionName(p.destination.country)}
+          {p.beneficiary && p.beneficiary.own_account === false
+            ? "Beneficiary's account"
+            : "Your own account"}{" "}
+          · {regionName(p.destination.country)}
         </div>
+
       </div>
     </div>
   );

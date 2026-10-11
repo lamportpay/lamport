@@ -64,7 +64,7 @@ export const CURRENT_FLOW = [
   { title: "Supported Solana assets", detail: "SOL, USDC and supported SPL tokens" },
   { title: "Jupiter-powered swap", detail: "Only when needed; live quotes in test mode" },
   { title: "USDC", detail: "Payout-ready, in your own wallet" },
-  { title: "Verified bank payout", detail: "Licensed partner, to your own account" },
+  { title: "Verified bank payout", detail: "Licensed partner, own or beneficiary account" },
 ] as const;
 
 /** Future exploration only: none of these are current capabilities. */
