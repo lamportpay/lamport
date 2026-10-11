@@ -139,7 +139,7 @@ export function RoadmapSection() {
                     }`}
                   >
                     <span className={`size-1.5 rounded-full ${current ? "bg-success" : "bg-muted-foreground/50"}`} aria-hidden="true" />
-                    {current ? "DEMO / TEST MODE" : "PLANNED"}
+                    {current ? "DEMO" : "PLANNED"}
                   </span>
                 </div>
                 <h3 className="mt-3 font-semibold leading-snug">{p.title}</h3>

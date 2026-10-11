@@ -62,6 +62,10 @@ export function ModeBadge() {
     }
   };
 
+  // TEST MODE has no header badge (sandbox notices sit at the quote and Pay Now
+  // steps); LIVE MODE and a broken setup always show it.
+  if (indicator.tone === "test") return null;
+
   const Icon =
     indicator.tone === "test" ? FlaskConical : indicator.tone === "loading" ? Loader2 : ShieldAlert;
 

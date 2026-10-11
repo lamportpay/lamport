@@ -1340,8 +1340,9 @@ function ConvertForm({
           )}
           {refused && <Notice tone="warn">{refused}</Notice>}
           {estimate.error && <ErrorText error={estimate.error} />}
+          {testMode && <SandboxNotice />}
           {paySol && testMode && (
-            <Notice tone="info">Test mode: the swap is priced, not run. You pay in test USDC.</Notice>
+            <Notice tone="info">The swap is priced, not run. You pay in test USDC.</Notice>
           )}
           {ctaButton("hidden lg:flex w-full justify-center py-3.5 text-base")}
           {needsSignIn && (
@@ -1560,7 +1561,6 @@ function PaymentPanel({
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-base font-semibold">Progress</h2>
         <span className="inline-flex items-center gap-2">
-          {testMode && phase !== "pay" && <DevnetBadge />}
           {!p.terminal && (
             <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
               <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-pulse" />
@@ -1703,8 +1703,8 @@ function PaymentPanel({
           <Card>
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-base font-semibold">Approve in your wallet</h2>
-              <DevnetBadge />
             </div>
+            <SandboxNotice />
             <p className="text-sm text-muted-foreground">
               Your wallet asks you to approve. Nothing moves until you do.
             </p>
@@ -1846,12 +1846,15 @@ function QuoteTimer({ expiresAt }: { expiresAt: string }) {
   );
 }
 
-/** TEST MODE marker: Solana devnet and the payout partner's sandbox. */
-function DevnetBadge() {
+/** TEST MODE: the one notice shown at the quote and Pay Now steps. */
+function SandboxNotice() {
   return (
-    <span className="rounded-full bg-[color:var(--warning)]/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[color:var(--warning)]">
-      Devnet · sandbox
-    </span>
+    <p
+      role="note"
+      className="rounded-lg border border-[color:var(--warning)]/40 bg-[color:var(--warning)]/10 px-3 py-2 text-xs font-medium"
+    >
+      Sandbox transaction — no real money moves.
+    </p>
   );
 }
 
