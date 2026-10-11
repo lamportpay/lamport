@@ -35,7 +35,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     title: "Liquidity and asset integrations",
     status: "proposed",
     summary:
-      "Plan Hyperliquid integration for major digital assets, explore Bitcoin, Ethereum and additional cryptocurrencies, and evaluate other liquidity-provider APIs alongside the existing Solana / Jupiter route.",
+      "Hyperliquid integration is in progress for major digital assets, alongside exploring Bitcoin, Ethereum and additional cryptocurrencies and other liquidity-provider APIs beyond the existing Solana / Jupiter route.",
     dependsOn: "Validated asset routes, network compatibility, liquidity coverage and provider API testing.",
   },
   {
@@ -57,7 +57,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
 ];
 
 export const ROADMAP_NOTE =
-  "A milestone-led roadmap. Solana / Jupiter is integrated; Phase 1 remains in test mode. Hyperliquid, additional asset routes, provider APIs and Circle / Tether partnership opportunities are planned, not current capabilities or confirmed relationships. No delivery dates are committed.";
+  "A milestone-led roadmap. Solana / Jupiter is integrated and Hyperliquid integration is in progress; Phase 1 remains in test mode. Additional asset routes, provider APIs and Circle / Tether partnership opportunities are planned, not current capabilities or confirmed relationships. No delivery dates are committed.";
 
 /** What works today (test mode: Solana devnet + partner sandbox, no real funds). */
 export const CURRENT_FLOW = [
@@ -75,7 +75,7 @@ export const FUTURE_EXPLORATION = [
   },
   {
     title: "Hyperliquid integration",
-    detail: "Plan a future liquidity route for major digital assets alongside Solana / Jupiter. Hyperliquid trading, deposits and withdrawals remain disabled.",
+    detail: "Integration in progress: a liquidity route for major digital assets alongside the live Solana / Jupiter route. Hyperliquid trading, deposits and withdrawals remain disabled.",
   },
   {
     title: "Additional provider APIs",

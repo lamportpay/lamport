@@ -20,7 +20,7 @@ const userFlow = [
   "LamportPay creates payment record",
   "Payout quote generated",
   "Partner KYC",
-  "Jupiter swap to USDC planned",
+  "Jupiter swap to USDC (integrated)",
   "USDC settlement verified",
   "Partner payout processing",
   "Receipt shown",
