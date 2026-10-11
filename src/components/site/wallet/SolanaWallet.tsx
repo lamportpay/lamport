@@ -6,6 +6,7 @@ import { SolflareWalletAdapter } from "@solana/wallet-adapter-solflare";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { clusterApiUrl } from "@solana/web3.js";
 import { clientBuildMode } from "@/lib/app-mode";
+import { toast } from "sonner";
 import { ShieldAlert, Copy, Check, Wallet, LogOut, ChevronDown, ExternalLink } from "lucide-react";
 
 /**
@@ -76,32 +77,38 @@ export function WalletConnectButton({
     return () => window.removeEventListener("keydown", close);
   }, [open]);
 
-  useEffect(() => {
-    if (!pendingWalletName || connecting || connected) return;
-    if (wallet?.adapter.name !== pendingWalletName) return;
-
-    let cancelled = false;
-    void connect()
-      .catch(() => {
-        /* user rejected or wallet not installed */
-      })
-      .finally(() => {
-        if (!cancelled) setPendingWalletName(null);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [pendingWalletName, wallet, connecting, connected, connect]);
-
+  // Connect inside the click itself (a user gesture), straight on the chosen
+  // adapter, so the wallet's approval pop-up always opens on the first click.
+  // Waiting for a later render/effect could miss it (adapter not ready yet, or a
+  // stale auto-connect still running), which looked like "nothing happens".
   const pick = useCallback(
     (name: (typeof wallets)[number]["adapter"]["name"]) => {
       setOpen(false);
+      const entry = wallets.find((w) => w.adapter.name === name);
+      if (!entry) return;
+      if (entry.readyState === "NotDetected" || entry.readyState === "Unsupported") {
+        toast.message(`${name} is not installed in this browser. Opening its website.`);
+        window.open(entry.adapter.url, "_blank", "noopener,noreferrer");
+        return;
+      }
       setPendingWalletName(name);
       select(name);
       onPick?.();
+      entry.adapter
+        .connect()
+        .catch((error: unknown) => {
+          const raw = error instanceof Error ? error.message : "";
+          if (/reject|cancel|denied/i.test(raw)) {
+            toast.message("Wallet connection cancelled.");
+          } else {
+            toast.error(
+              `${name} did not connect. Unlock the wallet and try again.`,
+            );
+          }
+        })
+        .finally(() => setPendingWalletName(null));
     },
-    [select, onPick],
+    [wallets, select, onPick],
   );
 
   if (connected && address) {
@@ -177,11 +184,10 @@ export function WalletConnectButton({
     <div className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        disabled={connecting}
         className="inline-flex items-center gap-1.5 sm:gap-2 whitespace-nowrap rounded-full bg-[image:var(--gradient-hero)] text-white px-3 sm:px-4 py-2 text-sm font-semibold shadow-[var(--shadow-soft)] hover:opacity-95 transition disabled:opacity-60"
       >
         <Wallet className="w-4 h-4" />
-        {connecting ? (
+        {pendingWalletName ? (
           "Connecting…"
         ) : (
           <span>
