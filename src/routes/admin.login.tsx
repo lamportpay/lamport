@@ -38,6 +38,8 @@ function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [resetMode, setResetMode] = useState(false);
 
   // Already signed in as an admin: go straight in.
   useEffect(() => {
@@ -60,6 +62,21 @@ function AdminLoginPage() {
     event.preventDefault();
     setBusy(true);
     setError(null);
+    setMessage(null);
+    if (resetMode) {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/auth/reset`,
+      });
+      setBusy(false);
+      if (resetError) {
+        setError("Could not send the reset email. Please try again in a few minutes.");
+        return;
+      }
+      setMessage(
+        "If an account exists for that email, a password reset link is on its way. Check your inbox and spam folder.",
+      );
+      return;
+    }
     const result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (result.error || !result.data.session) {
       setBusy(false);
