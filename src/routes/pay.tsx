@@ -61,6 +61,7 @@ import type { PayoutCountry } from "@/lib/payout-countries";
 import { requestWalletConnect, requestWalletSignIn, useAppWallet } from "@/lib/wallet-state";
 import { chargesFee, splitTotal, type FeeModel } from "@/lib/payments/fee-math";
 import { PaymentApiError, paymentApi, type FieldIssue } from "@/lib/payments/api-client";
+import { saveLocalPayment } from "@/lib/payments/local-history";
 import type { LiveEstimate } from "@/lib/payments/live-estimate.server";
 import type { KycStatus, PaymentView } from "@/lib/payments/view";
 import {
@@ -1484,6 +1485,27 @@ function PaymentPanel({
     // each poll lets the server re-read the transfer from Stables (throttled).
     refetchIntervalInBackground: true,
   });
+  // Remember this payment (and where it stopped) in the browser for History.
+  useEffect(() => {
+    const p = payment.data;
+    if (!p) return;
+    saveLocalPayment({
+      id: p.id,
+      status: p.status,
+      terminal: p.terminal,
+      createdAt: p.createdAt,
+      source: { currency: p.source.currency, amount: p.source.amount },
+      destination: {
+        currency: p.destination.currency,
+        country: p.destination.country,
+        amount: p.destination.amount,
+      },
+      actualPayout: null,
+      accountHolder: null,
+      failureReason: p.failureReason,
+      lastStep: p.status,
+    });
+  }, [payment.data]);
   const setPayment = (p: PaymentView) => queryClient.setQueryData(key, p);
   // Shares the KycCard's query: the verified name locks the account holder.
   const kyc = useQuery({
