@@ -503,3 +503,74 @@ export const getCustomerIdentities = createServerFn({ method: "GET" })
       })),
     };
   });
+
+/**
+ * Verified customers: wallet ↔ name ↔ email ↔ Stables status. With sync=true it
+ * first refreshes every LamportPay customer from Stables (names and emails come
+ * from Stables; emails are shown, never stored).
+ */
+export const getVerifiedCustomers = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { sync?: boolean }) => z.object({ sync: z.boolean().optional() }).parse(input ?? {}))
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context);
+    const { supabase } = context;
+    const [wallets, customers, paid] = await Promise.all([
+      supabase.from("user_wallets").select("user_id, address").limit(1000),
+      supabase
+        .from("stables_customers")
+        .select("user_id, stables_customer_id, first_name, last_name, verification_status, base_payout_status, verified_at")
+        .limit(1000),
+      supabase.from("payments").select("user_id").eq("status", "COMPLETED").limit(5000),
+    ]);
+    if (wallets.error || customers.error || paid.error) throw new Error("Could not load customers.");
+    const known = new Set<string>([
+      ...(wallets.data ?? []).map((w) => w.user_id),
+      ...(customers.data ?? []).map((c) => c.user_id),
+    ]);
+    let emails = new Map<string, string | null>();
+    let syncError: string | null = null;
+    let rows = customers.data ?? [];
+    if (data.sync) {
+      try {
+        const { syncCustomersFromStables } = await import("@/lib/payments/service.server");
+        const synced = await syncCustomersFromStables(known);
+        emails = new Map(synced.map((s) => [s.userId, s.email]));
+        const byUser = new Map(rows.map((r) => [r.user_id, r]));
+        for (const s of synced) {
+          byUser.set(s.userId, {
+            user_id: s.userId,
+            stables_customer_id: s.stablesCustomerId,
+            first_name: s.firstName,
+            last_name: s.lastName,
+            verification_status: s.verificationStatus,
+            base_payout_status: s.basePayoutStatus,
+            verified_at: byUser.get(s.userId)?.verified_at ?? null,
+          });
+        }
+        rows = [...byUser.values()];
+      } catch (e) {
+        syncError = e instanceof Error ? e.message : "Stables sync failed.";
+      }
+    }
+    const completed = new Map<string, number>();
+    for (const p of paid.data ?? []) completed.set(p.user_id, (completed.get(p.user_id) ?? 0) + 1);
+    const walletsOf = new Map<string, string[]>();
+    for (const w of wallets.data ?? []) walletsOf.set(w.user_id, [...(walletsOf.get(w.user_id) ?? []), w.address]);
+    return {
+      syncError,
+      synced: Boolean(data.sync) && !syncError,
+      customers: rows.map((r) => ({
+        userId: r.user_id,
+        wallets: walletsOf.get(r.user_id) ?? [],
+        firstName: r.first_name,
+        lastName: r.last_name,
+        email: emails.get(r.user_id) ?? null,
+        stablesCustomerId: r.stables_customer_id,
+        verified: r.verification_status === "approved" && r.base_payout_status === "approved",
+        verificationStatus: r.verification_status,
+        completedPayments: completed.get(r.user_id) ?? 0,
+        verifiedAt: r.verified_at,
+      })),
+    };
+  });

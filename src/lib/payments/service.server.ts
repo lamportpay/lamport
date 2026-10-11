@@ -458,9 +458,76 @@ async function advanceKycPayments(
   }
 }
 
+/**
+ * Automatic detection: a signed-in account (one per wallet) with no stored
+ * Stables record is looked up at Stables by its external_customer_id, so a
+ * customer Stables already verified is recognised without re-entering name or
+ * email. Never throws; a miss or provider error just leaves it unregistered.
+ */
+async function autoDetectCustomer(
+  config: ReturnType<typeof getStablesConfig>,
+  userId: string,
+): Promise<StablesCustomerRow | null> {
+  if (!config.configured) return null;
+  try {
+    const { customers } = await stables.listCustomers(config as Configured);
+    const match = customers.find((c) => c.external_customer_id === userId);
+    if (!match) return null;
+    const row = await ledger.upsertStablesCustomer({
+      user_id: userId,
+      stables_customer_id: match.customer_id,
+    });
+    return await syncCustomer(userId, row, match, "api");
+  } catch (e) {
+    if (e instanceof StablesError) return null;
+    throw e;
+  }
+}
+
+/**
+ * Admin: pull every Stables customer and refresh the stored record of each one
+ * that belongs to a LamportPay account (external_customer_id = our user id).
+ * Returns names and emails as Stables holds them; emails are not stored.
+ */
+export async function syncCustomersFromStables(knownUserIds: Set<string>) {
+  const config = getStablesConfig();
+  if (!config.configured) throw new PaymentError("Stables is not configured.", 503, "stables_unconfigured");
+  const { customers } = await stables.listCustomers(config as Configured);
+  const out: Array<{
+    userId: string;
+    stablesCustomerId: string;
+    firstName: string | null;
+    lastName: string | null;
+    email: string | null;
+    verified: boolean;
+    verificationStatus: string | null;
+    basePayoutStatus: string | null;
+  }> = [];
+  for (const c of customers) {
+    const userId = c.external_customer_id;
+    if (!userId || !knownUserIds.has(userId)) continue;
+    const existing =
+      (await ledger.getStablesCustomerForUser(userId)) ??
+      (await ledger.upsertStablesCustomer({ user_id: userId, stables_customer_id: c.customer_id }));
+    const row = await syncCustomer(userId, existing, c, "api");
+    out.push({
+      userId,
+      stablesCustomerId: c.customer_id,
+      firstName: row.first_name ?? null,
+      lastName: row.last_name ?? null,
+      email: c.email ?? null,
+      verified: isCustomerApproved(row),
+      verificationStatus: row.verification_status ?? null,
+      basePayoutStatus: row.base_payout_status ?? null,
+    });
+  }
+  return out;
+}
+
 export async function getKycStatus(user: AuthenticatedUser): Promise<KycStatus> {
   let row = await ledger.getStablesCustomerForUser(user.id);
   const config = getStablesConfig();
+  if (!row) row = await autoDetectCustomer(config, user.id);
   // Returning verified (or rejected) customers are answered from our own
   // record: no Stables lookup on every visit. Only an open verification is
   // refreshed from Stables (webhooks also keep the record current).

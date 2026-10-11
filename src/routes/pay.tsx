@@ -1163,7 +1163,6 @@ function ConvertForm({
         </form>
       </GlowCard>
       <TrustList row />
-      {signedIn && <KycCard compact />}
       <MobileDock className="sm:hidden">
         <div className="mb-2 flex items-baseline justify-between gap-3 text-xs">
           <span className="text-muted-foreground">You receive</span>
