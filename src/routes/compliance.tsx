@@ -139,46 +139,6 @@ function Compliance() {
         </div>
 
         <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
-          <div className="font-semibold">Infrastructure and regulatory context</div>
-          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-            LamportPay's payout partner is{" "}
-            <a
-              href="https://www.stables.money/legal/about-us"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              Stables
-            </a>
-            . Stables Money is listed in the{" "}
-            <a
-              href="https://partners.circle.com/directory/stables-money"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              official Circle Alliance Directory
-            </a>{" "}
-            and uses Circle products including USDC, EURC and CCTP.
-          </p>
-          <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-            Circle's licenses cover Circle's own regulated activities. They do not automatically
-            license, authorize, endorse or extend regulatory coverage to Stables, LamportPay or any
-            other company that uses Circle's products. LamportPay does not claim to be licensed by
-            Circle. Stables' own licensing and regulatory information is published on{" "}
-            <a
-              href="https://www.stables.money/legal"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              its legal page
-            </a>
-            .
-          </p>
-        </div>
-
-        <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
           <div className="font-semibold">Company information</div>
           <dl className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
             <div>

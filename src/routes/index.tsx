@@ -42,7 +42,7 @@ export const Route = createFileRoute("/")({
       path: "/",
       title: "LamportPay — Crypto in. Local money out.",
       description:
-        "Crypto-to-fiat payments for Solana and major digital assets. LamportPay routes supported Solana assets through Jupiter today, with Hyperliquid integration planned. Demo mode.",
+        "Send crypto, the recipient receives local currency. LamportPay is a Solana-first crypto-to-local-currency payment routing demo with a live SOL to USDC swap leg.",
     }),
   component: Index,
 });
@@ -93,7 +93,8 @@ function Hero() {
             <span className="absolute inset-0 rounded-full bg-[color:var(--success)] animate-live-dot" />
             <span className="relative rounded-full w-2 h-2 bg-[color:var(--success)]" />
           </span>
-          <Sparkles className="w-3.5 h-3.5 text-primary" /> Multi-asset routing · Live: Solana via Jupiter · Hyperliquid planned ·
+          <Sparkles className="w-3.5 h-3.5 text-primary" /> Solana-first routing · Demo mode ·
+          Jupiter swap preview
         </div>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.03] max-w-4xl mx-auto">
           Send crypto.
@@ -207,7 +208,7 @@ function WhySection() {
       <div className="max-w-7xl mx-auto px-5">
         <SectionHead
           eyebrow="Why LamportPay"
-          title="Built for a multi-asset payout flow, starting with the live Solana route via Jupiter."
+          title="Built for a future payout flow, starting with a Jupiter swap demo."
         />
         <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {items.map(({ icon: Icon, title, desc, stat, statLabel }) => (
@@ -242,7 +243,7 @@ function WhySection() {
 
 function HowItWorksSection() {
   const steps = [
-    { t: "Choose crypto", sub: "SOL · USDC · USDT" },
+    { t: "Choose crypto", sub: "SOL · USDC · JUP" },
     { t: "View mock payout quote", sub: "Mock FX + fees" },
     { t: "Mock KYC step", sub: "Demo only" },
     { t: "Settle through USDC", sub: "On-chain, ~1s" },
@@ -313,7 +314,7 @@ function AIAssistant() {
 
   function parse() {
     const amountMatch = input.match(/(\d+(?:\.\d+)?)/);
-    const tokenMatch = input.match(/\b(USDC|USDT|SOL)\b/i);
+    const tokenMatch = input.match(/\b(USDC|USDT|SOL|JUP|RAY|PYTH|BONK)\b/i);
     const map: Record<string, [string, string]> = {
       pakistan: ["Pakistan", "PKR"],
       nigeria: ["Nigeria", "NGN"],

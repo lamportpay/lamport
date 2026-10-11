@@ -10,7 +10,7 @@ export const Route = createFileRoute("/whitepaper")({
       path: "/whitepaper",
       title: "LamportPay White Paper: Architecture and Roadmap",
       description:
-        "Executive summary, settlement architecture, compliance positioning and roadmap for LamportPay's multi-asset payment routing platform.",
+        "Executive summary, settlement architecture, compliance positioning and roadmap for LamportPay's Solana-first payment routing platform.",
     }),
   component: Whitepaper,
 });
@@ -20,7 +20,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "1. Executive summary",
     body: (
       <p>
-        LamportPay is a multi-asset crypto-to-local-currency payment routing platform. It helps
+        LamportPay is a Solana-first crypto-to-local-currency payment routing platform. It helps
         users pay with supported crypto assets, settle through USDC, and route local-currency payout
         requests through licensed regulated settlement partners.
       </p>
@@ -237,7 +237,7 @@ function Whitepaper() {
           LamportPay: crypto-to-local-currency payment routing.
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          A multi-asset, USDC-settled, partner-orchestrated payment routing platform.
+          A Solana-first, USDC-settled, partner-orchestrated payment routing platform.
         </p>
 
         <div className="mt-14 grid md:grid-cols-[220px_1fr] gap-10">

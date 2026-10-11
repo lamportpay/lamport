@@ -16,15 +16,12 @@ import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PayRouteImport } from './routes/pay'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SwapRouteImport } from './routes/swap'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as WorkflowRouteImport } from './routes/workflow'
-import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
@@ -32,8 +29,6 @@ import { Route as ApiKycRouteImport } from './routes/api/kyc'
 import { Route as AuthResetRouteImport } from './routes/auth.reset'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAuditLogsRouteImport } from './routes/_authenticated/admin.audit-logs'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
@@ -105,11 +100,6 @@ const HowItWorksRoute = HowItWorksRouteImport.update({
   path: '/how-it-works',
   getParentRoute: () => rootRouteImport,
 } as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PayRoute = PayRouteImport.update({
   id: '/pay',
   path: '/pay',
@@ -140,18 +130,6 @@ const WorkflowRoute = WorkflowRouteImport.update({
   path: '/workflow',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -187,17 +165,6 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -408,15 +375,12 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/mcp': typeof McpRoute
   '/pay': typeof PayRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
@@ -424,8 +388,6 @@ export interface FileRoutesByFullPath {
   '/auth/reset': typeof AuthResetRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/fees-revenue': typeof AuthenticatedAdminFeesRevenueRoute
@@ -470,23 +432,18 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/mcp': typeof McpRoute
   '/pay': typeof PayRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
   '/auth/reset': typeof AuthResetRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog': typeof BlogIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/fees-revenue': typeof AuthenticatedAdminFeesRevenueRoute
@@ -533,15 +490,12 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
-  '/mcp': typeof McpRoute
   '/pay': typeof PayRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
@@ -549,8 +503,6 @@ export interface FileRoutesById {
   '/auth/reset': typeof AuthResetRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/fees-revenue': typeof AuthenticatedAdminFeesRevenueRoute
@@ -597,15 +549,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/docs'
     | '/how-it-works'
-    | '/mcp'
     | '/pay'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/admin/login'
     | '/api/integration-status'
@@ -613,8 +562,6 @@ export interface FileRouteTypes {
     | '/auth/reset'
     | '/blog/$slug'
     | '/blog/'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
     | '/admin/audit-logs'
     | '/admin/dashboard'
     | '/admin/fees-revenue'
@@ -659,23 +606,18 @@ export interface FileRouteTypes {
     | '/contact'
     | '/docs'
     | '/how-it-works'
-    | '/mcp'
     | '/pay'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/admin/login'
     | '/api/integration-status'
     | '/api/kyc'
     | '/auth/reset'
     | '/blog/$slug'
     | '/blog'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
     | '/admin/audit-logs'
     | '/admin/dashboard'
     | '/admin/fees-revenue'
@@ -721,15 +663,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/docs'
     | '/how-it-works'
-    | '/mcp'
     | '/pay'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
     | '/whitepaper'
     | '/workflow'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/admin/login'
     | '/api/integration-status'
@@ -737,8 +676,6 @@ export interface FileRouteTypes {
     | '/auth/reset'
     | '/blog/$slug'
     | '/blog/'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/audit-logs'
     | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/fees-revenue'
@@ -785,22 +722,17 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DocsRoute: typeof DocsRoute
   HowItWorksRoute: typeof HowItWorksRoute
-  McpRoute: typeof McpRoute
   PayRoute: typeof PayRoute
   SendRoute: typeof SendRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SwapRoute: typeof SwapRoute
   WhitepaperRoute: typeof WhitepaperRoute
   WorkflowRoute: typeof WorkflowRoute
-  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
-  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
   ApiKycRoute: typeof ApiKycRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
-  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
-  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiCronReconcilePaymentsRoute: typeof ApiCronReconcilePaymentsRoute
   ApiJupiterExecuteRoute: typeof ApiJupiterExecuteRoute
   ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
@@ -876,13 +808,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HowItWorksRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/pay': {
       id: '/pay'
       path: '/pay'
@@ -923,20 +848,6 @@ declare module '@tanstack/react-router' {
       path: '/workflow'
       fullPath: '/workflow'
       preLoaderRoute: typeof WorkflowRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -986,20 +897,6 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1323,23 +1220,17 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DocsRoute: DocsRoute,
   HowItWorksRoute: HowItWorksRoute,
-  McpRoute: McpRoute,
   PayRoute: PayRoute,
   SendRoute: SendRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SwapRoute: SwapRoute,
   WhitepaperRoute: WhitepaperRoute,
   WorkflowRoute: WorkflowRoute,
-  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
-  Char91DotwellKnownChar93OauthProtectedResourceRoute:
-    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
   ApiKycRoute: ApiKycRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
-  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
-  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiCronReconcilePaymentsRoute: ApiCronReconcilePaymentsRoute,
   ApiJupiterExecuteRoute: ApiJupiterExecuteRoute,
   ApiJupiterOrderRoute: ApiJupiterOrderRoute,
