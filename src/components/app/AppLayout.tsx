@@ -5,7 +5,10 @@
  * product of its own, reached from the marketing site's "Convert" button.
  */
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { BadgeCheck } from "lucide-react";
+import { paymentApi } from "@/lib/payments/api-client";
+import type { KycStatus } from "@/lib/payments/view";
 import { ChevronRight, History, LogOut, Send, UserRound, Wallet } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
@@ -314,6 +317,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               Solana
             </span>
             <AppWalletIsland />
+            <VerifiedBadge />
             {/* Phones: the account is a tab in the bottom bar. */}
             <div className="hidden sm:flex">
               <Account />
@@ -367,5 +371,28 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </nav>
       <AccountSheet open={accountOpen} onOpenChange={setAccountOpen} />
     </div>
+  );
+}
+
+/** A green check by the wallet when Stables has verified this wallet's account. */
+function VerifiedBadge() {
+  const account = useAccount();
+  const signedIn = account.status === "signed_in";
+  const kyc = useQuery({
+    queryKey: ["kyc"],
+    queryFn: async () => (await paymentApi<KycStatus>("/api/kyc")).data,
+    enabled: signedIn,
+    staleTime: 60_000,
+  });
+  if (!signedIn || kyc.data?.state !== "kyc_verified") return null;
+  return (
+    <span
+      title="Verified customer"
+      aria-label="Verified customer"
+      className="inline-flex items-center gap-1 rounded-full border border-[color:var(--neon-lime)]/50 bg-card/70 px-2 py-1.5 text-xs font-medium text-foreground"
+    >
+      <BadgeCheck className="w-4 h-4 text-[color:var(--neon-lime)]" />
+      <span className="hidden md:inline">Verified</span>
+    </span>
   );
 }
