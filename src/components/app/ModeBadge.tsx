@@ -6,7 +6,7 @@
  * exists (and is approved), after an explicit confirmation, and only then
  * navigates there. Every request is audited server-side.
  */
-import { AlertTriangle, FlaskConical, Loader2, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Loader2, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -62,8 +62,12 @@ export function ModeBadge() {
     }
   };
 
+  // TEST MODE has no header badge (sandbox notices sit at the quote and Pay Now
+  // steps); LIVE MODE and a broken setup always show it.
+  if (indicator.tone === "test") return null;
+
   const Icon =
-    indicator.tone === "test" ? FlaskConical : indicator.tone === "loading" ? Loader2 : ShieldAlert;
+    indicator.tone === "loading" ? Loader2 : ShieldAlert;
 
   return (
     <div className="relative">

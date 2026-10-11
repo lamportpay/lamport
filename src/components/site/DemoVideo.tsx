@@ -100,9 +100,6 @@ export function DemoVideo() {
           <span className="flex items-center gap-1.5">
             <Volume2 className="w-3.5 h-3.5" /> With sound
           </span>
-          <span className="rounded-full border border-[color:var(--warning)]/40 bg-card/70 px-3 py-1 font-medium">
-            DEMO · TEST MODE
-          </span>
         </div>
 
         <div className="mt-8 grid gap-3 md:grid-cols-3">
