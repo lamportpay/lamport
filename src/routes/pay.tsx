@@ -61,6 +61,7 @@ import type { PayoutCountry } from "@/lib/payout-countries";
 import { requestWalletConnect, requestWalletSignIn, useAppWallet } from "@/lib/wallet-state";
 import { chargesFee, splitTotal, type FeeModel } from "@/lib/payments/fee-math";
 import { PaymentApiError, paymentApi, type FieldIssue } from "@/lib/payments/api-client";
+import { saveLocalPayment } from "@/lib/payments/local-history";
 import type { LiveEstimate } from "@/lib/payments/live-estimate.server";
 import type { KycStatus, PaymentView } from "@/lib/payments/view";
 import {
