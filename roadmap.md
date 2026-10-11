@@ -1,5 +1,12 @@
 # Roadmap
 
+## Future exploration update
+
+- [x] Separate existing Solana / Jupiter integration from planned additional cryptocurrencies, Hyperliquid and provider APIs
+- [x] Present Circle and Tether as future partnership opportunities, not confirmed relationships
+- [x] Share expanded future plans between homepage and whitepaper; preserve timeline animation and demo safeguards
+- [ ] Verify updated future exploration and roadmap on both pages
+
 ## Partner positioning
 
 - [x] Describe confirmed businesses as ready to adopt LamportPay's payment services, not live integrations or payout providers

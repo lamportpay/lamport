@@ -35,16 +35,16 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     title: "Liquidity and asset integrations",
     status: "proposed",
     summary:
-      "Explore additional liquidity providers, supported tokens, stablecoins and potential Bitcoin / Ethereum integration paths.",
-    dependsOn: "Technical feasibility, liquidity coverage and supported asset routes.",
+      "Plan Hyperliquid integration for major digital assets, explore Bitcoin, Ethereum and additional cryptocurrencies, and evaluate other liquidity-provider APIs alongside the existing Solana / Jupiter route.",
+    dependsOn: "Validated asset routes, network compatibility, liquidity coverage and provider API testing.",
   },
   {
     phase: 4,
     title: "Partnerships and market expansion",
     status: "proposed",
     summary:
-      "Develop payout-partner relationships, expand supported fiat currencies and countries, and explore integrations with relevant businesses and platforms.",
-    dependsOn: "Payout coverage and local compliance requirements for each corridor.",
+      "Pursue future partnership opportunities with Circle and Tether, evaluate stablecoin-related APIs, and grow business onboarding and payout coverage. These relationships are planned, not confirmed.",
+    dependsOn: "Provider agreements, API access and compliance readiness for each market.",
   },
   {
     phase: 5,
@@ -57,7 +57,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
 ];
 
 export const ROADMAP_NOTE =
-  "A milestone-led roadmap. Phase 1 is in test mode; later phases are planned. Timing depends on technical readiness, payout coverage and compliance requirements.";
+  "A milestone-led roadmap. Solana / Jupiter is integrated; Phase 1 remains in test mode. Hyperliquid, additional asset routes, provider APIs and Circle / Tether partnership opportunities are planned, not current capabilities or confirmed relationships. No delivery dates are committed.";
 
 /** What works today (test mode: Solana devnet + partner sandbox, no real funds). */
 export const CURRENT_FLOW = [
@@ -69,12 +69,28 @@ export const CURRENT_FLOW = [
 
 /** Future exploration only: none of these are current capabilities. */
 export const FUTURE_EXPLORATION = [
-  "Bitcoin",
-  "Ethereum",
-  "Additional chains",
-  "More stablecoins",
-  "Wider liquidity providers",
-  "More fiat corridors",
-  "B2B payout APIs",
-  "Remittance use cases",
+  {
+    title: "More cryptocurrencies & networks",
+    detail: "Explore Bitcoin, Ethereum and additional cryptocurrencies beyond today's Solana route. Each asset and network needs its own validated intake and conversion path.",
+  },
+  {
+    title: "Hyperliquid integration",
+    detail: "Plan a future liquidity route for major digital assets alongside Solana / Jupiter. Hyperliquid trading, deposits and withdrawals remain disabled.",
+  },
+  {
+    title: "Additional provider APIs",
+    detail: "Evaluate and connect further conversion and liquidity-provider APIs as coverage expands, while preserving the existing Jupiter integration.",
+  },
+  {
+    title: "Circle partnership opportunities",
+    detail: "Pursue a future relationship with Circle and evaluate relevant stablecoin services and APIs. No direct partnership or integration is confirmed.",
+  },
+  {
+    title: "Tether partnership opportunities",
+    detail: "Pursue a future relationship with Tether and explore additional stablecoin support. No partnership, integration or new payment asset is confirmed.",
+  },
+  {
+    title: "Broader payments ecosystem",
+    detail: "Explore more fiat corridors, business payment APIs and remittance use cases, while continuing discussions with businesses ready to adopt LamportPay.",
+  },
 ] as const;

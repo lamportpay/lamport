@@ -30,7 +30,7 @@ export function FutureVisionSection() {
         <Heading
           eyebrow="Future vision"
           title="From a Solana off-ramp to multi-asset payouts."
-          intro="What works today, and what we plan to explore next. Only the first row is built."
+          intro="Solana / Jupiter is integrated today. Our next steps explore more cryptocurrencies, liquidity routes and future provider relationships."
         />
 
         <div className="mt-10 rounded-3xl border border-[color:var(--success)]/40 bg-card/80 p-6 md:p-8">
@@ -54,23 +54,27 @@ export function FutureVisionSection() {
           </p>
         </div>
 
-        <div className="mt-4 rounded-3xl border border-dashed border-[color:var(--neon-cyan)]/50 bg-card/50 p-6 md:p-8">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--neon-cyan)]">
-            <Compass className="w-4 h-4" /> Future exploration · not current functionality
+        <div className="mt-10 border-t border-border pt-8">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+            <Compass className="w-4 h-4" /> PLANNED · Future exploration
           </div>
-          <ul className="mt-5 flex flex-wrap gap-2.5">
-            {FUTURE_EXPLORATION.map((f) => (
+          <ul className="mt-6 grid gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-3">
+            {FUTURE_EXPLORATION.map((f, index) => (
               <li
-                key={f}
-                className="rounded-full border border-dashed border-[color:var(--neon-cyan)]/50 px-4 py-1.5 text-sm font-medium"
+                key={f.title}
+                className="min-w-0 border-l border-primary/40 pl-4"
               >
-                {f}
+                <span className="font-mono text-xs text-primary">{String(index + 1).padStart(2, "0")}</span>
+                <h3 className="mt-2 font-semibold leading-snug">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.detail}</p>
               </li>
             ))}
           </ul>
           <p className="mt-4 text-xs text-muted-foreground">
-            Each depends on technical feasibility, partner support and compliance review. No
-            delivery dates are committed.
+            These plans are separate from what is built. Bitcoin, Ethereum and additional assets
+            are not available for deposits today. Circle and Tether are future partnership goals,
+            not confirmed partners. All new routes depend on feasibility, provider agreements and
+            compliance review; no delivery dates are committed.
           </p>
         </div>
       </div>

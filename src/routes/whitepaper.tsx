@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
-import { ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
+import { FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
 
 export const Route = createFileRoute("/whitepaper")({
   head: () =>
@@ -116,8 +116,9 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "9. Settlement partner layer",
     body: (
       <p>
-        Start with a single regulated payout infrastructure partner, then add further partners
-        later, Bitso, and Yellow Card.
+        Stables is the current payout infrastructure provider in sandbox mode. Additional
+        provider APIs and future Circle and Tether partnership opportunities are planned,
+        not confirmed relationships or live integrations.
       </p>
     ),
   },
@@ -125,8 +126,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "10. Supported assets",
     body: (
       <p>
-        USDC on Solana for payouts. SOL can be swapped to USDC in the user's own wallet first. More
-        tokens are planned.
+        USDC on Solana is the current payment asset. Solana / Jupiter is integrated, with live
+        quotes in test mode. Bitcoin, Ethereum, additional cryptocurrencies and networks are
+        future exploration only, not available for deposits today. Hyperliquid integration is
+        planned; its trading, deposits and withdrawals remain disabled.
       </p>
     ),
   },
@@ -193,10 +196,19 @@ const sections: { title: string; body: React.ReactNode }[] = [
         <List
           items={ROADMAP_PHASES.map(
             (p) =>
-              `Phase ${p.phase}: ${p.title}${p.status === "current" ? " (current focus)" : ""}`,
+              `Phase ${p.phase}: ${p.title} (${p.status === "current" ? "DEMO / TEST MODE" : "PLANNED"}). ${p.summary} Milestone: ${p.dependsOn}`,
           )}
         />
         <p className="text-sm">{ROADMAP_NOTE}</p>
+        <h3 className="pt-3 font-semibold text-foreground">PLANNED · Future exploration</h3>
+        <ul className="space-y-4">
+          {FUTURE_EXPLORATION.map((item) => (
+            <li key={item.title}>
+              <span className="font-semibold text-foreground">{item.title}. </span>
+              {item.detail}
+            </li>
+          ))}
+        </ul>
       </div>
     ),
   },
