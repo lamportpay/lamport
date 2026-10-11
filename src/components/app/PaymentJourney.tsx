@@ -71,12 +71,13 @@ function TxLink({
 
 // ------------------------------------------------------------------ stepper
 
-/** The seven steps of the conversion, as the user sees them. */
+/** The eight steps of the conversion, as the user sees them. */
 export const DAPP_STEPS = [
   "Connect",
   "Select",
   "Quote",
   "Review",
+  "Verify",
   "Sign",
   "Processing",
   "Complete",
@@ -98,11 +99,13 @@ export function dappStepFor(p: PaymentView): number {
   if (p.status === "COMPLETED") return DAPP_STEPS.length;
   // A detected payment (LIVE funding, or the TEST MODE devnet transaction) is
   // past "Sign" even while Stables still reports the transfer as waiting.
-  if (PROCESSING.has(p.status) || p.funding || p.testPayment) return 5;
-  if (p.status === "CREATED" || p.status === "AWAITING_FUNDS_COLLECTION") return 4;
-  if (p.status === "QUOTED") return 3;
-  if (p.transferId) return 5;
-  return 2;
+  const at = (s: (typeof DAPP_STEPS)[number]) => DAPP_STEPS.indexOf(s);
+  if (PROCESSING.has(p.status) || p.funding || p.testPayment) return at("Processing");
+  // A transfer exists only for a verified customer, so "Verify" is done.
+  if (p.status === "CREATED" || p.status === "AWAITING_FUNDS_COLLECTION") return at("Sign");
+  if (p.status === "QUOTED") return at("Review");
+  if (p.transferId) return at("Processing");
+  return at("Quote");
 }
 
 const STEP_META: Record<(typeof DAPP_STEPS)[number], { hint: string; icon: typeof Check }> = {
@@ -110,6 +113,7 @@ const STEP_META: Record<(typeof DAPP_STEPS)[number], { hint: string; icon: typeo
   Select: { hint: "Amount and destination", icon: Coins },
   Quote: { hint: "Live rate and costs", icon: Receipt },
   Review: { hint: "Your bank details", icon: ClipboardCheck },
+  Verify: { hint: "Identity check, after review", icon: ShieldCheck },
   Sign: { hint: "Approve in your wallet", icon: PenLine },
   Processing: { hint: "Conversion and payout", icon: RefreshCw },
   Complete: { hint: "Paid to your bank", icon: BadgeCheck },
