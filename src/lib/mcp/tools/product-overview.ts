@@ -14,7 +14,7 @@ export default defineTool({
       contact: "hello@lamportpay.com",
       tagline: "Crypto in. Local money out.",
       headline: "Crypto-to-Fiat Payments for Solana and Major Digital Assets",
-      model: "Multi-asset crypto → USDC settlement → local fiat. Live route: Solana/SPL → Jupiter → USDC. Planned: major digital assets → Hyperliquid integration → USDC (not live).",
+      model: "Multi-asset crypto → USDC settlement → local fiat. Live route: Solana/SPL → Jupiter → USDC. In progress: major digital assets → Hyperliquid integration → USDC (not live).",
       liveCapabilities: [
         "Live Solana route via Jupiter (example SOL to USDC) with wallet signing (Phantom, Solflare)",
         "Solana RPC health and transaction verification (mainnet, devnet, testnet)",

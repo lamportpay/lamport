@@ -129,7 +129,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         USDC on Solana is the current payment asset. Solana / Jupiter is integrated, with live
         quotes in test mode. Bitcoin, Ethereum, additional cryptocurrencies and networks are
         future exploration only, not available for deposits today. Hyperliquid integration is
-        planned; its trading, deposits and withdrawals remain disabled.
+        in progress; its trading, deposits and withdrawals remain disabled.
       </p>
     ),
   },

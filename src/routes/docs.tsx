@@ -17,7 +17,7 @@ export const Route = createFileRoute("/docs")({
 const stack = [
   { k: "Frontend", v: "Next.js + Tailwind CSS" },
   { k: "Backend", v: "API routes and payment state machine" },
-  { k: "Liquidity", v: "Jupiter (planned)" },
+  { k: "Liquidity", v: "Jupiter (integrated)" },
   { k: "Settlement", v: "Regulated payout partner (planned)" },
   { k: "Blockchain", v: "Solana + USDC" },
   { k: "Database", v: "Supabase / PostgreSQL (planned)" },
