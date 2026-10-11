@@ -470,7 +470,7 @@ async function autoDetectCustomer(
 ): Promise<StablesCustomerRow | null> {
   if (!config.configured) return null;
   try {
-    const { customers } = await stables.listCustomers(config as Configured);
+    const customers = (await stables.listCustomers(config as Configured))?.customers ?? [];
     const match = customers.find((c) => c.external_customer_id === userId);
     if (!match) return null;
     const row = await ledger.upsertStablesCustomer({
@@ -535,6 +535,8 @@ export async function getKycStatus(user: AuthenticatedUser): Promise<KycStatus> 
       state: "kyc_verified",
       status: "approved",
       basePayout: "approved",
+      kycLink: null,
+      kycLinkExpiresAt: null,
       verifiedAt: base.verifiedAt ?? verifiedWallet.verified_at,
       verifiedName: base.verifiedName ?? customerName(verifiedWallet),
     };
