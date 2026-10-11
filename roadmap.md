@@ -1,5 +1,12 @@
 # Roadmap
 
+## Done: Homepage demo video
+
+- [x] Add the 60-second walkthrough video to the homepage, between the transfer simulator and the route preview
+- [x] Keep it click-to-play with sound, labelled DEMO · TEST MODE, with the payout quote screen as the cover
+- [x] Draw the simulator's country flags from /public/flags instead of emoji, so they render on every desktop OS
+- [x] Verify the panel, cover, play button and flags in the preview; typecheck clean, 495 unit tests pass, build OK
+
 ## Future exploration update
 
 - [x] Separate existing Solana / Jupiter integration from planned additional cryptocurrencies, Hyperliquid and provider APIs
