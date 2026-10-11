@@ -14,6 +14,8 @@ export function DemoVideo() {
   const ref = useRef<HTMLVideoElement | null>(null);
   const [started, setStarted] = useState(false);
   const [ended, setEnded] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [coverOk, setCoverOk] = useState(true);
 
   function play() {
     const v = ref.current;
@@ -54,6 +56,14 @@ export function DemoVideo() {
         <div className="mt-10 rounded-3xl border border-border/60 bg-card/80 backdrop-blur p-2 md:p-3 shadow-[var(--shadow-elegant)] hover:shadow-[var(--shadow-neon)] transition">
           <div className="relative aspect-video rounded-2xl overflow-hidden bg-secondary">
             <div className="absolute inset-0 bg-[image:var(--gradient-uv)] opacity-15" />
+            {!playing && coverOk && (
+              <img
+                src={demoCover.url}
+                alt="LamportPay payout quote screen"
+                onError={() => setCoverOk(false)}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
             <video
               ref={ref}
               src={demoVideo.url}
@@ -61,6 +71,7 @@ export function DemoVideo() {
               preload="none"
               playsInline
               controls={started}
+              onPlaying={() => setPlaying(true)}
               onEnded={() => setEnded(true)}
               className="absolute inset-0 w-full h-full object-cover"
             />
