@@ -42,10 +42,11 @@ function base64Decode(value: string): Uint8Array | null {
 }
 
 async function verifyEd25519(publicKey: Uint8Array, signature: Uint8Array, message: Uint8Array) {
-  const key = await crypto.subtle.importKey("raw", publicKey, { name: "Ed25519" }, false, [
+  const buf = (b: Uint8Array) => new Uint8Array(b).buffer as ArrayBuffer;
+  const key = await crypto.subtle.importKey("raw", buf(publicKey), { name: "Ed25519" }, false, [
     "verify",
   ]);
-  return crypto.subtle.verify({ name: "Ed25519" }, key, signature, message);
+  return crypto.subtle.verify({ name: "Ed25519" }, key, buf(signature), buf(message));
 }
 
 export async function walletSignIn(input: {
