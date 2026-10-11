@@ -5,6 +5,7 @@ import {
   ECOSYSTEM_REGIONS,
   publicEcosystem,
   type EcosystemCompany,
+  type EcosystemRegion,
 } from "@/content/ecosystem";
 
 /**
@@ -160,6 +161,53 @@ export function RoadmapSection() {
   );
 }
 
+/**
+ * Country flags drawn as inline SVG. Unicode flag emoji do not render on every desktop
+ * OS (Windows shows letter pairs instead), so the partner flags box cannot rely on them.
+ */
+function FlagIcon({ id, className = "" }: { id: EcosystemRegion; className?: string }) {
+  const svg = "h-3.5 w-5";
+  return (
+    <span className={`inline-flex shrink-0 overflow-hidden rounded-[3px] ring-1 ring-foreground/15 ${className}`}>
+      {id === "USA" && (
+        <svg viewBox="0 0 24 16" className={svg} aria-hidden="true">
+          <rect width="24" height="16" fill="#fff" />
+          {Array.from({ length: 7 }, (_, i) => (
+            <rect key={i} x="0" y={i * 2 * (16 / 13)} width="24" height={16 / 13} fill="#B22234" />
+          ))}
+          <rect width="9.6" height={7 * (16 / 13)} fill="#3C3B6E" />
+          {Array.from({ length: 20 }, (_, i) => (
+            <circle
+              key={i}
+              cx={1.1 + (i % 5) * 1.9}
+              cy={1.1 + Math.floor(i / 5) * 1.8}
+              r="0.34"
+              fill="#fff"
+            />
+          ))}
+        </svg>
+      )}
+      {id === "UK" && (
+        <svg viewBox="0 0 24 16" className={svg} aria-hidden="true">
+          <rect width="24" height="16" fill="#012169" />
+          <path d="M0 0 24 16 M24 0 0 16" stroke="#fff" strokeWidth="3.4" />
+          <path d="M0 0 24 16 M24 0 0 16" stroke="#C8102E" strokeWidth="1.4" />
+          <path d="M12 0V16M0 8h24" stroke="#fff" strokeWidth="5" />
+          <path d="M12 0V16M0 8h24" stroke="#C8102E" strokeWidth="3" />
+        </svg>
+      )}
+      {id === "UAE" && (
+        <svg viewBox="0 0 24 16" className={svg} aria-hidden="true">
+          <rect width="24" height="16" fill="#fff" />
+          <rect width="24" height={16 / 3} fill="#00843D" />
+          <rect y={2 * (16 / 3)} width="24" height={16 / 3} fill="#000" />
+          <rect width="7" height="16" fill="#C8102E" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 function initials(name: string) {
   const words = name.split(/\s+/).filter((w) => /^[A-Za-z]/.test(w));
   return (words[0][0] + (words[1]?.[0] ?? "")).toUpperCase();
@@ -244,9 +292,7 @@ export function EcosystemSection() {
                 key={r.id}
                 className="flex items-center gap-2 rounded-xl border border-border/60 bg-background/80 px-3 py-1.5"
               >
-                <span aria-hidden className="text-lg leading-none">
-                  {r.flag}
-                </span>
+                <FlagIcon id={r.id} />
                 <span className="text-xs font-semibold uppercase tracking-wider">{r.label}</span>
               </span>
             ))}

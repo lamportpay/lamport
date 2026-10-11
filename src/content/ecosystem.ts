@@ -21,10 +21,10 @@ export type EcosystemCompany = {
   logo: string | null;
 };
 
-export const ECOSYSTEM_REGIONS: { id: EcosystemRegion; label: string; flag: string }[] = [
-  { id: "USA", label: "United States", flag: "🇺🇸" },
-  { id: "UK", label: "United Kingdom", flag: "🇬🇧" },
-  { id: "UAE", label: "United Arab Emirates", flag: "🇦🇪" },
+export const ECOSYSTEM_REGIONS: { id: EcosystemRegion; label: string }[] = [
+  { id: "USA", label: "United States" },
+  { id: "UK", label: "United Kingdom" },
+  { id: "UAE", label: "United Arab Emirates" },
 ];
 
 export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
