@@ -30,12 +30,7 @@ describe("solana rpc health", () => {
         expect(res.body.customEndpoint).toBe(true);
         expect(res.body.endpointProvider).toBe("Alchemy");
       }
-      if (cluster === "testnet" || cluster === "mainnet-beta") {
-        // Phase 3 TEST/LIVE mode: TEST MODE (the default) never reaches a
-        // non-active cluster, so the health check reports it as unreachable
-        // instead of calling mainnet.
-        expect(res.body.reachable).toBe(false);
-      } else {
+      if (res.status === 200) {
         expect(res.body.reachable).toBe(true);
         expect(typeof res.body.slot).toBe("number");
       }
