@@ -6,7 +6,6 @@
  */
 import "@/lib/buffer-polyfill";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 import { supabase } from "@/integrations/supabase/client";
