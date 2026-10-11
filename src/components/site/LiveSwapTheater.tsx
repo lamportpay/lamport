@@ -1,6 +1,7 @@
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CORRIDORS, TOKENS, TOKEN_USD, fmt } from "./demo-data";
+import { Flag } from "@/components/app/Flag";
 import {
   ArrowRight,
   Zap,
@@ -141,7 +142,7 @@ export function LiveSwapTheater() {
     "Jupiter",
     "USDC",
     "Payout partner",
-    `${current.corridor.flag} ${current.corridor.currency}`,
+    current.corridor.currency,
   ];
   const activeIdx = Math.min(nodes.length - 1, Math.floor(progress * nodes.length));
 
@@ -227,7 +228,7 @@ export function LiveSwapTheater() {
                   label="Recipient gets"
                   token={current.corridor.currency}
                   amount={fmt(current.local, 0)}
-                  flag={current.corridor.flag}
+                  flagCode={current.corridor.code}
                   highlight
                   usd={current.usd * 0.985}
                 />
@@ -265,7 +266,7 @@ export function LiveSwapTheater() {
                             {i === 1 && <span className="text-[10px] font-bold text-white">J</span>}
                             {i === 2 && <span className="text-[9px] font-bold text-white">$</span>}
                             {i === 3 && <Building2 className="w-3.5 h-3.5 text-white" />}
-                            {i === 4 && <span className="text-xs">{current.corridor.flag}</span>}
+                            {i === 4 && <Flag code={current.corridor.code} size={16} />}
                           </div>
                           <span
                             className={`text-[10px] font-mono ${active ? "text-white" : "text-white/40"}`}
@@ -391,14 +392,14 @@ function SwapPanel({
   amount,
   usd,
   highlight,
-  flag,
+  flagCode,
 }: {
   label: string;
   token: string;
   amount: string;
   usd: number;
   highlight?: boolean;
-  flag?: string;
+  flagCode?: string;
 }) {
   return (
     <div
@@ -420,8 +421,8 @@ function SwapPanel({
           {amount}
         </span>
         <div className="flex items-center gap-2 rounded-full bg-black/40 border border-white/10 px-3 py-1.5">
-          {flag ? (
-            <span className="text-lg leading-none">{flag}</span>
+          {flagCode ? (
+            <Flag code={flagCode} size={20} />
           ) : (
             <span
               className="w-5 h-5 rounded-full"

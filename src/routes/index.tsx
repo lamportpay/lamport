@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { TransferSimulator } from "@/components/site/TransferSimulator";
+import { DemoVideo } from "@/components/site/DemoVideo";
 import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
 import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater } from "@/components/site/LiveSwapTheater";
@@ -56,6 +57,7 @@ function Index() {
       <section className="max-w-7xl mx-auto px-5 -mt-4 md:-mt-10">
         <TransferSimulator />
       </section>
+      <DemoVideo />
       <LiveSwapTheater />
       <VerifiedUsers />
       <section className="max-w-7xl mx-auto px-5 mt-16 md:mt-24">

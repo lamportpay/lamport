@@ -7,13 +7,15 @@ export const TOKEN_USD: Record<Token, number> = {
   SOL: 165,
 };
 
+// Flags are drawn from /public/flags (see components/app/Flag.tsx) — never emoji,
+// because emoji flags don't render on every desktop OS.
 export const CORRIDORS = [
-  { country: "Pakistan", currency: "PKR", rate: 278, flag: "🇵🇰" },
-  { country: "Nigeria", currency: "NGN", rate: 1500, flag: "🇳🇬" },
-  { country: "Philippines", currency: "PHP", rate: 58, flag: "🇵🇭" },
-  { country: "Mexico", currency: "MXN", rate: 18, flag: "🇲🇽" },
-  { country: "Colombia", currency: "COP", rate: 4000, flag: "🇨🇴" },
-  { country: "Brazil", currency: "BRL", rate: 5.5, flag: "🇧🇷" },
+  { country: "Pakistan", currency: "PKR", rate: 278, code: "PK" },
+  { country: "Nigeria", currency: "NGN", rate: 1500, code: "NG" },
+  { country: "Philippines", currency: "PHP", rate: 58, code: "PH" },
+  { country: "Mexico", currency: "MXN", rate: 18, code: "MX" },
+  { country: "Colombia", currency: "COP", rate: 4000, code: "CO" },
+  { country: "Brazil", currency: "BRL", rate: 5.5, code: "BR" },
 ] as const;
 
 // Bank-to-bank payouts only (business decision).
