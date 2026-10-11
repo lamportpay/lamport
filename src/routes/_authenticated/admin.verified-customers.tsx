@@ -40,7 +40,7 @@ function VerifiedCustomersPage() {
             <p className="text-xs text-muted-foreground mt-1">
               Matched by wallet: each wallet is one LamportPay account, linked to its Stables
               customer. Customers are detected automatically when they connect their wallet.
-              Emails come live from Stables and are not stored.
+              A wallet stays verified for good after its first completed payment; its email is saved on the next sync.
             </p>
           </div>
           <Button size="sm" variant="outline" onClick={() => sync.mutate()} disabled={sync.isPending}>
