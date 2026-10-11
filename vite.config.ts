@@ -102,41 +102,20 @@ export default defineConfig(({ command, mode }) => {
           client: { files: ["**/server/**"], specifiers: ["server-only"] },
         },
       }),
-      // Nitro only runs for production builds. Preset defaults to "vercel";
-      // override with NITRO_PRESET (e.g. "node-server") for other targets.
-      // NITRO_NO_EXTERNALS=1 bundles all deps instead of tracing node_modules,
-      // which works around a Windows-only EISDIR error in the file tracer.
-      // Vercel Cron runs payment reconciliation (it sends CRON_SECRET as a
-      // bearer token). Daily by default because Hobby plans reject anything
-      // more frequent; set RECONCILE_CRON_SCHEDULE (e.g. "*/10 * * * *") on Pro.
+      // Nitro only runs for production builds. The build always packages as a
+      // Cloudflare worker into dist/ — the single deploy target (Lovable).
+      // Vercel deployment was removed (owner decision, 2026-10-11): testing
+      // happens in the Lovable preview, then push to GitHub, then publish to
+      // the main domain. Payment reconciliation runs on the backend scheduler
+      // (pg_cron every 5 min), not on a hosting cron.
       ...(command === "build"
         ? [
-            nitro(
-              // Lovable's publish pipeline deploys dist/ as a Cloudflare worker;
-              // everywhere else (Vercel, local) keeps the Vercel preset.
-              process.env.LOVABLE_SANDBOX === "1" || process.env.DEV_SERVER__PROJECT_PATH
-                ? {
-                    preset: "cloudflare-module",
-                    noExternals: true,
-                    output: { dir: "dist", serverDir: "dist/server", publicDir: "dist/client" },
-                    cloudflare: { nodeCompat: true, deployConfig: true },
-                  }
-                : {
-              preset: process.env.NITRO_PRESET || "vercel",
-              noExternals: process.env.NITRO_NO_EXTERNALS === "1",
-              vercel: {
-                config: {
-                  version: 3,
-                  crons: [
-                    {
-                      path: "/api/cron/reconcile-payments",
-                      schedule: process.env.RECONCILE_CRON_SCHEDULE || "0 5 * * *",
-                    },
-                  ],
-                },
-              },
-                  },
-            ),
+            nitro({
+              preset: "cloudflare-module",
+              noExternals: true,
+              output: { dir: "dist", serverDir: "dist/server", publicDir: "dist/client" },
+              cloudflare: { nodeCompat: true, deployConfig: true },
+            }),
           ]
         : []),
       viteReact(),
