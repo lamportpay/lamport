@@ -859,7 +859,9 @@ function ConvertForm({
       return;
     }
     if (differentWallet) {
-      // Never treat another wallet as the signed-in (possibly verified) identity.
+      // Never treat another wallet (or a wallet-less session) as this customer:
+      // sign in with the connected wallet, then carry on to the quote.
+      setQuoteAfterSignIn(true);
       void switchToConnectedWallet(() => queryClient.clear());
       return;
     }
