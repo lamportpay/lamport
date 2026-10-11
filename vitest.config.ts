@@ -12,6 +12,10 @@ export default defineConfig({
     fileParallelism: false,
   },
   resolve: {
-    alias: { "@": new URL("./src/", import.meta.url).pathname },
+    alias: {
+      "@": new URL("./src/", import.meta.url).pathname,
+      // Matches the vite.config.ts alias used by src/lib/buffer-polyfill.ts.
+      "lamportpay-real-buffer": new URL("./node_modules/buffer/index.js", import.meta.url).pathname,
+    },
   },
 });
