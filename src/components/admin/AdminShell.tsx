@@ -18,6 +18,7 @@ import {
   Settings,
   Users,
   type LucideIcon,
+  BadgeCheck,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
@@ -47,6 +48,7 @@ const ADMIN_NAV: { section: string; items: NavItem[] }[] = [
       { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
       { to: "/admin/payments", label: "Payments", icon: ReceiptText },
       { to: "/admin/users", label: "Users & roles", icon: Users },
+      { to: "/admin/verified-customers", label: "Verified customers", icon: BadgeCheck },
     ],
   },
   {
