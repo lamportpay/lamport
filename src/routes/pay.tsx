@@ -631,8 +631,8 @@ function ConvertForm({
         })
       ).data,
   });
-  const holdingsData = holdings.data;
-  const h = holdingsData?.status === "ok" ? holdingsData : null;
+  const h = walletKey && holdings.data?.status === "ok" ? holdings.data : null;
+
 
   const feeBps = h?.feeBps ?? configuredFee.bps ?? 0;
   const feeModel: FeeModel = {
