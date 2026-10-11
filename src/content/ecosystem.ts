@@ -1,6 +1,7 @@
 /**
  * Strategic ecosystem partners, confirmed by the owner on 11 Oct 2026.
- * Grouped by region (USA, UK, UAE). Logos are each company's own site icon.
+ * Businesses ready to adopt LamportPay services, grouped by region (USA, UK, UAE).
+ * Readiness does not mean completed onboarding or live payment processing.
  * No valuations, revenue, investments or commitments are stated.
  */
 import blissLogo from "@/assets/partners/bliss-rent.png.asset.json";
@@ -29,7 +30,7 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
   {
     name: "AGC Global Logistics",
     url: "https://agcgl.com/",
-    description: "Global logistics and freight services connecting businesses across borders.",
+    description: "UAE logistics business ready to adopt LamportPay's payment services for its business payment needs.",
     region: "UAE",
     sector: "Logistics",
     logo: null,
@@ -38,7 +39,7 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
     name: "Wharf Street Studios",
     url: "https://www.wharfstreetstudios.com/",
     description:
-      "US studio building immersive games and AI-produced films, with a focus on blockchain gaming.",
+      "US media and gaming studio ready to adopt LamportPay's payment services for its business payment needs.",
     region: "USA",
     sector: "Media & Gaming",
     logo: wharfLogo.url,
@@ -47,7 +48,7 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
     name: "ZOH Real Estate",
     url: "https://zoh.ae/",
     description:
-      "UAE real-estate firm offering property investment, purchase and property-management services.",
+      "UAE real-estate business ready to adopt LamportPay's payment services for its business payment needs.",
     region: "UAE",
     sector: "Real Estate",
     logo: zohLogo.url,
@@ -55,7 +56,7 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
   {
     name: "Bliss Rent",
     url: "https://bliss.rent/",
-    description: "Car-rental booking platform for Dubai airport rentals.",
+    description: "Dubai car-rental booking business ready to adopt LamportPay's payment services for car bookings and rentals.",
     region: "UAE",
     sector: "Mobility",
     logo: blissLogo.url,
@@ -64,7 +65,7 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
     name: "Secure Ledger Solutions",
     url: "https://secureledgerssolutions.com/",
     description:
-      "Crypto advisory firm offering institutional advisory, liquidity management, digital-asset protection and OTC support.",
+      "UK digital-asset advisory business ready to adopt LamportPay's payment services for its business payment needs.",
     region: "UK",
     sector: "Digital-asset advisory",
     logo: secureLedgerLogo.url,
