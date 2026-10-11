@@ -173,8 +173,6 @@ function AccountSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
   const signedIn = account.status === "signed_in";
   const differentWallet =
     signedIn && walletLinkOf(publicKey, account.wallets) === "different_wallet";
-  const next =
-    typeof window === "undefined" ? "/pay" : `${window.location.pathname}${window.location.search}`;
   const row =
     "flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-medium hover:bg-secondary active:bg-secondary transition-colors [-webkit-tap-highlight-color:transparent]";
   return (
