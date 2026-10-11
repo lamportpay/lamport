@@ -218,18 +218,40 @@ function CompanyCard({ c }: { c: EcosystemCompany }) {
 
 export function EcosystemSection() {
   const companies = publicEcosystem();
+  const present = ECOSYSTEM_REGIONS.filter((r) => companies.some((c) => c.region === r.id));
   if (companies.length === 0) return null;
   return (
     <section className="relative mt-32 overflow-hidden" id="ecosystem">
       <div className="max-w-6xl mx-auto px-5">
         <Heading
           eyebrow="Business partners"
-          title="Ready to adopt LamportPay across the USA, UK and UAE."
+          title="Partners ready to adopt LamportPay."
           intro="Our confirmed business partners are ready to use LamportPay's payment services. We are also in discussions with additional businesses to grow our ecosystem and bring more partners on board."
         />
         <p className="mt-4 mx-auto max-w-2xl text-center text-sm text-muted-foreground">
           Onboarding is planned. Fiat payouts remain demo-only until production approval; readiness does not mean live payment processing.
         </p>
+        <div
+          aria-label="Countries where our partners are based"
+          className="mx-auto mt-8 w-fit max-w-full rounded-2xl border border-border/60 bg-card/70 p-2.5 shadow-sm"
+        >
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="flex items-center gap-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <Globe2 className="w-3.5 h-3.5" /> Partners in
+            </span>
+            {present.map((r) => (
+              <span
+                key={r.id}
+                className="flex items-center gap-2 rounded-xl border border-border/60 bg-background/80 px-3 py-1.5"
+              >
+                <span aria-hidden className="text-lg leading-none">
+                  {r.flag}
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-wider">{r.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
           <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             <Network className="w-4 h-4" /> Integrated today:
@@ -245,31 +267,11 @@ export function EcosystemSection() {
             </span>
           ))}
         </div>
-        <div className="mt-12 space-y-12">
-          {ECOSYSTEM_REGIONS.map((r) => {
-            const list = companies.filter((c) => c.region === r.id);
-            if (list.length === 0) return null;
-            return (
-              <div key={r.id}>
-                <div className="mb-5 flex items-center gap-3">
-                  <span aria-hidden className="text-2xl leading-none">{r.flag}</span>
-                  <div>
-                    <h3 className="font-semibold">{r.label}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {r.city} · {list.length} {list.length === 1 ? "partner" : "partners"}
-                    </p>
-                  </div>
-                  <div className="ml-2 h-px flex-1 bg-border/60" />
-                </div>
-                <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {list.map((c) => (
-                    <CompanyCard key={c.name} c={c} />
-                  ))}
-                </ul>
-              </div>
-            );
-          })}
-        </div>
+        <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {companies.map((c) => (
+            <CompanyCard key={c.name} c={c} />
+          ))}
+        </ul>
       </div>
     </section>
   );
