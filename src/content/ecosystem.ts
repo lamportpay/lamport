@@ -1,6 +1,7 @@
 /**
  * Strategic ecosystem partners, confirmed by the owner on 11 Oct 2026.
- * Businesses ready to adopt LamportPay services, grouped by region (USA, UK, UAE).
+ * Businesses ready to adopt LamportPay services. `region` only feeds the partner-country
+ * flags box — the partner cards themselves are not grouped or labelled by country.
  * Readiness does not mean completed onboarding or live payment processing.
  * No valuations, revenue, investments or commitments are stated.
  */
@@ -20,10 +21,10 @@ export type EcosystemCompany = {
   logo: string | null;
 };
 
-export const ECOSYSTEM_REGIONS: { id: EcosystemRegion; label: string; flag: string; city: string }[] = [
-  { id: "USA", label: "United States", flag: "🇺🇸", city: "North America" },
-  { id: "UK", label: "United Kingdom", flag: "🇬🇧", city: "London" },
-  { id: "UAE", label: "United Arab Emirates", flag: "🇦🇪", city: "Dubai" },
+export const ECOSYSTEM_REGIONS: { id: EcosystemRegion; label: string }[] = [
+  { id: "USA", label: "United States" },
+  { id: "UK", label: "United Kingdom" },
+  { id: "UAE", label: "United Arab Emirates" },
 ];
 
 export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [

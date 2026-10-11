@@ -28,6 +28,11 @@
 - [x] Production build OK; typecheck clean; 489 unit tests pass; agent endpoints respond (protected, 401 without a sign-in; public info endpoint 200)
 - [ ] Automatic sync of this fix to GitHub (still waiting; it is the only difference left between the working copy and main)
 
+## Done: Partners section — agent
+
+- [x] Partners listed as one flat grid (no country grouping, no country label on cards); countries shown only in a "Partners in" flags box above the grid
+- [x] Flags drawn as inline SVG (USA/UK/UAE) so they render on every desktop OS; typecheck clean, 0 page errors, section verified in the preview
+
 ## Waiting on team input
 
 - Social accounts: create/confirm X, LinkedIn and GitHub profiles, then send the final URLs so every link (footer, header, contact page) is updated in one pass

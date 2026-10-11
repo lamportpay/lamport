@@ -16,3 +16,4 @@
 - Treat interrupted HTTP connections as expected cancellations, not reportable SSR failures, so navigation cannot trigger a false crash screen.
 - Asset intake routing lives in src/lib/asset-routing (networks separate from assets; providers selected by listing; intake requires explicit allowlist) so new conversion providers plug in without touching the live Jupiter endpoints.
 - Lovable Cloud serves preview and production from one shared Supabase instance (LAMPORTPAY_SHARED_DB=1); the two-database TEST-mode rule is relaxed accordingly, never with a production database.
+- Country flags in site UI are drawn as inline SVG rather than Unicode emoji, because emoji flags do not render on every desktop OS.
