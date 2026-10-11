@@ -80,7 +80,7 @@ function VerifiedCustomersPage() {
                     <td className="py-2 pr-3">
                       {c.verified ? (
                         <span className="inline-flex items-center gap-1 font-semibold text-primary">
-                          <BadgeCheck className="w-3.5 h-3.5" /> Verified
+                          <BadgeCheck className="w-3.5 h-3.5" /> {c.verifiedByPayment ? "Verified (paid)" : "Verified"}
                         </span>
                       ) : (
                         <span className="text-muted-foreground">{c.verificationStatus ?? "Not started"}</span>

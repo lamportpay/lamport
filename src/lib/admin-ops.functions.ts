@@ -540,6 +540,11 @@ export const getVerifiedCustomers = createServerFn({ method: "POST" })
         const { syncCustomersFromStables } = await import("@/lib/payments/service.server");
         const synced = await syncCustomersFromStables(known);
         emails = new Map(synced.map((s) => [s.userId, s.email]));
+        // Attach the email to the permanently verified wallets of that customer.
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        for (const s of synced)
+          if (s.email && lockedIn.has(s.userId))
+            await supabaseAdmin.from("verified_wallets").update({ email: s.email }).eq("user_id", s.userId).is("email", null);
         const byUser = new Map(rows.map((r) => [r.user_id, r]));
         for (const s of synced) {
           byUser.set(s.userId, {
@@ -569,12 +574,15 @@ export const getVerifiedCustomers = createServerFn({ method: "POST" })
         wallets: walletsOf.get(r.user_id) ?? [],
         firstName: r.first_name,
         lastName: r.last_name,
-        email: emails.get(r.user_id) ?? null,
+        email: emails.get(r.user_id) ?? lockedIn.get(r.user_id)?.email ?? null,
         stablesCustomerId: r.stables_customer_id,
-        verified: r.verification_status === "approved" && r.base_payout_status === "approved",
+        verified:
+          lockedIn.has(r.user_id) ||
+          (r.verification_status === "approved" && r.base_payout_status === "approved"),
+        verifiedByPayment: lockedIn.has(r.user_id),
         verificationStatus: r.verification_status,
         completedPayments: completed.get(r.user_id) ?? 0,
-        verifiedAt: r.verified_at,
+        verifiedAt: r.verified_at ?? lockedIn.get(r.user_id)?.verified_at ?? null,
       })),
     };
   });
