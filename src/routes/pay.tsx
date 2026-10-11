@@ -956,10 +956,18 @@ function ConvertForm({
             if (showQuote) submit();
             else if (canQuote) setShowQuote(true);
           }}
-          className="p-4 sm:p-6 lg:p-7 space-y-3"
+          className={cn(
+            "space-y-3",
+            showQuote ? "p-4 sm:p-6 lg:p-7" : "p-5 sm:p-8 lg:p-10 space-y-4",
+          )}
         >
           <div className="flex items-center justify-between gap-3 pb-1">
-            <h1 className="text-xl leading-tight sm:text-2xl font-semibold tracking-tight">
+            <h1
+              className={cn(
+                "leading-tight font-semibold tracking-tight",
+                showQuote ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl",
+              )}
+            >
               Send to <span className="text-uv">your bank</span>
             </h1>
             {h && (
@@ -1391,12 +1399,19 @@ function ConvertForm({
   );
 
   return (
-    <div className="max-w-[1180px] mx-auto px-4 lg:px-8 py-5 lg:py-10 max-sm:has-[[data-mobile-dock]]:pb-[calc(var(--dock-h,9rem)+1.5rem)]">
+    <div
+      className={cn(
+        "max-w-[1180px] mx-auto px-4 lg:px-8 py-5 lg:py-10 max-sm:has-[[data-mobile-dock]]:pb-[calc(var(--dock-h,9rem)+1.5rem)]",
+        // Step 1: the converter alone, centred on the screen and a little larger.
+        !showQuote &&
+          "min-h-[calc(100svh-7.5rem)] sm:min-h-[calc(100svh-4rem)] flex flex-col justify-center py-6 sm:py-10",
+      )}
+    >
       <div
-        className={`grid gap-y-5 lg:justify-center lg:transition-[grid-template-columns,column-gap] lg:duration-500 lg:ease-out ${
+        className={`grid w-full gap-y-5 lg:justify-center lg:transition-[grid-template-columns,column-gap] lg:duration-500 lg:ease-out ${
           showQuote
             ? "lg:grid-cols-[minmax(0,660px)_400px] lg:gap-x-6"
-            : "lg:grid-cols-[minmax(0,720px)_0px] lg:gap-x-0"
+            : "sm:mx-auto sm:max-w-[680px] lg:max-w-none lg:grid-cols-[minmax(0,820px)_0px] lg:gap-x-0"
         }`}
       >
         <section className="min-w-0 space-y-5">{main}</section>
