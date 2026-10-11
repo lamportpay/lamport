@@ -20,7 +20,7 @@ export function DemoVideo() {
     if (!v) return;
     setStarted(true);
     setEnded(false);
-    void v.play();
+    v.play().catch(() => {});
   }
 
   function replay() {
@@ -28,7 +28,7 @@ export function DemoVideo() {
     if (!v) return;
     v.currentTime = 0;
     setEnded(false);
-    void v.play();
+    v.play().catch(() => {});
   }
 
   return (
