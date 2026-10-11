@@ -18,6 +18,7 @@ import {
   RefreshCw,
   Wallet,
   X,
+  ShieldCheck,
 } from "lucide-react";
 import type { ReactNode } from "react";
 
