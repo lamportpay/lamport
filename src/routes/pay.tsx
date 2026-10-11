@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 
 import { AppLayout, switchToConnectedWallet, useSignedIn } from "@/components/app/AppLayout";
-import { walletLinkOf } from "@/lib/identity/wallet-identity";
+import { realEmailOf, walletLinkOf } from "@/lib/identity/wallet-identity";
 import { useAccount } from "@/lib/use-account";
 import { useModeStatus } from "@/lib/use-mode-status";
 import { supabase } from "@/integrations/supabase/client";
@@ -325,7 +325,7 @@ function KycCard({ compact = false }: { compact?: boolean }) {
     queryKey: ["account-has-email"],
     queryFn: async () => {
       const { data } = await supabase.auth.getSession();
-      return Boolean(data.session?.user.email);
+      return Boolean(realEmailOf(data.session?.user.email));
     },
     staleTime: 60_000,
   });
@@ -596,9 +596,12 @@ function ConvertForm({
   const signedIn = account.status === "loading" ? null : account.status === "signed_in";
   const needsSignIn = signedIn === false;
   const queryClient = useQueryClient();
+  // The wallet is the customer's only sign-in: a session for another wallet, or
+  // a wallet-less (email/staff) session, is replaced by the connected wallet.
   const differentWallet =
     account.status === "signed_in" &&
-    walletLinkOf(walletKey, account.wallets) === "different_wallet";
+    Boolean(walletKey) &&
+    walletLinkOf(walletKey, account.wallets) !== "linked";
   const [amount, setAmount] = useState(initialAmount);
   const [preference, setPreference] = useState<Preference>("auto");
   const [country, setCountry] = useState(initialCountry);
@@ -856,7 +859,9 @@ function ConvertForm({
       return;
     }
     if (differentWallet) {
-      // Never treat another wallet as the signed-in (possibly verified) identity.
+      // Never treat another wallet (or a wallet-less session) as this customer:
+      // sign in with the connected wallet, then carry on to the quote.
+      setQuoteAfterSignIn(true);
       void switchToConnectedWallet(() => queryClient.clear());
       return;
     }
@@ -874,7 +879,9 @@ function ConvertForm({
         ? "Get live quote"
         : "Connect wallet to continue"
     : differentWallet
-      ? "Sign in with this wallet to continue"
+      ? signingIn
+        ? "Approve in your wallet…"
+        : "Get live quote"
       : !walletKey
         ? "Connect wallet to continue"
         : !typedMinor || typedMinor <= 0n
@@ -2568,7 +2575,7 @@ function PayoutDetailsStep({
     queryKey: ["account-has-email"],
     queryFn: async () => {
       const { data } = await supabase.auth.getSession();
-      return Boolean(data.session?.user.email);
+      return Boolean(realEmailOf(data.session?.user.email));
     },
     staleTime: 60_000,
   });
@@ -3344,7 +3351,7 @@ function Notice({
 function DifferentWalletHint() {
   return (
     <p className="mt-2 text-center text-xs text-muted-foreground">
-      This isn&apos;t the wallet you signed in with. Continuing signs you in with it.
+      Your wallet confirms once that it&apos;s yours. No funds move.
     </p>
   );
 }
@@ -3352,11 +3359,8 @@ function DifferentWalletHint() {
 /** Under the sign-in CTA: what the wallet signature is, and the email fallback. */
 function EmailSignInHint({ next }: { next: string }) {
   return (
-    <p className="mt-2 text-center text-xs text-muted-foreground">
-      One signature, no funds move ·{" "}
-      <Link to="/auth" search={{ next }} className="font-medium text-primary hover:underline">
-        Use email instead
-      </Link>
+    <p className="mt-2 text-center text-xs text-muted-foreground" data-next={next}>
+      Your wallet confirms once that it&apos;s yours. No funds move.
     </p>
   );
 }

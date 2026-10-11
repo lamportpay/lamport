@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
-import { walletAddressesOf } from "@/lib/identity/wallet-identity";
+import { realEmailOf, walletAddressesOf } from "@/lib/identity/wallet-identity";
 
 export type AccountState =
   | { status: "loading" }
@@ -24,8 +24,8 @@ export function accountOf(session: Session | null): AccountState {
   return {
     status: "signed_in",
     userId: session.user.id,
-    wallets: walletAddressesOf(session.user.identities),
-    hasEmail: Boolean(session.user.email),
+    wallets: walletAddressesOf(session.user.identities, session.user.app_metadata),
+    hasEmail: Boolean(realEmailOf(session.user.email)),
   };
 }
 

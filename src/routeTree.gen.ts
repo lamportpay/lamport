@@ -56,6 +56,7 @@ import { Route as ApiQuoteEstimateRouteImport } from './routes/api/quote/estimat
 import { Route as ApiSolanaHealthRouteImport } from './routes/api/solana/health'
 import { Route as ApiSolanaVerifyTxRouteImport } from './routes/api/solana/verify-tx'
 import { Route as ApiWalletHoldingsRouteImport } from './routes/api/wallet/holdings'
+import { Route as ApiWalletSignInRouteImport } from './routes/api/wallet/sign-in'
 import { Route as AuthenticatedAdminPaymentsIndexRouteImport } from './routes/_authenticated/admin.payments.index'
 import { Route as AuthenticatedAdminPaymentsIdRouteImport } from './routes/_authenticated/admin.payments.$id'
 import { Route as AuthenticatedAdminStablesIdRouteImport } from './routes/_authenticated/admin_.stables.$id'
@@ -316,6 +317,11 @@ const ApiWalletHoldingsRoute = ApiWalletHoldingsRouteImport.update({
   path: '/api/wallet/holdings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiWalletSignInRoute = ApiWalletSignInRouteImport.update({
+  id: '/api/wallet/sign-in',
+  path: '/api/wallet/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminPaymentsIndexRoute =
   AuthenticatedAdminPaymentsIndexRouteImport.update({
     id: '/payments/',
@@ -445,6 +451,7 @@ export interface FileRoutesByFullPath {
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
   '/api/wallet/holdings': typeof ApiWalletHoldingsRoute
+  '/api/wallet/sign-in': typeof ApiWalletSignInRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/payments/': typeof AuthenticatedPaymentsIndexRoute
   '/api/payments/': typeof ApiPaymentsIndexRoute
@@ -506,6 +513,7 @@ export interface FileRoutesByTo {
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
   '/api/wallet/holdings': typeof ApiWalletHoldingsRoute
+  '/api/wallet/sign-in': typeof ApiWalletSignInRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/payments': typeof AuthenticatedPaymentsIndexRoute
   '/api/payments': typeof ApiPaymentsIndexRoute
@@ -570,6 +578,7 @@ export interface FileRoutesById {
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
   '/api/wallet/holdings': typeof ApiWalletHoldingsRoute
+  '/api/wallet/sign-in': typeof ApiWalletSignInRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/payments/': typeof AuthenticatedPaymentsIndexRoute
   '/api/payments/': typeof ApiPaymentsIndexRoute
@@ -634,6 +643,7 @@ export interface FileRouteTypes {
     | '/api/solana/health'
     | '/api/solana/verify-tx'
     | '/api/wallet/holdings'
+    | '/api/wallet/sign-in'
     | '/admin/'
     | '/payments/'
     | '/api/payments/'
@@ -695,6 +705,7 @@ export interface FileRouteTypes {
     | '/api/solana/health'
     | '/api/solana/verify-tx'
     | '/api/wallet/holdings'
+    | '/api/wallet/sign-in'
     | '/admin'
     | '/payments'
     | '/api/payments'
@@ -758,6 +769,7 @@ export interface FileRouteTypes {
     | '/api/solana/health'
     | '/api/solana/verify-tx'
     | '/api/wallet/holdings'
+    | '/api/wallet/sign-in'
     | '/_authenticated/admin/'
     | '/_authenticated/payments/'
     | '/api/payments/'
@@ -811,6 +823,7 @@ export interface RootRouteChildren {
   ApiSolanaHealthRoute: typeof ApiSolanaHealthRoute
   ApiSolanaVerifyTxRoute: typeof ApiSolanaVerifyTxRoute
   ApiWalletHoldingsRoute: typeof ApiWalletHoldingsRoute
+  ApiWalletSignInRoute: typeof ApiWalletSignInRoute
   ApiPaymentsIndexRoute: typeof ApiPaymentsIndexRoute
   ApiPaymentsPaymentIdFundingRoute: typeof ApiPaymentsPaymentIdFundingRoute
   ApiPaymentsPaymentIdFundingTransactionRoute: typeof ApiPaymentsPaymentIdFundingTransactionRoute
@@ -1156,6 +1169,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiWalletHoldingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/wallet/sign-in': {
+      id: '/api/wallet/sign-in'
+      path: '/api/wallet/sign-in'
+      fullPath: '/api/wallet/sign-in'
+      preLoaderRoute: typeof ApiWalletSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/payments/': {
       id: '/_authenticated/admin/payments/'
       path: '/payments'
@@ -1350,6 +1370,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSolanaHealthRoute: ApiSolanaHealthRoute,
   ApiSolanaVerifyTxRoute: ApiSolanaVerifyTxRoute,
   ApiWalletHoldingsRoute: ApiWalletHoldingsRoute,
+  ApiWalletSignInRoute: ApiWalletSignInRoute,
   ApiPaymentsIndexRoute: ApiPaymentsIndexRoute,
   ApiPaymentsPaymentIdFundingRoute: ApiPaymentsPaymentIdFundingRoute,
   ApiPaymentsPaymentIdFundingTransactionRoute:

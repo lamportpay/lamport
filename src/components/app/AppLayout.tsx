@@ -60,21 +60,9 @@ function WalletSignInFeedback() {
  * one "Verify wallet" button.
  */
 function SignedOutControl() {
-  const { publicKey, signIn } = useAppWallet();
-  if (!publicKey) return null;
-  const signing = signIn.phase === "signing";
-  return (
-    <button
-      type="button"
-      disabled={signing}
-      onClick={() => requestWalletSignIn({ openPicker: false })}
-      title="Sign a message to verify this wallet is yours. No funds move."
-      className="inline-flex items-center gap-1.5 text-sm font-medium px-3.5 py-2 rounded-full border border-border bg-card/70 hover:bg-muted disabled:opacity-60"
-    >
-      <Wallet className="w-4 h-4" />
-      {signing ? "Check your wallet…" : "Sign in"}
-    </button>
-  );
+  // The wallet is the customer's only sign-in: connecting it (and the one
+  // message it signs when a quote is requested) is all that is needed.
+  return null;
 }
 
 /** Sign out, then sign in with the wallet that is connected now. */
@@ -185,8 +173,6 @@ function AccountSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
   const signedIn = account.status === "signed_in";
   const differentWallet =
     signedIn && walletLinkOf(publicKey, account.wallets) === "different_wallet";
-  const next =
-    typeof window === "undefined" ? "/pay" : `${window.location.pathname}${window.location.search}`;
   const row =
     "flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-medium hover:bg-secondary active:bg-secondary transition-colors [-webkit-tap-highlight-color:transparent]";
   return (
@@ -208,7 +194,7 @@ function AccountSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
               </span>
             </span>
             <span className="ml-auto text-xs font-medium text-muted-foreground">
-              {signedIn ? "Signed in" : "Signed out"}
+              {publicKey ? "Connected" : ""}
             </span>
           </div>
           {signedIn ? (
@@ -241,26 +227,20 @@ function AccountSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
             </>
           ) : (
             <div className="space-y-2 px-1 pt-2">
-              <button
-                type="button"
-                disabled={signIn.phase === "signing"}
-                onClick={() => {
-                  close();
-                  requestWalletSignIn({ openPicker: !publicKey });
-                }}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[image:var(--gradient-hero)] py-3.5 text-base font-semibold text-white shadow-[var(--shadow-soft)] disabled:opacity-60"
-              >
-                <Wallet className="w-4 h-4" />
-                {signIn.phase === "signing" ? "Check your wallet…" : "Sign in with wallet"}
-              </button>
-              <Link
-                to="/auth"
-                search={{ next }}
-                onClick={close}
-                className="block py-2 text-center text-sm font-medium text-primary"
-              >
-                Use email instead
-              </Link>
+              {!publicKey && (
+                <button
+                  type="button"
+                  disabled={signIn.phase === "signing"}
+                  onClick={() => {
+                    close();
+                    requestWalletSignIn({ openPicker: true });
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[image:var(--gradient-hero)] py-3.5 text-base font-semibold text-white shadow-[var(--shadow-soft)] disabled:opacity-60"
+                >
+                  <Wallet className="w-4 h-4" />
+                  {signIn.phase === "signing" ? "Check your wallet…" : "Connect wallet"}
+                </button>
+              )}
             </div>
           )}
         </div>
