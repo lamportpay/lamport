@@ -2,7 +2,7 @@ import { ArrowRight, CheckCircle2, Compass, ExternalLink, Globe2, Handshake, Lay
 import { useEffect, useRef, useState } from "react";
 import { CURRENT_FLOW, FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
 import {
-  ECOSYSTEM_STATUS_LABEL,
+  ECOSYSTEM_REGIONS,
   publicEcosystem,
   type EcosystemCompany,
 } from "@/content/ecosystem";
@@ -165,58 +165,67 @@ function initials(name: string) {
   return (words[0][0] + (words[1]?.[0] ?? "")).toUpperCase();
 }
 
-function CompanyCard({ c }: { c: EcosystemCompany }) {
-  const pending = c.status === "owner-confirmation-required";
+function CompanyLogo({ c }: { c: EcosystemCompany }) {
+  const [broken, setBroken] = useState(false);
   return (
-    <li className="flex gap-4 rounded-2xl border border-border/60 bg-card/80 p-5">
-      {/* Monogram, not a logo: company logos need written permission first. */}
-      <div
-        aria-hidden
-        className="w-12 h-12 shrink-0 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center font-semibold text-primary"
+    <div className="w-14 h-14 shrink-0 rounded-2xl bg-background border border-border/60 flex items-center justify-center overflow-hidden shadow-sm transition-transform duration-300 group-hover:scale-105">
+      {c.logo && !broken ? (
+        <img
+          src={c.logo}
+          alt={`${c.name} logo`}
+          loading="lazy"
+          onError={() => setBroken(true)}
+          className="w-10 h-10 object-contain"
+        />
+      ) : (
+        <span className="font-semibold text-primary">{initials(c.name)}</span>
+      )}
+    </div>
+  );
+}
+
+function CompanyCard({ c }: { c: EcosystemCompany }) {
+  return (
+    <li>
+      <a
+        href={c.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group flex h-full flex-col gap-4 rounded-2xl border border-border/60 bg-card/80 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
       >
-        {initials(c.name)}
-      </div>
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-semibold">{c.name}</h3>
-          <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
-              pending
-                ? "bg-[color:var(--warning)]/15 text-[color:var(--warning)]"
-                : "bg-primary/10 text-primary"
-            }`}
-          >
-            {ECOSYSTEM_STATUS_LABEL[c.status]}
+        <div className="flex items-center gap-4">
+          <CompanyLogo c={c} />
+          <div className="min-w-0">
+            <h3 className="font-semibold leading-tight">{c.name}</h3>
+            <span className="mt-1 inline-flex items-center gap-1 text-xs font-mono text-primary">
+              {new URL(c.url).hostname.replace(/^www\./, "")} <ExternalLink className="w-3 h-3" />
+            </span>
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground flex-1">{c.description}</p>
+        <div className="flex items-center justify-between">
+          <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+            {c.sector}
+          </span>
+          <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <CheckCircle2 className="w-3 h-3 text-primary" /> Partner
           </span>
         </div>
-        <a
-          href={c.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-0.5 inline-flex items-center gap-1 text-xs font-mono text-primary hover:underline"
-        >
-          {new URL(c.url).hostname.replace(/^www\./, "")} <ExternalLink className="w-3 h-3" />
-        </a>
-        {c.description && <p className="mt-2 text-sm text-muted-foreground">{c.description}</p>}
-        {pending && (
-          <p className="mt-2 text-xs text-[color:var(--warning)]">To confirm: {c.toConfirm}</p>
-        )}
-      </div>
+      </a>
     </li>
   );
 }
 
 export function EcosystemSection() {
-  // Unconfirmed entries are a draft for the owner: shown in local development only.
-  const companies = publicEcosystem(import.meta.env.DEV);
+  const companies = publicEcosystem();
   if (companies.length === 0) return null;
   return (
     <section className="relative mt-32 overflow-hidden" id="ecosystem">
       <div className="max-w-6xl mx-auto px-5">
         <Heading
           eyebrow="Strategic ecosystem"
-          title="Built on Solana. Growing an ecosystem."
-          intro="Technology we integrate today, and companies in our wider ecosystem. Listing a company does not imply a partnership, investment or commitment unless its label says so."
+          title="Our partners across the USA, UK and UAE."
+          intro="Technology we integrate today, and the businesses we work with in three key markets."
         />
         <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
           <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -233,11 +242,31 @@ export function EcosystemSection() {
             </span>
           ))}
         </div>
-        <ul className="mt-8 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {companies.map((c) => (
-            <CompanyCard key={c.name} c={c} />
-          ))}
-        </ul>
+        <div className="mt-12 space-y-12">
+          {ECOSYSTEM_REGIONS.map((r) => {
+            const list = companies.filter((c) => c.region === r.id);
+            if (list.length === 0) return null;
+            return (
+              <div key={r.id}>
+                <div className="mb-5 flex items-center gap-3">
+                  <span aria-hidden className="text-2xl leading-none">{r.flag}</span>
+                  <div>
+                    <h3 className="font-semibold">{r.label}</h3>
+                    <p className="text-xs text-muted-foreground">
+                      {r.city} · {list.length} {list.length === 1 ? "partner" : "partners"}
+                    </p>
+                  </div>
+                  <div className="ml-2 h-px flex-1 bg-border/60" />
+                </div>
+                <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {list.map((c) => (
+                    <CompanyCard key={c.name} c={c} />
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
