@@ -13,6 +13,15 @@ const rpcWebsocketsBrowser = fileURLToPath(
   new URL("./node_modules/rpc-websockets/dist/index.browser.mjs", import.meta.url),
 );
 const browserBufferShim = fileURLToPath(new URL("./src/lib/buffer-polyfill.ts", import.meta.url));
+// The real `buffer` package file, imported by the polyfill under a private
+// name ("lamportpay-real-buffer") that Nitro/unenv never re-alias. Nitro's
+// Cloudflare preset rewrites "buffer/index.js" to a minimal mock AFTER our
+// alias-cleanup plugin runs, which made the polyfill fall back to its shim
+// and broke wallet signing in the Lovable preview ("writeUIntLE is not a
+// function", 11 Oct 2026).
+const realBufferPackage = fileURLToPath(
+  new URL("./node_modules/buffer/index.js", import.meta.url),
+);
 
 // @solana-mobile/wallet-adapter-mobile (pulled in by @solana/wallet-adapter-react)
 // calls Node's util.inherits at module scope, which throws in the SSR runtime
@@ -38,6 +47,7 @@ export default defineConfig(({ command, mode }) => {
         { find: /^@\//, replacement: fileURLToPath(new URL("./src/", import.meta.url)) },
         { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
         { find: /^rpc-websockets\/dist\/lib\/client$/, replacement: rpcWebsocketsBrowser },
+        { find: /^lamportpay-real-buffer$/, replacement: realBufferPackage },
         { find: /^node:buffer$/, replacement: browserBufferShim },
         { find: /^buffer$/, replacement: browserBufferShim },
         { find: /^buffer\/$/, replacement: browserBufferShim },

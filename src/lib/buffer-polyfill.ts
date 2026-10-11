@@ -8,7 +8,11 @@
 // So the real `buffer` package (v6, pure JS) is loaded through its file path
 // "buffer/index.js", which the alias does not match. The shim stays only as a
 // fallback for a bundle where that import comes out empty.
-import { Buffer as PackageBuffer } from "buffer/index.js";
+// "lamportpay-real-buffer" is aliased in vite.config.ts straight to the real
+// buffer package file. A plain "buffer/index.js" import gets re-aliased to a
+// minimal mock by Nitro's Cloudflare preset (Lovable preview), which broke
+// wallet signing there with "writeUIntLE is not a function" (11 Oct 2026).
+import { Buffer as PackageBuffer } from "lamportpay-real-buffer";
 
 type BufferEncoding = "utf8" | "utf-8" | "hex" | "base64";
 
