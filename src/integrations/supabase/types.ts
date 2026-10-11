@@ -986,6 +986,39 @@ export type Database = {
         }
         Relationships: []
       }
+      verified_wallets: {
+        Row: {
+          address: string
+          email: string | null
+          first_name: string | null
+          first_payment_id: string | null
+          last_name: string | null
+          stables_customer_id: string | null
+          user_id: string
+          verified_at: string
+        }
+        Insert: {
+          address: string
+          email?: string | null
+          first_name?: string | null
+          first_payment_id?: string | null
+          last_name?: string | null
+          stables_customer_id?: string | null
+          user_id: string
+          verified_at?: string
+        }
+        Update: {
+          address?: string
+          email?: string | null
+          first_name?: string | null
+          first_payment_id?: string | null
+          last_name?: string | null
+          stables_customer_id?: string | null
+          user_id?: string
+          verified_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
