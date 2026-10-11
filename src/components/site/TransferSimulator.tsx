@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowRight, Info } from "lucide-react";
 import { CORRIDORS, PAYOUT_METHODS, TOKENS, type Token, calcQuote, fmt } from "./demo-data";
+import { Flag } from "@/components/app/Flag";
 import { Link } from "@tanstack/react-router";
 
 export function TransferSimulator({ compact = false }: { compact?: boolean }) {
@@ -50,17 +51,22 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
 
             <div className="grid grid-cols-2 gap-3">
               <Field label="Recipient country">
-                <select
-                  value={corridorIdx}
-                  onChange={(e) => setCorridorIdx(parseInt(e.target.value))}
-                  className="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm"
-                >
-                  {CORRIDORS.map((c, i) => (
-                    <option key={c.currency} value={i}>
-                      {c.flag} {c.country}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <Flag code={corridor.code} size={18} />
+                  </span>
+                  <select
+                    value={corridorIdx}
+                    onChange={(e) => setCorridorIdx(parseInt(e.target.value))}
+                    className="w-full rounded-xl border border-border bg-background pl-9 pr-3 py-2.5 text-sm"
+                  >
+                    {CORRIDORS.map((c, i) => (
+                      <option key={c.currency} value={i}>
+                        {c.country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </Field>
               <Field label="Currency">
                 <div className="w-full rounded-xl border border-border bg-secondary px-3 py-2.5 text-sm font-semibold">
