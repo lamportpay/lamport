@@ -830,10 +830,20 @@ function ConvertForm({
     return `/pay${query ? `?${query}` : ""}`;
   })();
 
+  // After the one-message wallet signature (needed to save the quote), carry on
+  // to the quote by itself. Identity verification is asked for later, after review.
+  const [quoteAfterSignIn, setQuoteAfterSignIn] = useState(false);
+  useEffect(() => {
+    if (!quoteAfterSignIn || !signedIn || differentWallet || !walletKey) return;
+    setQuoteAfterSignIn(false);
+    if (!blocked && !aboveMax && !belowMin && ready && !create.isPending) create.mutate();
+  }, [quoteAfterSignIn, signedIn, differentWallet, walletKey, blocked, aboveMax, belowMin, ready, create]);
+
   const submit = () => {
     if (needsSignIn) {
       // Wallet-first: connect (if needed) and sign one message, no funds move.
       // The amount and country stay on the page; email sign-in is the fallback.
+      setQuoteAfterSignIn(true);
       requestWalletSignIn();
       return;
     }
@@ -851,9 +861,9 @@ function ConvertForm({
 
   const ctaLabel = needsSignIn
     ? signingIn
-      ? "Check your wallet…"
+      ? "Approve in your wallet…"
       : walletKey
-        ? "Verify wallet to continue"
+        ? "Get live quote"
         : "Connect wallet to continue"
     : differentWallet
       ? "Sign in with this wallet to continue"
