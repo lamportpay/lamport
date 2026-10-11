@@ -22,6 +22,14 @@ const browserBufferShim = fileURLToPath(new URL("./src/lib/buffer-polyfill.ts", 
 const realBufferPackage = fileURLToPath(
   new URL("./node_modules/buffer/index.js", import.meta.url),
 );
+// Server-side stand-in for that package. The real `buffer` package is CommonJS
+// and does require("base64-js")/require("ieee754"); bundled for the edge runtime
+// those become createRequire() calls the worker cannot resolve, so the SSR entry
+// threw "No such module base64-js" at import time and every page returned 500
+// (found 11 Oct 2026, right after publishing to the main domain).
+const bufferServerStub = fileURLToPath(
+  new URL("./src/lib/buffer-server-buffer.ts", import.meta.url),
+);
 
 // @solana-mobile/wallet-adapter-mobile (pulled in by @solana/wallet-adapter-react)
 // calls Node's util.inherits at module scope, which throws in the SSR runtime
@@ -47,10 +55,10 @@ export default defineConfig(({ command, mode }) => {
         { find: /^@\//, replacement: fileURLToPath(new URL("./src/", import.meta.url)) },
         { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
         { find: /^rpc-websockets\/dist\/lib\/client$/, replacement: rpcWebsocketsBrowser },
-        { find: /^lamportpay-real-buffer$/, replacement: realBufferPackage },
-        { find: /^node:buffer$/, replacement: browserBufferShim },
-        { find: /^buffer$/, replacement: browserBufferShim },
-        { find: /^buffer\/$/, replacement: browserBufferShim },
+        // Buffer specifiers are resolved by the "lamportpay-node-buffer-browser-shim"
+        // plugin below instead of an alias: an alias cannot tell the browser build
+        // from the server build, and sending the browser package into the server
+        // bundle is what took the published site down (500 on every route).
       ],
       dedupe: [
         "react",
@@ -99,8 +107,16 @@ export default defineConfig(({ command, mode }) => {
       {
         name: "lamportpay-node-buffer-browser-shim",
         enforce: "pre",
-        resolveId(id) {
-          if (id === "node:buffer" || id === "buffer" || id === "buffer/") return browserBufferShim;
+        // Sole resolver for Buffer: the browser gets the real `buffer` package
+        // (web3.js needs the full API to serialize a transaction), the server
+        // gets Node's own Buffer through src/lib/buffer-server-buffer.ts.
+        resolveId(id, _importer, options) {
+          if (id === "lamportpay-real-buffer")
+            return options?.ssr ? bufferServerStub : realBufferPackage;
+          if (id === "buffer" || id === "buffer/")
+            return options?.ssr ? bufferServerStub : browserBufferShim;
+          // node:buffer stays native on the server: that is what the stub re-exports.
+          if (id === "node:buffer" && !options?.ssr) return browserBufferShim;
           return null;
         },
       },
