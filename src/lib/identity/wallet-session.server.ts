@@ -17,6 +17,34 @@ import {
   parseWalletSignInMessage,
 } from "@/lib/identity/wallet-message";
 
+/** LamportPay's own sites; a sign-in message naming any other host is refused. */
+const OWN_HOSTS = new Set(["lamportpay.com", "www.lamportpay.com", "lamportpay.lovable.app"]);
+const PROJECT_ID = "1dfad1b7-e30c-4233-9276-65c1ba5b7e9b";
+const OWN_HOST_PATTERNS = [
+  new RegExp(`^(id-preview--)?${PROJECT_ID}\\.lovableproject\\.com$`),
+  new RegExp(`^id-preview--${PROJECT_ID}\\.lovable\\.app$`),
+  /^localhost(:\d+)?$/,
+];
+
+function hostOf(value: string | null | undefined): string | null {
+  if (!value) return null;
+  try {
+    return new URL(value.includes("://") ? value : `https://${value}`).host.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+export function isOwnSiteHost(
+  host: string,
+  request: { requestOrigin: string | null; requestHosts?: (string | null | undefined)[] },
+): boolean {
+  const h = host.toLowerCase();
+  const seen = [request.requestOrigin, ...(request.requestHosts ?? [])].map(hostOf);
+  if (seen.includes(h)) return true;
+  if (OWN_HOSTS.has(h) || OWN_HOST_PATTERNS.some((p) => p.test(h))) return true;
+  return false;
+}
 
 function placeholderEmail(publicKey: Uint8Array): string {
   const hex = [...publicKey].map((b) => b.toString(16).padStart(2, "0")).join("");
@@ -53,18 +81,15 @@ export async function walletSignIn(input: {
   message: string;
   signature: string;
   requestOrigin: string | null;
+  /** Other hosts this request reached us on (request URL, forwarded host). */
+  requestHosts?: (string | null | undefined)[];
 }): Promise<{ tokenHash: string; address: string }> {
   const parsed = parseWalletSignInMessage(input.message);
   if (!parsed) throw new WalletSignInError("The sign-in message is not valid.");
 
-  // The message must name the site the browser is actually on.
-  let originHost: string | null = null;
-  try {
-    originHost = input.requestOrigin ? new URL(input.requestOrigin).host : null;
-  } catch {
-    originHost = null;
-  }
-  if (!originHost || originHost !== parsed.host || new URL(parsed.origin).host !== parsed.host) {
+  // The message must name this site: the host the browser is on, or one of
+  // LamportPay's own addresses (the preview proxy can rewrite the Origin header).
+  if (!isOwnSiteHost(parsed.host, input) || hostOf(parsed.origin) !== parsed.host) {
     throw new WalletSignInError("The sign-in message is for another site.");
   }
 
