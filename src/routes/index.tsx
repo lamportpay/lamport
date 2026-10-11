@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { TransferSimulator } from "@/components/site/TransferSimulator";
+import { DemoVideo } from "@/components/site/DemoVideo";
 import { LiveRatesTicker, StatsStrip } from "@/components/site/LiveRates";
 import { WorldPulse } from "@/components/site/WorldPulse";
 import { LiveSwapTheater } from "@/components/site/LiveSwapTheater";
