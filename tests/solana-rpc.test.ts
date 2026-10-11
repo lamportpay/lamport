@@ -30,9 +30,15 @@ describe("solana rpc health", () => {
         expect(res.body.customEndpoint).toBe(true);
         expect(res.body.endpointProvider).toBe("Alchemy");
       }
-      if (res.status === 200) {
+      // Only the active mode's cluster is ever contacted (TEST: devnet, LIVE:
+      // mainnet-beta); the others are refused by the mode guard and reported so.
+      const active = (process.env["LAMPORTPAY_MODE"] ?? "test") === "live" ? "mainnet-beta" : "devnet";
+      if (cluster === active) {
         expect(res.body.reachable).toBe(true);
         expect(typeof res.body.slot).toBe("number");
+      } else {
+        expect(res.body.reachable).toBe(false);
+        expect((res.body as { error?: string }).error).toMatch(/MODE: the .* cluster is blocked/);
       }
     });
   }
