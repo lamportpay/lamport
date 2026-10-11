@@ -53,18 +53,15 @@ export async function walletSignIn(input: {
   message: string;
   signature: string;
   requestOrigin: string | null;
+  /** Other hosts this request reached us on (request URL, forwarded host). */
+  requestHosts?: (string | null | undefined)[];
 }): Promise<{ tokenHash: string; address: string }> {
   const parsed = parseWalletSignInMessage(input.message);
   if (!parsed) throw new WalletSignInError("The sign-in message is not valid.");
 
-  // The message must name the site the browser is actually on.
-  let originHost: string | null = null;
-  try {
-    originHost = input.requestOrigin ? new URL(input.requestOrigin).host : null;
-  } catch {
-    originHost = null;
-  }
-  if (!originHost || originHost !== parsed.host || new URL(parsed.origin).host !== parsed.host) {
+  // The message must name this site: the host the browser is on, or one of
+  // LamportPay's own addresses (the preview proxy can rewrite the Origin header).
+  if (!isOwnSiteHost(parsed.host, input) || hostOf(parsed.origin) !== parsed.host) {
     throw new WalletSignInError("The sign-in message is for another site.");
   }
 
