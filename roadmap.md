@@ -46,6 +46,7 @@
 
 - [x] Partners listed as one flat grid (no country grouping, no country label on cards); countries shown only in a "Partners in" flags box above the grid
 - [x] Flags drawn as inline SVG (USA/UK/UAE) so they render on every desktop OS; typecheck clean, 0 page errors, section verified in the preview
+- [x] GitHub sync reconnected (11 Oct 2026) — pending backlog (through "Updated sandbox badges") should push on the next sync event
 
 ## Waiting on team input
 
