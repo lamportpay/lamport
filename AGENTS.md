@@ -18,3 +18,4 @@
 - Lovable Cloud serves preview and production from one shared Supabase instance (LAMPORTPAY_SHARED_DB=1); the two-database TEST-mode rule is relaxed accordingly, never with a production database.
 - Country flags in site UI are drawn as inline SVG rather than Unicode emoji, because emoji flags do not render on every desktop OS.
 - Customer wallet sign-in is verified by our own server route (`/api/wallet/sign-in`: SIWS-style message, origin + age + Ed25519 check, one-time signature, wallet recorded in app_metadata.wallet_solana and user_wallets) because the backend's built-in Web3 provider cannot be enabled on Lovable Cloud; wallet accounts use a non-deliverable placeholder email that is never treated as a real email.
+- A wallet becomes permanently verified after its first COMPLETED payment (DB trigger fills `verified_wallets`); `getKycStatus` then skips the verification step without re-asking Stables, because a completed Stables payout already proves verification.

@@ -515,15 +515,19 @@ export const getVerifiedCustomers = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
     const { supabase } = context;
-    const [wallets, customers, paid] = await Promise.all([
+    const [wallets, customers, paid, verifiedWallets] = await Promise.all([
       supabase.from("user_wallets").select("user_id, address").limit(1000),
       supabase
         .from("stables_customers")
         .select("user_id, stables_customer_id, first_name, last_name, verification_status, base_payout_status, verified_at")
         .limit(1000),
       supabase.from("payments").select("user_id").eq("status", "COMPLETED").limit(5000),
+      supabase.from("verified_wallets").select("address, user_id, email, verified_at").limit(5000),
     ]);
-    if (wallets.error || customers.error || paid.error) throw new Error("Could not load customers.");
+    if (wallets.error || customers.error || paid.error || verifiedWallets.error)
+      throw new Error("Could not load customers.");
+    const lockedIn = new Map<string, { email: string | null; verified_at: string }>();
+    for (const v of verifiedWallets.data ?? []) if (!lockedIn.has(v.user_id)) lockedIn.set(v.user_id, v);
     const known = new Set<string>([
       ...(wallets.data ?? []).map((w) => w.user_id),
       ...(customers.data ?? []).map((c) => c.user_id),
@@ -536,6 +540,11 @@ export const getVerifiedCustomers = createServerFn({ method: "POST" })
         const { syncCustomersFromStables } = await import("@/lib/payments/service.server");
         const synced = await syncCustomersFromStables(known);
         emails = new Map(synced.map((s) => [s.userId, s.email]));
+        // Attach the email to the permanently verified wallets of that customer.
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        for (const s of synced)
+          if (s.email && lockedIn.has(s.userId))
+            await supabaseAdmin.from("verified_wallets").update({ email: s.email }).eq("user_id", s.userId).is("email", null);
         const byUser = new Map(rows.map((r) => [r.user_id, r]));
         for (const s of synced) {
           byUser.set(s.userId, {
@@ -565,12 +574,15 @@ export const getVerifiedCustomers = createServerFn({ method: "POST" })
         wallets: walletsOf.get(r.user_id) ?? [],
         firstName: r.first_name,
         lastName: r.last_name,
-        email: emails.get(r.user_id) ?? null,
+        email: emails.get(r.user_id) ?? lockedIn.get(r.user_id)?.email ?? null,
         stablesCustomerId: r.stables_customer_id,
-        verified: r.verification_status === "approved" && r.base_payout_status === "approved",
+        verified:
+          lockedIn.has(r.user_id) ||
+          (r.verification_status === "approved" && r.base_payout_status === "approved"),
+        verifiedByPayment: lockedIn.has(r.user_id),
         verificationStatus: r.verification_status,
         completedPayments: completed.get(r.user_id) ?? 0,
-        verifiedAt: r.verified_at,
+        verifiedAt: r.verified_at ?? lockedIn.get(r.user_id)?.verified_at ?? null,
       })),
     };
   });
