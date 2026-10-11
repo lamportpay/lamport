@@ -300,7 +300,14 @@ describe("1. TEST MODE cannot call production endpoints", () => {
     );
     vi.stubEnv("STABLES_API_URL", "https://api.sandbox.stables.money");
     vi.stubEnv("SUPABASE_URL", "https://zmcbnknjatrfwrcfvtzt.supabase.co");
+    // Lovable Cloud serves preview and production from one Supabase instance, so
+    // that project ref is TEST MODE's own database here. It stays refused unless
+    // the deployment acknowledges the shared instance with LAMPORTPAY_SHARED_DB=1.
+    vi.stubEnv("LAMPORTPAY_SHARED_DB", "");
     expect(currentMode().ok).toBe(false);
+    vi.stubEnv("LAMPORTPAY_SHARED_DB", "1");
+    expect(currentMode().ok).toBe(true);
+
   });
 
   it("blocks on an unknown mode value instead of guessing", () => {
