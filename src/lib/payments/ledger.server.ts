@@ -451,6 +451,19 @@ export async function listPaymentsAwaitingKyc(userId: string): Promise<PaymentRo
 
 // ---------------------------------------------------------------- customers
 
+/** First permanently verified wallet among `addresses` (a completed payment made it so). */
+export async function findVerifiedWallet(addresses: readonly string[]) {
+  if (addresses.length === 0) return null;
+  const { data, error } = await supabaseAdmin
+    .from("verified_wallets")
+    .select("address, user_id, first_name, last_name, email, verified_at")
+    .in("address", [...addresses])
+    .limit(1)
+    .maybeSingle();
+  if (error) fail("Load verified wallet", error);
+  return data;
+}
+
 export async function getStablesCustomerForUser(
   userId: string,
 ): Promise<StablesCustomerRow | null> {

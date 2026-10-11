@@ -526,6 +526,19 @@ export async function syncCustomersFromStables(knownUserIds: Set<string>) {
 
 export async function getKycStatus(user: AuthenticatedUser): Promise<KycStatus> {
   let row = await ledger.getStablesCustomerForUser(user.id);
+  // A wallet with one completed payment is verified for good: no re-check.
+  const verifiedWallet = await ledger.findVerifiedWallet(user.wallets ?? []);
+  if (verifiedWallet && verifiedWallet.user_id === user.id) {
+    const base = kycStatusOf(row);
+    return {
+      ...base,
+      state: "kyc_verified",
+      status: "approved",
+      basePayout: "approved",
+      verifiedAt: base.verifiedAt ?? verifiedWallet.verified_at,
+      verifiedName: base.verifiedName ?? customerName(verifiedWallet),
+    };
+  }
   const config = getStablesConfig();
   if (!row) row = await autoDetectCustomer(config, user.id);
   // Returning verified (or rejected) customers are answered from our own

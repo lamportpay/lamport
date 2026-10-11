@@ -515,15 +515,19 @@ export const getVerifiedCustomers = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await requireAdmin(context);
     const { supabase } = context;
-    const [wallets, customers, paid] = await Promise.all([
+    const [wallets, customers, paid, verifiedWallets] = await Promise.all([
       supabase.from("user_wallets").select("user_id, address").limit(1000),
       supabase
         .from("stables_customers")
         .select("user_id, stables_customer_id, first_name, last_name, verification_status, base_payout_status, verified_at")
         .limit(1000),
       supabase.from("payments").select("user_id").eq("status", "COMPLETED").limit(5000),
+      supabase.from("verified_wallets").select("address, user_id, email, verified_at").limit(5000),
     ]);
-    if (wallets.error || customers.error || paid.error) throw new Error("Could not load customers.");
+    if (wallets.error || customers.error || paid.error || verifiedWallets.error)
+      throw new Error("Could not load customers.");
+    const lockedIn = new Map<string, { email: string | null; verified_at: string }>();
+    for (const v of verifiedWallets.data ?? []) if (!lockedIn.has(v.user_id)) lockedIn.set(v.user_id, v);
     const known = new Set<string>([
       ...(wallets.data ?? []).map((w) => w.user_id),
       ...(customers.data ?? []).map((c) => c.user_id),
