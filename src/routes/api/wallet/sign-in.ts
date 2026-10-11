@@ -29,6 +29,11 @@ export const Route = createFileRoute("/api/wallet/sign-in")({
               message: body.message,
               signature: body.signature,
               requestOrigin: request.headers.get("origin"),
+              requestHosts: [
+                new URL(request.url).host,
+                request.headers.get("x-forwarded-host"),
+                request.headers.get("host"),
+              ],
             });
             return json(result);
           } catch (error) {
