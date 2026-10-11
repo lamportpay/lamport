@@ -18,12 +18,40 @@ import {
   setWalletSignIn,
   useAppWallet,
 } from "@/lib/wallet-state";
-import {
-  WALLET_CONNECT_TIMEOUT_MS,
-  WALLET_SIGN_IN_STATEMENT,
-  walletSignInErrorMessage,
-} from "@/lib/wallet-sign-in";
+import { WALLET_CONNECT_TIMEOUT_MS, walletSignInErrorMessage } from "@/lib/wallet-sign-in";
+import { buildWalletSignInMessage } from "@/lib/identity/wallet-message";
 import { WalletConnectButton } from "./SolanaWallet";
+
+/**
+ * Sign in with the connected wallet: the wallet signs one plain-text message,
+ * LamportPay's server verifies it and answers with a one-time token that is
+ * exchanged for the session. Any other session (for example an email account)
+ * is replaced, so the wallet is the customer's only sign-in.
+ */
+async function signInWithWallet(
+  address: string,
+  signMessage: (message: Uint8Array) => Promise<Uint8Array>,
+) {
+  const message = buildWalletSignInMessage({
+    host: window.location.host,
+    origin: window.location.origin,
+    address,
+    issuedAt: new Date().toISOString(),
+  });
+  const signed = await signMessage(new TextEncoder().encode(message));
+  const signature = btoa(String.fromCharCode(...signed));
+  const res = await fetch("/api/wallet/sign-in", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, signature }),
+  });
+  const body = (await res.json().catch(() => ({}))) as { tokenHash?: string; error?: string };
+  if (!res.ok || !body.tokenHash) throw new Error(body.error || "Wallet sign-in did not complete.");
+  const current = await supabase.auth.getSession();
+  if (current.data.session) await supabase.auth.signOut({ scope: "local" });
+  const { error } = await supabase.auth.verifyOtp({ token_hash: body.tokenHash, type: "magiclink" });
+  if (error) throw new Error("Wallet sign-in did not complete. Please try again.");
+}
 
 function WalletStateBridge() {
   const { publicKey, wallet, connected, connecting } = useWallet();
@@ -77,19 +105,8 @@ function WalletSignInBridge() {
     }
     inFlight.current = true;
     setWalletSignIn({ phase: "signing", error: null });
-    supabase.auth
-      .signInWithWeb3({
-        chain: "solana",
-        statement: WALLET_SIGN_IN_STATEMENT,
-        wallet: { publicKey, signMessage },
-      })
-      .then(({ error }) => {
-        setWalletSignIn(
-          error
-            ? { phase: "error", error: walletSignInErrorMessage(error) }
-            : { phase: "idle", error: null },
-        );
-      })
+    signInWithWallet(publicKey.toBase58(), signMessage)
+      .then(() => setWalletSignIn({ phase: "idle", error: null }))
       .catch((error: unknown) => {
         setWalletSignIn({ phase: "error", error: walletSignInErrorMessage(error) });
       })
