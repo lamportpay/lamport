@@ -535,6 +535,8 @@ export async function getKycStatus(user: AuthenticatedUser): Promise<KycStatus> 
       state: "kyc_verified",
       status: "approved",
       basePayout: "approved",
+      kycLink: null,
+      kycLinkExpiresAt: null,
       verifiedAt: base.verifiedAt ?? verifiedWallet.verified_at,
       verifiedName: base.verifiedName ?? customerName(verifiedWallet),
     };
