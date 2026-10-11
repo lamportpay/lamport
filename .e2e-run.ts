@@ -1,5 +1,5 @@
 import { Keypair } from "@solana/web3.js";
-import nacl from "tweetnacl";
+import { ed25519 } from "@noble/curves/ed25519";
 import { createClient } from "@supabase/supabase-js";
 import { buildWalletSignInMessage } from "./src/lib/identity/wallet-message";
 import fs from "node:fs";
@@ -11,7 +11,7 @@ const address = kp.publicKey.toBase58();
 const log = (k: string, v: unknown) => console.log(`## ${k}:`, JSON.stringify(v).slice(0, 700));
 log("wallet", address);
 const message = buildWalletSignInMessage({ host: "localhost:8080", origin: B, address, issuedAt: new Date().toISOString() });
-const signature = Buffer.from(nacl.sign.detached(new TextEncoder().encode(message), kp.secretKey)).toString("base64");
+const signature = Buffer.from(ed25519.sign(new TextEncoder().encode(message), kp.secretKey.slice(0,32))).toString("base64");
 let r = await fetch(`${B}/api/wallet/sign-in`, { method: "POST", headers: { "Content-Type": "application/json", Origin: B }, body: JSON.stringify({ message, signature }) });
 const si = await r.json(); log("sign-in " + r.status, { address: si.address, gotToken: !!si.tokenHash });
 r = await fetch(`${B}/api/wallet/sign-in`, { method: "POST", headers: { "Content-Type": "application/json", Origin: B }, body: JSON.stringify({ message, signature }) });
