@@ -47,6 +47,7 @@ export default defineConfig(({ command, mode }) => {
         { find: /^@\//, replacement: fileURLToPath(new URL("./src/", import.meta.url)) },
         { find: /^rpc-websockets$/, replacement: rpcWebsocketsBrowser },
         { find: /^rpc-websockets\/dist\/lib\/client$/, replacement: rpcWebsocketsBrowser },
+        { find: /^lamportpay-real-buffer$/, replacement: realBufferPackage },
         { find: /^node:buffer$/, replacement: browserBufferShim },
         { find: /^buffer$/, replacement: browserBufferShim },
         { find: /^buffer\/$/, replacement: browserBufferShim },
