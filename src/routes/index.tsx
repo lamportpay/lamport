@@ -57,6 +57,7 @@ function Index() {
       <section className="max-w-7xl mx-auto px-5 -mt-4 md:-mt-10">
         <TransferSimulator />
       </section>
+      <DemoVideo />
       <LiveSwapTheater />
       <VerifiedUsers />
       <section className="max-w-7xl mx-auto px-5 mt-16 md:mt-24">
