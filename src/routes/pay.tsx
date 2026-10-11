@@ -2524,7 +2524,7 @@ function CheckoutFlow({
   );
 }
 
-const STAGE_ORDER = { details: 0, verify: 1, review: 2 } as const;
+const STAGE_ORDER = { details: 0, review: 1, verify: 2 } as const;
 
 /** One step for personal + payout details; only what Stables needs for this currency. */
 function PayoutDetailsStep({
