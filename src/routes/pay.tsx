@@ -833,6 +833,14 @@ function ConvertForm({
   // After the one-message wallet signature (needed to save the quote), carry on
   // to the quote by itself. Identity verification is asked for later, after review.
   const [quoteAfterSignIn, setQuoteAfterSignIn] = useState(false);
+  // Wallet sign-in unavailable on this backend: go straight to email sign-in,
+  // keeping the amount and country, instead of leaving the user on an error.
+  useEffect(() => {
+    if (!quoteAfterSignIn || wallet.signIn.phase !== "error") return;
+    if (!/not switched on/i.test(wallet.signIn.error ?? "")) return;
+    setQuoteAfterSignIn(false);
+    window.location.assign(`/auth?next=${encodeURIComponent(emailSignInNext)}`);
+  }, [quoteAfterSignIn, wallet.signIn.phase, wallet.signIn.error, emailSignInNext]);
   useEffect(() => {
     if (!quoteAfterSignIn || !signedIn || differentWallet || !walletKey) return;
     setQuoteAfterSignIn(false);
