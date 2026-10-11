@@ -127,10 +127,14 @@ function WalletSignInBridge() {
 export function AppWalletControl() {
   const { openRequest } = useAppWallet();
   const account = useAccount();
-  const signedOut = account.status === "signed_out";
+  // Signed out, or signed in without a wallet (e.g. an email/staff session):
+  // connecting the wallet also signs in with it.
+  const needsWalletSession =
+    account.status === "signed_out" ||
+    (account.status === "signed_in" && account.wallets.length === 0);
   const onPick = useCallback(() => {
-    if (signedOut) requestWalletSignIn({ openPicker: false });
-  }, [signedOut]);
+    if (needsWalletSession) requestWalletSignIn({ openPicker: false });
+  }, [needsWalletSession]);
   return (
     <>
       <WalletStateBridge />
@@ -139,28 +143,15 @@ export function AppWalletControl() {
         openRequest={openRequest}
         onPick={onPick}
         pickerFooter={
-          signedOut ? (
+          needsWalletSession ? (
             <div className="border-t border-border/60 px-3 py-2 text-[11px] text-muted-foreground">
-              Next, sign one message to verify the wallet is yours. No funds move.{" "}
-              <Link
-                to="/auth"
-                search={{ next: currentPath() }}
-                className="text-primary hover:underline"
-              >
-                Email account?
-              </Link>
+              Next, sign one message to confirm the wallet is yours. No funds move.
             </div>
           ) : null
         }
       />
     </>
   );
-}
-
-function currentPath() {
-  return typeof window === "undefined"
-    ? "/pay"
-    : `${window.location.pathname}${window.location.search}`;
 }
 
 export default AppWalletControl;
