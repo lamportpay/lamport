@@ -30,7 +30,7 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
     name: "AGC Global Logistics",
     url: "https://agcgl.com/",
     description: "Global logistics and freight services connecting businesses across borders.",
-    region: "USA",
+    region: "UAE",
     sector: "Logistics",
     logo: null,
   },
@@ -38,8 +38,8 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
     name: "Wharf Street Studios",
     url: "https://www.wharfstreetstudios.com/",
     description:
-      "London studio building immersive games and AI-produced films, with a focus on blockchain gaming.",
-    region: "UK",
+      "US studio building immersive games and AI-produced films, with a focus on blockchain gaming.",
+    region: "USA",
     sector: "Media & Gaming",
     logo: wharfLogo.url,
   },
@@ -65,7 +65,7 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
     url: "https://secureledgerssolutions.com/",
     description:
       "Crypto advisory firm offering institutional advisory, liquidity management, digital-asset protection and OTC support.",
-    region: "UAE",
+    region: "UK",
     sector: "Digital-asset advisory",
     logo: secureLedgerLogo.url,
   },
