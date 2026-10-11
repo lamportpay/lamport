@@ -208,7 +208,7 @@ function CompanyCard({ c }: { c: EcosystemCompany }) {
             {c.sector}
           </span>
           <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            <CheckCircle2 className="w-3 h-3 text-primary" /> Partner
+            <CheckCircle2 className="w-3 h-3 text-primary" /> Ready to adopt
           </span>
         </div>
       </a>
@@ -223,10 +223,13 @@ export function EcosystemSection() {
     <section className="relative mt-32 overflow-hidden" id="ecosystem">
       <div className="max-w-6xl mx-auto px-5">
         <Heading
-          eyebrow="Strategic ecosystem"
-          title="Our partners across the USA, UK and UAE."
-          intro="Technology we integrate today, and the businesses we work with in three key markets."
+          eyebrow="Business partners"
+          title="Ready to adopt LamportPay across the USA, UK and UAE."
+          intro="Our confirmed business partners are ready to use LamportPay's payment services. We are also in discussions with additional businesses to grow our ecosystem and bring more partners on board."
         />
+        <p className="mt-4 mx-auto max-w-2xl text-center text-sm text-muted-foreground">
+          Onboarding is planned. Fiat payouts remain demo-only until production approval; readiness does not mean live payment processing.
+        </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
           <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             <Network className="w-4 h-4" /> Integrated today:
