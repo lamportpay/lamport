@@ -2,8 +2,8 @@
 
 ## Partner positioning
 
-- [ ] Describe confirmed businesses as ready to adopt LamportPay's payment services, not live integrations or payout providers
-- [ ] State that discussions with additional businesses are underway for future onboarding
+- [x] Describe confirmed businesses as ready to adopt LamportPay's payment services, not live integrations or payout providers
+- [x] State that discussions with additional businesses are underway for future onboarding
 - [x] Correct company country groups: Wharf Street Studios USA, Secure Ledger Solutions UK, AGC Global Logistics UAE
 - [ ] Confirm the sixth partner's identity and whether the rental company is Bliss Rent or Vessel Rent (waiting on owner)
 
