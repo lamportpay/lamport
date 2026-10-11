@@ -42,6 +42,7 @@ import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminSystemStatusRouteImport } from './routes/_authenticated/admin.system-status'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
+import { Route as AuthenticatedAdminVerifiedCustomersRouteImport } from './routes/_authenticated/admin.verified-customers'
 import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authenticated/admin_.roles'
 import { Route as AuthenticatedPaymentsIndexRouteImport } from './routes/_authenticated/payments.index'
 import { Route as AuthenticatedPaymentsIdRouteImport } from './routes/_authenticated/payments.$id'
@@ -245,6 +246,12 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminVerifiedCustomersRoute =
+  AuthenticatedAdminVerifiedCustomersRouteImport.update({
+    id: '/verified-customers',
+    path: '/verified-customers',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminRolesRoute = AuthenticatedAdminRolesRouteImport.update({
   id: '/admin_/roles',
   path: '/admin/roles',
@@ -439,6 +446,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/system-status': typeof AuthenticatedAdminSystemStatusRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/admin/verified-customers': typeof AuthenticatedAdminVerifiedCustomersRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
@@ -501,6 +509,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/system-status': typeof AuthenticatedAdminSystemStatusRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/admin/verified-customers': typeof AuthenticatedAdminVerifiedCustomersRoute
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
@@ -566,6 +575,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/system-status': typeof AuthenticatedAdminSystemStatusRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/admin/verified-customers': typeof AuthenticatedAdminVerifiedCustomersRoute
   '/_authenticated/admin_/roles': typeof AuthenticatedAdminRolesRoute
   '/_authenticated/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
@@ -631,6 +641,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/system-status'
     | '/admin/users'
+    | '/admin/verified-customers'
     | '/admin/roles'
     | '/payments/$id'
     | '/api/cron/reconcile-payments'
@@ -693,6 +704,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/system-status'
     | '/admin/users'
+    | '/admin/verified-customers'
     | '/admin/roles'
     | '/payments/$id'
     | '/api/cron/reconcile-payments'
@@ -757,6 +769,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/system-status'
     | '/_authenticated/admin/users'
+    | '/_authenticated/admin/verified-customers'
     | '/_authenticated/admin_/roles'
     | '/_authenticated/payments/$id'
     | '/api/cron/reconcile-payments'
@@ -1071,6 +1084,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/verified-customers': {
+      id: '/_authenticated/admin/verified-customers'
+      path: '/verified-customers'
+      fullPath: '/admin/verified-customers'
+      preLoaderRoute: typeof AuthenticatedAdminVerifiedCustomersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin_/roles': {
       id: '/_authenticated/admin_/roles'
       path: '/admin/roles'
@@ -1285,6 +1305,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminSystemStatusRoute: typeof AuthenticatedAdminSystemStatusRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminVerifiedCustomersRoute: typeof AuthenticatedAdminVerifiedCustomersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminPaymentsIdRoute: typeof AuthenticatedAdminPaymentsIdRoute
   AuthenticatedAdminPaymentsIndexRoute: typeof AuthenticatedAdminPaymentsIndexRoute
@@ -1298,6 +1319,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminSystemStatusRoute: AuthenticatedAdminSystemStatusRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminVerifiedCustomersRoute:
+    AuthenticatedAdminVerifiedCustomersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminPaymentsIdRoute: AuthenticatedAdminPaymentsIdRoute,
   AuthenticatedAdminPaymentsIndexRoute: AuthenticatedAdminPaymentsIndexRoute,
