@@ -61,7 +61,6 @@ export function DemoVideo() {
               preload="none"
               playsInline
               controls={started}
-              onPlaying={() => setPlaying(true)}
               onEnded={() => setEnded(true)}
               className="absolute inset-0 w-full h-full object-cover"
             />
