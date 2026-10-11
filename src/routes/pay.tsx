@@ -2465,7 +2465,20 @@ function CheckoutFlow({
                   </p>
                 </div>
                 <div className="sm:sticky sm:bottom-4 sm:z-20 sm:-mx-2 sm:rounded-2xl sm:border sm:border-border/60 sm:bg-card/95 sm:p-3 sm:shadow-[var(--shadow-elegant)] sm:backdrop-blur-xl space-y-2">
-                  {testMode ? (
+                  {!verified ? (
+                    <MobileDock className="space-y-2">
+                      <button
+                        type="button"
+                        onClick={() => setWantsVerify(true)}
+                        className={`${PRIMARY} w-full justify-center py-3.5 text-base`}
+                      >
+                        Verify identity to pay <ArrowRight className="w-4 h-4" />
+                      </button>
+                      <p className="text-center text-xs text-muted-foreground">
+                        One-time check with our payout partner. Verified customers skip this step.
+                      </p>
+                    </MobileDock>
+                  ) : testMode ? (
                     <MobileDock className="space-y-2">
                       <QuoteLine
                         expiresAt={payment.quote?.expiresAt ?? null}
