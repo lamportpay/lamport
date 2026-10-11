@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 
 import { AppLayout, switchToConnectedWallet, useSignedIn } from "@/components/app/AppLayout";
-import { walletLinkOf } from "@/lib/identity/wallet-identity";
+import { realEmailOf, walletLinkOf } from "@/lib/identity/wallet-identity";
 import { useAccount } from "@/lib/use-account";
 import { useModeStatus } from "@/lib/use-mode-status";
 import { supabase } from "@/integrations/supabase/client";
@@ -325,7 +325,7 @@ function KycCard({ compact = false }: { compact?: boolean }) {
     queryKey: ["account-has-email"],
     queryFn: async () => {
       const { data } = await supabase.auth.getSession();
-      return Boolean(data.session?.user.email);
+      return Boolean(realEmailOf(data.session?.user.email));
     },
     staleTime: 60_000,
   });
@@ -2568,7 +2568,7 @@ function PayoutDetailsStep({
     queryKey: ["account-has-email"],
     queryFn: async () => {
       const { data } = await supabase.auth.getSession();
-      return Boolean(data.session?.user.email);
+      return Boolean(realEmailOf(data.session?.user.email));
     },
     staleTime: 60_000,
   });
