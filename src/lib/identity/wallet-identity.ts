@@ -25,9 +25,14 @@ function addressFrom(value: unknown): string | null {
   return BASE58_ADDRESS.test(address) ? address : null;
 }
 
-/** Solana wallet addresses Supabase Auth has verified for this user (deduplicated). */
+/**
+ * Solana wallet addresses verified for this user (deduplicated): Supabase Auth
+ * web3 identities, plus the wallet LamportPay's own wallet sign-in recorded in
+ * app_metadata.wallet_solana (server-written only; users cannot edit app_metadata).
+ */
 export function walletAddressesOf(
   identities: readonly AuthIdentityLike[] | null | undefined,
+  appMetadata?: Record<string, unknown> | null,
 ): string[] {
   const out = new Set<string>();
   for (const identity of identities ?? []) {
@@ -35,7 +40,21 @@ export function walletAddressesOf(
     const address = addressFrom(identity.id) ?? addressFrom(identity.identity_data?.["sub"]);
     if (address) out.add(address);
   }
+  const fromServer = appMetadata?.["wallet_solana"];
+  if (typeof fromServer === "string" && BASE58_ADDRESS.test(fromServer)) out.add(fromServer);
   return [...out];
+}
+
+/** Wallet accounts get a non-deliverable placeholder address (auth needs one). */
+export const WALLET_EMAIL_DOMAIN = "wallet.lamportpay.com";
+
+export function isWalletPlaceholderEmail(email: string | null | undefined): boolean {
+  return Boolean(email && email.toLowerCase().endsWith(`@${WALLET_EMAIL_DOMAIN}`));
+}
+
+/** The account's real email, or null for wallet accounts. */
+export function realEmailOf(email: string | null | undefined): string | null {
+  return email && !isWalletPlaceholderEmail(email) ? email : null;
 }
 
 /**

@@ -10,18 +10,13 @@
  * maps to one account and nobody can claim another wallet's verified status.
  */
 import { allowShared } from "@/lib/payments/rate-limit.server";
+import { WALLET_EMAIL_DOMAIN } from "@/lib/identity/wallet-identity";
 import {
   WALLET_MESSAGE_MAX_AGE_MS,
   base58Decode,
   parseWalletSignInMessage,
 } from "@/lib/identity/wallet-message";
 
-/** Wallet accounts get a non-deliverable placeholder address (auth needs one). */
-export const WALLET_EMAIL_DOMAIN = "wallet.lamportpay.com";
-
-export function isWalletPlaceholderEmail(email: string | null | undefined): boolean {
-  return Boolean(email && email.toLowerCase().endsWith(`@${WALLET_EMAIL_DOMAIN}`));
-}
 
 function placeholderEmail(publicKey: Uint8Array): string {
   const hex = [...publicKey].map((b) => b.toString(16).padStart(2, "0")).join("");

@@ -4,7 +4,7 @@
  * Supabase Auth before touching any payment.
  */
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { walletAddressesOf } from "@/lib/identity/wallet-identity";
+import { realEmailOf, walletAddressesOf } from "@/lib/identity/wallet-identity";
 
 export type AuthenticatedUser = {
   id: string;
@@ -35,8 +35,8 @@ export async function authenticateUser(
   return {
     user: {
       id: data.user.id,
-      email: data.user.email || null,
-      wallets: walletAddressesOf(data.user.identities),
+      email: realEmailOf(data.user.email),
+      wallets: walletAddressesOf(data.user.identities, data.user.app_metadata),
     },
     denied: null,
   };
