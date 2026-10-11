@@ -2354,12 +2354,13 @@ function CheckoutFlow({
   };
   const liveTransfer = useMutation({ mutationFn: createTransfer });
 
-  // One step at a time: details → verify → review. A finished step leaves the
-  // screen and the next one slides in where it was (no scrolling); "Back" returns
-  // to the checked details (read-only, with Edit).
+  // One step at a time: details → review → verify (only when the server says the
+  // customer is not verified yet). Verification is asked for last, after the user
+  // has seen the whole payment; Pay Now still needs a verified customer.
   const [back, setBack] = useState(false);
+  const [wantsVerify, setWantsVerify] = useState(false);
   const stage: keyof typeof STAGE_ORDER =
-    !checked || back ? "details" : !verified ? "verify" : "review";
+    !checked || back ? "details" : wantsVerify && !verified ? "verify" : "review";
   const previousStage = useRef(stage);
   const forward = STAGE_ORDER[stage] >= STAGE_ORDER[previousStage.current];
   useEffect(() => {
@@ -2412,7 +2413,7 @@ function CheckoutFlow({
                 onClick={() => setBack(false)}
                 className={`${PRIMARY} w-full justify-center py-3.5 text-base`}
               >
-                {verified ? "Continue to review" : "Continue to verification"}
+                Continue to review
                 <ArrowRight className="w-4 h-4" />
               </button>
             </MobileDock>
@@ -2421,7 +2422,13 @@ function CheckoutFlow({
       )}
       {stage === "verify" && (
         <>
-          {backButton}
+          <button
+            type="button"
+            onClick={() => setWantsVerify(false)}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to review
+          </button>
           <VerificationGate kyc={kyc} />
         </>
       )}
