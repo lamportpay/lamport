@@ -113,9 +113,13 @@ function AdminLoginPage() {
             <ShieldCheck className="h-4 w-4 text-emerald-400" />
             Operations console
           </div>
-          <h1 className="mt-3 text-2xl font-semibold tracking-tight">Admin sign in</h1>
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight">
+            {resetMode ? "Reset admin password" : "Admin sign in"}
+          </h1>
           <p className="mt-2 text-sm leading-6 text-white/60">
-            For LamportPay staff only. Every admin action is recorded in the audit log.
+            {resetMode
+              ? "Enter your admin email and we'll send you a link to choose a new password."
+              : "For LamportPay staff only. Every admin action is recorded in the audit log."}
           </p>
 
           <form onSubmit={submit} className="mt-6 space-y-4">
@@ -130,18 +134,20 @@ function AdminLoginPage() {
                 className={inputClass}
               />
             </label>
-            <label className="block text-sm font-medium text-white/80">
-              Password
-              <input
-                required
-                type="password"
-                minLength={6}
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className={inputClass}
-              />
-            </label>
+            {!resetMode && (
+              <label className="block text-sm font-medium text-white/80">
+                Password
+                <input
+                  required
+                  type="password"
+                  minLength={6}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  className={inputClass}
+                />
+              </label>
+            )}
 
             {error && (
               <p
@@ -151,6 +157,14 @@ function AdminLoginPage() {
                 {error}
               </p>
             )}
+            {message && (
+              <p
+                role="status"
+                className="rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300"
+              >
+                {message}
+              </p>
+            )}
 
             <button
               type="submit"
@@ -158,7 +172,18 @@ function AdminLoginPage() {
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 font-semibold text-[#0b0d17] transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Lock className="h-4 w-4" />
-              {busy ? "Checking…" : "Sign in to admin"}
+              {busy ? "Checking…" : resetMode ? "Send reset link" : "Sign in to admin"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setResetMode((value) => !value);
+                setError(null);
+                setMessage(null);
+              }}
+              className="w-full text-center text-sm text-white/60 hover:text-white"
+            >
+              {resetMode ? "Back to admin sign in" : "Forgot password?"}
             </button>
           </form>
         </section>
