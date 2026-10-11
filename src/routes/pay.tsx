@@ -830,10 +830,20 @@ function ConvertForm({
     return `/pay${query ? `?${query}` : ""}`;
   })();
 
+  // After the one-message wallet signature (needed to save the quote), carry on
+  // to the quote by itself. Identity verification is asked for later, after review.
+  const [quoteAfterSignIn, setQuoteAfterSignIn] = useState(false);
+  useEffect(() => {
+    if (!quoteAfterSignIn || !signedIn || differentWallet || !walletKey) return;
+    setQuoteAfterSignIn(false);
+    if (!blocked && !aboveMax && !belowMin && ready && !create.isPending) create.mutate();
+  }, [quoteAfterSignIn, signedIn, differentWallet, walletKey, blocked, aboveMax, belowMin, ready, create]);
+
   const submit = () => {
     if (needsSignIn) {
       // Wallet-first: connect (if needed) and sign one message, no funds move.
       // The amount and country stay on the page; email sign-in is the fallback.
+      setQuoteAfterSignIn(true);
       requestWalletSignIn();
       return;
     }
@@ -851,9 +861,9 @@ function ConvertForm({
 
   const ctaLabel = needsSignIn
     ? signingIn
-      ? "Check your wallet…"
+      ? "Approve in your wallet…"
       : walletKey
-        ? "Verify wallet to continue"
+        ? "Get live quote"
         : "Connect wallet to continue"
     : differentWallet
       ? "Sign in with this wallet to continue"
@@ -2354,12 +2364,13 @@ function CheckoutFlow({
   };
   const liveTransfer = useMutation({ mutationFn: createTransfer });
 
-  // One step at a time: details → verify → review. A finished step leaves the
-  // screen and the next one slides in where it was (no scrolling); "Back" returns
-  // to the checked details (read-only, with Edit).
+  // One step at a time: details → review → verify (only when the server says the
+  // customer is not verified yet). Verification is asked for last, after the user
+  // has seen the whole payment; Pay Now still needs a verified customer.
   const [back, setBack] = useState(false);
+  const [wantsVerify, setWantsVerify] = useState(false);
   const stage: keyof typeof STAGE_ORDER =
-    !checked || back ? "details" : !verified ? "verify" : "review";
+    !checked || back ? "details" : wantsVerify && !verified ? "verify" : "review";
   const previousStage = useRef(stage);
   const forward = STAGE_ORDER[stage] >= STAGE_ORDER[previousStage.current];
   useEffect(() => {
@@ -2412,7 +2423,7 @@ function CheckoutFlow({
                 onClick={() => setBack(false)}
                 className={`${PRIMARY} w-full justify-center py-3.5 text-base`}
               >
-                {verified ? "Continue to review" : "Continue to verification"}
+                Continue to review
                 <ArrowRight className="w-4 h-4" />
               </button>
             </MobileDock>
@@ -2421,7 +2432,13 @@ function CheckoutFlow({
       )}
       {stage === "verify" && (
         <>
-          {backButton}
+          <button
+            type="button"
+            onClick={() => setWantsVerify(false)}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to review
+          </button>
           <VerificationGate kyc={kyc} />
         </>
       )}
@@ -2458,7 +2475,20 @@ function CheckoutFlow({
                   </p>
                 </div>
                 <div className="sm:sticky sm:bottom-4 sm:z-20 sm:-mx-2 sm:rounded-2xl sm:border sm:border-border/60 sm:bg-card/95 sm:p-3 sm:shadow-[var(--shadow-elegant)] sm:backdrop-blur-xl space-y-2">
-                  {testMode ? (
+                  {!verified ? (
+                    <MobileDock className="space-y-2">
+                      <button
+                        type="button"
+                        onClick={() => setWantsVerify(true)}
+                        className={`${PRIMARY} w-full justify-center py-3.5 text-base`}
+                      >
+                        Verify identity to pay <ArrowRight className="w-4 h-4" />
+                      </button>
+                      <p className="text-center text-xs text-muted-foreground">
+                        One-time check with our payout partner. Verified customers skip this step.
+                      </p>
+                    </MobileDock>
+                  ) : testMode ? (
                     <MobileDock className="space-y-2">
                       <QuoteLine
                         expiresAt={payment.quote?.expiresAt ?? null}
@@ -2504,7 +2534,7 @@ function CheckoutFlow({
   );
 }
 
-const STAGE_ORDER = { details: 0, verify: 1, review: 2 } as const;
+const STAGE_ORDER = { details: 0, review: 1, verify: 2 } as const;
 
 /** One step for personal + payout details; only what Stables needs for this currency. */
 function PayoutDetailsStep({

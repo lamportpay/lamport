@@ -72,7 +72,7 @@ function SignedOutControl() {
       className="inline-flex items-center gap-1.5 text-sm font-medium px-3.5 py-2 rounded-full border border-border bg-card/70 hover:bg-muted disabled:opacity-60"
     >
       <Wallet className="w-4 h-4" />
-      {signing ? "Check your wallet…" : "Verify wallet"}
+      {signing ? "Check your wallet…" : "Sign in"}
     </button>
   );
 }
