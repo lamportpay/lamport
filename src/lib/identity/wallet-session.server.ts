@@ -43,7 +43,6 @@ export function isOwnSiteHost(
   const seen = [request.requestOrigin, ...(request.requestHosts ?? [])].map(hostOf);
   if (seen.includes(h)) return true;
   if (OWN_HOSTS.has(h) || OWN_HOST_PATTERNS.some((p) => p.test(h))) return true;
-  // Vercel test deploys: allowed only when the request itself arrived there.
   return false;
 }
 
