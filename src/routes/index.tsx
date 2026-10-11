@@ -189,7 +189,7 @@ function WhySection() {
     {
       icon: FileText,
       title: "Local-currency payouts",
-      desc: "Payouts go bank to bank, into the recipient's own account.",
+      desc: "Payouts go bank to bank, into the bank account you name.",
       stat: "Bank",
       statLabel: "payouts",
     },

@@ -112,7 +112,7 @@ function AuthPage() {
           </div>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">Sign in to continue.</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            Your account keeps your identity check, your own bank payouts and your history.
+            Your account keeps your identity check, your verified bank payouts and your history.
           </p>
 
           <WalletSignInSection />

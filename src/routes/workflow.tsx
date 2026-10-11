@@ -69,7 +69,9 @@ function WorkflowPage() {
         <p className="text-muted-foreground mt-3 max-w-2xl">
           LamportPay splits the flow into a swap layer and a payout layer. A swap, only when needed,
           turns SOL into USDC in your own wallet. A licensed payout partner turns USDC into local
-          currency and pays it into your own bank account. You sign every on-chain step yourself.
+          currency and pays it into the bank account you choose. You sign every on-chain step
+          yourself.
+
         </p>
 
         <div className="grid md:grid-cols-3 gap-4 mt-8">
