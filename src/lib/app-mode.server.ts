@@ -81,7 +81,12 @@ function testProblems(env: Env): string[] {
   if (looksMainnet(testRpcUrl(env))) {
     problems.push("TEST MODE's Solana RPC (SOLANA_DEVNET_RPC_URL) points at mainnet.");
   }
-  if ((env["SUPABASE_URL"] ?? "").includes(LIVE_SUPABASE_REF)) {
+  // The team's original rule assumed two databases (dev + live). On Lovable's
+  // single backend the preview and the published app share one database, so
+  // TEST MODE can run against it only when the deployment explicitly
+  // acknowledges that with LAMPORTPAY_SHARED_DB=1 (no other DB exists).
+  const sharedDb = (env["LAMPORTPAY_SHARED_DB"] ?? "").trim() === "1";
+  if (!sharedDb && (env["SUPABASE_URL"] ?? "").includes(LIVE_SUPABASE_REF)) {
     problems.push("TEST MODE must not use the live database.");
   }
   return problems;

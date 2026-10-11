@@ -21,6 +21,7 @@
     "vercel:env": "node scripts/vercel-env-push.mjs"
   },
   "dependencies": {
+    "@lovable.dev/mcp-js": "^0.28.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-popover": "^1.1.15",
@@ -33,7 +34,7 @@
     "@solana/web3.js": "^1.98.4",
     "@supabase/supabase-js": "^2.112.4",
     "@tailwindcss/vite": "^4.2.1",
-    "@tanstack/react-query": "^5.104.1",
+    "@tanstack/react-query": "^5.101.1",
     "@tanstack/react-router": "^1.170.41",
     "@tanstack/react-start": "^1.168.60",
     "@tanstack/router-plugin": "^1.168.42",
