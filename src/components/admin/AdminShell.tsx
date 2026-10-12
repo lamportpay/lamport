@@ -49,6 +49,7 @@ const ADMIN_NAV: { section: string; items: NavItem[] }[] = [
       { to: "/admin/payments", label: "Payments", icon: ReceiptText },
       { to: "/admin/users", label: "Users & roles", icon: Users },
       { to: "/admin/verified-customers", label: "Verified customers", icon: BadgeCheck },
+      { to: "/admin/payouts", label: "Payouts", icon: Send },
     ],
   },
   {

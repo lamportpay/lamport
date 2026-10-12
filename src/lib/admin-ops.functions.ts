@@ -586,3 +586,67 @@ export const getVerifiedCustomers = createServerFn({ method: "POST" })
       })),
     };
   });
+
+/**
+ * Payout queue: per verified customer, their payments waiting for funds
+ * (transfer created at Stables, customer's coins not yet received), oldest first.
+ */
+export const getPayoutQueue = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdmin(context);
+    const { supabase } = context;
+    const [pays, customers, verifiedWallets] = await Promise.all([
+      supabase
+        .from("payments")
+        .select("id, user_id, status, source_amount_minor, source_currency, destination_amount_minor, destination_currency, destination_country, transfer_id, reconciled_at, created_at")
+        .eq("status", "AWAITING_FUNDS_COLLECTION")
+        .order("created_at", { ascending: true })
+        .limit(1000),
+      supabase.from("stables_customers").select("user_id, first_name, last_name, verification_status, base_payout_status").limit(1000),
+      supabase.from("verified_wallets").select("user_id, address").limit(5000),
+    ]);
+    if (pays.error || customers.error || verifiedWallets.error) throw new Error("Could not load payout queue.");
+    const paid = new Set((verifiedWallets.data ?? []).map((v) => v.user_id));
+    const byUser = new Map((customers.data ?? []).map((c) => [c.user_id, c]));
+    const groups = new Map<string, { userId: string; name: string; verifiedByPayment: boolean; payments: unknown[] }>();
+    for (const p of pays.data ?? []) {
+      const c = byUser.get(p.user_id);
+      const verified = paid.has(p.user_id) || (c?.verification_status === "approved" && c?.base_payout_status === "approved");
+      if (!verified) continue;
+      const g = groups.get(p.user_id) ?? {
+        userId: p.user_id,
+        name: [c?.first_name, c?.last_name].filter(Boolean).join(" ") || "—",
+        verifiedByPayment: paid.has(p.user_id),
+        payments: [],
+      };
+      g.payments.push({
+        id: p.id,
+        sourceAmountMinor: String(p.source_amount_minor),
+        sourceCurrency: p.source_currency,
+        destinationAmountMinor: p.destination_amount_minor == null ? null : String(p.destination_amount_minor),
+        destinationCurrency: p.destination_currency,
+        destinationCountry: p.destination_country,
+        transferId: p.transfer_id,
+        lastChecked: p.reconciled_at,
+        createdAt: p.created_at,
+      });
+      groups.set(p.user_id, g);
+    }
+    return { customers: [...groups.values()] as Array<{
+      userId: string; name: string; verifiedByPayment: boolean;
+      payments: Array<{ id: string; sourceAmountMinor: string; sourceCurrency: string; destinationAmountMinor: string | null; destinationCurrency: string; destinationCountry: string; transferId: string | null; lastChecked: string | null; createdAt: string }>;
+    }> };
+  });
+
+/** Ask Stables for the latest status of one payment (no money moves). */
+export const refreshPaymentFromStables = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { paymentId: string }) => z.object({ paymentId: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context);
+    const { syncPaymentById } = await import("@/lib/payments/service.server");
+    await syncPaymentById(data.paymentId, { force: true });
+    const { data: row } = await context.supabase.from("payments").select("status").eq("id", data.paymentId).maybeSingle();
+    return { status: row?.status ?? null };
+  });
