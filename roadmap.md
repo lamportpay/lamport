@@ -1,5 +1,11 @@
 # Roadmap
 
+## Docs page update
+
+- [ ] Replace the outdated stack and planned API surface with current integration documentation
+- [ ] Explain identity, quote-first checkout, fees, status synchronization and test-mode boundaries
+- [ ] Verify endpoint references, contents navigation and page rendering
+
 ## Compliance page update
 
 - [x] Correct beneficiary payouts, hosted verification and provider responsibilities
