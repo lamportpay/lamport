@@ -12,7 +12,7 @@
 <!-- LOVABLE:END -->
 
 - Stables is the sole payout infrastructure provider shown publicly; keep fiat payout and KYC labeled demo/disabled until production approval.
-- Keep the educational payment journey, costs and mode disclaimer in shared content for the How it works, Workflow and Whitepaper pages so their explanations remain consistent.
+- Keep the educational payment journey, costs and mode disclaimer in shared content for the How it works, Workflow, Whitepaper and Docs pages so their explanations remain consistent.
 - Keep public roadmap milestones in shared content for the homepage and whitepaper; animate the timeline only on viewport entry and respect reduced motion, so wording remains consistent and accessible.
 - Treat interrupted HTTP connections as expected cancellations, not reportable SSR failures, so navigation cannot trigger a false crash screen.
 - Asset intake routing lives in src/lib/asset-routing (networks separate from assets; providers selected by listing; intake requires explicit allowlist) so new conversion providers plug in without touching the live Jupiter endpoints.
