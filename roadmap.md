@@ -2,9 +2,9 @@
 
 ## Compliance page update
 
-- [ ] Correct beneficiary payouts, hosted verification and provider responsibilities
-- [ ] Clarify demo capabilities, security controls and production readiness without claiming certification
-- [ ] Verify the page and its disclosures in the preview
+- [x] Correct beneficiary payouts, hosted verification and provider responsibilities
+- [x] Clarify demo capabilities, security controls and production readiness without claiming certification
+- [x] Verify the page and its disclosures in the preview; HTTP 200, no page errors or overflow, build OK
 
 ## Whitepaper update
 
@@ -70,5 +70,5 @@
 
 - Social accounts: create/confirm X, LinkedIn and GitHub profiles, then send the final URLs so every link (footer, header, contact page) is updated in one pass
 - Publish the blog at lamportpay.com, submit the sitemap to Google Search Console, set social share images
-- Audit remaining stale claims before the next publish: home copy may claim fast checkout, 24/7, 400ms, 1:1, dynamic "tx/min" rates; compliance says Stables selected but production access pending
+- Audit remaining stale claims before the next publish: home copy may claim fast checkout, 24/7, 400ms, 1:1, dynamic "tx/min" rates
 - LIVE mode approval (blocks real-funds actions in /pay until given)
