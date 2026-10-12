@@ -133,12 +133,9 @@ function useSignOut() {
 
 export function AdminShell({
   email,
-  environment,
   children,
 }: {
   email: string | null;
-  /** "sandbox" / "production" badge in the top bar, when known. */
-  environment?: string | null;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
