@@ -2,9 +2,9 @@
 
 ## Docs page update
 
-- [ ] Replace the outdated stack and planned API surface with current integration documentation
-- [ ] Explain identity, quote-first checkout, fees, status synchronization and test-mode boundaries
-- [ ] Verify endpoint references, contents navigation and page rendering
+- [x] Replace the outdated stack and planned API surface with current integration documentation
+- [x] Explain identity, quote-first checkout, fees, status synchronization and test-mode boundaries
+- [x] Verify endpoint references, contents navigation and page rendering; HTTP 200, 18 endpoint rows, no page errors or overflow, build OK
 
 ## Compliance page update
 
