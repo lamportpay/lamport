@@ -13,7 +13,7 @@ Rules:
 - Give 3-6 short numbered steps in plain language, tailored to the saved status, error and description.
 - Mention the Continue button on the History page when the payment is unfinished.
 - If the status is terminal (FAILED, CANCELLED, EXPIRED, KYC_REJECTED), suggest starting a new payment.
-- End with one line on when to contact support. No markdown headings.`;
+- End with one line on when to contact support. Plain text only: no markdown, bold, or headings.`;
 
 export type RecoveryErrorCode = "rate_limited" | "credits" | "denied" | "config" | "failed";
 
