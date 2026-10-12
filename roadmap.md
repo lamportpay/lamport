@@ -1,5 +1,11 @@
 # Roadmap
 
+## Whitepaper update
+
+- [x] Align the whitepaper with the shared payment journey, costs and test-mode disclaimer
+- [x] Correct architecture, bank-only payouts, verification, supported assets and operational safeguards
+- [x] Verify contents navigation, page information and rendering; HTTP 200, no page errors or overflow, build OK
+
 ## How it works and workflow pages
 
 - [x] Replace outdated steps and conceptual endpoints with the current quote-first payment journey
@@ -58,5 +64,5 @@
 
 - Social accounts: create/confirm X, LinkedIn and GitHub profiles, then send the final URLs so every link (footer, header, contact page) is updated in one pass
 - Publish the blog at lamportpay.com, submit the sitemap to Google Search Console, set social share images
-- Audit stale claims before the next publish: whitepaper overstates KYC/regulated operations; home copy may claim fast checkout, 24/7, 400ms, 1:1, dynamic "tx/min" rates; compliance says Stables selected but production access pending
+- Audit remaining stale claims before the next publish: home copy may claim fast checkout, 24/7, 400ms, 1:1, dynamic "tx/min" rates; compliance says Stables selected but production access pending
 - LIVE mode approval (blocks real-funds actions in /pay until given)
