@@ -29,6 +29,7 @@ const paymentEndpoints: Endpoint[] = [
   { method: "POST", path: "/api/wallet/holdings", detail: "Read wallet holdings through a server-side Solana request." },
   { method: "POST", path: "/api/quote/estimate", detail: "Estimate the payment route, payout amount and costs before checkout verification." },
   { method: "POST", path: "/api/payments", detail: "Create a payment record for the signed-in customer." },
+  { method: "GET", path: "/api/payments", detail: "List the signed-in customer's payment history." },
   { method: "POST", path: "/api/payments/:id/quote", detail: "Generate the payment quote; verification is not required to reach the quoted stage." },
   { method: "POST", path: "/api/payments/:id/payout-details", detail: "Check the required bank fields with Stables before review." },
   { method: "GET", path: "/api/kyc", detail: "Read the server-decided customer verification state." },
@@ -101,7 +102,7 @@ function Docs() {
               <h2 className="text-2xl font-semibold">Identity & access</h2>
               <div className="mt-4 space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>Customer sign-in uses a SIWS-style plain-text Solana message. The server checks origin, freshness, Ed25519 signature and one-time use, then records the wallet in server-controlled identity data. This is not a payment transaction and never requests a private key or seed phrase.</p>
-                <p>Payment endpoints require a customer session and enforce ownership. A wallet connection alone is not a session or KYC approval. Admin functions separately re-check the admin role on the server.</p>
+                <p>Payment endpoints require a customer session and enforce ownership. Wallet sign-in, wallet holdings and the estimate endpoint serve pre-checkout requests; they do not grant access to private payment records. A wallet connection alone is not a session or KYC approval. Admin functions separately re-check the admin role on the server.</p>
                 <p>Wallet-only accounts use a non-deliverable placeholder email internally, not a real contact address. When verification needs an email, the customer provides it for Stables customer setup. Documents are handled on Stables' hosted page; LamportPay keeps the verification link and status.</p>
               </div>
             </section>
