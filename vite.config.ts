@@ -39,8 +39,23 @@ const solanaMobileSsrStub = fileURLToPath(
   new URL("./src/lib/solana-mobile-ssr-stub.ts", import.meta.url),
 );
 
+// Public (publishable) backend connection values. `.env` is gitignored, so a
+// build made from a clean checkout (the published site, Vercel, CI) has no
+// VITE_SUPABASE_* values and the browser app crashes with "Missing Supabase
+// environment variable(s)". These are publishable, not secrets; a local or
+// hosting-provided env value always wins over them.
+const PUBLIC_BACKEND_DEFAULTS: Record<string, string> = {
+  VITE_SUPABASE_URL: "https://zmcbnknjatrfwrcfvtzt.supabase.co",
+  VITE_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_9e5G0Zw8rj0IQzv9Oos7Yw_UdccFnBL",
+  VITE_SUPABASE_PROJECT_ID: "zmcbnknjatrfwrcfvtzt",
+};
+
 export default defineConfig(({ command, mode }) => {
-  const viteEnv = loadEnv(mode, process.cwd(), "VITE_");
+  const loadedEnv = loadEnv(mode, process.cwd(), "VITE_");
+  const viteEnv: Record<string, string> = { ...loadedEnv };
+  for (const [key, value] of Object.entries(PUBLIC_BACKEND_DEFAULTS)) {
+    if (!viteEnv[key]) viteEnv[key] = value;
+  }
   const envDefine = Object.fromEntries(
     Object.entries(viteEnv).map(([key, value]) => [`import.meta.env.${key}`, JSON.stringify(value)]),
   );
