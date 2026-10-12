@@ -1,96 +1,92 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
-import { ShieldCheck, XCircle, CheckCircle2, FlaskConical } from "lucide-react";
+import { ShieldCheck, XCircle, CheckCircle2 } from "lucide-react";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
+import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
+import { PAYMENT_COSTS } from "@/content/payment-flow";
 
 export const Route = createFileRoute("/compliance")({
   head: () =>
     pageSeo({
       path: "/compliance",
-      title: "Compliance Position | LamportPay",
+      title: "LamportPay Compliance — Verification, Responsibilities and Safeguards",
       description:
-        "LamportPay is non-custodial software. It holds no funds or keys. Identity verification, screening, currency conversion and bank payouts are carried out by a licensed payout partner, to the customer's own bank account only.",
+        "LamportPay's non-custodial model, Stables-hosted verification, own-account and beneficiary bank-payout design, security safeguards and demo-only status.",
     }),
   component: Compliance,
 });
 
-const LAST_UPDATED = "7 October 2026";
+const LAST_UPDATED = "12 October 2026";
 
 function Compliance() {
   const negatives = [
     "Hold customer funds, private keys or balances. Our ledger is a record only.",
     "Collect identity documents. Verification happens on the payout partner's hosted page.",
     "Convert currency or send bank payouts itself.",
-    "Pay out to third parties, mobile wallets, cards or cash.",
+    "Offer mobile-wallet, card or cash payouts, or accept unsupported assets and networks.",
     "Ask for a seed phrase or private key. Wallet sign-in is a message signature, never a transaction.",
     "Claim a licence or regulatory approval of its own.",
   ];
   const positives = [
     "Provides the software: quote, checkout, wallet signing request and payment tracking.",
-    "Shows every cost before you sign: one LamportPay fee, the partner's fee and network fees as separate lines.",
-    "Pays out only to the verified customer's own bank account. The account holder name comes from the verified record and cannot be edited.",
+    "Discloses one LamportPay fee, separate payout partner costs, and applicable swap, price-impact and network costs before approval.",
+    "Supports a bank-payout design for a verified sender's own account or a beneficiary's account. Current payouts are sandbox demonstrations only.",
     "Follows the payout partner's transfer status. The partner's record is authoritative.",
     "Keeps an append-only audit log of admin actions.",
-    "Supports USDC on Solana only, for now.",
+    "Uses USDC on Solana as the enabled settlement currency; eligible SOL routing uses Jupiter quotes without mainnet execution in TEST MODE.",
   ];
   const roles: { activity: string; who: string }[] = [
     {
-      activity: "Holding funds",
-      who: "No one at LamportPay. You send USDC from your own wallet straight to a single-use deposit address that the payout partner issues for that transfer.",
+      activity: "Wallet funds and authorization",
+      who: "You control your wallet. In the production design, you send USDC directly to the single-use deposit address Stables issues for the payment. LamportPay holds no funds. TEST MODE moves no payment funds.",
     },
     {
       activity: "Identity verification (KYC)",
-      who: "Payout partner, on its hosted page. LamportPay stores only the verification status.",
+      who: "Stables, on its hosted page. LamportPay collects the name and contact email needed for customer setup, keeps a verification link and status, and does not collect identity documents. Production KYC is DISABLED.",
     },
-    { activity: "AML and sanctions screening", who: "Payout partner." },
+    { activity: "AML and sanctions screening", who: "Stables' compliance process governs transfer acceptance and any holds. Sandbox responses do not establish production screening approval." },
     {
       activity: "Travel Rule",
-      who: "Payout partner. LamportPay records whether a payment needs Travel Rule information.",
+      who: "Stables determines requirements for the transfer. LamportPay records and surfaces required Travel Rule information as a payment requirement, not a separate payment status.",
     },
     {
       activity: "Bank details check, currency conversion and payout",
-      who: "Payout partner.",
+      who: "Stables validates bank fields, quotes local-currency payout and reports transfer outcomes. Real bank payouts remain DISABLED.",
+    },
+    {
+      activity: "Crypto conversion route",
+      who: "Jupiter supplies eligible Solana-to-USDC routing. LIVE · read-only market quotes are available; TEST MODE mainnet swap execution is DISABLED.",
     },
     {
       activity: "Quote, fee disclosure, checkout and status tracking",
       who: "LamportPay.",
     },
-    { activity: "Approving the transaction", who: "You, in your own wallet." },
+    { activity: "Approving the transaction", who: "You, in your own wallet. Sign-in uses a plain-text message; TEST MODE Pay Now uses a real devnet memo transaction that moves no funds." },
   ];
   return (
     <SiteLayout>
-      <section className="max-w-4xl mx-auto px-5 py-16 md:py-24">
+      <section className="max-w-5xl mx-auto px-5 py-12 md:py-16">
         <div className="text-xs font-semibold uppercase tracking-wider text-primary">
           Compliance
         </div>
-        <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">
-          Non-custodial software. Regulated activity sits with a licensed partner.
+        <h1 className="mt-3 text-4xl md:text-5xl font-semibold">
+          LamportPay Compliance
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          This page is maintained by the LamportPay team to answer common security and compliance
-          questions. It is not a certification or legal advice.
+          Non-custodial by design. Clear responsibilities for wallet authorization, verification
+          and bank payouts. This page describes the current model; it is not a certification,
+          regulatory approval or legal advice.
         </p>
         <p className="mt-2 text-xs text-muted-foreground">Last updated {LAST_UPDATED}.</p>
 
-        <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6 flex items-start gap-4">
-          <FlaskConical className="w-6 h-6 text-primary shrink-0 mt-1" />
-          <div>
-            <div className="font-semibold">Current status: controlled test phase</div>
-            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-              The app runs in test mode: Solana devnet, the payout partner's sandbox and test
-              tokens. No real funds move. Real-money payouts start only after the partner's
-              production approval of LamportPay (including KYB), legal review and approval of each
-              payout country.
-            </p>
-          </div>
-        </div>
+        <PaymentFlowStatus />
 
         <div className="mt-6 grid md:grid-cols-2 gap-4">
-          <div className="rounded-2xl border border-border/60 bg-card p-6">
-            <div className="flex items-center gap-2 font-semibold mb-4">
-              <XCircle className="w-5 h-5 text-destructive" /> What LamportPay does not do
-            </div>
+          <section className="border-t border-border py-6">
+            <h2 className="flex items-center gap-2 font-semibold mb-4">
+              <XCircle aria-hidden="true" className="w-5 h-5 shrink-0 text-destructive" /> What LamportPay does not do
+            </h2>
             <ul className="space-y-3 text-sm">
               {negatives.map((n) => (
                 <li key={n} className="text-muted-foreground">
@@ -98,11 +94,11 @@ function Compliance() {
                 </li>
               ))}
             </ul>
-          </div>
-          <div className="rounded-2xl border border-border/60 bg-card p-6">
-            <div className="flex items-center gap-2 font-semibold mb-4">
-              <CheckCircle2 className="w-5 h-5 text-[color:var(--success)]" /> What LamportPay does
-            </div>
+          </section>
+          <section className="border-t border-border py-6">
+            <h2 className="flex items-center gap-2 font-semibold mb-4">
+              <CheckCircle2 aria-hidden="true" className="w-5 h-5 shrink-0 text-[color:var(--success)]" /> What LamportPay does
+            </h2>
             <ul className="space-y-3 text-sm">
               {positives.map((n) => (
                 <li key={n} className="text-muted-foreground">
@@ -110,11 +106,11 @@ function Compliance() {
                 </li>
               ))}
             </ul>
-          </div>
+          </section>
         </div>
 
-        <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
-          <div className="font-semibold">Who does what</div>
+        <section className="mt-10 border-t border-border pt-6">
+          <h2 className="text-2xl font-semibold">Who does what</h2>
           <dl className="mt-4 divide-y divide-border/60 text-sm">
             {roles.map((r) => (
               <div key={r.activity} className="grid gap-1 py-3 sm:grid-cols-[14rem_1fr] sm:gap-4">
@@ -123,23 +119,57 @@ function Compliance() {
               </div>
             ))}
           </dl>
-        </div>
+        </section>
 
-        <div className="mt-10 rounded-2xl bg-[image:var(--gradient-card)] border border-border/60 p-6 flex items-start gap-4">
-          <ShieldCheck className="w-6 h-6 text-primary shrink-0 mt-1" />
+        <section className="mt-10 border-t border-border pt-6 flex items-start gap-4">
+          <ShieldCheck aria-hidden="true" className="w-6 h-6 text-primary shrink-0 mt-1" />
           <div>
-            <div className="font-semibold">Partner-led compliance</div>
+            <h2 className="text-2xl font-semibold">Verification and recipient safeguards</h2>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-              KYC, AML, sanctions screening, Travel Rule, currency conversion, payout processing and
-              settlement are performed by a licensed payout partner, not by LamportPay. This posture
-              is intentional: it keeps the platform's surface area narrow and defensible. The
-              partner may refuse or hold a payment under its own rules.
+              Quotes can be shown before verification. Bank details are checked with Stables,
+              and the sender must be verified before a transfer is created. Verification runs
+              on Stables' hosted sandbox page; LamportPay does not build its own document-verification flow.
             </p>
+            <dl className="mt-4 space-y-4 text-sm">
+              <div>
+                <dt className="font-semibold">Own bank account · default</dt>
+                <dd className="mt-1 text-muted-foreground leading-relaxed">The account-holder name comes from the verified Stables customer record and is not editable in checkout.</dd>
+              </div>
+              <div>
+                <dt className="font-semibold">Beneficiary bank account</dt>
+                <dd className="mt-1 text-muted-foreground leading-relaxed">The verified sender supplies the beneficiary's name, individual or business type, and a payment purpose other than transfer to own account. Provider validation and compliance rules still apply.</dd>
+              </div>
+            </dl>
+            <p className="mt-4 text-sm text-muted-foreground leading-relaxed">Stables may reject or hold a transfer. Connecting a wallet or signing in is not identity verification or payout approval.</p>
           </div>
-        </div>
+        </section>
 
-        <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
-          <div className="font-semibold">Infrastructure and regulatory context</div>
+        <section className="mt-10 border-t border-border pt-6">
+          <h2 className="text-2xl font-semibold">Costs and payment records</h2>
+          <dl className="mt-4 divide-y divide-border text-sm">
+            {PAYMENT_COSTS.map((cost) => (
+              <div key={cost.title} className="py-3">
+                <dt className="font-semibold">{cost.title}</dt>
+                <dd className="mt-1 text-muted-foreground leading-relaxed">{cost.detail}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">Stables is authoritative for transfer status. Signed webhooks, live status reads and reconciliation update the record. Wallet approval alone is not evidence of a completed payout, and a sandbox receipt is not proof that real money reached a bank.</p>
+        </section>
+
+        <section className="mt-10 border-t border-border pt-6">
+          <h2 className="text-2xl font-semibold">Security controls and operational review</h2>
+          <ul className="mt-4 space-y-3 text-sm text-muted-foreground list-disc pl-5">
+            <li>Wallet sign-in checks the message origin, age and signature, with one-time signature use. No seed phrase or private key is requested.</li>
+            <li>Provider writes use idempotency keys; webhook signatures are verified and transfer progress is synchronized without moving backwards.</li>
+            <li>Admin actions require server-side role checks and are audit logged. The payout queue only refreshes status; it does not create transfers or simulate deposits.</li>
+            <li>Rate limits and emergency payment controls restrict payment actions. Refunds, compliance and manual reviews are operations cases, not invented payout statuses.</li>
+          </ul>
+          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">These safeguards are not a guarantee against loss or a completed security certification. End-to-end sandbox testing, security review and operational readiness must be validated before production availability.</p>
+        </section>
+
+        <section className="mt-10 border-t border-border pt-6">
+          <h2 className="text-2xl font-semibold">Infrastructure and regulatory context</h2>
           <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             LamportPay's payout partner is{" "}
             <a
@@ -150,7 +180,7 @@ function Compliance() {
             >
               Stables
             </a>
-            . Stables Money is listed in the{" "}
+             , used here in sandbox mode. Its external listing in the{" "}
             <a
               href="https://partners.circle.com/directory/stables-money"
               target="_blank"
@@ -159,7 +189,7 @@ function Compliance() {
             >
               official Circle Alliance Directory
             </a>{" "}
-            and uses Circle products including USDC, EURC and CCTP.
+             is not a LamportPay partnership, endorsement or production approval.
           </p>
           <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             Circle's licenses cover Circle's own regulated activities. They do not automatically
@@ -176,10 +206,11 @@ function Compliance() {
             </a>
             .
           </p>
-        </div>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">Non-custodial software does not automatically qualify for a regulatory exemption. Real-money availability requires applicable legal review, Stables production onboarding, validated payout coverage and production safeguards. No direct Circle or Tether partnership is confirmed. Production bank payouts and KYC remain DISABLED.</p>
+        </section>
 
-        <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6">
-          <div className="font-semibold">Company information</div>
+        <section className="mt-10 border-t border-border pt-6">
+          <h2 className="text-2xl font-semibold">Company information</h2>
           <dl className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
             <div>
               <dt className="text-xs uppercase tracking-wider text-muted-foreground">
@@ -220,16 +251,16 @@ function Compliance() {
                 Licenses / regulatory approvals
               </dt>
               <dd className="mt-1 text-muted-foreground">
-                None claimed. Regulated activity is performed by the licensed payout partner.
+                None claimed by LamportPay. Sandbox access is not regulatory authorization.
               </dd>
             </div>
           </dl>
-        </div>
+        </section>
 
         <div className="mt-10 text-xs text-muted-foreground">
-          LamportPay does not hold customer funds or keys. Identity verification, currency
-          conversion and bank payouts are provided by a licensed payout partner, to the customer's
-          own bank account only. LamportPay is in a controlled test phase.
+          LamportPay holds no customer funds or wallet keys. Own-account and beneficiary bank
+          payouts are part of the verified-sender design. The current experience is
+          DEMO/SIMULATED; real bank payouts and production KYC are DISABLED.
         </div>
       </section>
       <FurtherReading
