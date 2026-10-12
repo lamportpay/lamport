@@ -1,5 +1,11 @@
 # Roadmap
 
+## Automatic checks green
+
+- [x] Find why the newest commit on GitHub showed a failed check: lint stopped on a platform-generated file
+- [x] Exclude that generated file from lint instead of hand-editing it, and limit the browser-bundle secret scan to browser-facing output
+- [x] Re-run every check the automatic run performs locally: lint exits 0, no env files or keys tracked, typecheck clean, 498 unit tests pass, production build OK, browser bundle free of private keys, dependency audit clean
+
 ## Docs page update
 
 - [x] Replace the outdated stack and planned API surface with current integration documentation
