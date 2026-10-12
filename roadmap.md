@@ -2,9 +2,9 @@
 
 ## How it works and workflow pages
 
-- [ ] Replace outdated steps and conceptual endpoints with the current quote-first payment journey
-- [ ] Clarify sandbox verification, simulated payout, fees and non-custodial safeguards on both pages
-- [ ] Verify both pages, navigation and layout in the preview
+- [x] Replace outdated steps and conceptual endpoints with the current quote-first payment journey
+- [x] Clarify sandbox verification, simulated payout, fees and non-custodial safeguards on both pages
+- [x] Verify both pages, navigation and desktop/mobile layouts in the preview; both return 200, no page errors or overflow, build OK
 
 ## Done: Homepage demo video
 
