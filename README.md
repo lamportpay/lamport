@@ -14,7 +14,7 @@ LamportPay orchestrates the flow and never holds customer funds or keys. The use
 
 > **Status: TEST MODE.** The full flow runs on **Solana devnet + the payout partner's sandbox**. No real funds move. LIVE mode (mainnet + production partner) is built behind a switch but **not enabled**; it follows a security audit and a controlled real-money test.
 
-Live app: https://lamportpay.vercel.app (Convert → `/pay`)
+Live app: https://lamportpay.com (Convert → `/pay`)
 Submitted to: Colosseum Crypto World's Fair 2026 (Solana track)
 
 ---
