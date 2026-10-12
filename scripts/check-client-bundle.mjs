@@ -38,9 +38,22 @@ if (roots.length === 0) {
   process.exit(1);
 }
 
+// Only browser-facing output can leak a secret. `dist` also holds the server
+// bundle (dist/server), whose code legitimately reads secret env names, so
+// scanning it would fail every build without protecting anything.
+const scanDirs = roots.map((root) => {
+  if (root !== "dist") return root;
+  const client = join(root, "client");
+  try {
+    return statSync(client).isDirectory() ? client : root;
+  } catch {
+    return root;
+  }
+});
+
 let found = 0;
 let scanned = 0;
-for (const root of roots) {
+for (const root of scanDirs) {
   for (const file of files(root)) {
     scanned++;
     const text = readFileSync(file, "utf8");
@@ -52,6 +65,6 @@ for (const root of roots) {
     }
   }
 }
-console.log(`Scanned ${scanned} client files in ${roots.join(", ")}.`);
+console.log(`Scanned ${scanned} client files in ${scanDirs.join(", ")}.`);
 if (found > 0) process.exit(1);
 console.log("No server secrets in the client bundle.");
