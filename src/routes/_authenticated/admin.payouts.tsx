@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/admin/payouts")({
   component: PayoutsPage,
 });
 
-const fmt = (m: string | null, c: string) => (m == null ? "—" : formatMinor(BigInt(m), c.toUpperCase()));
+const fmt = (m: string | null, c: string) => (m == null ? "—" : `${formatMinor(BigInt(m), c.toUpperCase())} ${c.toUpperCase()}`);
 
 function PayoutsPage() {
   const fetchQueue = useServerFn(getPayoutQueue);
