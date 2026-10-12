@@ -133,12 +133,9 @@ function useSignOut() {
 
 export function AdminShell({
   email,
-  environment,
   children,
 }: {
   email: string | null;
-  /** "sandbox" / "production" badge in the top bar, when known. */
-  environment?: string | null;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -191,17 +188,6 @@ export function AdminShell({
             >
               <BrandLogo className="h-7" />
             </Link>
-            {environment && (
-              <span
-                className={`hidden sm:inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${
-                  environment === "production"
-                    ? "border-destructive/30 bg-destructive/10 text-destructive"
-                    : "border-border bg-muted text-muted-foreground"
-                }`}
-              >
-                Stables {environment}
-              </span>
-            )}
           </div>
           <div className="flex items-center gap-3">
             {email && (

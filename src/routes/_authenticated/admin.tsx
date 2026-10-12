@@ -60,7 +60,7 @@ function AdminLayout() {
     );
   }
   return (
-    <AdminShell email={session.data.email} environment={session.data.stablesEnvironment}>
+    <AdminShell email={session.data.email}>
       <Outlet />
     </AdminShell>
   );
