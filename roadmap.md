@@ -1,5 +1,11 @@
 # Roadmap
 
+## How it works and workflow pages
+
+- [x] Replace outdated steps and conceptual endpoints with the current quote-first payment journey
+- [x] Clarify sandbox verification, simulated payout, fees and non-custodial safeguards on both pages
+- [x] Verify both pages, navigation and desktop/mobile layouts in the preview; both return 200, no page errors or overflow, build OK
+
 ## Done: Homepage demo video
 
 - [x] Add the 60-second walkthrough video to the homepage, between the transfer simulator and the route preview
