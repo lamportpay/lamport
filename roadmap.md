@@ -1,5 +1,11 @@
 # Roadmap
 
+## Whitepaper update
+
+- [ ] Align the whitepaper with the shared payment journey, costs and test-mode disclaimer
+- [ ] Correct architecture, bank-only payouts, verification, supported assets and operational safeguards
+- [ ] Verify contents navigation, page information and rendering
+
 ## How it works and workflow pages
 
 - [x] Replace outdated steps and conceptual endpoints with the current quote-first payment journey

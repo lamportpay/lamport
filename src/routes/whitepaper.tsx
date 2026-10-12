@@ -3,14 +3,17 @@ import { SiteLayout } from "@/components/site/Layout";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
+import { PAYMENT_COSTS, PAYMENT_JOURNEY } from "@/content/payment-flow";
+import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
 
 export const Route = createFileRoute("/whitepaper")({
   head: () =>
     pageSeo({
       path: "/whitepaper",
-      title: "LamportPay White Paper: Architecture and Roadmap",
+      title: "LamportPay Whitepaper — Payment Architecture, Fees and Roadmap",
       description:
-        "Executive summary, settlement architecture, compliance positioning and roadmap for LamportPay's multi-asset payment routing platform.",
+        "LamportPay's non-custodial Solana payment design, quote-first journey, transparent fees, Stables sandbox integration, security controls and public roadmap.",
+      type: "article",
     }),
   component: Whitepaper,
 });
@@ -20,9 +23,11 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "1. Executive summary",
     body: (
       <p>
-        LamportPay is a multi-asset crypto-to-local-currency payment routing platform. It helps
-        users pay with supported crypto assets, settle through USDC, and route local-currency payout
-        requests through licensed regulated settlement partners.
+        LamportPay is a non-custodial crypto-to-bank payment interface built around Solana and
+        USDC settlement. Users keep control of their wallet; LamportPay records payment activity
+        without holding funds, private keys or customer balances. Stables is the payout infrastructure
+        provider, and Jupiter supplies the Solana conversion route when needed. The current experience
+        is a sandbox demonstration, not a live bank-payout service.
       </p>
     ),
   },
@@ -30,8 +35,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "2. Problem",
     body: (
       <p>
-        Crypto is global and fast, but recipients usually want local currency in a bank account,
-        mobile wallet, card, or cash pickup channel. Existing flows are complex for normal users.
+        Crypto wallets and local banking systems use different payment rails. A sender needs to
+        understand the conversion, recipient details, verification requirements and total costs
+        before authorizing a payment. Unclear fees and disconnected status updates make that journey
+        difficult to assess.
       </p>
     ),
   },
@@ -39,8 +46,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "3. Solution",
     body: (
       <p>
-        LamportPay provides a simple transfer interface, AI assistant, USDC settlement model,
-        Partner-first payout simulation, and status tracking.
+        LamportPay brings the quote, checked bank details, hosted verification, wallet approval
+        and payment tracking into one journey. Payouts are designed for the sender's own bank account
+        or a beneficiary's bank account, with a verified sender required in either case.
+        Mobile-wallet, card and cash payouts are not offered.
       </p>
     ),
   },
@@ -48,28 +57,23 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "4. Product positioning",
     body: (
       <p>
-        LamportPay is a technology routing platform, not a bank, money transmitter, custodian,
-        exchange, or remittance company.
+        LamportPay provides the payment interface and orchestration layer. It is not a bank and
+        does not maintain customer balances or control wallet keys. This technical model does not
+        establish a regulatory exemption: production availability depends on applicable legal
+        requirements, payout coverage and provider approval.
       </p>
     ),
   },
   {
     title: "5. Core flow",
     body: (
-      <List
-        items={[
-          "Sender enters transfer details",
-          "LamportPay creates payment",
-          "Payout quote generated",
-          "Partner KYC",
-          "User confirms crypto payment",
-          "Jupiter swaps supported token into USDC (later)",
-          "USDC settlement verified",
-          "Partner processes payout",
-          "Recipient receives local currency",
-          "LamportPay shows receipt",
-        ]}
-      />
+      <ol className="space-y-4 list-decimal pl-5">
+        {PAYMENT_JOURNEY.map((step) => (
+          <li key={step.title}>
+            <strong className="text-foreground">{step.title}. </strong>{step.detail}
+          </li>
+        ))}
+      </ol>
     ),
   },
   {
@@ -78,23 +82,23 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <div className="space-y-3">
         <ArchRow
           k="Frontend"
-          v="Next.js, Tailwind CSS, transfer simulator, AI assistant, receipt dashboard."
+           v="TanStack Start, React and Tailwind CSS. Separate marketing, wallet-connected payment app and protected admin experiences."
         />
         <ArchRow
           k="Backend"
-          v="API routes, payment state machine, Payout partner adapter, Jupiter adapter, Solana verifier, webhook handler, database layer."
+           v="Server functions and API routes orchestrate quotes, checked bank details, hosted verification, transfers, wallet-signature checks and status synchronization."
         />
         <ArchRow
           k="Blockchain"
-          v="Solana wallet connection, USDC settlement, Jupiter token-to-USDC swap, Solana transaction verification."
+           v="Solana wallet connection and transaction verification. TEST MODE signs a real devnet memo that moves no funds; Jupiter mainnet execution is disabled."
         />
         <ArchRow
           k="Partner"
-          v="Payout partner customer/KYC flow, Payout transfer flow, Partner webhook/status updates."
+           v="Stables sandbox customer records, hosted verification links, quote and bank-field validation, transfer references and signed status events."
         />
         <ArchRow
           k="Database"
-          v="Users, payments, quotes, KYC status, Payout references, Solana transaction signatures, timeline events, receipts."
+           v="Identity links, payments, quotes, verification status, provider references, transaction signatures, timeline events and audit records. The ledger is a record, not a stored-value balance."
         />
       </div>
     ),
@@ -103,22 +107,32 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "7. AI layer",
     body: (
       <p>
-        AI transfer assistant, fee explanation, scam warning, payout method guidance, support
-        assistant. AI does not approve KYC, perform AML, or make regulated decisions.
+        The assistant can explain the payment journey and costs. It is an informational layer,
+        not a payment authority: it cannot sign transactions, approve verification, perform
+        compliance checks or override provider decisions. Users authorize payments in their wallet.
       </p>
     ),
   },
   {
     title: "8. Liquidity layer",
-    body: <p>Use Jupiter first for Solana token-to-USDC swaps. If user pays in USDC, skip swap.</p>,
+    body: (
+      <p>
+        USDC payments do not require a swap. For an eligible SOL route, Jupiter supplies the
+        conversion quote into USDC, including route costs and price impact. LIVE · read-only market
+        quotes are available in TEST MODE; mainnet swap execution is DISABLED. Additional asset
+        intake requires an explicit allowlist and a validated conversion route, not just a wallet balance.
+      </p>
+    ),
   },
   {
     title: "9. Settlement partner layer",
     body: (
       <p>
-        Stables is the current payout infrastructure provider in sandbox mode. Additional
-        provider APIs and future Circle and Tether partnership opportunities are planned,
-        not confirmed relationships or live integrations.
+        Stables is the sole payout infrastructure provider shown for the current flow
+        (DEMO/SIMULATED). In the production design, a verified sender authorizes a transfer to
+        the single-use deposit address returned by Stables for that payment. LamportPay never
+        holds those funds. Stables reports the bank-payout outcome; TEST MODE instead simulates
+        the deposit and follows sandbox status updates. Real bank payouts remain DISABLED.
       </p>
     ),
   },
@@ -126,10 +140,11 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "10. Supported assets",
     body: (
       <p>
-        USDC on Solana is the current payment asset. Solana / Jupiter is integrated, with live
-        quotes in test mode. Bitcoin, Ethereum, additional cryptocurrencies and networks are
-        future exploration only, not available for deposits today. Hyperliquid integration is
-        in progress; its trading, deposits and withdrawals remain disabled.
+        USDC on Solana is the enabled settlement currency. The model includes USDT on Solana,
+        but USDT payments are currently DISABLED. SOL routing is available where supported by
+        the wallet; TEST MODE does not execute the conversion or move payment funds.
+        Bitcoin, Ethereum and other networks are PLANNED exploration, not accepted deposits.
+        Hyperliquid is PLANNED / integration in progress; trading, deposits and withdrawals remain DISABLED.
       </p>
     ),
   },
@@ -137,36 +152,34 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "11. Supported countries and currencies",
     body: (
       <p>
-        Whatever our payout partner supports, checked live with a quote before a payment is created.
-        There is no fixed list in LamportPay.
+        The app offers configured destination countries and fills the payout currency from a
+        country reference table. That reference is not a promise of coverage: Stables quotes
+        determine whether a country/currency pair is available, and Stables validates the required
+        bank fields. TEST MODE restricts the country picker to sandbox destinations; production
+        coverage is not confirmed. Limits are shown in the payment app and checked before approval.
       </p>
     ),
   },
   {
     title: "12. Payment status lifecycle",
     body: (
-      <div className="flex flex-wrap gap-2">
-        {[
-          "CREATED",
-          "QUOTE_GENERATED",
-          "KYC_PENDING",
-          "KYC_APPROVED",
-          "PAYMENT_CONFIRMED",
-          "JUPITER_SWAP_STARTED",
-          "USDC_SETTLED",
-          "PAYOUT_SENT_TO_PARTNER",
-          "PARTNER_PROCESSING",
-          "PAID",
-          "FAILED",
-          "REFUNDED",
-        ].map((s) => (
-          <span
-            key={s}
-            className="text-xs font-mono px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground"
-          >
-            {s}
-          </span>
-        ))}
+      <div className="space-y-3">
+        <p>
+          The seven-step journey is a user-facing progress indicator, not a separate settlement
+          ledger. Before transfer creation, LamportPay records payment setup, verification and
+          quote stages. Once a Stables transfer exists, its status is authoritative and the app
+          follows it without moving a payment backwards.
+        </p>
+        <p>
+          Signed webhooks are the primary update path. Live status reads and background
+          reconciliation recover missed updates; a temporary provider error preserves the last
+          stored status. Completion requires Stables to report completion, not merely a wallet signature.
+          Some sandbox destinations may remain processing.
+        </p>
+        <p>
+          Refunds, compliance checks and manual reviews are operations cases, not invented payment
+          states. A sandbox receipt records a demonstration only.
+        </p>
       </div>
     ),
   },
@@ -174,19 +187,40 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "13. Compliance positioning",
     body: (
       <p>
-        LamportPay does not custody user funds, control private keys, issue balances, perform KYC,
-        or independently transmit money. Licensed partners handle KYC, KYB, AML, sanctions
-        screening, Travel Rule, FX/off-ramp, payout processing, and settlement.
+        Verification is performed on Stables' hosted page, not through document collection in
+        LamportPay. The app stores a verification link and status, not identity-document uploads.
+        A verified sender is required before a transfer is created. For an own-account payout,
+        the account-holder name comes from the verified customer record; beneficiary payouts
+        require beneficiary details and a suitable payment purpose. Travel Rule requirements
+        remain attached to the payment. Production verification is DISABLED; the sandbox flow
+        is not evidence of production compliance approval.
       </p>
     ),
   },
   {
     title: "14. Business model",
     body: (
-      <p>
-        Small platform fee per completed transfer, SaaS/API fee for businesses, premium dashboard,
-        partner referral/commission where legally allowed.
-      </p>
+      <div className="space-y-4">
+        <p>
+          LamportPay's approved platform fee is 2% of the total the user sends, taken out of that
+          total once. For a 150 USDC payment, 3 USDC is the LamportPay fee and 147 USDC is allocated
+          to Stables—not 153 USDC leaving the wallet. Partner, swap and network costs remain
+          separate and are disclosed before approval. The payment app displays the fee amount.
+        </p>
+        <dl className="divide-y divide-border">
+          {PAYMENT_COSTS.map((cost) => (
+            <div key={cost.title} className="py-3">
+              <dt className="font-semibold text-foreground">{cost.title}</dt>
+              <dd className="mt-1">{cost.detail}</dd>
+            </div>
+          ))}
+        </dl>
+        <p>
+          Optional minimum and maximum fee bounds are off by default. In production, LamportPay's
+          revenue transfer is separate from the Stables deposit within the user-signed transaction;
+          no additional LamportPay swap fee is charged. TEST MODE collects no real revenue.
+        </p>
+      </div>
     ),
   },
   {
@@ -217,13 +251,23 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <div className="space-y-3">
         <div>
-          <span className="font-semibold">Risks: </span>regulation, KYC failure, payout delay,
-          slippage, wrong wallet, fraud, provider approval.
+           <span className="font-semibold text-foreground">Risks: </span>expired quotes, conversion
+           price impact, incorrect recipient details, wallet compromise, verification rejection,
+           provider outages, payout delays and regulatory or coverage changes.
         </div>
         <div>
-          <span className="font-semibold">Mitigations: </span>partner-led KYC before payment, USDC
-          settlement, quote expiry, no custody, no user balances, clear refund/failure policy.
+           <span className="font-semibold text-foreground">Controls: </span>checked bank details,
+           verification before transfer creation, explicit wallet approval, one-time sign-in
+           signatures, idempotent provider writes, signed webhooks, forward-only status updates,
+           rate limits and emergency payment controls. Admin access is checked on the server;
+           audit records are append-only. The payout queue refreshes status only—it cannot create
+           transfers or simulate deposits.
         </div>
+        <p>
+          These controls do not guarantee a risk-free service or establish a completed security
+          certification. Production remains disabled pending validated end-to-end testing,
+          security review and operational readiness.
+        </p>
       </div>
     ),
   },
@@ -231,8 +275,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "17. Conclusion",
     body: (
       <p>
-        LamportPay aims to make crypto-to-local-currency transfer simple, explainable, and
-        partner-compliant.
+        LamportPay aims to make wallet-to-bank payments understandable: quote first, disclose
+        costs, verify the sender, authorize in the wallet and track the provider's outcome.
+        The current sandbox demonstrates that design; broader assets, payout coverage and
+        production availability remain subject to validation rather than promises of live service.
       </p>
     ),
   },
@@ -241,39 +287,46 @@ const sections: { title: string; body: React.ReactNode }[] = [
 function Whitepaper() {
   return (
     <SiteLayout>
-      <section className="max-w-4xl mx-auto px-5 py-16 md:py-24">
+      <section className="max-w-6xl mx-auto px-5 py-12 md:py-16">
         <div className="text-xs font-semibold uppercase tracking-wider text-primary">
           White paper
         </div>
-        <h1 className="mt-2 text-4xl md:text-5xl font-semibold tracking-tight">
-          LamportPay: crypto-to-local-currency payment routing.
+        <h1 className="mt-3 text-4xl md:text-5xl font-semibold">
+          LamportPay Whitepaper
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          A multi-asset, USDC-settled, partner-orchestrated payment routing platform.
+          Crypto in. Local money out.
         </p>
+        <p className="mt-3 max-w-3xl text-muted-foreground leading-relaxed">
+          Non-custodial payment architecture, the quote-first journey, transparent costs and
+          the path from sandbox validation to bank payouts.
+        </p>
+        <PaymentFlowStatus />
 
         <div className="mt-14 grid md:grid-cols-[220px_1fr] gap-10">
-          <aside className="hidden md:block sticky top-24 self-start">
+          <aside className="md:sticky md:top-24 self-start">
             <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
               Contents
             </div>
-            <ul className="space-y-1.5 text-sm">
+            <nav aria-label="Whitepaper contents">
+            <ul className="grid gap-2 sm:grid-cols-2 md:grid-cols-1 text-sm">
               {sections.map((s) => (
                 <li key={s.title}>
                   <a
                     href={`#${slug(s.title)}`}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground focus-visible:outline-primary"
                   >
                     {s.title}
                   </a>
                 </li>
               ))}
             </ul>
+            </nav>
           </aside>
           <div className="space-y-12">
             {sections.map((s) => (
               <section key={s.title} id={slug(s.title)} className="scroll-mt-24">
-                <h2 className="text-2xl font-semibold tracking-tight">{s.title}</h2>
+                <h2 className="text-2xl font-semibold">{s.title}</h2>
                 <div className="mt-3 text-muted-foreground leading-relaxed">{s.body}</div>
               </section>
             ))}
@@ -310,7 +363,7 @@ function List({ items }: { items: string[] }) {
 
 function ArchRow({ k, v }: { k: string; v: string }) {
   return (
-    <div className="rounded-xl bg-secondary/60 p-4">
+    <div className="border-b border-border py-4">
       <div className="font-semibold text-foreground">{k}</div>
       <div className="text-sm mt-1">{v}</div>
     </div>
