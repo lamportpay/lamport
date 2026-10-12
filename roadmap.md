@@ -1,5 +1,11 @@
 # Roadmap
 
+## Compliance page update
+
+- [ ] Correct beneficiary payouts, hosted verification and provider responsibilities
+- [ ] Clarify demo capabilities, security controls and production readiness without claiming certification
+- [ ] Verify the page and its disclosures in the preview
+
 ## Whitepaper update
 
 - [x] Align the whitepaper with the shared payment journey, costs and test-mode disclaimer
