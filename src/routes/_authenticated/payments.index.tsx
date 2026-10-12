@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { ArrowRight, ChevronRight, CloudOff, Plus, RotateCcw } from "lucide-react";
+import { ArrowRight, ChevronRight, CloudOff, Plus, RotateCcw, Sparkles } from "lucide-react";
 
 import { AppLayout } from "@/components/app/AppLayout";
 import { Flag } from "@/components/app/Flag";
+import { RecoveryHelper } from "@/components/app/RecoveryHelper";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { paymentApi } from "@/lib/payments/api-client";
 import {
@@ -122,6 +123,7 @@ function PaymentHistoryPage() {
 }
 
 function HistoryRow({ p }: { p: LocalHistoryItem }) {
+  const [helpOpen, setHelpOpen] = useState(false);
   const completed = p.status === "COMPLETED";
   const failed = p.terminal && !completed;
   const canContinue = !p.terminal;
@@ -179,9 +181,9 @@ function HistoryRow({ p }: { p: LocalHistoryItem }) {
   );
 
   const cls =
-    "block rounded-2xl border border-border/60 bg-card/90 backdrop-blur-xl shadow-[var(--shadow-soft)] hover:bg-secondary/40 transition-colors";
+    "block rounded-t-2xl hover:bg-secondary/40 transition-colors";
   return (
-    <li>
+    <li className="rounded-2xl border border-border/60 bg-card/90 backdrop-blur-xl shadow-[var(--shadow-soft)]">
       {completed ? (
         <Link to="/payments/$id" params={{ id: p.id }} className={cls}>
           {body}
@@ -191,6 +193,20 @@ function HistoryRow({ p }: { p: LocalHistoryItem }) {
           {body}
         </Link>
       )}
+      {!completed &&
+        (helpOpen ? (
+          <RecoveryHelper p={p} onClose={() => setHelpOpen(false)} />
+        ) : (
+          <div className="border-t border-border/50 px-4 py-2">
+            <button
+              type="button"
+              onClick={() => setHelpOpen(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+            >
+              <Sparkles className="w-3.5 h-3.5" /> Get AI recovery help
+            </button>
+          </div>
+        ))}
     </li>
   );
 }
