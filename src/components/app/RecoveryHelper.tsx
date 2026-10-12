@@ -6,7 +6,7 @@ import type { LocalHistoryItem } from "@/lib/payments/local-history";
 
 export function RecoveryHelper({ p, onClose }: { p: LocalHistoryItem; onClose: () => void }) {
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState(p.status);
+  const [status, setStatus] = useState<string>(p.status);
   const [error, setError] = useState(p.failureReason ?? "");
   const [loading, setLoading] = useState(false);
   const [steps, setSteps] = useState<string | null>(null);
