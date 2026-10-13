@@ -262,7 +262,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   // overflow-x-clip, not -hidden: "hidden" makes this div a scroll container,
   // which silently breaks the sticky header and the sticky /pay side panels.
   return (
-    <div className="relative isolate min-h-screen flex flex-col bg-background text-foreground overflow-x-clip">
+    <div className="relative isolate min-h-screen flex flex-col bg-background text-foreground overflow-x-clip max-sm:overscroll-y-none max-sm:[-webkit-tap-highlight-color:transparent] max-sm:[&_button]:select-none max-sm:[&_button:active]:scale-[0.98] max-sm:[&_button]:transition-transform">
       {/* Brand backdrop: soft violet/cyan glows, concentric brand rings in two
           corners (gradient hairlines, like a bank's hero) and a faint grid. */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
