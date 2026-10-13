@@ -2640,6 +2640,9 @@ function PayoutDetailsStep({
     postalCode: "",
   });
   const set = (patch: Partial<BeneficiaryState>) => setForm((f) => ({ ...f, ...patch }));
+  // "My bank isn't listed" in the bank picker switches to a free-text input.
+  const [bankOther, setBankOther] = useState(false);
+  const [bankError, setBankError] = useState<string | null>(null);
   // The form is the step: its first empty field takes the cursor (mouse and
   // trackpad screens; on touch screens a keyboard popping up uninvited is worse).
   const formRef = useRef<HTMLFormElement>(null);
@@ -2715,6 +2718,26 @@ function PayoutDetailsStep({
   });
 
   const flagged = useMemo(() => flaggedFields(check.error), [check.error]);
+  // Bank dropdown: PHP uses Stables' fixed list (strict, no free text); other
+  // countries get well-known banks as suggestions plus "My bank isn't listed".
+  const strictBanks = Boolean(corridor?.bankNames);
+  const bankList = corridor?.bankNames ?? BANK_NAMES_BY_COUNTRY[payment.destination.country] ?? null;
+  const bankOptions: PickerOption[] = useMemo(() => {
+    const icon = (
+      <span className="grid place-items-center w-7 h-7 rounded-full bg-primary/10 text-primary shrink-0">
+        <Landmark className="w-3.5 h-3.5" />
+      </span>
+    );
+    const opts: PickerOption[] = (bankList ?? []).map((name) => ({
+      value: name,
+      label: name,
+      icon,
+    }));
+    if (bankList && !strictBanks) {
+      opts.push({ value: OTHER_BANK, label: "My bank isn't listed", icon });
+    }
+    return opts;
+  }, [bankList, strictBanks]);
   const fields = extraFields(corridor, flagged);
   const cls = (field: string) =>
     flagged.has(field) ? `${INPUT} border-destructive ring-1 ring-destructive/40` : INPUT;
