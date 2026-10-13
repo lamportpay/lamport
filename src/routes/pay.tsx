@@ -2420,6 +2420,9 @@ function CheckoutFlow({
   // has seen the whole payment; Pay Now still needs a verified customer.
   const [back, setBack] = useState(false);
   const [wantsVerify, setWantsVerify] = useState(false);
+  // Bumped on "Edit" so the details form remounts empty: editing starts from a
+  // clean form instead of showing the previously entered bank details.
+  const [editCount, setEditCount] = useState(0);
   const stage: keyof typeof STAGE_ORDER =
     !checked || back ? "details" : wantsVerify && !verified ? "verify" : "review";
   const previousStage = useRef(stage);
@@ -2455,6 +2458,7 @@ function CheckoutFlow({
       {stage === "details" && (
         <>
           <PayoutDetailsStep
+            key={editCount}
             payment={payment}
             kyc={kyc}
             checked={checked}
@@ -2465,6 +2469,7 @@ function CheckoutFlow({
             onEdit={() => {
               setChecked(null);
               setBack(false);
+              setEditCount((c) => c + 1);
             }}
           />
           {checked && (
