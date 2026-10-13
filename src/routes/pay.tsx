@@ -2747,8 +2747,8 @@ function PayoutDetailsStep({
   const bankList = corridor?.bankNames ?? BANK_NAMES_BY_COUNTRY[payment.destination.country] ?? null;
   const bankOptions: PickerOption[] = useMemo(() => {
     const icon = (
-      <span className="grid place-items-center w-7 h-7 rounded-full bg-primary/10 text-primary shrink-0">
-        <Landmark className="w-3.5 h-3.5" />
+      <span className="grid place-items-center w-8 h-8 rounded-full bg-primary/10 text-primary shrink-0">
+        <Landmark className="w-4 h-4" />
       </span>
     );
     const opts: PickerOption[] = (bankList ?? []).map((name) => ({
@@ -3424,7 +3424,7 @@ function Timeline({ payment }: { payment: PaymentView }) {
 // ------------------------------------------------------------------- bits
 
 const INPUT =
-  "w-full rounded-xl border border-border bg-background px-3 py-3 sm:py-2.5 text-base sm:text-sm transition focus:outline-none focus:border-primary/60 focus:ring-4 focus:ring-primary/10";
+  "w-full h-14 sm:h-[42px] rounded-2xl sm:rounded-xl border border-border/70 bg-secondary/40 sm:bg-background px-4 sm:px-3 text-base sm:text-sm placeholder:text-muted-foreground/60 transition focus:outline-none focus:border-primary/60 focus:ring-4 focus:ring-primary/10";
 const PRIMARY =
   "inline-flex items-center gap-2 rounded-2xl bg-[image:var(--gradient-hero)] text-white px-5 py-2.5 font-semibold shadow-[0_12px_30px_-10px_oklch(0.52_0.22_275/0.6)] hover:shadow-[0_16px_40px_-10px_oklch(0.52_0.22_275/0.75)] hover:-translate-y-px active:translate-y-0 transition-all disabled:opacity-50 disabled:shadow-none disabled:translate-y-0 disabled:cursor-not-allowed max-sm:w-full max-sm:justify-center max-sm:py-3.5";
 const SECONDARY =
@@ -3432,7 +3432,7 @@ const SECONDARY =
 
 function Card({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-3xl border border-border/60 bg-card/90 backdrop-blur-xl p-4 sm:p-6 space-y-4 shadow-[var(--shadow-soft)]">
+    <div className="rounded-[28px] border border-border/60 bg-card/90 backdrop-blur-xl p-5 sm:p-6 space-y-5 sm:space-y-4 shadow-[var(--shadow-soft)]">
       {children}
     </div>
   );
@@ -3441,8 +3441,10 @@ function Card({ children }: { children: ReactNode }) {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block">
-      <span className="text-sm font-medium text-foreground/80">{label}</span>
-      <div className="mt-1.5">{children}</div>
+      <span className="text-xs sm:text-sm font-semibold uppercase sm:normal-case tracking-wide sm:tracking-normal text-muted-foreground sm:text-foreground/80 sm:font-medium">
+        {label}
+      </span>
+      <div className="mt-2 sm:mt-1.5">{children}</div>
     </label>
   );
 }
