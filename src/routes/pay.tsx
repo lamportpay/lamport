@@ -18,6 +18,7 @@ import {
   Clock,
   Copy,
   ExternalLink,
+  Landmark,
   Loader2,
   RefreshCw,
   ShieldCheck,
@@ -72,6 +73,7 @@ import {
   type ExtraField,
   type PayoutForm,
 } from "@/lib/payout-requirements";
+import { BANK_NAMES_BY_COUNTRY } from "@/lib/bank-names";
 import { PAYMENT_CURRENCIES, type PaymentCurrency } from "@/lib/tokens";
 
 type Limits = Partial<Record<PaymentCurrency, { min: string; max: string | null } | null>>;
