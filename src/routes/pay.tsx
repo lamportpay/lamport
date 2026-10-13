@@ -2881,7 +2881,6 @@ function PayoutDetailsStep({
       </div>
       <form
         ref={formRef}
-        noValidate
         id={`payout-details-${payment.id}`}
         className="space-y-4"
         onSubmit={submit}
