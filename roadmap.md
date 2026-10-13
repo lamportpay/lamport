@@ -2,9 +2,9 @@
 
 ## Bank field and mobile navigation
 
-- [ ] Match the bank selector to input height and left-align names
-- [ ] Add verified bank branding to the listed bank options
-- [ ] Replace the mobile website dropdown with a right-side drawer and verify navigation
+- [x] Match the bank selector to input height and left-align names (form flow requires a connected wallet for end-to-end verification)
+- [x] Add official-site bank branding to 178 listed bank names; keep neutral icons where a verified logo is unavailable
+- [x] Replace the mobile website dropdown with a right-side drawer; verified opening, Docs navigation and closing
 
 ## Automatic checks green
 
