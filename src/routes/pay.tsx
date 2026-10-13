@@ -18,6 +18,7 @@ import {
   Clock,
   Copy,
   ExternalLink,
+  Landmark,
   Loader2,
   RefreshCw,
   ShieldCheck,
@@ -72,6 +73,7 @@ import {
   type ExtraField,
   type PayoutForm,
 } from "@/lib/payout-requirements";
+import { BANK_NAMES_BY_COUNTRY } from "@/lib/bank-names";
 import { PAYMENT_CURRENCIES, type PaymentCurrency } from "@/lib/tokens";
 
 type Limits = Partial<Record<PaymentCurrency, { min: string; max: string | null } | null>>;
@@ -2592,6 +2594,9 @@ function CheckoutFlow({
 
 const STAGE_ORDER = { details: 0, review: 1, verify: 2 } as const;
 
+/** Bank-picker sentinel: the user types a bank name that is not in the list. */
+const OTHER_BANK = "__other_bank__";
+
 /** One step for personal + payout details; only what Stables needs for this currency. */
 function PayoutDetailsStep({
   payment,
@@ -2638,6 +2643,9 @@ function PayoutDetailsStep({
     postalCode: "",
   });
   const set = (patch: Partial<BeneficiaryState>) => setForm((f) => ({ ...f, ...patch }));
+  // "My bank isn't listed" in the bank picker switches to a free-text input.
+  const [bankOther, setBankOther] = useState(false);
+  const [bankError, setBankError] = useState<string | null>(null);
   // The form is the step: its first empty field takes the cursor (mouse and
   // trackpad screens; on touch screens a keyboard popping up uninvited is worse).
   const formRef = useRef<HTMLFormElement>(null);
@@ -2713,6 +2721,26 @@ function PayoutDetailsStep({
   });
 
   const flagged = useMemo(() => flaggedFields(check.error), [check.error]);
+  // Bank dropdown: PHP uses Stables' fixed list (strict, no free text); other
+  // countries get well-known banks as suggestions plus "My bank isn't listed".
+  const strictBanks = Boolean(corridor?.bankNames);
+  const bankList = corridor?.bankNames ?? BANK_NAMES_BY_COUNTRY[payment.destination.country] ?? null;
+  const bankOptions: PickerOption[] = useMemo(() => {
+    const icon = (
+      <span className="grid place-items-center w-7 h-7 rounded-full bg-primary/10 text-primary shrink-0">
+        <Landmark className="w-3.5 h-3.5" />
+      </span>
+    );
+    const opts: PickerOption[] = (bankList ?? []).map((name) => ({
+      value: name,
+      label: name,
+      icon,
+    }));
+    if (bankList && !strictBanks) {
+      opts.push({ value: OTHER_BANK, label: "My bank isn't listed", icon });
+    }
+    return opts;
+  }, [bankList, strictBanks]);
   const fields = extraFields(corridor, flagged);
   const cls = (field: string) =>
     flagged.has(field) ? `${INPUT} border-destructive ring-1 ring-destructive/40` : INPUT;
@@ -2779,6 +2807,11 @@ function PayoutDetailsStep({
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
+    // The bank picker is a button, not a required input — validate it here.
+    if (!form.bankName.trim()) {
+      setBankError("Choose your bank from the list.");
+      return;
+    }
     check.mutate(fields);
   };
 
@@ -2923,30 +2956,61 @@ function PayoutDetailsStep({
             </>
           )}
           <Field label="Bank name">
-            {corridor.bankNames ? (
-              <select
-                required
-                value={form.bankName}
-                onChange={(e) => set({ bankName: e.target.value })}
-                className={cls("bank_name")}
-              >
-                <option value="">Choose your bank</option>
-                {corridor.bankNames.map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                required
-                autoComplete="off"
-                value={form.bankName}
-                onChange={(e) => set({ bankName: e.target.value })}
-                className={cls("bank_name")}
+            {bankList && !bankOther ? (
+              <Picker
+                value={form.bankName || null}
+                options={bankOptions}
+                onChange={(v) => {
+                  setBankError(null);
+                  if (v === OTHER_BANK) {
+                    setBankOther(true);
+                    set({ bankName: "" });
+                    return;
+                  }
+                  set({ bankName: v });
+                }}
+                placeholder="Choose your bank"
+                searchPlaceholder="Search bank"
+                emptyText="No bank found"
+                heading="Choose your bank"
+                triggerClassName="w-full justify-between"
+                footer={
+                  strictBanks
+                    ? "Only these banks are available for this currency."
+                    : "Bank missing? Pick “My bank isn't listed” to type it."
+                }
               />
+            ) : (
+              <>
+                <input
+                  required
+                  autoComplete="off"
+                  value={form.bankName}
+                  onChange={(e) => {
+                    setBankError(null);
+                    set({ bankName: e.target.value });
+                  }}
+                  className={cls("bank_name")}
+                />
+                {bankList && bankOther && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBankOther(false);
+                      set({ bankName: "" });
+                    }}
+                    className="mt-1 text-xs font-medium text-primary hover:underline"
+                  >
+                    Choose from the list of banks
+                  </button>
+                )}
+              </>
             )}
-            {hint("bank_name")}
+            {bankError ? (
+              <span className="block mt-1 text-xs text-destructive">{bankError}</span>
+            ) : (
+              hint("bank_name")
+            )}
           </Field>
           <Field label={corridor.account.label}>
             <input
