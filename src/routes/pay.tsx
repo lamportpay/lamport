@@ -1039,6 +1039,7 @@ function ConvertForm({
                   options={tokenOptions}
                   onChange={pickAsset}
                   placeholder="Token"
+                  triggerClassName="shrink-0"
                   heading="Pay with"
                   searchPlaceholder="Search token"
                   emptyText="No token found"
@@ -1050,6 +1051,7 @@ function ConvertForm({
                   options={tokenOptions}
                   onChange={pickAsset}
                   placeholder="Token"
+                  triggerClassName="shrink-0"
                   heading="Pay with"
                   searchPlaceholder="Search token"
                   emptyText="No token found"
@@ -1168,9 +1170,12 @@ function ConvertForm({
           )}
         </form>
       </GlowCard>
-      <TrustList row />
+      <div className="hidden sm:block">
+        <TrustList row />
+      </div>
       <MobileDock className="sm:hidden">
-        <div className="mb-2 flex items-baseline justify-between gap-3 text-xs">
+        <div className={`mb-2 items-baseline justify-between gap-3 text-xs ${priced || estimate.isFetching ? "flex" : "hidden"}`}>
+ items-baseline justify-between gap-3 text-xs">
           <span className="text-muted-foreground">You receive</span>
           <span
             className={`tabular-nums truncate transition-opacity ${updating ? "opacity-60" : ""}`}
