@@ -2594,6 +2594,9 @@ function CheckoutFlow({
 
 const STAGE_ORDER = { details: 0, review: 1, verify: 2 } as const;
 
+/** Bank-picker sentinel: the user types a bank name that is not in the list. */
+const OTHER_BANK = "__other_bank__";
+
 /** One step for personal + payout details; only what Stables needs for this currency. */
 function PayoutDetailsStep({
   payment,
@@ -2804,6 +2807,11 @@ function PayoutDetailsStep({
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
+    // The bank picker is a button, not a required input — validate it here.
+    if (!form.bankName.trim()) {
+      setBankError("Choose your bank from the list.");
+      return;
+    }
     check.mutate(fields);
   };
 
