@@ -2956,30 +2956,61 @@ function PayoutDetailsStep({
             </>
           )}
           <Field label="Bank name">
-            {corridor.bankNames ? (
-              <select
-                required
-                value={form.bankName}
-                onChange={(e) => set({ bankName: e.target.value })}
-                className={cls("bank_name")}
-              >
-                <option value="">Choose your bank</option>
-                {corridor.bankNames.map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                required
-                autoComplete="off"
-                value={form.bankName}
-                onChange={(e) => set({ bankName: e.target.value })}
-                className={cls("bank_name")}
+            {bankList && !bankOther ? (
+              <Picker
+                value={form.bankName || null}
+                options={bankOptions}
+                onChange={(v) => {
+                  setBankError(null);
+                  if (v === OTHER_BANK) {
+                    setBankOther(true);
+                    set({ bankName: "" });
+                    return;
+                  }
+                  set({ bankName: v });
+                }}
+                placeholder="Choose your bank"
+                searchPlaceholder="Search bank"
+                emptyText="No bank found"
+                heading="Choose your bank"
+                triggerClassName="w-full justify-between"
+                footer={
+                  strictBanks
+                    ? "Only these banks are available for this currency."
+                    : "Bank missing? Pick “My bank isn't listed” to type it."
+                }
               />
+            ) : (
+              <>
+                <input
+                  required
+                  autoComplete="off"
+                  value={form.bankName}
+                  onChange={(e) => {
+                    setBankError(null);
+                    set({ bankName: e.target.value });
+                  }}
+                  className={cls("bank_name")}
+                />
+                {bankList && bankOther && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setBankOther(false);
+                      set({ bankName: "" });
+                    }}
+                    className="mt-1 text-xs font-medium text-primary hover:underline"
+                  >
+                    Choose from the list of banks
+                  </button>
+                )}
+              </>
             )}
-            {hint("bank_name")}
+            {bankError ? (
+              <span className="block mt-1 text-xs text-destructive">{bankError}</span>
+            ) : (
+              hint("bank_name")
+            )}
           </Field>
           <Field label={corridor.account.label}>
             <input
