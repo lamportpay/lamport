@@ -25,7 +25,7 @@ import { requestWalletSignIn, setWalletSignIn, useAppWallet } from "@/lib/wallet
 // Swapping is part of Convert (/pay): a missing USDC amount is swapped inside
 // the payment journey, so there is no separate Swap tab.
 const APP_NAV = [
-  { to: "/pay", label: "Convert", icon: Send },
+  { to: "/pay", label: "Pay", icon: Send },
   { to: "/payments", label: "History", icon: History },
 ] as const;
 

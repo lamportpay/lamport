@@ -69,6 +69,8 @@ import {
   EXTRA_FIELD_UI,
   isBankDetailField,
   normalizeExtra,
+  normalizeAccount,
+  formatError,
   payoutFormFor,
   type ExtraField,
   type PayoutForm,
@@ -2647,6 +2649,19 @@ function PayoutDetailsStep({
   // "My bank isn't listed" in the bank picker switches to a free-text input.
   const [bankOther, setBankOther] = useState(false);
   const [bankError, setBankError] = useState<string | null>(null);
+  // Format errors found in the browser, keyed like Stables' field names.
+  const [fmt, setFmt] = useState<Record<string, string>>({});
+  const accountError = (v: string) =>
+    corridor ? formatError(normalizeAccount(v, corridor.account.pattern), corridor.account) : null;
+  const extraError = (field: Exclude<ExtraField, "address">, v: string) =>
+    formatError(normalizeExtra(field, v), EXTRA_FIELD_UI[field]);
+  const showFmt = (key: string, error: string | null) =>
+    setFmt((f) => {
+      const next = { ...f };
+      if (error) next[key] = error;
+      else delete next[key];
+      return next;
+    });
   // The form is the step: its first empty field takes the cursor (mouse and
   // trackpad screens; on touch screens a keyboard popping up uninvited is worse).
   const formRef = useRef<HTMLFormElement>(null);
@@ -2674,7 +2689,7 @@ function PayoutDetailsStep({
           recipientType: form.recipientType,
         }),
         bankName: form.bankName.trim(),
-        accountNumber: form.account.replace(/\s/g, ""),
+        accountNumber: normalizeAccount(form.account, corridor?.account.pattern),
         ...(fields.includes("address") && {
           address: {
             street: form.street.trim(),
@@ -2744,9 +2759,13 @@ function PayoutDetailsStep({
   }, [bankList, strictBanks, payment.destination.country]);
   const fields = extraFields(corridor, flagged);
   const cls = (field: string) =>
-    flagged.has(field) ? `${INPUT} border-destructive ring-1 ring-destructive/40` : INPUT;
+    flagged.has(field) || fmt[field] ? `${INPUT} border-destructive ring-1 ring-destructive/40` : INPUT;
   const hint = (field: string, help?: string) =>
-    flagged.has(field) ? (
+    fmt[field] ? (
+      <span role="alert" className="block mt-1 text-xs text-destructive">
+        {fmt[field]}
+      </span>
+    ) : flagged.has(field) ? (
       <span className="block mt-1 text-xs text-destructive">{flagged.get(field)}</span>
     ) : help ? (
       <span className="block mt-1 text-xs text-muted-foreground">{help}</span>
@@ -2813,6 +2832,20 @@ function PayoutDetailsStep({
       setBankError("Choose your bank from the list.");
       return;
     }
+    const errors: Record<string, string> = {};
+    const acc = accountError(form.account);
+    if (acc) errors.account_number = acc;
+    for (const f of fields.filter(isBankDetailField)) {
+      const e = extraError(f, form.extra[f] ?? "");
+      if (e) errors[f] = e;
+    }
+    setFmt(errors);
+    if (Object.keys(errors).length > 0) {
+      formRef.current
+        ?.querySelector<HTMLElement>(`[name="${Object.keys(errors)[0]}"]`)
+        ?.focus();
+      return;
+    }
     check.mutate(fields);
   };
 
@@ -2848,6 +2881,7 @@ function PayoutDetailsStep({
       </div>
       <form
         ref={formRef}
+        noValidate
         id={`payout-details-${payment.id}`}
         className="space-y-4"
         onSubmit={submit}
@@ -3017,11 +3051,16 @@ function PayoutDetailsStep({
             <input
               required
               autoComplete="off"
+              name="account_number"
               inputMode={corridor.account.inputMode}
-              pattern={corridor.account.pattern}
-              title={corridor.account.hint}
+              placeholder={corridor.account.example ? `e.g. ${corridor.account.example}` : undefined}
+              aria-invalid={Boolean(fmt.account_number)}
               value={form.account}
-              onChange={(e) => set({ account: e.target.value })}
+              onChange={(e) => {
+                set({ account: e.target.value });
+                if (fmt.account_number) showFmt("account_number", accountError(e.target.value));
+              }}
+              onBlur={(e) => e.target.value && showFmt("account_number", accountError(e.target.value))}
               className={cls("account_number")}
             />
             {hint("account_number", corridor.account.hint)}
@@ -3033,11 +3072,16 @@ function PayoutDetailsStep({
                 <input
                   required
                   autoComplete={field === "phone" ? "tel" : "off"}
+                  name={field}
                   inputMode={ui.inputMode}
-                  pattern={ui.pattern}
-                  title={ui.hint}
+                  placeholder={ui.example ? `e.g. ${ui.example}` : undefined}
+                  aria-invalid={Boolean(fmt[field])}
                   value={form.extra[field] ?? ""}
-                  onChange={(e) => setExtra(field, e.target.value)}
+                  onChange={(e) => {
+                    setExtra(field, e.target.value);
+                    if (fmt[field]) showFmt(field, extraError(field, e.target.value));
+                  }}
+                  onBlur={(e) => e.target.value && showFmt(field, extraError(field, e.target.value))}
                   className={cls(field)}
                 />
                 {hint(field, ui.hint)}

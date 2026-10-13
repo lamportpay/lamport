@@ -320,6 +320,7 @@ export function payoutFormFor(currency: string): PayoutForm | null {
 export function normalizeExtra(field: ExtraField, value: string): string {
   const v = value.trim();
   if (field === "phone") return v.replace(/[\s()-]/g, "");
+  if (field === "national_identification_number") return v.replace(/[\s.-]/g, "");
   if (field === "bsb_code" || field === "sort_code" || field === "aba_code")
     return v.replace(/[\s-]/g, "");
   if (field === "ifsc_code" || field === "swift_code") return v.replace(/\s/g, "").toUpperCase();
