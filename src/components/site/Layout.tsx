@@ -70,7 +70,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               to="/pay"
               className="px-4 py-2 text-sm font-medium rounded-full bg-foreground text-background hover:opacity-90 transition"
             >
-              Convert
+              Swap
             </Link>
           </div>
           <Sheet open={open} onOpenChange={setOpen}>
@@ -103,7 +103,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                 to="/pay"
                 onClick={() => setOpen(false)}
               >
-                Convert <ArrowRight className="h-4 w-4" />
+                Swap <ArrowRight className="h-4 w-4" />
               </Link>
               </Button>
               <div className="mt-5 flex items-center gap-3">
@@ -184,7 +184,7 @@ function SiteFooter() {
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li>
               <Link to="/pay" className="hover:text-foreground">
-                Convert
+                Swap
               </Link>
             </li>
             <li>

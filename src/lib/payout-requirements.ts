@@ -28,13 +28,28 @@ export type ExtraField =
 
 export type PayoutForm = {
   /** What the account field is called locally, and its format (from Stables' messages). */
-  account: { label: string; hint?: string; pattern?: string; inputMode?: "numeric" | "text" };
+  account: {
+    label: string;
+    hint?: string;
+    pattern?: string;
+    inputMode?: "numeric" | "text";
+    /** Example shown as the input placeholder (illustrative only, never a real account). */
+    example?: string;
+  };
   extra: ExtraField[];
   /** Stables accepts only these bank names (PHP); otherwise free text. */
   bankNames?: readonly string[];
 };
 
-const PHONE_DEFAULT: PayoutForm = { account: { label: "Account number" }, extra: ["phone"] };
+const PHONE_DEFAULT: PayoutForm = {
+  account: {
+    label: "Account number",
+    hint: "5–20 letters or digits",
+    pattern: "[A-Za-z0-9]{5,20}",
+    example: "1234567890",
+  },
+  extra: ["phone"],
+};
 
 /** Banks Stables accepts for PHP payouts (verbatim from its validation answer, 3 Oct 2026). */
 export const PHP_BANK_NAMES = [
@@ -128,17 +143,51 @@ export const PHP_BANK_NAMES = [
 
 export const PAYOUT_FORMS: Readonly<Record<string, PayoutForm>> = {
   ARS: {
-    account: { label: "CBU / CVU", hint: "22 digits", pattern: "\\d{22}", inputMode: "numeric" },
+    account: {
+      label: "CBU / CVU",
+      hint: "22 digits",
+      pattern: "\\d{22}",
+      inputMode: "numeric",
+      example: "0110599520000001234567",
+    },
     extra: ["phone", "national_identification_number"],
   },
-  AUD: { account: { label: "Account number", inputMode: "numeric" }, extra: ["bsb_code"] },
+  AUD: {
+    account: {
+      label: "Account number",
+      hint: "6–10 digits",
+      pattern: "\\d{6,10}",
+      inputMode: "numeric",
+      example: "12345678",
+    },
+    extra: ["bsb_code"],
+  },
   BRL: {
-    account: { label: "PIX key", hint: "Your CPF, CNPJ or phone with +55" },
+    account: {
+      label: "PIX key",
+      hint: "Your CPF, CNPJ, email or phone with +55",
+      example: "123.456.789-09 or +5511987654321",
+    },
     extra: ["phone"],
   },
-  COP: { account: { label: "Account number" }, extra: ["phone", "national_identification_number"] },
+  COP: {
+    account: {
+      label: "Account number",
+      hint: "6–20 digits",
+      pattern: "\\d{6,20}",
+      inputMode: "numeric",
+      example: "0123456789",
+    },
+    extra: ["phone", "national_identification_number"],
+  },
   GBP: {
-    account: { label: "Account number", hint: "Usually 8 digits", inputMode: "numeric" },
+    account: {
+      label: "Account number",
+      hint: "8 digits",
+      pattern: "\\d{8}",
+      inputMode: "numeric",
+      example: "31926819",
+    },
     extra: ["sort_code", "address"],
   },
   GHS: PHONE_DEFAULT,
@@ -148,12 +197,19 @@ export const PAYOUT_FORMS: Readonly<Record<string, PayoutForm>> = {
       hint: "9–18 digits",
       pattern: "\\d{9,18}",
       inputMode: "numeric",
+      example: "50100123456789",
     },
     extra: ["ifsc_code", "address"],
   },
   KES: PHONE_DEFAULT,
   MXN: {
-    account: { label: "CLABE", hint: "18 digits", pattern: "\\d{18}", inputMode: "numeric" },
+    account: {
+      label: "CLABE",
+      hint: "18 digits",
+      pattern: "\\d{18}",
+      inputMode: "numeric",
+      example: "002010077777777771",
+    },
     extra: ["phone", "address"],
   },
   NGN: {
@@ -162,6 +218,7 @@ export const PAYOUT_FORMS: Readonly<Record<string, PayoutForm>> = {
       hint: "10 digits",
       pattern: "\\d{10}",
       inputMode: "numeric",
+      example: "0123456789",
     },
     extra: ["phone"],
   },
@@ -171,6 +228,7 @@ export const PAYOUT_FORMS: Readonly<Record<string, PayoutForm>> = {
       hint: "10–16 digits",
       pattern: "\\d{10,16}",
       inputMode: "numeric",
+      example: "001234567890",
     },
     extra: ["swift_code"],
     bankNames: PHP_BANK_NAMES,
@@ -179,7 +237,13 @@ export const PAYOUT_FORMS: Readonly<Record<string, PayoutForm>> = {
   TZS: PHONE_DEFAULT,
   UGX: PHONE_DEFAULT,
   USD: {
-    account: { label: "Account number", inputMode: "numeric" },
+    account: {
+      label: "Account number",
+      hint: "4–17 digits",
+      pattern: "\\d{4,17}",
+      inputMode: "numeric",
+      example: "000123456789",
+    },
     extra: ["aba_code", "address"],
   },
   XAF: PHONE_DEFAULT,
@@ -191,36 +255,59 @@ export const PAYOUT_FORMS: Readonly<Record<string, PayoutForm>> = {
 /** Labels, hints and formats for the extra fields (formats as Stables checks them). */
 export const EXTRA_FIELD_UI: Record<
   Exclude<ExtraField, "address">,
-  { label: string; hint?: string; pattern?: string; inputMode?: "numeric" | "text" | "tel" }
+  {
+    label: string;
+    hint?: string;
+    pattern?: string;
+    inputMode?: "numeric" | "text" | "tel";
+    example?: string;
+  }
 > = {
   phone: {
     label: "Your phone number",
-    hint: "With country code, e.g. +234 801 234 5678",
+    hint: "With country code, starting with +",
+    pattern: "\\+\\d{7,15}",
     inputMode: "tel",
+    example: "+234 801 234 5678",
   },
-  national_identification_number: { label: "Your national ID number" },
-  bsb_code: { label: "BSB", hint: "6 digits", pattern: "\\d{3}-?\\d{3}", inputMode: "numeric" },
+  national_identification_number: {
+    label: "Your national ID number",
+    hint: "5–20 letters or digits",
+    pattern: "[A-Za-z0-9]{5,20}",
+    example: "12345678",
+  },
+  bsb_code: {
+    label: "BSB",
+    hint: "6 digits",
+    pattern: "\\d{6}",
+    inputMode: "numeric",
+    example: "062-000",
+  },
   sort_code: {
     label: "Sort code",
     hint: "6 digits",
-    pattern: "\\d{2}-?\\d{2}-?\\d{2}",
+    pattern: "\\d{6}",
     inputMode: "numeric",
+    example: "40-47-84",
   },
   ifsc_code: {
     label: "IFSC code",
     hint: "11 characters, e.g. HDFC0001234",
-    pattern: "[A-Za-z]{4}0[A-Za-z0-9]{6}",
+    pattern: "[A-Z]{4}0[A-Z0-9]{6}",
+    example: "HDFC0001234",
   },
   aba_code: {
     label: "Routing number (ABA)",
     hint: "9 digits",
     pattern: "\\d{9}",
     inputMode: "numeric",
+    example: "021000021",
   },
   swift_code: {
     label: "SWIFT / BIC",
     hint: "8 or 11 characters",
-    pattern: "[A-Za-z0-9]{8}([A-Za-z0-9]{3})?",
+    pattern: "[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?",
+    example: "BOPIPHMM",
   },
 };
 
@@ -233,6 +320,7 @@ export function payoutFormFor(currency: string): PayoutForm | null {
 export function normalizeExtra(field: ExtraField, value: string): string {
   const v = value.trim();
   if (field === "phone") return v.replace(/[\s()-]/g, "");
+  if (field === "national_identification_number") return v.replace(/[\s.-]/g, "");
   if (field === "bsb_code" || field === "sort_code" || field === "aba_code")
     return v.replace(/[\s-]/g, "");
   if (field === "ifsc_code" || field === "swift_code") return v.replace(/\s/g, "").toUpperCase();
@@ -244,4 +332,27 @@ export function isBankDetailField(
   field: ExtraField,
 ): field is Exclude<ExtraField, "address"> & BankDetailField {
   return field !== "address";
+}
+
+/** Strip what people type for readability (spaces, dashes, dots) from an account number. */
+export function normalizeAccount(value: string, pattern?: string): string {
+  const v = value.trim();
+  // Free-form keys (PIX) keep their punctuation; numeric/alphanumeric formats drop it.
+  return pattern ? v.replace(/[\s.-]/g, "").toUpperCase() : v;
+}
+
+/**
+ * Browser-side format check (same rules the form shows as hints). Returns an
+ * error message, or null when the value looks right. Stables still validates
+ * every submission; this only catches typos early.
+ */
+export function formatError(
+  value: string,
+  rule: { label: string; hint?: string; pattern?: string },
+): string | null {
+  if (!value) return `Enter your ${rule.label.replace(/^Your /, "").toLowerCase()}.`;
+  if (!rule.pattern) return null;
+  return new RegExp(`^(?:${rule.pattern})$`).test(value)
+    ? null
+    : `Check the ${rule.label.replace(/^Your /, "").toLowerCase()}${rule.hint ? `: ${rule.hint.charAt(0).toLowerCase()}${rule.hint.slice(1)}` : ""}.`;
 }
