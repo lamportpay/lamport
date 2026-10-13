@@ -90,3 +90,10 @@
 - Publish the blog at lamportpay.com, submit the sitemap to Google Search Console, set social share images
 - Audit remaining stale claims before the next publish: home copy may claim fast checkout, 24/7, 400ms, 1:1, dynamic "tx/min" rates
 - LIVE mode approval (blocks real-funds actions in /pay until given)
+
+## Done: Pay page polish and bank format checks
+
+- [x] GitHub check failure fixed (security advisory in an agent-tools library; updated to the fixed version)
+- [x] Example placeholders and format checks for every bank field, per country
+- [x] Marketing "Convert" button renamed "Swap" (/pay URL unchanged)
+- [x] Mobile app-style polish of /pay first screen

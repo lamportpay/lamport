@@ -1413,7 +1413,7 @@ function ConvertForm({
         "max-w-[1180px] mx-auto px-4 lg:px-8 py-5 lg:py-10 max-sm:has-[[data-mobile-dock]]:pb-[calc(var(--dock-h,9rem)+1.5rem)]",
         // Step 1: the converter alone, centred on the screen and a little larger.
         !showQuote &&
-          "min-h-[calc(100svh-7.5rem)] sm:min-h-[calc(100svh-4rem)] flex flex-col justify-center py-6 sm:py-10",
+          "sm:min-h-[calc(100svh-4rem)] flex flex-col justify-start sm:justify-center pt-4 pb-6 sm:py-10",
       )}
     >
       <div
