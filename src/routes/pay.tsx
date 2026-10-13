@@ -2973,7 +2973,7 @@ function PayoutDetailsStep({
                 searchPlaceholder="Search bank"
                 emptyText="No bank found"
                 heading="Choose your bank"
-                triggerClassName="w-full justify-between"
+                variant="field"
                 footer={
                   strictBanks
                     ? "Only these banks are available for this currency."

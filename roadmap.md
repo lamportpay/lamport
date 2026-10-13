@@ -1,5 +1,11 @@
 # Roadmap
 
+## Bank field and mobile navigation
+
+- [ ] Match the bank selector to input height and left-align names
+- [ ] Add verified bank branding to the listed bank options
+- [ ] Replace the mobile website dropdown with a right-side drawer and verify navigation
+
 ## Automatic checks green
 
 - [x] Find why the newest commit on GitHub showed a failed check: lint stopped on a platform-generated file
