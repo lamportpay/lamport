@@ -1175,7 +1175,6 @@ function ConvertForm({
       </div>
       <MobileDock className="sm:hidden">
         <div className={`mb-2 items-baseline justify-between gap-3 text-xs ${priced || estimate.isFetching ? "flex" : "hidden"}`}>
- items-baseline justify-between gap-3 text-xs">
           <span className="text-muted-foreground">You receive</span>
           <span
             className={`tabular-nums truncate transition-opacity ${updating ? "opacity-60" : ""}`}
