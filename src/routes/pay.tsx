@@ -74,6 +74,7 @@ import {
   type PayoutForm,
 } from "@/lib/payout-requirements";
 import { BANK_NAMES_BY_COUNTRY } from "@/lib/bank-names";
+import { BankIcon } from "@/components/app/BankIcon";
 import { PAYMENT_CURRENCIES, type PaymentCurrency } from "@/lib/tokens";
 
 type Limits = Partial<Record<PaymentCurrency, { min: string; max: string | null } | null>>;
@@ -2734,13 +2735,13 @@ function PayoutDetailsStep({
     const opts: PickerOption[] = (bankList ?? []).map((name) => ({
       value: name,
       label: name,
-      icon,
+      icon: <BankIcon name={name} country={payment.destination.country} />,
     }));
     if (bankList && !strictBanks) {
       opts.push({ value: OTHER_BANK, label: "My bank isn't listed", icon });
     }
     return opts;
-  }, [bankList, strictBanks]);
+  }, [bankList, strictBanks, payment.destination.country]);
   const fields = extraFields(corridor, flagged);
   const cls = (field: string) =>
     flagged.has(field) ? `${INPUT} border-destructive ring-1 ring-destructive/40` : INPUT;
