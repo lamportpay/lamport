@@ -1,5 +1,11 @@
 # Roadmap
 
+## Bank field and mobile navigation
+
+- [x] Match the bank selector to input height and left-align names (form flow requires a connected wallet for end-to-end verification)
+- [x] Add official-site bank branding to 178 listed bank names; keep neutral icons where a verified logo is unavailable
+- [x] Replace the mobile website dropdown with a right-side drawer; verified opening, Docs navigation and closing
+
 ## Automatic checks green
 
 - [x] Find why the newest commit on GitHub showed a failed check: lint stopped on a platform-generated file

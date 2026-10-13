@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X, Twitter, Linkedin, Github, Mail } from "lucide-react";
+import { Menu, ArrowRight, Twitter, Linkedin, Github, Mail } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import logoUrl from "@/assets/lamportpay-logo.png";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
   return (
@@ -71,35 +73,40 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               Convert
             </Link>
           </div>
-          <button
-            className="lg:hidden p-2 rounded-md hover:bg-muted"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
-            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-        {open && (
-          <div className="lg:hidden border-t border-border bg-background">
-            <div className="max-w-7xl mx-auto px-5 py-3 flex flex-col gap-1">
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="lg:hidden shrink-0" aria-label="Open menu">
+                <Menu className="w-5 h-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" aria-describedby={undefined} className="flex h-dvh w-[min(88vw,360px)] flex-col gap-0 p-0 motion-reduce:animate-none motion-reduce:transition-none [&>button]:top-5 [&>button]:right-5 [&>button]:p-2">
+              <div className="flex h-20 shrink-0 items-center border-b border-border/60 px-6 pr-16">
+                <SheetTitle><BrandLogo className="h-7" /></SheetTitle>
+              </div>
+              <nav aria-label="Mobile navigation" className="min-h-0 flex-1 overflow-y-auto px-4 py-5">
               {nav.map((n) => (
                 <Link
                   key={n.to}
                   to={n.to}
                   onClick={() => setOpen(false)}
-                  className="px-3 py-2 text-sm rounded-md hover:bg-muted"
+                  className="group flex min-h-12 items-center justify-between gap-3 rounded-lg px-3 py-3 text-base text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  activeProps={{ className: "bg-accent text-accent-foreground font-semibold" }}
                 >
                   {n.label}
+                  <ArrowRight className="h-4 w-4 shrink-0 opacity-40 group-hover:opacity-100" />
                 </Link>
               ))}
+              </nav>
+              <div className="shrink-0 border-t border-border/60 px-6 pt-5 pb-[max(24px,env(safe-area-inset-bottom))]">
+              <Button asChild className="h-12 w-full rounded-lg">
               <Link
                 to="/pay"
                 onClick={() => setOpen(false)}
-                className="mt-2 px-4 py-2 text-center text-sm font-medium rounded-full bg-foreground text-background"
               >
-                Convert
+                Convert <ArrowRight className="h-4 w-4" />
               </Link>
-              <div className="mt-3 flex items-center gap-2">
+              </Button>
+              <div className="mt-5 flex items-center gap-3">
                 {socialLinks.map(({ label, href, icon: Icon }) => (
                   <a
                     key={label}
@@ -113,9 +120,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                   </a>
                 ))}
               </div>
-            </div>
-          </div>
-        )}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </header>
       <main className="flex-1">{children}</main>
       <SiteFooter />

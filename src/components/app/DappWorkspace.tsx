@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 import {
   Command,
@@ -143,6 +144,7 @@ export function Picker({
   emptyText,
   heading,
   triggerClassName = "",
+  variant = "pill",
   footer,
 }: {
   value: string | null;
@@ -153,29 +155,31 @@ export function Picker({
   emptyText: string;
   heading?: string;
   triggerClassName?: string;
+  variant?: "pill" | "field";
   footer?: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const mobile = useIsMobile();
   const selected = options.find((o) => o.value === value) ?? null;
   const trigger = (
-    <button
+    <Button
+      variant="outline"
       type="button"
       aria-haspopup="listbox"
       data-state={open ? "open" : "closed"}
       onClick={mobile ? () => setOpen(true) : undefined}
-      className={`group inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-border/70 bg-background/90 pl-1.5 pr-3 py-1.5 text-sm font-semibold shadow-sm transition-all hover:border-primary/50 hover:shadow-[0_0_0_4px_oklch(0.52_0.22_275/0.08)] data-[state=open]:border-primary/60 data-[state=open]:shadow-[0_0_0_4px_oklch(0.52_0.22_275/0.12)] [-webkit-tap-highlight-color:transparent] active:scale-[0.97] ${triggerClassName}`}
+      className={cn("group min-w-0 items-center gap-2 border-border/70 bg-background/90 text-sm shadow-sm hover:border-primary/50 data-[state=open]:border-primary/60", variant === "field" ? "h-[50px] sm:h-[42px] w-full justify-start gap-3 rounded-xl px-3 py-3 sm:py-2.5 text-base sm:text-sm font-normal text-left shadow-none" : "h-auto rounded-full pl-1.5 pr-3 py-1.5 font-semibold", triggerClassName)}
     >
       {selected ? (
         <>
           {selected.icon}
-          <span className="truncate">{selected.label}</span>
+          <span className={cn("min-w-0 truncate", variant === "field" && "flex-1 text-left")}>{selected.label}</span>
         </>
       ) : (
-        <span className="pl-2 text-muted-foreground font-medium">{placeholder}</span>
+        <span className={cn("min-w-0 text-muted-foreground", variant === "field" ? "flex-1 text-left" : "pl-2 font-medium")}>{placeholder}</span>
       )}
-      <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-    </button>
+      <ChevronDown className="w-4 h-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+    </Button>
   );
   const list = (
     <Command>
