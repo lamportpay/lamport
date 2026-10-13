@@ -168,7 +168,7 @@ export function Picker({
       aria-haspopup="listbox"
       data-state={open ? "open" : "closed"}
       onClick={mobile ? () => setOpen(true) : undefined}
-      className={cn("group min-w-0 items-center gap-2 border-border/70 bg-background/90 text-sm shadow-sm hover:border-primary/50 data-[state=open]:border-primary/60", variant === "field" ? "h-auto min-h-12 w-full justify-start gap-3 rounded-xl px-3 py-3 text-base sm:min-h-0 sm:text-sm font-normal text-left shadow-none" : "h-auto rounded-full pl-1.5 pr-3 py-1.5 font-semibold", triggerClassName)}
+      className={cn("group min-w-0 items-center gap-2 border-border/70 bg-background/90 text-sm shadow-sm hover:border-primary/50 data-[state=open]:border-primary/60", variant === "field" ? "h-[50px] sm:h-[42px] w-full justify-start gap-3 rounded-xl px-3 py-3 sm:py-2.5 text-base sm:text-sm font-normal text-left shadow-none" : "h-auto rounded-full pl-1.5 pr-3 py-1.5 font-semibold", triggerClassName)}
     >
       {selected ? (
         <>
