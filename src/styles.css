@@ -758,7 +758,9 @@
     padding-bottom: 88px;
   }
   .home-cap-note {
-    padding-inline: 8px;
+    max-width: none;
+    padding-inline-end: 68px;
+    text-align: left;
   }
 }
 @media (min-width: 700px) {
