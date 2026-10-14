@@ -31,6 +31,12 @@ const bufferServerStub = fileURLToPath(
   new URL("./src/lib/buffer-server-buffer.ts", import.meta.url),
 );
 
+// Dev-only virtual module: node_modules/buffer/index.js is CommonJS, and Vite
+// serves that file raw (no exports at all) when it is reached by path. The
+// bridge imports the pre-bundled ESM copy instead, so the polyfill's default
+// import gets the real package in the preview too.
+const bufferDevBridge = "\0lamportpay-buffer-dev";
+
 // @solana-mobile/wallet-adapter-mobile (pulled in by @solana/wallet-adapter-react)
 // calls Node's util.inherits at module scope, which throws in the SSR runtime
 // and 500s every server-rendered page. It is browser-only code, so stub it for
@@ -96,7 +102,7 @@ export default defineConfig(({ command, mode }) => {
         "react-dom/client",
         "react/jsx-runtime",
         "react/jsx-dev-runtime",
-        "lamportpay-real-buffer",
+        "buffer",
       ],
     },
     plugins: [
@@ -138,18 +144,33 @@ export default defineConfig(({ command, mode }) => {
         // (web3.js needs the full API to serialize a transaction), the server
         // gets Node's own Buffer through src/lib/buffer-server-buffer.ts.
         resolveId(id, _importer, options) {
+          if (id === bufferDevBridge) return bufferDevBridge;
           if (id === "lamportpay-real-buffer") {
             if (options?.ssr) return bufferServerStub;
-            // Dev: leave it to Vite's pre-bundler (optimizeDeps.include) so the
-            // CommonJS package arrives as ESM. The build keeps the direct path.
-            if (isDevServer) return null;
+            // Dev: the package file is CommonJS and Vite serves it raw, so the
+            // browser gets the ESM bridge over the pre-bundled copy instead.
+            if (isDevServer) return bufferDevBridge;
             return realBufferPackage;
           }
-          if (id === "buffer" || id === "buffer/")
-            return options?.ssr ? bufferServerStub : browserBufferShim;
+          if (id === "buffer" || id === "buffer/") {
+            if (options?.ssr) return bufferServerStub;
+            // Dev: let Vite pre-bundle the real package (optimizeDeps.include)
+            // so the bridge can import it; the build keeps the polyfill shim.
+            if (isDevServer) return null;
+            return browserBufferShim;
+          }
           // node:buffer stays native on the server: that is what the stub re-exports.
           if (id === "node:buffer" && !options?.ssr) return browserBufferShim;
           return null;
+        },
+        load(id) {
+          if (id !== bufferDevBridge) return null;
+          return [
+            'import bufferPkg from "buffer";',
+            "const Buffer = bufferPkg.Buffer ?? bufferPkg;",
+            "export { Buffer };",
+            "export default { Buffer };",
+          ].join("\n");
         },
       },
       tanstackStart({
