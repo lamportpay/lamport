@@ -772,3 +772,40 @@
     opacity: 0.55;
   }
 }
+/* Small corner rings for lower sections (never centered). */
+.home-orbits-corner-left,
+.home-orbits-corner-right {
+  mask-image: none;
+}
+.home-orbits-corner-left .home-orbit,
+.home-orbits-corner-right .home-orbit {
+  top: 14%;
+}
+.home-orbits-corner-left .home-orbit {
+  left: 3%;
+}
+.home-orbits-corner-right .home-orbit {
+  left: 97%;
+  top: 86%;
+}
+.home-orbits-corner-left .home-orbit-outer,
+.home-orbits-corner-right .home-orbit-outer {
+  width: 220px;
+  opacity: 0.3;
+}
+.home-orbits-corner-left .home-orbit-middle,
+.home-orbits-corner-right .home-orbit-middle {
+  width: 160px;
+  opacity: 0.4;
+}
+.home-orbits-corner-left .home-orbit-inner,
+.home-orbits-corner-right .home-orbit-inner {
+  width: 100px;
+  opacity: 0.5;
+}
+@media (max-width: 640px) {
+  .home-orbits-corner-left,
+  .home-orbits-corner-right {
+    opacity: 0.6;
+  }
+}
