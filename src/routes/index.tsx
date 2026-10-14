@@ -81,8 +81,8 @@ function Index() {
         <HomeCapabilities />
         <HomeBankNetwork />
         <PaymentNetwork />
-        <ConnectedSystems />
         <FeeCalculator />
+        <ConnectedSystems />
         <EcosystemSection compact />
         <IntegrationStatus />
         <RoadmapSection />
