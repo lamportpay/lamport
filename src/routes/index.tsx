@@ -38,7 +38,7 @@ function Index() {
               <span className="home-hero-badge-dot" aria-hidden="true" />
               Built on Solana · Non-custodial payments
             </p>
-            <h1 className="mx-auto mt-6 max-w-3xl text-5xl font-semibold leading-[1.08] tracking-tight md:text-7xl">
+            <h1 className="mx-auto mt-6 max-w-4xl text-6xl font-bold leading-[1.05] tracking-tight md:text-8xl">
               <span className="home-brand-text">Lamport</span>
               <span className="home-brand-text-light">Pay</span>
             </h1>
