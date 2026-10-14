@@ -38,7 +38,7 @@ function answer(question: string) {
     return "Jupiter provides Solana swap quotes. Stables provides demo verification and payout infrastructure. Our listed business partners are ready to adopt the service; onboarding is planned. This is not a claim of investment or bank endorsement.";
   if (/payment|work|send|kyc|demo|test/.test(q))
     return (
-      "Connect your wallet, choose the amount and destination, view the quote, check bank details, complete any demo verification, then review and approve. " +
+      "Connect your wallet, choose the amount and destination, view the quote, check bank details, complete any required verification, then review and approve. " +
       PAYMENT_SAFETY
     );
   return "I can help with payment steps, fees, banks and wallet safety. For account-specific questions, contact our team below. Never send passwords, bank details, private keys or seed phrases here.";

@@ -9,7 +9,7 @@ export const Route = createFileRoute("/docs")({
   head: () => pageSeo({
     path: "/docs",
     title: "LamportPay Docs — Architecture and Payment API Reference",
-    description: "Current LamportPay architecture, wallet identity, quote-first payment APIs, Stables demo, Jupiter read-only routing, fees and operational safeguards.",
+    description: "Current LamportPay architecture, wallet identity, quote-first payment APIs, Stables test environment, Jupiter read-only routing, fees and operational safeguards.",
   }),
   component: Docs,
 });
@@ -19,7 +19,7 @@ const stack = [
   { title: "Payment orchestration", detail: "Server functions and API routes coordinate quotes, bank-field validation, verification gates, transfer references and payment tracking." },
   { title: "Wallet & settlement asset", detail: "Solana wallet signatures and transaction verification. USDC is enabled; USDT payment support remains DISABLED. This build runs on a Solana test network." },
   { title: "Conversion · LIVE read-only", detail: "Jupiter supplies eligible Solana-to-USDC market quotes. The demo build blocks mainnet order and execution; USDC payments skip the swap." },
-  { title: "Payout · DEMO/SIMULATED", detail: "Stables demo provides quotes, hosted verification, checked bank details and transfer status. Production payouts and KYC are DISABLED." },
+  { title: "Payout · DEMO/SIMULATED", detail: "Stables' test environment provides quotes, hosted verification, checked bank details and transfer status. Production payouts and KYC are DISABLED." },
   { title: "Data & operations", detail: "Lovable Cloud / PostgreSQL stores payment records, identity links, verification status, timeline events and append-only admin audit records—not customer balances." },
 ];
 
@@ -33,9 +33,9 @@ const paymentEndpoints: Endpoint[] = [
   { method: "POST", path: "/api/payments/:id/quote", detail: "Generate the payment quote; verification is not required to reach the quoted stage." },
   { method: "POST", path: "/api/payments/:id/payout-details", detail: "Check the required bank fields with Stables before review." },
   { method: "GET", path: "/api/kyc", detail: "Read the server-decided customer verification state." },
-  { method: "POST", path: "/api/kyc", detail: "Resolve the Stables-hosted demo verification link when verification is required." },
+  { method: "POST", path: "/api/kyc", detail: "Resolve the Stables-hosted verification link when verification is required." },
   { method: "POST", path: "/api/payments/:id/transfer", detail: "Create the Stables transfer for a verified sender. Returns its transfer reference and deposit instructions; this is not proof of payout." },
-  { method: "POST", path: "/api/payments/:id/test-payment", detail: "Demo only: verify the signed test network memo, then simulate the demo deposit. Moves no payment funds." },
+  { method: "POST", path: "/api/payments/:id/test-payment", detail: "Demo only: verify the signed test-network memo, then simulate the deposit. Moves no payment funds." },
   { method: "GET", path: "/api/payments/:id", detail: "Read payment status, timeline and receipt information; open transfers synchronize with Stables." },
 ];
 const routingEndpoints: Endpoint[] = [

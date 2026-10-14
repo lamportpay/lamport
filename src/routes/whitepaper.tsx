@@ -90,11 +90,11 @@ const sections: { title: string; body: React.ReactNode }[] = [
         />
         <ArchRow
           k="Blockchain"
-           v="Solana wallet connection and transaction verification. The demo build signs a real test network memo that moves no funds; Jupiter mainnet execution is disabled."
+           v="Solana wallet connection and transaction verification. The demo build signs a real test-network memo that moves no funds; Jupiter mainnet execution is disabled."
         />
         <ArchRow
           k="Partner"
-           v="Stables demo customer records, hosted verification links, quote and bank-field validation, transfer references and signed status events."
+           v="Stables test customer records, hosted verification links, quote and bank-field validation, transfer references and signed status events."
         />
         <ArchRow
           k="Database"
@@ -230,7 +230,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         <List
           items={ROADMAP_PHASES.map(
             (p) =>
-              `Phase ${p.phase}: ${p.title} (${p.status === "current" ? "DEMO / DEVNET-SANDBOX" : "PLANNED"}). ${p.summary} Milestone: ${p.dependsOn}`,
+              `Phase ${p.phase}: ${p.title} (${p.status === "current" ? "DEMO / SIMULATED" : "PLANNED"}). ${p.summary} Milestone: ${p.dependsOn}`,
           )}
         />
         <p className="text-sm">{ROADMAP_NOTE}</p>

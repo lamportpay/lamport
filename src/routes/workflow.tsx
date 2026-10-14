@@ -23,7 +23,7 @@ export const Route = createFileRoute("/workflow")({
       path: "/workflow",
       title: "LamportPay Workflow — Web3 Identity and Payment Architecture",
       description:
-        "Understand LamportPay’s wallet-signature verification, hosted Stables demo KYC, payment eligibility and non-custodial Solana payment architecture.",
+        "Understand LamportPay’s wallet-signature verification, hosted Stables identity check, payment eligibility and non-custodial Solana payment architecture.",
     }),
   component: WorkflowPage,
 });
@@ -66,7 +66,7 @@ const stages = [
     provider: "Stables · Jupiter when needed",
     status: "DEMO/SIMULATED · payout quote",
     today:
-      "Get a Stables demo quote before verification. SOL estimates use a read-only Jupiter route. Show the LamportPay fee and separate provider costs.",
+      "Get a Stables demo-mode quote before verification. SOL estimates use a read-only Jupiter route. Show the LamportPay fee and separate provider costs.",
     production:
       "An approved Stables production quote determines corridor support, pricing and customer limits.",
   },
@@ -90,10 +90,10 @@ const stages = [
   },
   {
     title: "Wallet approval",
-    provider: "a Solana test network",
+    provider: "Solana test network",
     status: "DEMO/SIMULATED",
     today:
-      "Sign a real test network memo transaction that moves no funds. The server checks the signer, memo, freshness and success before simulating the demo deposit.",
+      "Sign a real test-network memo transaction that moves no funds. The server checks the signer, memo, freshness and success before simulating the demo deposit.",
     production:
       "DISABLED: user-signed funding to Stables’ single-use deposit address, with any applicable fee transfer and settlement checks.",
   },

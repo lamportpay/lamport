@@ -95,7 +95,7 @@ const CAPABILITIES: Capability[] = [
     key: "identity",
     label: "Hosted identity check",
     status: "demo",
-    title: "Identity verification runs on the payout partner's hosted page, in demo.",
+    title: "Identity verification runs on the payout partner's hosted page, in the demo build.",
     icon: (
       <>
         <rect x="3.4" y="6" width="17.2" height="12" rx="2.2" />
@@ -210,8 +210,7 @@ export function HomeCapabilities() {
         </ul>
 
         <p className="home-cap-note">
-          Live means the step works today. Demo / simulated means it runs on test network or in the
-          demo, where no real money moves. In progress means it is not finished.
+          Live means the step works today. Demo / simulated means it runs in a test environment, where no real money moves. In progress means it is not finished.
         </p>
       </div>
     </section>

@@ -75,7 +75,7 @@ export function SupportedCorridors() {
           <p className="home-eyebrow">Global payout reach</p>
           <h2 className="home-heading">Four corridors, verified end to end.</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Click any country to zoom in. Highlighted countries complete demo bank payouts today;
+            Click any country to zoom in. Highlighted countries completed demo bank payouts today;
             Nigeria and Pakistan are planned.
           </p>
         </div>

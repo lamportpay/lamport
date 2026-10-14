@@ -63,7 +63,7 @@ function Compliance() {
       activity: "Quote, fee disclosure, checkout and status tracking",
       who: "LamportPay.",
     },
-    { activity: "Approving the transaction", who: "You, in your own wallet. Sign-in uses a plain-text message; demo Pay Now uses a real test network memo transaction that moves no funds." },
+    { activity: "Approving the transaction", who: "You, in your own wallet. Sign-in uses a plain-text message; demo Pay Now uses a real test-network memo transaction that moves no funds." },
   ];
   return (
     <SiteLayout>
@@ -131,7 +131,7 @@ function Compliance() {
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               Quotes can be shown before verification. Bank details are checked with Stables,
               and the sender must be verified before a transfer is created. Verification runs
-              on Stables' hosted demo page; LamportPay does not build its own document-verification flow.
+              on Stables' hosted verification page; LamportPay does not build its own document-verification flow.
             </p>
             <dl className="mt-4 space-y-4 text-sm">
               <div>
