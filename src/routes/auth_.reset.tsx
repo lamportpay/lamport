@@ -3,7 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/auth/reset")({
+export const Route = createFileRoute("/auth_/reset")({
   ssr: false,
   head: () => ({
     meta: [
@@ -35,6 +35,14 @@ function ResetPasswordPage() {
 
   useEffect(() => {
     let active = true;
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    const query = new URLSearchParams(window.location.search);
+    const linkError = hash.get("error_description") ?? query.get("error_description");
+    if (linkError) {
+      setError(
+        "This reset link has expired or was already used. Request a new one from the sign-in page.",
+      );
+    }
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
       setReady(Boolean(data.session));
