@@ -1,5 +1,5 @@
 /**
- * TEST MODE / LIVE MODE indicator for the app header, with the mode switch.
+ * DEVNET / SANDBOX / LIVE MODE indicator for the app header, with the mode switch.
  *
  * The badge shows ONLY what the server reports. "Switch" never changes the
  * server: it asks the server whether a separate deployment for the other mode
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { paymentApi } from "@/lib/payments/api-client";
 import { useModeStatus } from "@/lib/use-mode-status";
+import { MODE_PROFILES } from "@/lib/app-mode";
 
 const TONE: Record<string, string> = {
   test: "border-amber-500/50 bg-amber-400/15 text-amber-700 dark:text-amber-300",
@@ -81,8 +82,8 @@ export function ModeBadge() {
         <Icon
           className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${indicator.tone === "loading" ? "animate-spin" : ""}`}
         />
-        {/* Phones: "TEST" / "LIVE"; the full label fits from sm up. */}
-        <span className="sm:hidden">{indicator.label.replace(/ MODE$/, "")}</span>
+        {/* Phones: "SANDBOX" / "LIVE"; the full label fits from sm up. */}
+        <span className="sm:hidden">{indicator.short}</span>
         <span className="hidden sm:inline">{indicator.label}</span>
       </button>
       {open && (
@@ -114,7 +115,7 @@ export function ModeBadge() {
               }}
               className="w-full rounded-lg border border-border px-3 py-2 text-left text-xs font-semibold hover:bg-secondary disabled:opacity-50"
             >
-              Switch to {target.toUpperCase()} MODE…
+              Switch to {MODE_PROFILES[target].label}…
               {target === "live" && !status?.liveAvailable && (
                 <span className="block font-normal text-muted-foreground">
                   Not available yet: needs production setup and owner approval.
@@ -130,7 +131,7 @@ export function ModeBadge() {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-red-600" />
-              Switch to {target.toUpperCase()} MODE?
+              Switch to {MODE_PROFILES[target].label}?
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="space-y-2 text-sm">
@@ -147,11 +148,14 @@ export function ModeBadge() {
                     </p>
                   </>
                 ) : (
-                  <p>TEST MODE is a separate app using devnet test assets and the sandbox.</p>
+                  <p>
+                    The devnet / sandbox app is separate: it uses devnet test assets and the payout
+                    partner&apos;s sandbox.
+                  </p>
                 )}
                 {answer && !answer.allowed && (
                   <div className="rounded-lg border border-red-600/30 bg-red-600/10 px-3 py-2 text-red-700">
-                    {target.toUpperCase()} MODE is not available. {answer.reasons.join(" ")}
+                    {MODE_PROFILES[target].label} is not available. {answer.reasons.join(" ")}
                   </div>
                 )}
               </div>
@@ -159,7 +163,7 @@ export function ModeBadge() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={busy}>
-              Stay in {status?.mode.toUpperCase() ?? "this"} MODE
+              Stay in {status ? MODE_PROFILES[status.mode].label : "this mode"}
             </AlertDialogCancel>
             {!answer && (
               <button
