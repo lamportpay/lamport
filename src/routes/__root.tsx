@@ -123,7 +123,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                 "LamportPay is a multi-asset crypto-to-local-currency payment routing platform, currently available as a demonstration product.",
               sameAs: [
                 "https://x.com/LamportPay",
-                "https://www.linkedin.com/in/lamport-pay-31a564426/",
+                "https://www.linkedin.com/company/lamportpay",
                 "https://github.com/lamportpay",
               ],
             },
