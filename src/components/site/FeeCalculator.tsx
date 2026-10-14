@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,21 +6,52 @@ import { Input } from "@/components/ui/input";
 import { PAYMENT_COSTS } from "@/content/payment-flow";
 import { percentageModel, splitTotal } from "@/lib/payments/fee-math";
 
-/** Illustrative reference rates only — never a quote. Stables quotes the real rate at checkout. */
+/**
+ * Fallback rates (USD → local), used only if the live rate feed is
+ * unreachable. The live feed is a mid-market reference — never a quote.
+ * Stables quotes the real payout rate and its fees at checkout.
+ */
 const CURRENCIES = [
-  { code: "USD", country: "United States", rate: 1 },
-  { code: "GBP", country: "United Kingdom", rate: 0.75 },
-  { code: "INR", country: "India", rate: 84 },
-  { code: "PHP", country: "Philippines", rate: 57 },
+  { code: "USD", country: "United States", fallbackRate: 1 },
+  { code: "GBP", country: "United Kingdom", fallbackRate: 0.79 },
+  { code: "INR", country: "India", fallbackRate: 88.5 },
+  { code: "PHP", country: "Philippines", fallbackRate: 58.5 },
 ] as const;
+
+type CurrencyCode = (typeof CURRENCIES)[number]["code"];
+const RATES_URL = "https://open.er-api.com/v6/latest/USD";
 
 const MODEL = percentageModel(200n);
 const fmt = (n: number, d = 2) => n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
 
 export function FeeCalculator() {
   const [amount, setAmount] = useState("150");
-  const [code, setCode] = useState<(typeof CURRENCIES)[number]["code"]>("GBP");
+  const [code, setCode] = useState<CurrencyCode>("GBP");
+  const [liveRates, setLiveRates] = useState<Partial<Record<CurrencyCode, number>>>({});
   const currency = CURRENCIES.find((c) => c.code === code)!;
+  const rate = liveRates[code] ?? currency.fallbackRate;
+  const isLive = liveRates[code] !== undefined;
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(RATES_URL)
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+      .then((data: { rates?: Record<string, number> }) => {
+        if (cancelled || !data.rates) return;
+        const next: Partial<Record<CurrencyCode, number>> = {};
+        for (const c of CURRENCIES) {
+          const r = data.rates[c.code];
+          if (typeof r === "number" && r > 0) next[c.code] = r;
+        }
+        setLiveRates(next);
+      })
+      .catch(() => {
+        /* keep fallback rates */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const result = useMemo(() => {
     const value = Number(amount);
@@ -28,8 +59,8 @@ export function FeeCalculator() {
     const total = BigInt(Math.round(value * 1e6));
     const { netMinor, feeMinor } = splitTotal(total, MODEL);
     const net = Number(netMinor) / 1e6;
-    return { total: value, fee: Number(feeMinor) / 1e6, net, local: net * currency.rate };
-  }, [amount, currency.rate]);
+    return { total: value, fee: Number(feeMinor) / 1e6, net, local: net * rate };
+  }, [amount, rate]);
 
   const rows = result
     ? [
