@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PaymentNetwork } from "@/components/site/PaymentNetwork";
 import { ConnectedSystems } from "@/components/site/ConnectedSystems";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
+import { HomeGlance } from "@/components/site/HomeGlance";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { EcosystemSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
 import { PAYMENT_COSTS } from "@/content/payment-flow";
@@ -26,22 +27,22 @@ function Index() {
     <div className="commercial-home">
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden border-b border-border">
-          <div className="home-orbits" aria-hidden="true">
+          <div className="home-orbits home-orbits-center" aria-hidden="true">
             <span className="home-orbit home-orbit-outer" />
             <span className="home-orbit home-orbit-middle" />
             <span className="home-orbit home-orbit-inner" />
           </div>
-          <div className="home-container py-14 md:py-20">
+          <div className="home-container py-14 text-center md:py-20">
             <p className="home-eyebrow">Digital assets. Everyday payments.</p>
             <h1 className="mt-4 text-5xl font-semibold leading-tight md:text-7xl">LamportPay</h1>
             <p className="mt-3 text-2xl font-medium leading-snug md:text-4xl">
               Crypto in. <span className="home-brand-text">Local money out.</span>
             </p>
-            <p className="mt-5 max-w-lg text-base leading-relaxed text-home-ink md:text-lg">
+            <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-home-ink md:text-lg">
               A connected route from your Solana wallet to local-currency bank payments. Your
               wallet. A clear quote. One payment journey.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Button
                 asChild
                 size="lg"
@@ -57,12 +58,13 @@ function Index() {
                 </a>
               </Button>
             </div>
-            <p className="mt-6 max-w-lg text-xs leading-relaxed text-home-ink">
+            <p className="mx-auto mt-6 max-w-lg text-xs leading-relaxed text-home-ink">
               <span className="font-semibold">DEMO / SIMULATED</span> · Controlled test phase. Real
               bank payouts and production identity verification remain disabled.
             </p>
           </div>
         </section>
+        <HomeGlance />
         <div className="border-b border-border bg-card">
           <div className="home-container grid grid-cols-1 gap-4 py-6 sm:grid-cols-3">
             {[
