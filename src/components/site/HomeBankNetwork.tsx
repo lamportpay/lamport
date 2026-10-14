@@ -49,7 +49,15 @@ export function HomeBankNetwork() {
   const [country, setCountry] = useState("GB");
   const destination = destinations.find((d) => d.code === country) ?? destinations[0];
   return (
-    <section className="home-section bg-home-surface border-b border-border" id="banks">
+    <section
+      className="home-section relative isolate overflow-hidden bg-home-surface border-b border-border"
+      id="banks"
+    >
+      <div className="home-orbits home-orbits-left" aria-hidden="true">
+        <span className="home-orbit home-orbit-outer" />
+        <span className="home-orbit home-orbit-middle" />
+        <span className="home-orbit home-orbit-inner" />
+      </div>
       <div className="home-container">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>

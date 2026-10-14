@@ -721,3 +721,44 @@
     display: none;
   }
 }
+.home-orbits-left {
+  mask-image: linear-gradient(to left, transparent 25%, black 70%);
+}
+.home-orbits-left .home-orbit {
+  left: 12%;
+  opacity: 0.4;
+}
+.home-orbits-left .home-orbit-middle {
+  opacity: 0.55;
+}
+.home-orbits-left .home-orbit-inner {
+  opacity: 0.7;
+}
+.home-orbits-center {
+  mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, black 30%, transparent 76%);
+}
+.home-orbits-center .home-orbit {
+  left: 50%;
+}
+.home-orbits-center .home-orbit-outer {
+  opacity: 0.35;
+}
+.home-orbits-center .home-orbit-middle {
+  opacity: 0.45;
+}
+.home-orbits-center .home-orbit-inner {
+  opacity: 0.55;
+}
+@media (max-width: 640px) {
+  .home-orbits-left {
+    mask-image: linear-gradient(to left, transparent 30%, black 100%);
+    opacity: 0.55;
+  }
+  .home-orbits-left .home-orbit {
+    left: -15%;
+  }
+  .home-orbits-center {
+    mask-image: radial-gradient(ellipse 85% 75% at 50% 50%, black 25%, transparent 80%);
+    opacity: 0.55;
+  }
+}
