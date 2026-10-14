@@ -4,8 +4,6 @@ import { Link } from "@tanstack/react-router";
 import { BankIcon } from "@/components/app/BankIcon";
 import { Flag } from "@/components/app/Flag";
 import { Button } from "@/components/ui/button";
-import bitcoinLogo from "@/assets/tokens/bitcoin.png.asset.json";
-import ethereumLogo from "@/assets/tokens/ethereum.png.asset.json";
 
 const destinations = [
   {
@@ -53,7 +51,7 @@ export function HomeBankNetwork() {
       className="home-section relative isolate overflow-hidden bg-home-surface border-b border-border"
       id="banks"
     >
-      <div className="home-orbits home-orbits-left" aria-hidden="true">
+      <div className="home-orbits home-orbits-corner-left" aria-hidden="true">
         <span className="home-orbit home-orbit-outer" />
         <span className="home-orbit home-orbit-middle" />
         <span className="home-orbit home-orbit-inner" />
@@ -119,67 +117,47 @@ export function HomeBankNetwork() {
       <div className="home-container mt-12 border-t border-border pt-10" id="future-currencies">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="home-eyebrow">Expansion outlook · PLANNED</p>
-            <h3 className="home-heading">More choice. Wider reach.</h3>
+            <p className="home-eyebrow">Country expansion outlook · PLANNED</p>
+            <h3 className="home-heading">Next markets we are planning.</h3>
           </div>
           <p className="max-w-sm text-sm text-muted-foreground">
-            New assets and priority markets, one connected ambition.
+            Priority countries for future local bank payouts.
           </p>
         </div>
-        <div className="mt-8 grid gap-8 md:grid-cols-2">
-          <div>
-            <h4 className="border-b border-border pb-3 text-xs font-semibold uppercase">
-              Digital assets
-            </h4>
-            <div className="divide-y divide-border">
-              {[
-                { name: "Bitcoin", code: "BTC", logo: bitcoinLogo.url },
-                { name: "Ethereum", code: "ETH", logo: ethereumLogo.url },
-              ].map((asset) => (
-                <div key={asset.code} className="flex items-center gap-4 py-5">
-                  <img
-                    src={asset.logo}
-                    alt={`${asset.name} logo`}
-                    width={32}
-                    height={32}
-                    className="size-8 shrink-0 object-contain"
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold">{asset.name}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {asset.code} · Future asset route
-                    </p>
-                  </div>
-                  <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
-                </div>
-              ))}
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { name: "Pakistan", code: "PK", currency: "PKR", note: "Large remittance market" },
+            { name: "Nigeria", code: "NG", currency: "NGN", note: "Large stablecoin market" },
+          ].map((market) => (
+            <div
+              key={market.code}
+              className="flex items-center gap-4 rounded-xl border border-border bg-card p-5"
+            >
+              <Flag code={market.code} size={36} />
+              <div className="flex-1">
+                <p className="text-sm font-semibold">{market.name}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {market.currency} · {market.note}
+                </p>
+              </div>
+              <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
             </div>
-          </div>
-          <div>
-            <h4 className="border-b border-border pb-3 text-xs font-semibold uppercase">
-              Priority markets
-            </h4>
-            <div className="divide-y divide-border">
-              {[
-                { name: "Pakistan", code: "PK", currency: "PKR" },
-                { name: "Nigeria", code: "NG", currency: "NGN" },
-              ].map((market) => (
-                <div key={market.code} className="flex items-center gap-4 py-5">
-                  <Flag code={market.code} size={32} />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold">{market.name}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {market.currency} · Market development
-                    </p>
-                  </div>
-                  <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
-                </div>
-              ))}
+          ))}
+          <div className="flex items-center gap-4 rounded-xl border border-dashed border-border bg-card p-5">
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-home-tint text-home-brand">
+              <Landmark className="size-4" />
+            </span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold">Emerging markets</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                More local currencies, reviewed country by country
+              </p>
             </div>
+            <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
           </div>
         </div>
         <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">
-          Expansion plans—not enabled deposits or confirmed payout corridors. Pakistan and Nigeria
+          Expansion plans—not confirmed payout corridors. Pakistan and Nigeria
           coverage requires provider and compliance validation; no bank partnership or launch date
           is implied.
         </p>

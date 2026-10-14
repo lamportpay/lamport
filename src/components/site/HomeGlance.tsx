@@ -4,6 +4,8 @@
  * design — the full bank explorer lives in HomeBankNetwork further down.
  */
 import { ArrowRight } from "lucide-react";
+import bitcoinLogo from "@/assets/tokens/bitcoin.png.asset.json";
+import ethereumLogo from "@/assets/tokens/ethereum.png.asset.json";
 import { Flag } from "@/components/app/Flag";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { DEFAULT_PAYOUT_COUNTRIES, payoutCountriesFrom } from "@/lib/payout-countries";
@@ -32,6 +34,22 @@ export function HomeGlance() {
                 <TokenIcon symbol={symbol} size={20} />
                 <span className="text-sm font-semibold">{label}</span>
                 <span className="text-[11px] text-muted-foreground">{note}</span>
+              </span>
+            ))}
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-semibold uppercase text-home-brand">Next · Planned</span>
+            {[
+              { name: "BTC", logo: bitcoinLogo.url },
+              { name: "ETH", logo: ethereumLogo.url },
+            ].map((a) => (
+              <span
+                key={a.name}
+                className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-border bg-background px-2.5 py-1"
+                title={`${a.name} deposits are planned, not enabled`}
+              >
+                <img src={a.logo} alt="" width={16} height={16} className="size-4" />
+                <span className="text-xs font-medium">{a.name}</span>
               </span>
             ))}
           </div>

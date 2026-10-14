@@ -56,7 +56,7 @@ export function ConnectedSystems() {
       id="infrastructure"
       className="connected-systems home-section relative isolate overflow-hidden border-b border-border"
     >
-      <div className="home-orbits home-orbits-center" aria-hidden="true">
+      <div className="home-orbits home-orbits-corner-right" aria-hidden="true">
         <span className="home-orbit home-orbit-outer" />
         <span className="home-orbit home-orbit-middle" />
         <span className="home-orbit home-orbit-inner" />
