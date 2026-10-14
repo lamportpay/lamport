@@ -523,74 +523,65 @@
 }
 .home-hero {
   min-height: 560px;
-  color: oklch(0.96 0.015 285);
+  color: oklch(0.24 0.06 265);
   background:
-    linear-gradient(to bottom, transparent 55%, var(--card) 97%),
-    radial-gradient(ellipse 55% 45% at 82% 18%, oklch(0.55 0.22 305 / 55%), transparent 70%),
-    radial-gradient(ellipse 50% 42% at 12% 22%, oklch(0.5 0.2 250 / 60%), transparent 70%),
-    radial-gradient(ellipse 45% 40% at 50% 78%, oklch(0.48 0.19 275 / 50%), transparent 72%),
-    radial-gradient(ellipse 34% 30% at 90% 85%, oklch(0.55 0.16 195 / 35%), transparent 70%),
-    radial-gradient(ellipse 30% 26% at 8% 82%, oklch(0.6 0.2 330 / 32%), transparent 70%),
-    radial-gradient(ellipse 90% 70% at 50% 40%, oklch(0.22 0.07 280), transparent 100%),
-    oklch(0.15 0.045 278);
+    linear-gradient(to bottom, transparent 60%, var(--card) 98%),
+    radial-gradient(ellipse 55% 50% at 88% 12%, oklch(0.86 0.08 285 / 70%), transparent 70%),
+    radial-gradient(ellipse 55% 50% at 8% 18%, oklch(0.86 0.08 245 / 75%), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 14% 92%, oklch(0.8 0.1 250 / 45%), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 88% 90%, oklch(0.82 0.09 290 / 45%), transparent 70%),
+    linear-gradient(180deg, oklch(0.97 0.015 260), oklch(0.985 0.008 270));
+}
+.home-hero h1 {
+  font-weight: 600;
+  letter-spacing: -0.03em;
 }
 .home-hero .home-brand-text {
-  background-image: linear-gradient(110deg, oklch(0.85 0.1 250), oklch(0.75 0.16 275));
+  background-image: linear-gradient(110deg, oklch(0.3 0.12 262), oklch(0.4 0.16 268));
 }
 .home-hero .home-brand-text-light {
-  background-image: linear-gradient(110deg, oklch(0.78 0.15 300), oklch(0.72 0.17 330));
+  background-image: linear-gradient(110deg, oklch(0.58 0.17 270), oklch(0.62 0.16 290));
 }
 .home-hero .text-home-ink {
-  color: oklch(0.96 0.015 285);
+  color: oklch(0.26 0.05 265);
 }
 .home-hero .text-home-ink\/70 {
-  color: oklch(0.96 0.015 285 / 72%);
-}
-.home-hero-grid {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to right, oklch(0.85 0.08 275 / 7%) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.85 0.08 275 / 7%) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, black 30%, transparent 75%);
+  color: oklch(0.4 0.04 265);
 }
 .home-hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid oklch(0.85 0.08 285 / 28%);
+  border: 1px solid oklch(0.55 0.12 265 / 22%);
   border-radius: 999px;
-  background: oklch(0.3 0.08 280 / 55%);
+  background: oklch(1 0 0 / 75%);
   backdrop-filter: blur(8px);
   padding: 6px 14px;
   font-size: 12px;
   font-weight: 600;
-  color: oklch(0.94 0.02 285);
-  box-shadow: 0 4px 16px -6px oklch(0.1 0.05 280 / 60%);
+  color: oklch(0.32 0.1 265);
+  box-shadow: 0 4px 14px -8px oklch(0.4 0.12 265 / 35%);
 }
 .home-hero-badge-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--home-gradient);
+  background: oklch(0.65 0.15 155);
 }
 .home-hero-cta {
-  box-shadow: 0 10px 24px -10px oklch(0.48 0.23 275 / 55%);
+  box-shadow: 0 10px 24px -10px oklch(0.45 0.18 265 / 50%);
 }
 .home-hero-ghost {
-  border-color: oklch(0.85 0.08 285 / 30%);
-  background: oklch(0.3 0.08 280 / 45%);
-  color: oklch(0.94 0.02 285);
+  border-color: oklch(0.55 0.12 265 / 25%);
+  background: oklch(1 0 0 / 70%);
+  color: oklch(0.3 0.1 265);
 }
 .home-hero-ghost:hover {
-  background: oklch(0.36 0.09 280 / 60%);
-  color: oklch(0.97 0.01 285);
+  background: oklch(1 0 0 / 95%);
+  color: oklch(0.25 0.1 265);
 }
 .home-hero .text-home-brand {
-  background-image: linear-gradient(110deg, oklch(0.85 0.1 250), oklch(0.78 0.15 310));
+  background-image: linear-gradient(110deg, oklch(0.35 0.14 262), oklch(0.55 0.17 280));
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -602,23 +593,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid oklch(0.85 0.08 285 / 22%);
+  border: 1px solid oklch(0.55 0.1 265 / 16%);
   border-radius: 16px;
-  background:
-    linear-gradient(160deg, oklch(0.35 0.1 265 / 55%), oklch(0.3 0.11 300 / 50%));
+  background: oklch(1 0 0 / 72%);
   backdrop-filter: blur(12px);
   padding: 18px 12px;
-  box-shadow:
-    0 16px 36px -16px oklch(0.08 0.05 280 / 70%),
-    inset 0 1px 0 oklch(1 0 0 / 14%);
-}
-.home-hero-stat:nth-child(2) {
-  background:
-    linear-gradient(160deg, oklch(0.34 0.11 305 / 55%), oklch(0.3 0.1 265 / 50%));
-}
-.home-hero-stat:nth-child(3) {
-  background:
-    linear-gradient(160deg, oklch(0.34 0.1 250 / 55%), oklch(0.31 0.1 290 / 50%));
+  box-shadow: 0 14px 30px -18px oklch(0.35 0.1 265 / 40%);
 }
 @media (prefers-reduced-motion: no-preference) {
   .home-hero-stat {
@@ -628,10 +608,8 @@
   }
   .home-hero-stat:hover {
     transform: translateY(-4px);
-    border-color: oklch(0.85 0.08 285 / 40%);
-    box-shadow:
-      0 24px 44px -18px oklch(0.08 0.05 280 / 80%),
-      inset 0 1px 0 oklch(1 0 0 / 22%);
+    border-color: oklch(0.55 0.12 265 / 30%);
+    box-shadow: 0 22px 40px -20px oklch(0.35 0.12 265 / 50%);
   }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -1071,4 +1049,10 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .vf-trunk, .vf-branch-line, .vf-leaf, .vf-traveler { transition: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
