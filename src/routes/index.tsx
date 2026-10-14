@@ -26,7 +26,7 @@ function Index() {
   return (
     <div className="commercial-home">
       <SiteLayout>
-        <section className="home-hero relative isolate overflow-hidden border-b border-border">
+        <section className="home-hero relative isolate overflow-hidden">
           <div className="home-orbits home-orbits-center" aria-hidden="true">
             <span className="home-orbit home-orbit-outer" />
             <span className="home-orbit home-orbit-middle" />
@@ -34,7 +34,9 @@ function Index() {
           </div>
           <div className="home-container py-14 text-center md:py-20">
             <p className="home-eyebrow">Digital assets. Everyday payments.</p>
-            <h1 className="mt-4 text-5xl font-semibold leading-tight md:text-7xl">LamportPay</h1>
+            <h1 className="home-brand-text mt-4 text-5xl font-semibold leading-tight md:text-7xl">
+              LamportPay
+            </h1>
             <p className="mt-3 text-2xl font-medium leading-snug md:text-4xl">
               Crypto in. <span className="home-brand-text">Local money out.</span>
             </p>
