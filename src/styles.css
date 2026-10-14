@@ -1142,6 +1142,41 @@
   animation-delay: var(--ping-delay, 0s);
 }
 .corridor-marker-ping-late { animation-delay: calc(var(--ping-delay, 0s) + 1.2s); }
+.corridor-marker-tick-bg {
+  fill: oklch(0.62 0.17 155);
+  stroke: oklch(1 0 0);
+  stroke-width: 1.6;
+}
+.corridor-marker-tick-check {
+  fill: none;
+  stroke: oklch(1 0 0);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.corridor-marker-planned-core {
+  fill: oklch(0.72 0.15 85);
+  stroke: oklch(1 0 0);
+  stroke-width: 1.6;
+}
+.corridor-marker-planned-ring {
+  fill: none;
+  stroke: oklch(0.72 0.15 85 / 0.7);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 3;
+}
+.corridor-marker-planned-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  fill: oklch(0.6 0.14 85);
+}
+.corridor-legend-item-planned { border-style: dashed; }
+.corridor-legend-dot-planned {
+  background: oklch(0.72 0.15 85);
+  box-shadow: 0 0 0 3px oklch(0.72 0.15 85 / 0.2);
+  animation: none;
+}
 @keyframes corridor-ping {
   0% { transform: scale(0.3); opacity: 0.9; }
   70% { transform: scale(1); opacity: 0.25; }
