@@ -752,6 +752,15 @@
   text-align: center;
   color: var(--home-connector);
 }
+/* Phones: keep the note clear of the fixed customer-support button. */
+@media (max-width: 640px) {
+  .commercial-home .home-capabilities {
+    padding-bottom: 88px;
+  }
+  .home-cap-note {
+    padding-inline: 8px;
+  }
+}
 @media (min-width: 700px) {
   .home-cap-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
