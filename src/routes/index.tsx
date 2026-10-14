@@ -7,6 +7,7 @@ import { ConnectedSystems } from "@/components/site/ConnectedSystems";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { HomeGlance } from "@/components/site/HomeGlance";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
+import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { EcosystemSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
 import { PAYMENT_COSTS } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
@@ -122,9 +123,6 @@ function Index() {
           </div>
         </div>
         <PaymentNetwork />
-        <HomeBankNetwork />
-        <ConnectedSystems />
-        <EcosystemSection compact />
         <section className="home-section border-y border-border bg-home-surface" id="costs">
           <div className="home-container grid gap-8 md:grid-cols-[1fr_1.4fr]">
             <div>
@@ -167,6 +165,10 @@ function Index() {
             </div>
           </div>
         </section>
+        <IntegrationStatus />
+        <HomeBankNetwork />
+        <ConnectedSystems />
+        <EcosystemSection compact />
         <RoadmapSection />
         <section className="home-section border-t border-border">
           <div className="home-container flex flex-wrap items-center justify-between gap-6">

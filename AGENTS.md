@@ -28,6 +28,6 @@
 - Bank logos are static official-site assets referenced by a shared bank-name registry; missing assets retain a neutral fallback so branding never changes payout validation.
 - Bank form selectors use the shared Picker field variant, while marketing mobile navigation uses the accessible right-side Sheet; shared controls preserve keyboard navigation and focus handling.
 - Admin overview presentation uses a browser-safe data model and separate content component; all metrics come from the existing protected dashboard function, so UI organization cannot change financial actions or access controls.
-- Homepage/workflow verification shares browser-safe payment content; distinguish wallet proof from hosted KYC without changing financial checks.
+- Homepage/workflow shares browser-safe verification content; distinguish wallet proof from hosted KYC without changing financial checks.
 - Ecosystem branding/links live in shared content; preserve logo proportions and text fallbacks. Sliders use native scrolling, accessible controls and reduced-motion support.
-- Homepage flow presentations share browser-only playback and scene controls; playback is viewport-gated, pausable and reduced-motion aware, and cannot represent or change actual financial state.
+- Homepage flows share viewport-gated, pausable, reduced-motion-aware browser playback; never represent financial state. Public integration/restriction content is browser-safe: deposit warnings are not payout blacklists; pending submissions imply no backing.
