@@ -15,8 +15,9 @@ function Logo({ entry }: { entry: { name: string; asset?: string; group: string 
           aria-hidden
           className="absolute -inset-1.5 rounded-full motion-safe:animate-spin"
           style={{
-            animationDuration: "1.6s",
-            background: "conic-gradient(from 0deg, transparent 0%, var(--home-brand, #6366f1) 25%, #a855f7 45%, transparent 60%)",
+            animationDuration: "4.5s",
+            animationTimingFunction: "linear",
+            background: "conic-gradient(from 0deg, transparent 0%, color-mix(in oklab, var(--home-brand, #6366f1) 40%, transparent) 20%, var(--home-brand, #6366f1) 45%, #a855f7 65%, transparent 85%)",
             WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
             mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
           }}
@@ -26,9 +27,10 @@ function Logo({ entry }: { entry: { name: string; asset?: string; group: string 
       {done && (
         <span
           className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full shadow ring-2 ring-background"
-          style={{ background: "linear-gradient(135deg, #fbbf24, #f59e0b 45%, #a855f7)" }}
+          style={{ background: "linear-gradient(135deg, #34d399, #10b981 55%, #059669)" }}
+          aria-label="Completed"
         >
-          <Check className="size-3 text-primary-foreground" strokeWidth={3.5} />
+          <Check className="size-3 text-white" strokeWidth={3.5} />
         </span>
       )}
     </span>
