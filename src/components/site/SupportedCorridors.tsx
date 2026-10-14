@@ -29,6 +29,20 @@ const MARKERS: Marker[] = [
   { code: "PH", name: "Philippines", currency: "PHP", lon: 122, lat: 13, delay: 1.8 },
 ];
 
+interface PlannedMarker {
+  code: string;
+  name: string;
+  currency: string;
+  lon: number;
+  lat: number;
+}
+
+// Roadmap Phase 2 corridors — proposed after funding, not active today.
+const PLANNED_MARKERS: PlannedMarker[] = [
+  { code: "NG", name: "Nigeria", currency: "NGN", lon: 8, lat: 10 },
+  { code: "PK", name: "Pakistan", currency: "PKR", lon: 69, lat: 30 },
+];
+
 function toXY(lon: number, lat: number) {
   return { x: ((lon + 180) / 360) * W, y: ((90 - lat) / 180) * H };
 }
@@ -80,6 +94,22 @@ export function SupportedCorridors() {
                   <circle cx={x} cy={y} r={26} className="corridor-marker-ping" />
                   <circle cx={x} cy={y} r={14} className="corridor-marker-ping corridor-marker-ping-late" />
                   <circle cx={x} cy={y} r={6.5} className="corridor-marker-core" />
+                  <g className="corridor-marker-tick" transform={`translate(${x + 9}, ${y - 11})`}>
+                    <circle r={7} className="corridor-marker-tick-bg" />
+                    <path d="M-3.2 0.4 L-0.8 2.8 L3.4 -2.6" className="corridor-marker-tick-check" />
+                  </g>
+                </g>
+              );
+            })}
+            {PLANNED_MARKERS.map((m) => {
+              const { x, y } = toXY(m.lon, m.lat);
+              return (
+                <g key={m.code} className="corridor-marker-planned">
+                  <circle cx={x} cy={y} r={10} className="corridor-marker-planned-ring" />
+                  <circle cx={x} cy={y} r={4.5} className="corridor-marker-planned-core" />
+                  <text x={x} y={y - 16} textAnchor="middle" className="corridor-marker-planned-label">
+                    PLANNED
+                  </text>
                 </g>
               );
             })}
@@ -96,6 +126,14 @@ export function SupportedCorridors() {
                 <span className="font-semibold text-home-ink">{m.name}</span>
                 <span className="corridor-legend-currency">{m.currency}</span>
                 <span className="corridor-legend-status">Verified in sandbox</span>
+              </li>
+            ))}
+            {PLANNED_MARKERS.map((m) => (
+              <li key={m.code} className="corridor-legend-item corridor-legend-item-planned">
+                <span className="corridor-legend-dot corridor-legend-dot-planned" aria-hidden="true" />
+                <span className="font-semibold text-home-ink">{m.name}</span>
+                <span className="corridor-legend-currency">{m.currency}</span>
+                <span className="corridor-legend-status">Planned — Phase 2, after funding</span>
               </li>
             ))}
           </ul>
