@@ -4,6 +4,7 @@
  */
 import { ArrowRight } from "lucide-react";
 import { TokenIcon } from "@/components/app/TokenIcon";
+import { Flag } from "@/components/app/Flag";
 
 const CRYPTO_IN = [
   { symbol: "sol", label: "SOL" },
