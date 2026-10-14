@@ -95,7 +95,6 @@ export function RoadmapSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
   const [active, setActive] = useState(0);
-  const [auto, setAuto] = useState(true);
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -115,21 +114,11 @@ export function RoadmapSection() {
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
-  useEffect(() => {
-    if (!visible || !auto) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = window.setInterval(
-      () => setActive((i) => (i + 1) % ROADMAP_PHASES.length),
-      5000,
-    );
-    return () => window.clearInterval(id);
-  }, [visible, auto]);
   const icons = [Wallet, ShieldCheck, Layers3, Handshake, Globe2];
   const phase = ROADMAP_PHASES[active] ?? ROADMAP_PHASES[0];
   const PhaseIcon = icons[active] ?? Globe2;
   const current = phase.status === "current";
   const pick = (i: number) => {
-    setAuto(false);
     setActive(i);
   };
   const progress = (active / (ROADMAP_PHASES.length - 1)) * 100;
@@ -156,49 +145,36 @@ export function RoadmapSection() {
           </Button>
         </div>
 
-        <div className="roadmap-rail relative mt-12" role="tablist" aria-label="Roadmap phases">
-          <span className="roadmap-rail-line" aria-hidden="true">
-            <span className="roadmap-rail-fill" style={{ width: `${progress}%` }} />
-          </span>
-          <div className="relative grid grid-cols-5 gap-2">
-            {ROADMAP_PHASES.map((p, i) => {
-              const Icon = icons[i] ?? Globe2;
-              const on = i === active;
-              const done = i < active;
-              return (
-                <button
-                  key={p.phase}
-                  type="button"
-                  role="tab"
-                  aria-selected={on}
-                  aria-controls="roadmap-spotlight"
-                  onClick={() => pick(i)}
-                  className="roadmap-step group flex flex-col items-center gap-3 text-center focus-visible:outline-none"
-                  data-on={on}
-                  data-done={done}
-                >
-                  <span className="roadmap-dot grid size-12 place-items-center rounded-full border-2 bg-card sm:size-14">
-                    <Icon className="size-5 sm:size-6" strokeWidth={1.7} />
-                  </span>
-                  <span className="hidden text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:block">
-                    Phase {String(p.phase).padStart(2, "0")}
-                  </span>
-                  <span className="hidden text-sm font-semibold leading-snug md:block">
-                    {p.title}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+
 
         <div
           id="roadmap-spotlight"
           role="tabpanel"
-          key={active}
           className="roadmap-spotlight mt-10 grid overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
         >
           <div className="roadmap-spotlight-side relative p-7 sm:p-9">
+            <div className="mb-6 grid grid-cols-[auto_1fr_auto] items-center gap-2">
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Previous phase"
+                onClick={() => pick((active - 1 + ROADMAP_PHASES.length) % ROADMAP_PHASES.length)}
+              >
+                <ChevronLeft />
+              </Button>
+              <span className="text-center text-xs text-muted-foreground">
+                {active + 1} / {ROADMAP_PHASES.length}
+              </span>
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Next phase"
+                onClick={() => pick((active + 1) % ROADMAP_PHASES.length)}
+              >
+                <ChevronRight />
+              </Button>
+
+            </div>
             <div className="flex items-center gap-3">
               <span className="grid size-11 place-items-center rounded-xl bg-card text-home-brand">
                 <PhaseIcon className="size-5" />
@@ -241,27 +217,42 @@ export function RoadmapSection() {
                 <span className="text-muted-foreground">{phase.dependsOn}</span>
               </p>
             </div>
-            <div className="mt-6 flex items-center gap-2">
-              <Button
-                size="icon"
-                variant="outline"
-                aria-label="Previous phase"
-                onClick={() => pick((active - 1 + ROADMAP_PHASES.length) % ROADMAP_PHASES.length)}
-              >
-                <ChevronLeft />
-              </Button>
-              <Button
-                size="icon"
-                variant="outline"
-                aria-label="Next phase"
-                onClick={() => pick((active + 1) % ROADMAP_PHASES.length)}
-              >
-                <ChevronRight />
-              </Button>
-              <span className="ml-2 text-xs text-muted-foreground">
-                {active + 1} / {ROADMAP_PHASES.length}
-              </span>
-            </div>
+
+          </div>
+        </div>
+        <div className="roadmap-rail relative mt-12" role="tablist" aria-label="Roadmap phases">
+          <span className="roadmap-rail-line" aria-hidden="true">
+            <span className="roadmap-rail-fill" style={{ width: `${progress}%` }} />
+          </span>
+          <div className="relative grid grid-cols-5 gap-2">
+            {ROADMAP_PHASES.map((p, i) => {
+              const Icon = icons[i] ?? Globe2;
+              const on = i === active;
+              const done = i < active;
+              return (
+                <button
+                  key={p.phase}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  aria-controls="roadmap-spotlight"
+                  onClick={() => pick(i)}
+                  className="roadmap-step group flex flex-col items-center gap-3 text-center focus-visible:outline-none"
+                  data-on={on}
+                  data-done={done}
+                >
+                  <span className="roadmap-dot grid size-12 place-items-center rounded-full border-2 bg-card sm:size-14">
+                    <Icon className="size-5 sm:size-6" strokeWidth={1.7} />
+                  </span>
+                  <span className="hidden text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:block">
+                    Phase {String(p.phase).padStart(2, "0")}
+                  </span>
+                  <span className="hidden text-sm font-semibold leading-snug md:block">
+                    {p.title}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
         <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">
