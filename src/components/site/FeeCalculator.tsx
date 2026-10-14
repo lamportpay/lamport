@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, ChevronDown, Info, Loader2 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { percentageModel, splitTotal } from "@/lib/payments/fee-math";
+import { Button } from "@/components/ui/button";
 
 /**
  * Payout estimate calculator — two-panel "You send / Recipient gets" layout.
@@ -46,7 +47,7 @@ export function FeeCalculator() {
   // Brief "fetching a quote" state whenever the inputs change, so the panel
   // feels like a live server quote rather than instant local math.
   const [quoting, setQuoting] = useState(false);
-  const cur = CURRENCIES.find((c) => c.code === code)!;
+  const cur = CURRENCIES.find((c) => c.code === code) ?? CURRENCIES[0];
   const rate = liveRates[code] ?? cur.fallbackRate;
 
   useEffect(() => {
@@ -146,14 +147,16 @@ export function FeeCalculator() {
 
             <div className="mt-5 flex gap-2">
               {PRESETS.map((p) => (
-                <button
+                <Button
                   key={p}
                   type="button"
+                  variant="outline"
+                  aria-pressed={Number(amount) === p}
                   onClick={() => setAmount(String(p))}
-                  className={`flex-1 rounded-full border py-1.5 text-xs font-medium transition ${Number(amount) === p ? "border-home-brand bg-home-brand/10 text-home-brand" : "border-border hover:border-home-brand"}`}
+                  className={`h-10 min-w-0 flex-1 rounded-lg px-1 text-xs font-medium transition ${Number(amount) === p ? "border-home-brand bg-home-tint text-home-brand" : "border-border hover:border-home-brand"}`}
                 >
                   {p}
-                </button>
+                </Button>
               ))}
             </div>
 
@@ -233,7 +236,7 @@ export function FeeCalculator() {
               </div>
             </dl>
 
-            <button
+            <Button
               type="button"
               disabled={!result}
               onClick={() =>
@@ -242,10 +245,10 @@ export function FeeCalculator() {
                   search: { amount: value.toFixed(2), country: cur.iso },
                 })
               }
-              className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-[image:var(--home-gradient)] px-6 py-4 text-sm font-semibold text-primary-foreground shadow-lg transition disabled:opacity-50 motion-safe:hover:scale-[1.01] motion-safe:active:scale-[0.99]"
+              className="mt-6 h-12 w-full gap-2 rounded-lg bg-home-brand px-4 text-sm font-semibold text-primary-foreground shadow-lg transition disabled:opacity-50 motion-safe:hover:scale-[1.01] motion-safe:active:scale-[0.99]"
             >
               Get live quote & pay <ArrowRight className="size-4" />
-            </button>
+            </Button>
             <p className="mt-4 flex items-start justify-center gap-1.5 text-center text-[11px] leading-relaxed text-muted-foreground">
               <Info className="mt-0.5 size-3 shrink-0" />
               Rates refresh every 30 s{updatedAt ? ` · updated ${updatedAt.toLocaleTimeString()}` : ""}. Your firm quote comes from Stables on the payment page.
