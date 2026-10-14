@@ -9,7 +9,7 @@ import { HomeGlance } from "@/components/site/HomeGlance";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { EcosystemSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
-import { PAYMENT_COSTS } from "@/content/payment-flow";
+import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -123,49 +123,6 @@ function Index() {
           </div>
         </div>
         <PaymentNetwork />
-        <section className="home-section border-y border-border bg-home-surface" id="costs">
-          <div className="home-container grid gap-8 md:grid-cols-[1fr_1.4fr]">
-            <div>
-              <p className="home-eyebrow">The business model</p>
-              <h2 className="home-heading">
-                One service fee.
-                <br />
-                No hidden layers.
-              </h2>
-              <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                LamportPay earns a single fee for arranging the payment journey. Provider and
-                network costs are shown separately.
-              </p>
-              <Button asChild variant="link" className="mt-4 px-0 text-home-brand">
-                <Link to="/how-it-works">
-                  How payments work <ArrowRight />
-                </Link>
-              </Button>
-            </div>
-            <div>
-              <div className="flex items-center gap-5 border-b border-border pb-5">
-                <p className="text-5xl font-semibold text-home-brand">2%</p>
-                <div>
-                  <p className="font-semibold">Of the total you send</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    150 USDC sent → 3 USDC fee → 147 USDC to Stables
-                  </p>
-                </div>
-              </div>
-              <dl className="divide-y divide-border">
-                {PAYMENT_COSTS.map((cost) => (
-                  <div key={cost.title} className="py-4">
-                    <dt className="text-sm font-semibold">{cost.title}</dt>
-                    <dd className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      {cost.detail}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </div>
-        </section>
-        <IntegrationStatus />
         <HomeBankNetwork />
         <ConnectedSystems />
         <EcosystemSection compact />
@@ -195,6 +152,8 @@ function Index() {
             </div>
           </div>
         </section>
+        <IntegrationStatus />
+        <FeeCalculator />
         <CustomerSupport />
       </SiteLayout>
     </div>
