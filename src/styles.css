@@ -1130,9 +1130,9 @@
   transform-origin: center;
   transform-box: fill-box;
   animation: corridor-ping 2.4s ease-out infinite;
-  animation-delay: inherit;
+  animation-delay: var(--ping-delay, 0s);
 }
-.corridor-marker-ping-late { animation-delay: calc(inherit + 1.2s); }
+.corridor-marker-ping-late { animation-delay: calc(var(--ping-delay, 0s) + 1.2s); }
 @keyframes corridor-ping {
   0% { transform: scale(0.3); opacity: 0.9; }
   70% { transform: scale(1); opacity: 0.25; }
@@ -1184,7 +1184,7 @@
   background: linear-gradient(135deg, oklch(0.55 0.24 285), oklch(0.5 0.2 255));
   box-shadow: 0 0 0 3px oklch(0.6 0.2 280 / 0.2);
   animation: corridor-blink 2.4s ease-in-out infinite;
-  animation-delay: inherit;
+  animation-delay: var(--ping-delay, 0s);
 }
 @keyframes corridor-blink {
   0%, 100% { opacity: 1; }
