@@ -322,6 +322,12 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
                 <h3 className="mt-3 flex min-h-10 items-center justify-center text-center text-sm font-semibold leading-snug">
                   {c.name}
                 </h3>
+                <p className="mt-1 text-center text-[11px] font-semibold uppercase tracking-wide text-home-brand">
+                  {c.sector}
+                </p>
+                <p className="mt-2 line-clamp-3 min-h-[3.75rem] text-center text-xs leading-relaxed text-muted-foreground">
+                  {c.description}
+                </p>
                 <div className="mt-3 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
                   {c.region === "UAE" ? (
                     <svg
