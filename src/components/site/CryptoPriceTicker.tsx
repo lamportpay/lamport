@@ -21,6 +21,7 @@ const fmtPrice = (n: number) =>
     ? n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : n.toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 6 });
 
+/**
  * `bottomClass` lifts the strip above another fixed bar (the app's phone tab
  * bar) without changing its behaviour anywhere else.
  */
