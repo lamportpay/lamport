@@ -236,14 +236,14 @@ function CompanyLogo({ c }: { c: EcosystemCompany }) {
   );
 }
 
-function CompanyCard({ c }: { c: EcosystemCompany }) {
+function CompanyCard({ c, compact = false }: { c: EcosystemCompany; compact?: boolean }) {
   return (
     <li>
       <a
         href={c.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="group flex h-full flex-col gap-4 rounded-2xl border border-border/60 bg-card/80 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
+        className={`group flex h-full flex-col gap-4 border border-border/60 bg-card/80 p-5 transition-all duration-300 hover:border-primary/50 ${compact ? "rounded-lg" : "rounded-2xl hover:-translate-y-1 hover:shadow-lg"}`}
       >
         <div className="flex items-center gap-4">
           <CompanyLogo c={c} />
@@ -254,7 +254,7 @@ function CompanyCard({ c }: { c: EcosystemCompany }) {
             </span>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground flex-1">{c.description}</p>
+        {!compact && <p className="text-sm text-muted-foreground flex-1">{c.description}</p>}
         <div className="flex items-center justify-between">
           <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
             {c.sector}
@@ -268,20 +268,20 @@ function CompanyCard({ c }: { c: EcosystemCompany }) {
   );
 }
 
-export function EcosystemSection() {
+export function EcosystemSection({ compact = false }: { compact?: boolean } = {}) {
   const companies = publicEcosystem();
   const present = ECOSYSTEM_REGIONS.filter((r) => companies.some((c) => c.region === r.id));
   if (companies.length === 0) return null;
   return (
-    <section className="relative mt-32 overflow-hidden" id="ecosystem">
+    <section className={`relative overflow-hidden ${compact ? "home-section" : "mt-32"}`} id="ecosystem">
       <div className="max-w-6xl mx-auto px-5">
         <Heading
           eyebrow="Business partners"
           title="Partners ready to adopt LamportPay."
-          intro="Our confirmed business partners are ready to use LamportPay's payment services. We are also in discussions with additional businesses to grow our ecosystem and bring more partners on board."
+          intro={compact ? undefined : "Our confirmed business partners are ready to use LamportPay's payment services. We are also in discussions with additional businesses to grow our ecosystem and bring more partners on board."}
         />
         <p className="mt-4 mx-auto max-w-2xl text-center text-sm text-muted-foreground">
-          Onboarding is planned. Fiat payouts remain demo-only until production approval; readiness does not mean live payment processing.
+          {compact ? "Business adoption partners · Onboarding PLANNED, not live payment integrations." : "Onboarding is planned. Fiat payouts remain demo-only until production approval; readiness does not mean live payment processing."}
         </p>
         <div
           aria-label="Countries where our partners are based"
@@ -302,7 +302,7 @@ export function EcosystemSection() {
             ))}
           </div>
         </div>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
+        {!compact && <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
           <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             <Network className="w-4 h-4" /> Integrated today:
           </span>
@@ -316,10 +316,10 @@ export function EcosystemSection() {
               {t}
             </span>
           ))}
-        </div>
+        </div>}
         <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {companies.map((c) => (
-            <CompanyCard key={c.name} c={c} />
+            <CompanyCard key={c.name} c={c} compact={compact} />
           ))}
         </ul>
       </div>

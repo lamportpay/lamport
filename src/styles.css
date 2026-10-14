@@ -416,3 +416,66 @@
   #roadmap[data-visible="true"] .roadmap-stage:nth-child(5) { animation-delay: 480ms; }
   #roadmap[data-visible="true"] [aria-current="step"] .roadmap-node { animation: roadmap-focus 3s ease-in-out 3; }
 }
+
+/* Commercial homepage: restrained financial-service palette, isolated from the dApp. */
+@theme inline {
+  --color-home-brand: var(--home-brand);
+  --color-home-tint: var(--home-tint);
+  --color-home-surface: var(--home-surface);
+  --color-home-ink: var(--home-ink);
+}
+:root {
+  --home-brand: oklch(0.43 0.09 186);
+  --home-tint: oklch(0.96 0.025 183);
+  --home-surface: oklch(0.975 0.005 190);
+  --home-ink: oklch(0.29 0.035 200);
+  --home-hero-veil: oklch(0.99 0.005 200 / 58%);
+}
+.dark {
+  --home-brand: oklch(0.76 0.1 180);
+  --home-tint: oklch(0.25 0.035 186);
+  --home-surface: oklch(0.18 0.015 190);
+  --home-ink: oklch(0.29 0.035 200);
+}
+.commercial-home { letter-spacing: 0; --primary: var(--home-brand); --success: var(--home-brand); }
+.home-container { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
+.home-section { padding-block: 64px; }
+.home-heading { margin-top: 10px; font-size: 32px; font-weight: 600; line-height: 1.25; letter-spacing: 0; }
+.home-eyebrow { color: var(--home-brand); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0; }
+.home-hero { min-height: 510px; color: var(--home-ink); }
+.home-hero-veil { background: var(--home-hero-veil); }
+.network-node { min-height: 192px; border-radius: 8px; }
+.network-node svg { width: 24px; height: 24px; }
+.commercial-home #roadmap { margin-top: 0; padding-block: 64px; }
+.commercial-home #roadmap h2, .commercial-home #ecosystem h2 { font-size: 32px; letter-spacing: 0; }
+.commercial-home #ecosystem a { overflow-wrap: anywhere; }
+.commercial-home #ecosystem a > div:first-child { align-items: flex-start; }
+.commercial-home #ecosystem a > div:first-child > div:first-child { border-radius: 8px; }
+.commercial-home footer { margin-top: 0; }
+.commercial-home [class*="tracking-"] { letter-spacing: 0; }
+.home-support { --primary: var(--home-brand); }
+@keyframes network-signal {
+  from { opacity: 0.25; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .payment-network[data-visible="true"] .network-stage { animation: network-signal 600ms ease-out both; }
+  .payment-network[data-visible="true"] .network-stage:nth-child(2) { animation-delay: 120ms; }
+  .payment-network[data-visible="true"] .network-stage:nth-child(3) { animation-delay: 240ms; }
+  .payment-network[data-visible="true"] .network-stage:nth-child(4) { animation-delay: 360ms; }
+  .payment-network[data-visible="true"] .network-stage:nth-child(5) { animation-delay: 480ms; }
+  .payment-network[data-visible="true"] .network-edge { animation: network-signal 800ms ease-in-out 6 alternate; }
+}
+@media (max-width: 1023px) {
+  .network-tree { grid-template-columns: 1fr; gap: 24px; }
+  .network-node { min-height: 125px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 5px; }
+}
+@media (max-width: 640px) {
+  .home-container { padding-inline: 20px; }
+  .home-section, .commercial-home #roadmap { padding-block: 44px; }
+  .home-heading, .commercial-home #roadmap h2, .commercial-home #ecosystem h2 { font-size: 28px; }
+  .home-hero { min-height: 500px; }
+  .home-hero img { object-position: 60% center; }
+  .network-inputs { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .network-inputs > span:nth-child(2) { display: none; }
+}
