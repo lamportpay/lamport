@@ -1649,3 +1649,19 @@
   .corridor-map-scan[data-active="true"] { animation: none; }
   .corridor-marker-ping { opacity: 0.4; transform: scale(1); }
 }
+
+/* Fixed bottom crypto price ticker */
+.crypto-ticker-track {
+  animation: crypto-ticker-scroll 60s linear infinite;
+}
+.crypto-ticker:hover .crypto-ticker-track {
+  animation-play-state: paused;
+}
+@keyframes crypto-ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .crypto-ticker-track { animation: none; }
+  .crypto-ticker { overflow-x: auto; }
+}

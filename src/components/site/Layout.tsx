@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { LiveRatesTicker } from "@/components/site/LiveRatesTicker";
+import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
   return (
