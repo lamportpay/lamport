@@ -6,15 +6,23 @@ export const INTEGRATION_GROUPS = [
     title: "Connected today", label: "Existing infrastructure",
     entries: [
       { name: "Solana", status: "DEMO / SIMULATED", detail: "Wallet connection and devnet payment testing.", asset: "/tokens/sol.svg" },
-      { name: "Jupiter", status: "LIVE", detail: "Live market quotes only. Mainnet swap execution is disabled in TEST MODE." },
-      { name: "Stables", status: "DEMO / SIMULATED", detail: "Hosted verification and bank-payout sandbox. Production KYC and fiat payouts are DISABLED." },
+      { name: "Jupiter", status: "LIVE", detail: "Live market quotes only. Mainnet swap execution is disabled in TEST MODE.", asset: "/partners/jupiter.svg" },
+      { name: "Stables", status: "DEMO / SIMULATED", detail: "Hosted verification and bank-payout sandbox. Production KYC and fiat payouts are DISABLED.", asset: "/partners/stables.svg" },
     ],
   },
   {
-    title: "Next connections", label: "Not enabled",
+    title: "In discussion", label: "Talks ongoing, no agreement",
     entries: [
-      { name: "Hyperliquid", status: "PLANNED", detail: FUTURE_EXPLORATION[1].detail },
-      { name: "Exchange connections", status: "PLANNED", detail: "Future exchange connectivity under evaluation. No exchange integration or agreement is confirmed." },
+      { name: "Yellow Card", status: "PLANNED", detail: "Discussions ongoing with Yellow Card and other payout API providers similar to Stables. No agreement or integration is confirmed.", asset: "/partners/yellowcard.svg" },
+      { name: "More payout providers", status: "PLANNED", detail: "Talks with additional payout API companies to widen coverage. Nothing is signed or enabled." },
+    ],
+  },
+  {
+    title: "On the roadmap", label: "Goals, not enabled",
+    entries: [
+      { name: "Hyperliquid", status: "PLANNED", detail: FUTURE_EXPLORATION[1].detail, asset: "/partners/hyperliquid.svg" },
+      { name: "Major cryptocurrencies", status: "PLANNED", detail: "Bitcoin, Ethereum, Ripple and Litecoin deposits are on the roadmap. Today only USDC on Solana is enabled.", asset: "/tokens/btc.svg" },
+      { name: "New countries", status: "PLANNED", detail: "Nigeria, Pakistan and further destinations are planned corridors. They are not active today.", asset: "/flags/NG.svg" },
     ],
   },
   {
