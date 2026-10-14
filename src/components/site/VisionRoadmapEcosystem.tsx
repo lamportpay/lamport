@@ -4,8 +4,6 @@ import {
   Compass,
   ChevronLeft,
   ChevronRight,
-  Pause,
-  Play,
   Globe2,
   Handshake,
   Layers3,
@@ -292,76 +290,9 @@ function CompanyLogo({ c }: { c: EcosystemCompany }) {
 
 export function EcosystemSection({ compact = false }: { compact?: boolean } = {}) {
   const companies = publicEcosystem();
-  const slider = useRef<HTMLUListElement>(null);
-  const section = useRef<HTMLElement>(null);
-  const [paused, setPaused] = useState(false);
-  const [interacting, setInteracting] = useState(false);
-  const [inView, setInView] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-  const [position, setPosition] = useState({ start: true, end: false });
-  const updatePosition = () => {
-    const el = slider.current;
-    if (el)
-      setPosition({
-        start: el.scrollLeft < 8,
-        end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 8,
-      });
-  };
-  useEffect(() => {
-    updatePosition();
-    window.addEventListener("resize", updatePosition);
-    return () => window.removeEventListener("resize", updatePosition);
-  }, []);
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(media.matches);
-    update();
-    media.addEventListener("change", update);
-    const el = section.current;
-    const observer = new IntersectionObserver(
-      ([entry]) => setInView(Boolean(entry?.isIntersecting)),
-      { threshold: 0.25 },
-    );
-    if (el) observer.observe(el);
-    return () => {
-      media.removeEventListener("change", update);
-      observer.disconnect();
-    };
-  }, []);
-  useEffect(() => {
-    if (paused || interacting || reducedMotion || !inView) return;
-    const timer = window.setInterval(() => {
-      const el = slider.current;
-      if (!el || document.hidden) return;
-      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
-      const item = el.querySelector("li");
-      el.scrollTo({
-        left: atEnd ? 0 : el.scrollLeft + (item?.getBoundingClientRect().width ?? 260) + 16,
-        behavior: "smooth",
-      });
-    }, 3500);
-    return () => window.clearInterval(timer);
-  }, [paused, interacting, reducedMotion, inView]);
-  const move = (direction: number) => {
-    const el = slider.current;
-    if (!el) return;
-    el.scrollBy({
-      left: direction * el.clientWidth * 0.8,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "instant"
-        : "smooth",
-    });
-  };
   if (!companies.length) return null;
   return (
     <section
-      ref={section}
-      onMouseEnter={() => setInteracting(true)}
-      onMouseLeave={() => setInteracting(false)}
-      onFocusCapture={() => setInteracting(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false);
-      }}
       className={`relative overflow-hidden ${compact ? "home-section" : "mt-32"}`}
       id="ecosystem"
     >
@@ -374,46 +305,8 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
               Across investment, logistics, property and digital services.
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label={paused ? "Play partner slider" : "Pause partner slider"}
-              title={paused ? "Play partner slider" : "Pause partner slider"}
-              aria-pressed={paused}
-              disabled={reducedMotion}
-              onClick={() => setPaused((value) => !value)}
-            >
-              {paused ? <Play /> : <Pause />}
-            </Button>
-            <div className="flex gap-2 md:hidden">
-              <Button
-                variant="outline"
-                size="icon"
-                aria-label="Previous partners"
-                title="Previous partners"
-                disabled={position.start}
-                onClick={() => move(-1)}
-              >
-                <ChevronLeft />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                aria-label="Next partners"
-                title="Next partners"
-                disabled={position.end}
-                onClick={() => move(1)}
-              >
-                <ChevronRight />
-              </Button>
-            </div>
-          </div>
         </div>
         <ul
-          ref={slider}
-          onPointerDown={() => setPaused(true)}
-          onScroll={updatePosition}
           aria-label="Business partner logos"
           className="partner-slider mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto border-y border-border py-5"
         >
