@@ -139,7 +139,7 @@ export function FeeCalculator() {
             <p className="mt-6 text-sm text-destructive">Enter an amount greater than 0.</p>
           )}
           <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-            ESTIMATE ONLY · DEMO. Exchange rates are illustrative, not quotes. Stables provides the real rate and its fees at checkout. Fiat payouts are DISABLED in TEST MODE.
+            ESTIMATE ONLY · DEMO. The LamportPay fee uses the real 2% model. The exchange rate is a live mid-market reference, not a quote — Stables provides the final payout rate and its fees at checkout. Fiat payouts are DISABLED in TEST MODE.
           </p>
         </div>
       </div>
