@@ -525,11 +525,11 @@
   min-height: 560px;
   color: var(--home-ink);
   background:
-    linear-gradient(to bottom, transparent 62%, var(--card) 96%),
-    radial-gradient(ellipse 60% 55% at 50% 30%, oklch(0.995 0.004 280), transparent 70%),
-    radial-gradient(ellipse 55% 60% at 100% 118%, oklch(0.8 0.1 295 / 55%), transparent 70%),
-    radial-gradient(ellipse 50% 56% at -2% 116%, oklch(0.82 0.09 250 / 50%), transparent 70%),
-    radial-gradient(ellipse 40% 30% at 50% -8%, oklch(0.9 0.05 275 / 60%), transparent 70%),
+    linear-gradient(to bottom, transparent 58%, var(--card) 94%),
+    radial-gradient(ellipse 70% 60% at 50% 24%, oklch(0.93 0.04 285 / 85%), transparent 72%),
+    radial-gradient(ellipse 60% 65% at 102% 112%, oklch(0.74 0.13 300 / 60%), transparent 72%),
+    radial-gradient(ellipse 55% 60% at -4% 110%, oklch(0.76 0.12 248 / 58%), transparent 72%),
+    radial-gradient(ellipse 46% 34% at 50% -10%, oklch(0.86 0.08 272 / 65%), transparent 70%),
     var(--card);
 }
 .home-hero-grid {
@@ -573,23 +573,63 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid oklch(0.48 0.23 275 / 14%);
-  border-radius: 14px;
-  background: oklch(0.995 0.004 280 / 75%);
+  border: 1px solid oklch(0.48 0.23 275 / 18%);
+  border-radius: 16px;
+  background:
+    linear-gradient(160deg, oklch(0.97 0.03 265 / 92%), oklch(0.95 0.05 300 / 88%));
   backdrop-filter: blur(8px);
-  padding: 16px 12px;
-  box-shadow: 0 8px 24px -14px oklch(0.48 0.23 275 / 30%);
+  padding: 18px 12px;
+  box-shadow:
+    0 12px 28px -14px oklch(0.48 0.23 275 / 40%),
+    inset 0 1px 0 oklch(1 0 0 / 70%);
+}
+.home-hero-stat:nth-child(2) {
+  background:
+    linear-gradient(160deg, oklch(0.96 0.04 300 / 92%), oklch(0.94 0.05 265 / 88%));
+}
+.home-hero-stat:nth-child(3) {
+  background:
+    linear-gradient(160deg, oklch(0.96 0.04 250 / 92%), oklch(0.95 0.04 290 / 88%));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-hero-stat {
+    transition:
+      transform 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+  .home-hero-stat:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 20px 36px -16px oklch(0.48 0.23 275 / 50%),
+      inset 0 1px 0 oklch(1 0 0 / 80%);
+  }
 }
 @media (prefers-reduced-motion: no-preference) {
   .home-hero-badge,
+  .home-hero h1,
+  .home-hero h1 + p,
+  .home-hero h1 + p + p,
+  .home-hero .home-hero-cta,
   .home-hero-stat {
     animation: home-hero-rise 0.7s ease-out both;
   }
+  .home-hero h1 {
+    animation-delay: 80ms;
+  }
+  .home-hero h1 + p {
+    animation-delay: 160ms;
+  }
+  .home-hero h1 + p + p {
+    animation-delay: 240ms;
+  }
+  .home-hero .home-hero-cta {
+    animation-delay: 320ms;
+  }
   .home-hero-stat:nth-child(2) {
-    animation-delay: 120ms;
+    animation-delay: 480ms;
   }
   .home-hero-stat:nth-child(3) {
-    animation-delay: 240ms;
+    animation-delay: 600ms;
   }
 }
 @keyframes home-hero-rise {
