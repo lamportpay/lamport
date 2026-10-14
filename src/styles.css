@@ -525,10 +525,16 @@
   min-height: 510px;
   color: var(--home-ink);
   background:
-    radial-gradient(ellipse 60% 55% at 50% 0%, var(--home-tint), transparent 70%),
-    radial-gradient(ellipse 45% 50% at 88% 100%, oklch(0.94 0.03 295 / 60%), transparent 70%),
-    radial-gradient(ellipse 40% 45% at 8% 90%, oklch(0.94 0.025 250 / 55%), transparent 70%),
+    radial-gradient(ellipse 55% 60% at 50% 42%, oklch(0.995 0.004 280), transparent 75%),
+    radial-gradient(ellipse 50% 45% at 96% 102%, oklch(0.82 0.09 295 / 70%), transparent 72%),
+    radial-gradient(ellipse 45% 42% at 2% 100%, oklch(0.84 0.08 250 / 65%), transparent 72%),
     var(--card);
+}
+.home-brand-text-light {
+  background-image: linear-gradient(110deg, oklch(0.62 0.17 265), oklch(0.58 0.2 300));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 .home-orbits {
   position: absolute;
