@@ -127,6 +127,8 @@ function Index() {
         <ConnectedSystems />
         <EcosystemSection compact />
         <RoadmapSection />
+        <IntegrationStatus />
+        <FeeCalculator />
         <section className="home-section border-t border-border">
           <div className="home-container flex flex-wrap items-center justify-between gap-6">
             <div>
@@ -152,8 +154,6 @@ function Index() {
             </div>
           </div>
         </section>
-        <IntegrationStatus />
-        <FeeCalculator />
         <CustomerSupport />
       </SiteLayout>
     </div>
