@@ -1056,3 +1056,41 @@
     scroll-behavior: smooth;
   }
 }
+
+/* Educational motion scenes; all colors inherit the homepage palette. */
+.flow-scene, .bank-flow-scene {
+  background: linear-gradient(145deg, var(--home-tint), var(--home-surface));
+}
+.flow-spotlight { background: var(--card); }
+.flow-detail { min-height: 230px; }
+.flow-wire { fill: none; stroke: var(--border); stroke-width: 3; stroke-linecap: round; }
+.flow-wire-active { stroke: var(--home-brand); }
+.flow-wire-planned { stroke-dasharray: 5 7; }
+.flow-junction { fill: var(--card); stroke: var(--border); stroke-width: 2; }
+.flow-scene-node[data-active="true"] .flow-junction { fill: var(--home-brand); stroke: var(--home-brand); }
+.flow-scene-button { transition: border-color 400ms, box-shadow 400ms; }
+.flow-scene-node[data-active="true"] .flow-scene-button { box-shadow: var(--shadow-soft); }
+.flow-traveler { fill: none; stroke: var(--home-brand); stroke-width: 2; opacity: .45; transition: cy 900ms ease; }
+.bank-flow-trunk { position: relative; height: 48px; width: 2px; margin: 12px auto; background: var(--border); overflow: hidden; }
+.bank-flow-trunk span { display: block; height: 18px; background: var(--home-gradient); }
+@media (min-width: 768px) {
+  .flow-spotlight { border-left: 1px solid var(--border); }
+  #banks .flow-spotlight { border-left: 0; border-right: 1px solid var(--border); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .flow-presentation[data-running="true"] .flow-detail { animation: roadmap-spot-in 500ms ease-out both; }
+  .flow-presentation[data-running="true"] .flow-traveler { animation: flow-pulse 2s ease-in-out infinite; }
+  .flow-presentation[data-running="true"] .flow-wire-active { stroke-dasharray: 8 5; animation: flow-signal 1.2s linear infinite; }
+  .flow-presentation[data-running="true"] .flow-wire-planned { animation: none; stroke-dasharray: 5 7; }
+  .flow-presentation[data-running="true"] .bank-flow-trunk span { animation: bank-signal 1.8s ease-in-out infinite; }
+  .flow-presentation[data-running="true"] .bank-flow-item { animation: roadmap-spot-in 550ms ease-out both; }
+  .flow-presentation[data-running="true"] .bank-flow-item:nth-child(2) { animation-delay: 100ms; }
+  .flow-presentation[data-running="true"] .bank-flow-item:nth-child(3) { animation-delay: 200ms; }
+  .flow-presentation[data-running="true"] .bank-flow-item:nth-child(4) { animation-delay: 300ms; }
+}
+@keyframes flow-signal { to { stroke-dashoffset: -26; } }
+@keyframes flow-pulse { 0%,100% { opacity: .2; r: 11; } 50% { opacity: .65; r: 17; } }
+@keyframes bank-signal { from { transform: translateY(-18px); } to { transform: translateY(48px); } }
+@media (prefers-reduced-motion: reduce) {
+  .flow-traveler, .flow-scene-button { transition: none; }
+}

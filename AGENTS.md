@@ -30,3 +30,4 @@
 - Admin overview presentation uses a browser-safe data model and separate content component; all metrics come from the existing protected dashboard function, so UI organization cannot change financial actions or access controls.
 - Homepage/workflow verification shares browser-safe payment content; distinguish wallet proof from hosted KYC without changing financial checks.
 - Ecosystem branding/links live in shared content; preserve logo proportions and text fallbacks. Sliders use native scrolling, accessible controls and reduced-motion support.
+- Homepage flow presentations share browser-only playback and scene controls; playback is viewport-gated, pausable and reduced-motion aware, and cannot represent or change actual financial state.
