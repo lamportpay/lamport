@@ -453,7 +453,7 @@
   }
 }
 
-/* Commercial homepage: restrained financial-service palette, isolated from the dApp. */
+/* Commercial homepage: logo-aligned blue/violet palette, isolated from the dApp. */
 @theme inline {
   --color-home-brand: var(--home-brand);
   --color-home-tint: var(--home-tint);
@@ -461,22 +461,36 @@
   --color-home-ink: var(--home-ink);
 }
 :root {
-  --home-brand: oklch(0.43 0.09 186);
-  --home-tint: oklch(0.96 0.025 183);
-  --home-surface: oklch(0.975 0.005 190);
-  --home-ink: oklch(0.29 0.035 200);
-  --home-hero-veil: oklch(0.99 0.005 200 / 58%);
+  --home-brand: oklch(0.48 0.23 275);
+  --home-tint: oklch(0.96 0.025 275);
+  --home-surface: oklch(0.975 0.009 265);
+  --home-ink: oklch(0.24 0.055 270);
+  --home-hero-veil: oklch(0.99 0.005 265 / 58%);
+  --home-gradient: linear-gradient(115deg, oklch(0.48 0.2 258), oklch(0.43 0.25 295));
+  --home-text-gradient: linear-gradient(110deg, oklch(0.45 0.2 258), oklch(0.43 0.25 295));
 }
 .dark {
-  --home-brand: oklch(0.76 0.1 180);
-  --home-tint: oklch(0.25 0.035 186);
-  --home-surface: oklch(0.18 0.015 190);
-  --home-ink: oklch(0.29 0.035 200);
+  --home-brand: oklch(0.78 0.12 275);
+  --home-tint: oklch(0.25 0.055 275);
+  --home-surface: oklch(0.18 0.025 265);
+  --home-ink: oklch(0.24 0.055 270);
 }
 .commercial-home {
   letter-spacing: 0;
   --primary: var(--home-brand);
-  --success: var(--home-brand);
+  --primary-foreground: oklch(0.99 0 0);
+}
+:is(.commercial-home, .home-support) .bg-home-brand {
+  background-image: var(--home-gradient);
+}
+:is(.commercial-home, .home-support) .bg-home-brand:hover {
+  filter: brightness(1.1);
+}
+.home-brand-text {
+  background-image: var(--home-text-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 .home-container {
   width: 100%;
@@ -542,6 +556,7 @@
 }
 .home-support {
   --primary: var(--home-brand);
+  --primary-foreground: oklch(0.99 0 0);
 }
 @keyframes network-signal {
   from {

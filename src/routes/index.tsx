@@ -39,7 +39,7 @@ function Index() {
             <p className="home-eyebrow">Digital assets. Everyday payments.</p>
             <h1 className="mt-4 text-5xl font-semibold leading-tight md:text-7xl">LamportPay</h1>
             <p className="mt-3 text-2xl font-medium leading-snug md:text-4xl">
-              Crypto in. <span className="text-home-brand">Local money out.</span>
+              Crypto in. <span className="home-brand-text">Local money out.</span>
             </p>
             <p className="mt-5 max-w-lg text-base leading-relaxed text-home-ink md:text-lg">
               A connected route from your Solana wallet to local-currency bank payments. Your
