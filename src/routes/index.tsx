@@ -97,8 +97,8 @@ function Index() {
         <HomeBankNetwork />
         <ConnectedSystems />
         <EcosystemSection compact />
-        <RoadmapSection />
         <IntegrationStatus />
+        <RoadmapSection />
         <FeeCalculator />
         <section className="home-section border-t border-border">
           <div className="home-container flex flex-wrap items-center justify-between gap-6">

@@ -13,14 +13,22 @@ function Logo({ entry }: { entry: { name: string; asset?: string; group: string 
       {inProgress && (
         <span
           aria-hidden
-          className="absolute -inset-1.5 rounded-full border-2 border-transparent border-t-amber-400 border-r-amber-400/60 motion-safe:animate-spin"
-          style={{ animationDuration: "1.6s" }}
+          className="absolute -inset-1.5 rounded-full motion-safe:animate-spin"
+          style={{
+            animationDuration: "1.6s",
+            background: "conic-gradient(from 0deg, transparent 0%, var(--home-brand, #6366f1) 25%, #a855f7 45%, transparent 60%)",
+            WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
+            mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
+          }}
         />
       )}
       {entry.asset ? <img src={entry.asset} alt="" width="28" height="28" className="size-7 object-contain" /> : <span className="text-xs font-bold text-home-brand">{initials(entry.name)}</span>}
       {done && (
-        <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-amber-400 shadow ring-2 ring-background">
-          <Check className="size-3 text-amber-950" strokeWidth={3.5} />
+        <span
+          className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full shadow ring-2 ring-background"
+          style={{ background: "linear-gradient(135deg, #fbbf24, #f59e0b 45%, #a855f7)" }}
+        >
+          <Check className="size-3 text-primary-foreground" strokeWidth={3.5} />
         </span>
       )}
     </span>
