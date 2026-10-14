@@ -64,8 +64,8 @@ export function IntegrationStatus() {
     <section id="integration-status" className="home-section border-t border-border bg-home-surface">
       <div className="home-container">
         <p className="home-eyebrow">Integration outlook</p>
-        <h2 className="home-heading">Connected now. Building what’s next.</h2>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Follow the road from today’s infrastructure to future connections—each stop carries its own status.</p>
+        <h2 className="home-heading">Building a multi-chain fiat settlement ecosystem.</h2>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Bringing Solana’s speed and Hyperliquid’s liquidity (in progress) into one non-custodial route to local bank payouts. Each stop shows its real status.</p>
 
         {/* Mobile: vertical tree */}
         <ol aria-label="Integration timeline" className="relative mt-8 space-y-6 border-l-2 border-home-brand/40 pl-8 md:hidden">

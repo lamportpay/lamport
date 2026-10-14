@@ -37,7 +37,7 @@ function Index() {
           <div className="home-container relative py-12 text-center md:py-14">
             <p className="home-hero-badge">
               <span className="home-hero-badge-dot" aria-hidden="true" />
-              Built on Solana · Non-custodial payments
+              Building the first Solana + Hyperliquid fiat engine
             </p>
             <h1 className="mx-auto mt-6 max-w-4xl text-6xl font-bold leading-[1.05] tracking-tight md:text-8xl">
               <span className="home-brand-text">Lamport</span>
@@ -48,8 +48,8 @@ function Index() {
             </p>
             <HomeGlance />
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-home-ink md:text-lg">
-              A connected route from your Solana wallet to local-currency bank payments. Your
-              wallet. A clear quote. One payment journey.
+              A non-custodial route from your Solana wallet to local bank payouts, with
+              Hyperliquid liquidity in progress. Your wallet. A clear quote. One journey.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button
