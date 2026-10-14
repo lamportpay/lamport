@@ -6,6 +6,7 @@ import { PaymentNetwork } from "@/components/site/PaymentNetwork";
 import { ConnectedSystems } from "@/components/site/ConnectedSystems";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { HomeGlance } from "@/components/site/HomeGlance";
+import { HomeCapabilities } from "@/components/site/HomeCapabilities";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
@@ -48,8 +49,8 @@ function Index() {
             </p>
             <HomeGlance />
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-home-ink md:text-lg">
-              A non-custodial route from your Solana wallet to local bank payouts, with
-              Hyperliquid liquidity in progress. Your wallet. A clear quote. One journey.
+              A non-custodial route from your Solana wallet to local bank payouts, with Hyperliquid
+              liquidity in progress. Your wallet. A clear quote. One journey.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button
@@ -77,6 +78,7 @@ function Index() {
             </p>
           </div>
         </section>
+        <HomeCapabilities />
         <FeeCalculator />
         <HomeBankNetwork />
         <PaymentNetwork />

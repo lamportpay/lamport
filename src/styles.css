@@ -478,6 +478,8 @@
   );
   --home-gradient: linear-gradient(115deg, oklch(0.48 0.2 258), oklch(0.43 0.25 295));
   --home-text-gradient: linear-gradient(110deg, oklch(0.45 0.2 258), oklch(0.43 0.25 295));
+  --home-cap-stroke-a: oklch(0.52 0.19 258);
+  --home-cap-stroke-b: oklch(0.45 0.24 292);
 }
 .dark {
   --home-brand: oklch(0.78 0.12 275);
@@ -487,6 +489,8 @@
   --home-tint: oklch(0.25 0.055 275);
   --home-surface: oklch(0.18 0.025 265);
   --home-ink: oklch(0.24 0.055 270);
+  --home-cap-stroke-a: oklch(0.72 0.14 258);
+  --home-cap-stroke-b: oklch(0.74 0.15 292);
 }
 .site-demo-notice {
   background: var(--demo-notice-background);
@@ -659,6 +663,132 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+/* Capability strip under the hero: outlined hexagons, uppercase labels, status pills. */
+.home-capabilities {
+  position: relative;
+  border-top: 1px solid oklch(0.55 0.1 265 / 14%);
+  border-bottom: 1px solid oklch(0.55 0.1 265 / 14%);
+  background:
+    radial-gradient(ellipse 45% 70% at 10% 0%, oklch(0.9 0.05 250 / 55%), transparent 70%),
+    radial-gradient(ellipse 45% 70% at 90% 100%, oklch(0.9 0.05 290 / 55%), transparent 70%),
+    var(--home-surface);
+}
+.home-cap-heading {
+  font-size: 26px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+.home-cap-heading-dash {
+  color: var(--home-connector);
+}
+.home-cap-heading-ink {
+  color: var(--home-ink);
+}
+.home-cap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px 12px;
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.home-cap-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+.home-cap-hex {
+  width: 60px;
+  height: 68px;
+  overflow: visible;
+}
+.home-cap-hex-shape {
+  fill: oklch(1 0 0 / 78%);
+}
+.home-cap-label {
+  min-height: 2.6em;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--home-ink);
+}
+.home-cap-status {
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.home-cap-status--live {
+  color: oklch(0.42 0.13 155);
+  border-color: oklch(0.55 0.13 155 / 38%);
+  background: oklch(0.95 0.05 155 / 60%);
+}
+.home-cap-status--demo {
+  color: var(--demo-notice-foreground);
+  border-color: oklch(0.6 0.12 88 / 45%);
+  background: oklch(0.95 0.07 88 / 60%);
+}
+.home-cap-status--planned {
+  color: var(--home-brand);
+  border-color: oklch(0.55 0.15 275 / 32%);
+  background: oklch(0.95 0.03 275 / 65%);
+}
+.home-cap-note {
+  max-width: 640px;
+  margin: 28px auto 0;
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--home-connector);
+}
+/* Phones: keep the note clear of the fixed customer-support button. */
+@media (max-width: 640px) {
+  .commercial-home .home-capabilities {
+    padding-bottom: 88px;
+  }
+  .home-cap-note {
+    max-width: none;
+    padding-inline-end: 68px;
+    text-align: left;
+  }
+}
+@media (min-width: 700px) {
+  .home-cap-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .home-cap-grid {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 14px 8px;
+  }
+  .home-cap-hex {
+    width: 54px;
+    height: 61px;
+  }
+  .home-cap-label {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-cap-item {
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+  .home-cap-item:hover {
+    transform: translateY(-3px);
   }
 }
 .home-brand-text-light {
