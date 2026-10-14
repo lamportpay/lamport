@@ -2,6 +2,7 @@
 
 ## Commercial homepage refresh
 
+- [ ] Improve real asset icons, present Pakistan / PKR as a planned market, and refresh partner logo presentation including Great Winchester Investment Company
 - [x] Verify deeper gradient ring motion, reduced-motion behavior and the planned currency outlook beneath bank destinations (desktop/mobile, no overflow, build OK; exact future fiat currencies remain unconfirmed)
 - [x] Replace crowded homepage sections with a concise business overview and animated payment workflow
 - [x] Show bank branding, accurate infrastructure roles, business partners and transparent costs
