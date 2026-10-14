@@ -31,9 +31,9 @@ export function HomeGlance() {
           </div>
           <ArrowRight aria-hidden className="size-5 text-home-brand" />
           <div className="flex items-center gap-3" aria-label="Local money out">
-            {MONEY_OUT.map(({ code, label }) => (
+            {MONEY_OUT.map(({ code, country, label }) => (
               <span key={code} className="inline-flex items-center gap-1.5 text-sm font-semibold" title={label}>
-                <Flag code={code} size={22} />
+                <Flag code={country} size={22} />
                 {code}
               </span>
             ))}
