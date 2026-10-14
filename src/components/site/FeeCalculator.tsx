@@ -180,7 +180,7 @@ export function FeeCalculator() {
 
             <Link
               to="/pay"
-              className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-home-brand to-home-brand-glow px-6 py-4 text-sm font-semibold text-primary-foreground shadow-lg transition motion-safe:hover:scale-[1.01] motion-safe:active:scale-[0.99]"
+              className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-[image:var(--home-gradient)] px-6 py-4 text-sm font-semibold text-primary-foreground shadow-lg transition motion-safe:hover:scale-[1.01] motion-safe:active:scale-[0.99]"
             >
               Send a payment <ArrowRight className="size-4" />
             </Link>
