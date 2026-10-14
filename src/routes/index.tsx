@@ -63,7 +63,7 @@ function Index() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="h-12 border-home-brand/25 bg-card/80 px-7 backdrop-blur-sm"
+                className="home-hero-ghost h-12 px-7 backdrop-blur-sm"
               >
                 <a href="#payment-network">
                   Explore the payment route <ArrowUpRight />
