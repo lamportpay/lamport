@@ -4,6 +4,7 @@
  */
 import { ArrowRight } from "lucide-react";
 import { TokenIcon } from "@/components/app/TokenIcon";
+import { Flag } from "@/components/app/Flag";
 
 const CRYPTO_IN = [
   { symbol: "sol", label: "SOL" },
@@ -11,10 +12,10 @@ const CRYPTO_IN = [
 ] as const;
 
 const MONEY_OUT = [
-  { symbol: "$", code: "USD" },
-  { symbol: "£", code: "GBP" },
-  { symbol: "₹", code: "INR" },
-  { symbol: "₱", code: "PHP" },
+  { code: "USD", country: "US", label: "US dollar" },
+  { code: "GBP", country: "GB", label: "British pound" },
+  { code: "INR", country: "IN", label: "Indian rupee" },
+  { code: "PHP", country: "PH", label: "Philippine peso" },
 ];
 
 export function HomeGlance() {
@@ -29,15 +30,11 @@ export function HomeGlance() {
             ))}
           </div>
           <ArrowRight aria-hidden className="size-5 text-home-brand" />
-          <div className="flex items-center gap-2" aria-label="Local money out">
-            {MONEY_OUT.map(({ symbol, code }) => (
-              <span
-                key={code}
-                title={code}
-                aria-label={code}
-                className="grid size-8 place-items-center rounded-full bg-home-brand/10 text-sm font-bold text-home-brand"
-              >
-                {symbol}
+          <div className="flex items-center gap-3" aria-label="Local money out">
+            {MONEY_OUT.map(({ code, country, label }) => (
+              <span key={code} className="inline-flex items-center gap-1.5 text-sm font-semibold" title={label}>
+                <Flag code={country} size={22} />
+                {code}
               </span>
             ))}
           </div>
