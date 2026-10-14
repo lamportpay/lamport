@@ -98,22 +98,23 @@ export function FeeCalculator() {
   );
 
   return (
-    <section className="home-section border-y border-border bg-home-surface" id="costs">
+    <section className="home-section border-b border-border" id="costs">
       <div className="home-container">
-        <div className="mx-auto max-w-2xl text-center">
-          <p className="home-eyebrow">Payout calculator</p>
-          <h2 className="home-heading">See what arrives in the bank.</h2>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Our fee is 2%. The bank payout fee is fixed, so the bigger the payment, the smaller the total share.
-          </p>
+        <div className="flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p className="home-eyebrow">Payout calculator</p>
+            <h2 className="home-heading">See what arrives in the bank.</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              Our fee is 2%. The bank payout fee is fixed, so the bigger the payment, the smaller the total share.
+            </p>
+          </div>
+          <span className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground">
+            <span className="size-1.5 rounded-full bg-home-brand motion-safe:animate-pulse" /> Live reference rates
+          </span>
         </div>
 
-        <div className="relative mx-auto mt-10 max-w-5xl">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -inset-3 rounded-[2rem] bg-[linear-gradient(135deg,color-mix(in_oklab,var(--home-brand)_35%,transparent),transparent_40%,color-mix(in_oklab,var(--home-brand)_20%,transparent))] opacity-70 blur-xl"
-          />
-          <div className="relative grid overflow-hidden rounded-3xl border border-home-brand/25 bg-background shadow-2xl shadow-home-brand/10 ring-1 ring-home-brand/10 md:grid-cols-2">
+        <div className="mt-8">
+          <div className="grid overflow-hidden rounded-lg border border-border bg-background md:grid-cols-2">
           {/* You send */}
           <div className="p-6 sm:p-8">
             <div className="flex items-center justify-between">
