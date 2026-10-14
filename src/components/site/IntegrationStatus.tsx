@@ -57,7 +57,10 @@ export function IntegrationStatus() {
             const last = r === rows.length - 1;
             return (
               <div key={r} className="relative pb-16">
-                <span style={last ? { [reverse ? "left" : "right"]: `${((PER_ROW - row.length) / PER_ROW) * 100 + 16 / PER_ROW}%` } : undefined} className={`absolute top-6 ${last ? "" : "left-0 right-0"}`} data-road className2="h-1 rounded-full bg-gradient-to-r from-home-brand/50 via-home-brand to-home-brand/50" />
+                <span
+                  style={last ? { [reverse ? "left" : "right"]: `${((PER_ROW - row.length) / PER_ROW) * 100 + 16 / PER_ROW}%` } : undefined}
+                  className={`absolute top-6 h-1 rounded-full bg-gradient-to-r from-home-brand/50 via-home-brand to-home-brand/50 ${last ? (reverse ? "right-0" : "left-0") : "left-0 right-0"}`}
+                />
                 {!last && (
                   <span className={`absolute top-6 h-full w-14 border-y-4 border-home-brand/70 ${reverse ? "-left-14 rounded-l-full border-l-4" : "-right-14 rounded-r-full border-r-4"}`} />
                 )}
