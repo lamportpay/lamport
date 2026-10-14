@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, ArrowRight, Twitter, Linkedin, Github, Mail, FlaskConical } from "lucide-react";
+import { Menu, ArrowRight, Twitter, Linkedin, Github, Mail } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import logoUrl from "@/assets/lamportpay-logo.png";
 import { cn } from "@/lib/utils";
