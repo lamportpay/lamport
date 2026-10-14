@@ -37,6 +37,7 @@ export function PaymentNetwork() {
           <span className="text-border">|</span>
           <span className="flex items-center gap-2"><img src="/tokens/usdc.svg" alt="" width="22" height="22" /> USDC <span className="text-muted-foreground">direct route</span></span>
         </div>
+        <div className="network-fork mx-auto mt-4 hidden h-6 w-64 border-x border-b border-home-brand/30 lg:block" aria-hidden="true"><span className="mx-auto mt-6 block h-5 w-px bg-home-brand/40" /></div>
         <ol className="network-tree mt-7 grid gap-7 lg:grid-cols-5 lg:gap-5" aria-label="Payment infrastructure workflow">
           {nodes.map(({ title, label, icon: Icon, note }, index) => (
             <li key={title} className="network-stage relative min-w-0">

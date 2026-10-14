@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight, Coins, Globe2, ShieldCheck, Wallet } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Coins, Globe2, Wallet } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
 import { PaymentNetwork } from "@/components/site/PaymentNetwork";
