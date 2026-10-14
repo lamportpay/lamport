@@ -53,7 +53,10 @@ function Card({ entry, i }: { entry: Item; i: number }) {
 type Item = { name: string; status: string; detail: string; asset?: string; group: string; label: string };
 
 export function IntegrationStatus() {
-  const items: Item[] = INTEGRATION_GROUPS.flatMap((g) => g.entries.map((e) => ({ ...e, group: g.title, label: g.label })));
+  const all: Item[] = INTEGRATION_GROUPS.flatMap((g) => g.entries.map((e) => ({ ...e, group: g.title, label: g.label })));
+  // Show only what is connected or in progress (up to Hyperliquid); future plans live in the Roadmap.
+  const cut = all.findIndex((e) => e.name === "Hyperliquid");
+  const items = cut >= 0 ? all.slice(0, cut + 1) : all.filter((e) => e.group === "Connected today");
   const rows: Item[][] = [];
   for (let i = 0; i < items.length; i += PER_ROW) rows.push(items.slice(i, i + PER_ROW));
 
