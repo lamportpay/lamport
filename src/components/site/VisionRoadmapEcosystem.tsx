@@ -4,6 +4,8 @@ import {
   Compass,
   ChevronLeft,
   ChevronRight,
+  Pause,
+  Play,
   Globe2,
   Handshake,
   Layers3,
@@ -194,20 +196,25 @@ export function RoadmapSection() {
   );
 }
 
-const regionCodes = { USA: "US", UK: "GB", UAE: "AE" };
-const regionNames = { USA: "United States", UK: "United Kingdom", UAE: "United Arab Emirates" };
+const regionCodes = { USA: "US", UK: "GB", UAE: "AE", IN: "IN" };
+const regionNames = {
+  USA: "United States",
+  UK: "United Kingdom",
+  UAE: "United Arab Emirates",
+  IN: "India",
+};
 
 function CompanyLogo({ c }: { c: EcosystemCompany }) {
   const [broken, setBroken] = useState(false);
   return (
-    <div className="flex h-24 items-center justify-center px-4">
+    <div className="flex h-28 items-center justify-center px-3">
       {c.logo && !broken ? (
         <img
           src={c.logo}
           alt={`${c.name} logo`}
           loading="lazy"
           onError={() => setBroken(true)}
-          className="max-h-16 max-w-full object-contain"
+          className="max-h-20 max-w-full object-contain"
         />
       ) : (
         <span className="text-center text-lg font-semibold text-foreground">{c.name}</span>
@@ -219,6 +226,11 @@ function CompanyLogo({ c }: { c: EcosystemCompany }) {
 export function EcosystemSection({ compact = false }: { compact?: boolean } = {}) {
   const companies = publicEcosystem();
   const slider = useRef<HTMLUListElement>(null);
+  const section = useRef<HTMLElement>(null);
+  const [paused, setPaused] = useState(false);
+  const [interacting, setInteracting] = useState(false);
+  const [inView, setInView] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [position, setPosition] = useState({ start: true, end: false });
   const updatePosition = () => {
     const el = slider.current;
@@ -233,6 +245,36 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
     window.addEventListener("resize", updatePosition);
     return () => window.removeEventListener("resize", updatePosition);
   }, []);
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    const el = section.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(Boolean(entry?.isIntersecting)),
+      { threshold: 0.25 },
+    );
+    if (el) observer.observe(el);
+    return () => {
+      media.removeEventListener("change", update);
+      observer.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    if (paused || interacting || reducedMotion || !inView) return;
+    const timer = window.setInterval(() => {
+      const el = slider.current;
+      if (!el || document.hidden) return;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
+      const item = el.querySelector("li");
+      el.scrollTo({
+        left: atEnd ? 0 : el.scrollLeft + (item?.getBoundingClientRect().width ?? 260) + 16,
+        behavior: "smooth",
+      });
+    }, 3500);
+    return () => window.clearInterval(timer);
+  }, [paused, interacting, reducedMotion, inView]);
   const move = (direction: number) => {
     const el = slider.current;
     if (!el) return;
@@ -246,6 +288,13 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
   if (!companies.length) return null;
   return (
     <section
+      ref={section}
+      onMouseEnter={() => setInteracting(true)}
+      onMouseLeave={() => setInteracting(false)}
+      onFocusCapture={() => setInteracting(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false);
+      }}
       className={`relative overflow-hidden ${compact ? "home-section" : "mt-32"}`}
       id="ecosystem"
     >
@@ -259,6 +308,17 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
             </p>
           </div>
           <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label={paused ? "Play partner slider" : "Pause partner slider"}
+              title={paused ? "Play partner slider" : "Pause partner slider"}
+              aria-pressed={paused}
+              disabled={reducedMotion}
+              onClick={() => setPaused((value) => !value)}
+            >
+              {paused ? <Play /> : <Pause />}
+            </Button>
             <Button
               variant="outline"
               size="icon"
@@ -283,9 +343,10 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
         </div>
         <ul
           ref={slider}
+          onPointerDown={() => setPaused(true)}
           onScroll={updatePosition}
           aria-label="Business partner logos"
-          className="partner-slider mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4"
+          className="partner-slider mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto border-y border-border py-5"
         >
           {companies.map((c) => (
             <li key={c.name} className="w-[240px] shrink-0 snap-start sm:w-[260px]">
@@ -293,13 +354,13 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
                 href={c.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-lg border border-border bg-card p-4 transition-colors hover:border-home-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="block rounded-lg bg-card px-5 py-4 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <CompanyLogo c={c} />
                 <h3 className="mt-3 flex min-h-10 items-center justify-center text-center text-sm font-semibold leading-snug">
                   {c.name}
                 </h3>
-                <div className="mt-4 flex items-center justify-center gap-2 border-t border-border pt-3 text-[11px] text-muted-foreground">
+                <div className="mt-3 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
                   {c.region === "UAE" ? (
                     <svg
                       viewBox="0 0 24 16"
