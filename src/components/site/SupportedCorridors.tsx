@@ -27,18 +27,24 @@ const MARKERS: Marker[] = [
   { code: "PH", name: "Philippines", currency: "PHP", lon: 122, lat: 13, delay: 1.8 },
 ];
 
-interface PlannedMarker {
-  code: string;
-  name: string;
-  currency: string;
-  lon: number;
-  lat: number;
-}
-
-// Roadmap Phase 2 corridors — proposed after funding, not active today.
-const PLANNED_MARKERS: PlannedMarker[] = [
-  { code: "NG", name: "Nigeria", currency: "NGN", lon: 8, lat: 10 },
-  { code: "PK", name: "Pakistan", currency: "PKR", lon: 69, lat: 30 },
+// Plain geographic labels for orientation only — not supported or planned corridors.
+const OTHER_LABELS = [
+  { name: "Canada", lon: -106, lat: 58 },
+  { name: "Mexico", lon: -102, lat: 23 },
+  { name: "Brazil", lon: -52, lat: -10 },
+  { name: "Argentina", lon: -65, lat: -35 },
+  { name: "France", lon: 2, lat: 46 },
+  { name: "Germany", lon: 14, lat: 51 },
+  { name: "Spain", lon: -4, lat: 40 },
+  { name: "Egypt", lon: 30, lat: 26 },
+  { name: "Kenya", lon: 38, lat: 0 },
+  { name: "South Africa", lon: 24, lat: -30 },
+  { name: "Saudi Arabia", lon: 45, lat: 24 },
+  { name: "Russia", lon: 95, lat: 62 },
+  { name: "China", lon: 104, lat: 35 },
+  { name: "Japan", lon: 138, lat: 37 },
+  { name: "Indonesia", lon: 115, lat: -2 },
+  { name: "Australia", lon: 134, lat: -25 },
 ];
 
 function toXY(lon: number, lat: number) {
@@ -102,27 +108,22 @@ export function SupportedCorridors() {
                 </g>
               );
             })}
-            {PLANNED_MARKERS.map((m) => {
-              const { x, y } = toXY(m.lon, m.lat);
+            {OTHER_LABELS.map((c) => {
+              const { x, y } = toXY(c.lon, c.lat);
               return (
-                <g key={m.code} className="corridor-marker-planned">
-                  <circle cx={x} cy={y} r={10} className="corridor-marker-planned-ring" />
-                  <circle cx={x} cy={y} r={4.5} className="corridor-marker-planned-core" />
-                  <image
-                    href={`/flags/${m.code}.svg`}
-                    x={x - 10}
-                    y={y - 27}
-                    width={20}
-                    height={13.3}
-                    className="corridor-marker-flag"
-                  />
-                  <text x={x} y={y - 33} textAnchor="middle" className="corridor-marker-planned-label">
-                    PLANNED
-                  </text>
-                  <text x={x} y={y + 22} textAnchor="middle" className="corridor-marker-planned-name">
-                    {m.name}
-                  </text>
-                </g>
+                <text
+                  key={c.name}
+                  x={x}
+                  y={y}
+                  textAnchor="middle"
+                  fontSize={11}
+                  fontWeight={500}
+                  fill="currentColor"
+                  className="text-home-ink/55"
+                  style={{ pointerEvents: "none" }}
+                >
+                  {c.name}
+                </text>
               );
             })}
           </svg>
