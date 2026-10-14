@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { ModeBadge } from "@/components/app/ModeBadge";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { BrandLogo } from "@/components/site/Layout";
+import { LiveRatesTicker } from "@/components/site/LiveRatesTicker";
 import { AppWalletIsland } from "@/components/site/wallet/WalletIsland";
 import { supabase } from "@/integrations/supabase/client";
 import { walletLinkOf } from "@/lib/identity/wallet-identity";
@@ -326,6 +327,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
         <div className="h-px bg-[image:var(--gradient-uv)] opacity-40" />
+        <LiveRatesTicker />
       </header>
       {/* Phones: the content clears the fixed bottom tab bar (and the home indicator). */}
       <main className="flex-1 pb-[calc(4rem+env(safe-area-inset-bottom))] sm:pb-0">{children}</main>
