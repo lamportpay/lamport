@@ -187,7 +187,7 @@ function VerificationFlow({ compact }: { compact: boolean }) {
         </svg>
       </div>
       <div className="verify-spot p-6 sm:p-8" aria-live="polite">
-        <div className="mb-5 flex items-center justify-between gap-2">
+        <div className="mb-5 flex items-center justify-between gap-2 md:hidden">
           <Button size="icon" variant="outline" aria-label="Previous step" onClick={() => pick(active - 1)}>
             <ChevronLeft />
           </Button>

@@ -6,7 +6,7 @@ import type { useFlowPlayback } from "@/hooks/use-flow-playback";
 type Playback = ReturnType<typeof useFlowPlayback>;
 export function FlowControls({ flow, count, label }: { flow: Playback; count: number; label: string }) {
   return (
-    <div className="mb-5 grid grid-cols-[auto_1fr_auto] items-center gap-3">
+    <div className="mb-5 grid grid-cols-[auto_1fr_auto] items-center gap-3 md:hidden">
       <Button size="icon" variant="outline" title={`Previous ${label}`} aria-label={`Previous ${label}`} onClick={() => flow.pick(flow.active - 1)}><ChevronLeft /></Button>
       <span className="text-center font-mono text-xs text-muted-foreground">{String(flow.active + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}</span>
       <Button size="icon" variant="outline" title={`Next ${label}`} aria-label={`Next ${label}`} onClick={() => flow.pick(flow.active + 1)}><ChevronRight /></Button>
