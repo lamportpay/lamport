@@ -109,54 +109,40 @@ export function HomeBankNetwork() {
         </div>
       </div>
       <div className="home-container mt-12 border-t border-border pt-10" id="future-currencies">
-        <p className="home-eyebrow">Future currency coverage · PLANNED</p>
-        <h3 className="home-heading">More assets. More local destinations.</h3>
-        <div className="mt-7 grid gap-6 md:grid-cols-3">
-          {[
-            {
-              title: "Bitcoin · BTC",
-              image: bitcoinLogo.url,
-              detail:
-                "From Bitcoin to local money. A future intake and conversion route; deposits are not enabled.",
-            },
-            {
-              title: "Ethereum · ETH",
-              image: ethereumLogo.url,
-              detail:
-                "More choice for Ethereum holders. Intake and conversion are planned, not enabled today.",
-            },
-            {
-              title: "Pakistan · PKR",
-              image: null,
-              detail:
-                "A priority future market for local bank payments. Exploring business relationships and payout coverage in Pakistan.",
-            },
-          ].map(({ title, image, detail }) => (
-            <div key={title} className="border-t-2 border-home-brand/40 pt-5">
-              <div className="mb-5 flex h-16 items-center">
-                {image ? (
-                  <img
-                    src={image}
-                    alt=""
-                    width={64}
-                    height={64}
-                    className="size-16 object-contain"
-                  />
-                ) : (
-                  <Flag code="PK" size={64} />
-                )}
-              </div>
-              <p className="text-[10px] font-semibold text-home-brand">PLANNED</p>
-              <h4 className="mt-2 text-lg font-semibold">{title}</h4>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{detail}</p>
-            </div>
-          ))}
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="home-eyebrow">Expansion outlook · PLANNED</p>
+            <h3 className="home-heading">More choice. Wider reach.</h3>
+          </div>
+          <p className="max-w-sm text-sm text-muted-foreground">New assets and priority markets, one connected ambition.</p>
         </div>
-        <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-          PLANNED, not enabled payment options. Pakistan / PKR is a target market, not a confirmed
-          payout corridor or bank partnership. New routes require coverage and compliance
-          validation; no launch dates are committed.
-        </p>
+        <div className="mt-8 grid gap-8 md:grid-cols-2">
+          <div>
+            <h4 className="border-b border-border pb-3 text-xs font-semibold uppercase">Digital assets</h4>
+            <div className="divide-y divide-border">
+              {[{ name: "Bitcoin", code: "BTC", logo: bitcoinLogo.url }, { name: "Ethereum", code: "ETH", logo: ethereumLogo.url }].map(asset => (
+                <div key={asset.code} className="flex items-center gap-4 py-5">
+                  <img src={asset.logo} alt={`${asset.name} logo`} width={32} height={32} className="size-8 shrink-0 object-contain" />
+                  <div className="flex-1"><p className="text-sm font-semibold">{asset.name}</p><p className="mt-1 text-xs text-muted-foreground">{asset.code} · Future asset route</p></div>
+                  <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h4 className="border-b border-border pb-3 text-xs font-semibold uppercase">Priority markets</h4>
+            <div className="divide-y divide-border">
+              {[{ name: "Pakistan", code: "PK", currency: "PKR" }, { name: "Nigeria", code: "NG", currency: "NGN" }].map(market => (
+                <div key={market.code} className="flex items-center gap-4 py-5">
+                  <Flag code={market.code} size={32} />
+                  <div className="flex-1"><p className="text-sm font-semibold">{market.name}</p><p className="mt-1 text-xs text-muted-foreground">{market.currency} · Market development</p></div>
+                  <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">Expansion plans—not enabled deposits or confirmed payout corridors. Pakistan and Nigeria coverage requires provider and compliance validation; no bank partnership or launch date is implied.</p>
       </div>
     </section>
   );
