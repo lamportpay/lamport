@@ -54,8 +54,13 @@ export function ConnectedSystems() {
       ref={ref}
       data-visible={visible}
       id="infrastructure"
-      className="connected-systems home-section border-b border-border"
+      className="connected-systems home-section relative isolate overflow-hidden border-b border-border"
     >
+      <div className="home-orbits home-orbits-center" aria-hidden="true">
+        <span className="home-orbit home-orbit-outer" />
+        <span className="home-orbit home-orbit-middle" />
+        <span className="home-orbit home-orbit-inner" />
+      </div>
       <div className="home-container">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div>
