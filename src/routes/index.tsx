@@ -3,6 +3,7 @@ import { ArrowRight, ArrowUpRight, Coins, Globe2, Wallet } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
 import { PaymentNetwork } from "@/components/site/PaymentNetwork";
+import { ConnectedSystems } from "@/components/site/ConnectedSystems";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { EcosystemSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
@@ -93,58 +94,7 @@ function Index() {
         </div>
         <PaymentNetwork />
         <HomeBankNetwork />
-        <section className="home-section border-b border-border" id="infrastructure">
-          <div className="home-container">
-            <p className="home-eyebrow">The infrastructure behind the journey</p>
-            <h2 className="home-heading">Clear roles. Connected systems.</h2>
-            <div className="mt-8 grid gap-6 md:grid-cols-3">
-              {[
-                {
-                  name: "Solana",
-                  status: "NETWORK",
-                  image: "/tokens/sol.svg",
-                  role: "Wallet & transaction layer",
-                  detail:
-                    "Wallet connection and signed transactions. Payment tests use Solana devnet.",
-                },
-                {
-                  name: "Jupiter",
-                  status: "LIVE QUOTES",
-                  image: null,
-                  role: "Swap infrastructure",
-                  detail:
-                    "Solana asset-to-USDC price routes. Payment TEST MODE is quote-only; no mainnet swaps.",
-                },
-                {
-                  name: "Stables",
-                  status: "DEMO / SIMULATED",
-                  image: null,
-                  role: "Verification & bank payouts",
-                  detail:
-                    "Hosted sandbox verification and payout status. Production KYC and fiat payouts are disabled.",
-                },
-              ].map((provider) => (
-                <div key={provider.name} className="border-t-2 border-home-brand pt-5">
-                  <div className="flex items-center gap-2">
-                    {provider.image && <img src={provider.image} alt="" width="24" height="24" />}
-                    <h3 className="text-2xl font-semibold">{provider.name}</h3>
-                  </div>
-                  <p className="mt-3 text-[10px] font-semibold text-home-brand">
-                    {provider.status}
-                  </p>
-                  <p className="mt-3 text-sm font-semibold">{provider.role}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {provider.detail}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <p className="mt-7 text-xs text-muted-foreground">
-              Technology providers are not investors or guarantors. No financial backing or direct
-              bank partnership is implied.
-            </p>
-          </div>
-        </section>
+        <ConnectedSystems />
         <EcosystemSection compact />
         <section className="home-section border-y border-border bg-home-surface" id="costs">
           <div className="home-container grid gap-8 md:grid-cols-[1fr_1.4fr]">
