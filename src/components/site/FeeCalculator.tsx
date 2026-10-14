@@ -67,6 +67,7 @@ export function FeeCalculator() {
         { label: "You send", value: `${fmt(result.total)} USDC` },
         { label: "LamportPay fee", value: `− ${fmt(result.fee)} USDC` },
         { label: "Sent to Stables", value: `${fmt(result.net)} USDC` },
+        { label: `Rate (1 USDC ≈ ${fmt(rate, 4)} ${currency.code})`, value: isLive ? "Live market rate" : "Reference rate" },
         { label: "Payout partner fee", value: "Quoted by Stables" },
         { label: "Swap & network costs", value: "Shown before approval" },
       ]
