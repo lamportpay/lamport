@@ -200,7 +200,7 @@ export function HomeCapabilities() {
                   strokeWidth="1.6"
                   className="home-cap-hex-shape"
                 />
-                <g transform="translate(20 24)" stroke={STROKE} strokeWidth="1.5">
+                <g transform="translate(17.6 21.6) scale(1.2)" stroke={STROKE} strokeWidth="1.3">
                   {item.icon}
                 </g>
               </svg>
