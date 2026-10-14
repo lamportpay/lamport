@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, ChevronDown, Info } from "lucide-react";
+import { ArrowRight, ChevronDown, Info, Loader2 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { percentageModel, splitTotal } from "@/lib/payments/fee-math";
 
@@ -43,8 +43,18 @@ export function FeeCalculator() {
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
   const navigate = useNavigate();
   const [liveRates, setLiveRates] = useState<Partial<Record<CurrencyCode, number>>>({});
+  // Brief "fetching a quote" state whenever the inputs change, so the panel
+  // feels like a live server quote rather than instant local math.
+  const [quoting, setQuoting] = useState(false);
   const cur = CURRENCIES.find((c) => c.code === code)!;
   const rate = liveRates[code] ?? cur.fallbackRate;
+
+  useEffect(() => {
+    if (!Number(amount)) return;
+    setQuoting(true);
+    const id = window.setTimeout(() => setQuoting(false), 550);
+    return () => window.clearTimeout(id);
+  }, [amount, code, token]);
 
   useEffect(() => {
     let cancelled = false;
