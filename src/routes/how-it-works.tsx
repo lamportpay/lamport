@@ -25,7 +25,7 @@ export const Route = createFileRoute("/how-it-works")({
       path: "/how-it-works",
       title: "How LamportPay Works — Wallet to Bank, Step by Step",
       description:
-        "Follow LamportPay’s quote-first payment journey: wallet sign-in, bank details, Stables sandbox verification, wallet approval and a simulated payout receipt.",
+        "Follow LamportPay’s quote-first payment journey: wallet sign-in, bank details, Stables demo verification, wallet approval and a simulated payout receipt.",
     }),
   component: HowItWorks,
 });
@@ -72,7 +72,7 @@ function HowItWorks() {
           <p className="mt-4 text-xl font-medium">Crypto in. Local money out.</p>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
             A wallet-first payment journey: get a quote, check the destination, review the costs and
-            approve in your wallet. Explore the full experience today in sandbox mode.
+            approve in your wallet. Explore the full experience today in demo mode.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg">

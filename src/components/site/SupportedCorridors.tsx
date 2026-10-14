@@ -9,7 +9,7 @@ import { Flag } from "@/components/app/Flag";
 
 /**
  * Interactive payout-reach world map (Natural Earth 110m countries).
- * Click a country to zoom into it; supported sandbox corridors and planned
+ * Click a country to zoom into it; supported demo corridors and planned
  * corridors are highlighted. Purely presentational — never live payout state.
  */
 
@@ -75,7 +75,7 @@ export function SupportedCorridors() {
           <p className="home-eyebrow">Global payout reach</p>
           <h2 className="home-heading">Four corridors, verified end to end.</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Click any country to zoom in. Highlighted countries complete sandbox bank payouts today;
+            Click any country to zoom in. Highlighted countries complete demo bank payouts today;
             Nigeria and Pakistan are planned.
           </p>
         </div>
@@ -150,7 +150,7 @@ export function SupportedCorridors() {
                 <p className="text-xs text-muted-foreground">
                   {sel
                     ? sel.status === "supported"
-                      ? `${sel.symbol} ${sel.currency} · Sandbox payouts verified`
+                      ? `${sel.symbol} ${sel.currency} · Demo payouts verified`
                       : `${sel.symbol} ${sel.currency} · Planned corridor`
                     : "Not yet supported"}
                 </p>
@@ -161,7 +161,7 @@ export function SupportedCorridors() {
 
         <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed text-muted-foreground">
           <span className="font-semibold">DEMO / SIMULATED</span> · Corridor status reflects
-          sandbox test completions. Production bank payouts remain disabled until approval.
+          demo test completions. Production bank payouts remain disabled until approval.
         </p>
       </div>
     </section>

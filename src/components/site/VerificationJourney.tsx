@@ -53,10 +53,10 @@ export function VerificationJourney({ compact = false }: { compact?: boolean }) 
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-semibold">A sandbox completion is not production KYC.</h3>
+            <h3 className="text-sm font-semibold">A demo completion is not production KYC.</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               The app can retain verification from a completed payment, avoiding repeat prompts.
-              Current completions are sandbox records only; production identity verification and
+              Current completions are demo records only; production identity verification and
               real fiat payouts remain DISABLED.
             </p>
           </div>
