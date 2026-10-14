@@ -465,7 +465,7 @@
   --home-tint: oklch(0.96 0.025 275);
   --home-surface: oklch(0.975 0.009 265);
   --home-ink: oklch(0.24 0.055 270);
-  --home-orbit-gradient: conic-gradient(from 210deg, oklch(0.65 0.2 250 / 65%), oklch(0.52 0.25 295 / 60%), oklch(0.78 0.13 220 / 55%), oklch(0.65 0.2 250 / 65%));
+  --home-orbit-gradient: conic-gradient(from 210deg, oklch(0.55 0.22 250 / 85%), oklch(0.43 0.25 295 / 85%), oklch(0.66 0.16 220 / 75%), oklch(0.55 0.22 250 / 85%));
   --home-gradient: linear-gradient(115deg, oklch(0.48 0.2 258), oklch(0.43 0.25 295));
   --home-text-gradient: linear-gradient(110deg, oklch(0.45 0.2 258), oklch(0.43 0.25 295));
 }
@@ -540,15 +540,24 @@
 }
 .home-orbit-outer {
   width: 1000px;
-  opacity: 0.45;
+  opacity: 0.65;
 }
 .home-orbit-middle {
   width: 760px;
-  opacity: 0.65;
+  opacity: 0.8;
 }
 .home-orbit-inner {
   width: 520px;
-  opacity: 0.8;
+  opacity: 0.95;
+}
+@keyframes home-orbit-motion {
+  from { transform: translate(-50%, -50%) rotate(-25deg) scaleX(1.16); }
+  to { transform: translate(-50%, -50%) rotate(335deg) scaleX(1.16); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home-orbit { animation: home-orbit-motion 90s linear infinite; }
+  .home-orbit-middle { animation-duration: 70s; animation-direction: reverse; }
+  .home-orbit-inner { animation-duration: 55s; }
 }
 .network-node {
   min-height: 192px;
@@ -646,7 +655,7 @@
   }
   .home-orbits {
     mask-image: linear-gradient(to right, transparent 35%, black 100%);
-    opacity: 0.4;
+    opacity: 0.6;
   }
   .home-orbit {
     left: 130%;

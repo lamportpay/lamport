@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Landmark, ArrowRight } from "lucide-react";
+import { Landmark, ArrowRight, Bitcoin, Coins, Globe2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { BankIcon } from "@/components/app/BankIcon";
 import { Flag } from "@/components/app/Flag";
 import { Button } from "@/components/ui/button";
+import { FUTURE_EXPLORATION } from "@/content/roadmap";
 
 const destinations = [
   {
@@ -105,6 +106,28 @@ export function HomeBankNetwork() {
             </Link>
           </Button>
         </div>
+      </div>
+      <div className="home-container mt-12 border-t border-border pt-10" id="future-currencies">
+        <p className="home-eyebrow">Future currency coverage · PLANNED</p>
+        <h3 className="home-heading">More assets. More local destinations.</h3>
+        <div className="mt-7 grid gap-6 md:grid-cols-3">
+          {[
+            { title: "Bitcoin · BTC", Icon: Bitcoin, detail: "A future Bitcoin intake and conversion route. Deposits are not available today." },
+            { title: "Ethereum · ETH", Icon: Coins, detail: "A future Ethereum intake and conversion route. Deposits are not available today." },
+            { title: "More local currencies", Icon: Globe2, detail: FUTURE_EXPLORATION[5].detail },
+          ].map(({ title, Icon, detail }) => (
+            <div key={title} className="border-t-2 border-home-brand/40 pt-5">
+              <Icon className="mb-4 size-7 text-home-brand" strokeWidth={1.5} />
+              <p className="text-[10px] font-semibold text-home-brand">PLANNED</p>
+              <h4 className="mt-2 text-lg font-semibold">{title}</h4>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
+          Future exploration, not enabled payment options. Additional local currencies and launch dates
+          are not yet confirmed; availability depends on validated routes and payout coverage.
+        </p>
       </div>
     </section>
   );
