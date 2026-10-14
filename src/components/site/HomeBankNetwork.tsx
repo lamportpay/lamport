@@ -5,6 +5,7 @@ import { Flag } from "@/components/app/Flag";
 import { Button } from "@/components/ui/button";
 import { FlowControls } from "@/components/site/FlowPresentation";
 import { useFlowPlayback } from "@/hooks/use-flow-playback";
+import { BankRestrictions } from "@/components/site/BankRestrictions";
 
 const destinations = [
   {
@@ -104,6 +105,7 @@ export function HomeBankNetwork() {
           </Button>
         </div>
       </div>
+      <BankRestrictions />
       <div className="home-container mt-12 border-t border-border pt-10" id="future-currencies">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
