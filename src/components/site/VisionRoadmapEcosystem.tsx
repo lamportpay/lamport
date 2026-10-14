@@ -14,10 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Flag } from "@/components/app/Flag";
 import { CURRENT_FLOW, FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
-import {
-  publicEcosystem,
-  type EcosystemCompany,
-} from "@/content/ecosystem";
+import { publicEcosystem, type EcosystemCompany } from "@/content/ecosystem";
 
 /**
  * Home-page sections: what works today vs. future exploration, the proposed roadmap,
@@ -205,8 +202,16 @@ function CompanyLogo({ c }: { c: EcosystemCompany }) {
   return (
     <div className="flex h-24 items-center justify-center px-4">
       {c.logo && !broken ? (
-        <img src={c.logo} alt={`${c.name} logo`} loading="lazy" onError={() => setBroken(true)} className="max-h-16 max-w-full object-contain" />
-      ) : <span className="text-center text-lg font-semibold text-foreground">{c.name}</span>}
+        <img
+          src={c.logo}
+          alt={`${c.name} logo`}
+          loading="lazy"
+          onError={() => setBroken(true)}
+          className="max-h-16 max-w-full object-contain"
+        />
+      ) : (
+        <span className="text-center text-lg font-semibold text-foreground">{c.name}</span>
+      )}
     </div>
   );
 }
@@ -217,7 +222,11 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
   const [position, setPosition] = useState({ start: true, end: false });
   const updatePosition = () => {
     const el = slider.current;
-    if (el) setPosition({ start: el.scrollLeft < 8, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 8 });
+    if (el)
+      setPosition({
+        start: el.scrollLeft < 8,
+        end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 8,
+      });
   };
   useEffect(() => {
     updatePosition();
@@ -227,37 +236,81 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
   const move = (direction: number) => {
     const el = slider.current;
     if (!el) return;
-    el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+    el.scrollBy({
+      left: direction * el.clientWidth * 0.8,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
   };
   if (!companies.length) return null;
   return (
-    <section className={`relative overflow-hidden ${compact ? "home-section" : "mt-32"}`} id="ecosystem">
+    <section
+      className={`relative overflow-hidden ${compact ? "home-section" : "mt-32"}`}
+      id="ecosystem"
+    >
       <div className="home-container">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div>
             <p className="home-eyebrow">Business ecosystem</p>
             <h2 className="home-heading">Partners ready to adopt.</h2>
-            <p className="mt-3 text-sm text-muted-foreground">Across investment, logistics, property and digital services.</p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Across investment, logistics, property and digital services.
+            </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" aria-label="Previous partners" title="Previous partners" disabled={position.start} onClick={() => move(-1)}><ChevronLeft /></Button>
-            <Button variant="outline" size="icon" aria-label="Next partners" title="Next partners" disabled={position.end} onClick={() => move(1)}><ChevronRight /></Button>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Previous partners"
+              title="Previous partners"
+              disabled={position.start}
+              onClick={() => move(-1)}
+            >
+              <ChevronLeft />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Next partners"
+              title="Next partners"
+              disabled={position.end}
+              onClick={() => move(1)}
+            >
+              <ChevronRight />
+            </Button>
           </div>
         </div>
-        <ul ref={slider} onScroll={updatePosition} aria-label="Business partner logos" className="partner-slider mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4">
-          {companies.map(c => (
+        <ul
+          ref={slider}
+          onScroll={updatePosition}
+          aria-label="Business partner logos"
+          className="partner-slider mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4"
+        >
+          {companies.map((c) => (
             <li key={c.name} className="w-[240px] shrink-0 snap-start sm:w-[260px]">
-              <a href={c.url} target="_blank" rel="noopener noreferrer" className="block rounded-lg border border-border bg-card p-4 transition-colors hover:border-home-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <a
+                href={c.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg border border-border bg-card p-4 transition-colors hover:border-home-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
                 <CompanyLogo c={c} />
-                <h3 className="mt-3 flex min-h-10 items-center justify-center text-center text-sm font-semibold leading-snug">{c.name}</h3>
+                <h3 className="mt-3 flex min-h-10 items-center justify-center text-center text-sm font-semibold leading-snug">
+                  {c.name}
+                </h3>
                 <div className="mt-4 flex items-center justify-center gap-2 border-t border-border pt-3 text-[11px] text-muted-foreground">
-                  <Flag code={regionCodes[c.region]} size={20} />{regionNames[c.region]}
+                  <Flag code={regionCodes[c.region]} size={20} />
+                  {regionNames[c.region]}
                 </div>
               </a>
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">Onboarding PLANNED. Business adoption readiness—not live integrations, financial backing or bank endorsement.</p>
+        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          Onboarding PLANNED. Business adoption readiness—not live integrations, financial backing
+          or bank endorsement.
+        </p>
       </div>
     </section>
   );

@@ -114,35 +114,67 @@ export function HomeBankNetwork() {
             <p className="home-eyebrow">Expansion outlook · PLANNED</p>
             <h3 className="home-heading">More choice. Wider reach.</h3>
           </div>
-          <p className="max-w-sm text-sm text-muted-foreground">New assets and priority markets, one connected ambition.</p>
+          <p className="max-w-sm text-sm text-muted-foreground">
+            New assets and priority markets, one connected ambition.
+          </p>
         </div>
         <div className="mt-8 grid gap-8 md:grid-cols-2">
           <div>
-            <h4 className="border-b border-border pb-3 text-xs font-semibold uppercase">Digital assets</h4>
+            <h4 className="border-b border-border pb-3 text-xs font-semibold uppercase">
+              Digital assets
+            </h4>
             <div className="divide-y divide-border">
-              {[{ name: "Bitcoin", code: "BTC", logo: bitcoinLogo.url }, { name: "Ethereum", code: "ETH", logo: ethereumLogo.url }].map(asset => (
+              {[
+                { name: "Bitcoin", code: "BTC", logo: bitcoinLogo.url },
+                { name: "Ethereum", code: "ETH", logo: ethereumLogo.url },
+              ].map((asset) => (
                 <div key={asset.code} className="flex items-center gap-4 py-5">
-                  <img src={asset.logo} alt={`${asset.name} logo`} width={32} height={32} className="size-8 shrink-0 object-contain" />
-                  <div className="flex-1"><p className="text-sm font-semibold">{asset.name}</p><p className="mt-1 text-xs text-muted-foreground">{asset.code} · Future asset route</p></div>
+                  <img
+                    src={asset.logo}
+                    alt={`${asset.name} logo`}
+                    width={32}
+                    height={32}
+                    className="size-8 shrink-0 object-contain"
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">{asset.name}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {asset.code} · Future asset route
+                    </p>
+                  </div>
                   <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
                 </div>
               ))}
             </div>
           </div>
           <div>
-            <h4 className="border-b border-border pb-3 text-xs font-semibold uppercase">Priority markets</h4>
+            <h4 className="border-b border-border pb-3 text-xs font-semibold uppercase">
+              Priority markets
+            </h4>
             <div className="divide-y divide-border">
-              {[{ name: "Pakistan", code: "PK", currency: "PKR" }, { name: "Nigeria", code: "NG", currency: "NGN" }].map(market => (
+              {[
+                { name: "Pakistan", code: "PK", currency: "PKR" },
+                { name: "Nigeria", code: "NG", currency: "NGN" },
+              ].map((market) => (
                 <div key={market.code} className="flex items-center gap-4 py-5">
                   <Flag code={market.code} size={32} />
-                  <div className="flex-1"><p className="text-sm font-semibold">{market.name}</p><p className="mt-1 text-xs text-muted-foreground">{market.currency} · Market development</p></div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">{market.name}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {market.currency} · Market development
+                    </p>
+                  </div>
                   <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
-        <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">Expansion plans—not enabled deposits or confirmed payout corridors. Pakistan and Nigeria coverage requires provider and compliance validation; no bank partnership or launch date is implied.</p>
+        <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">
+          Expansion plans—not enabled deposits or confirmed payout corridors. Pakistan and Nigeria
+          coverage requires provider and compliance validation; no bank partnership or launch date
+          is implied.
+        </p>
       </div>
     </section>
   );
