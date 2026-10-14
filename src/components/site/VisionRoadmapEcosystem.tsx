@@ -94,6 +94,8 @@ export function FutureVisionSection() {
 export function RoadmapSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
+  const [active, setActive] = useState(0);
+  const [auto, setAuto] = useState(true);
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -108,88 +110,163 @@ export function RoadmapSection() {
           observer.disconnect();
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.2 },
     );
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
+  useEffect(() => {
+    if (!visible || !auto) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setInterval(
+      () => setActive((i) => (i + 1) % ROADMAP_PHASES.length),
+      5000,
+    );
+    return () => window.clearInterval(id);
+  }, [visible, auto]);
   const icons = [Wallet, ShieldCheck, Layers3, Handshake, Globe2];
+  const phase = ROADMAP_PHASES[active] ?? ROADMAP_PHASES[0];
+  const PhaseIcon = icons[active] ?? Globe2;
+  const current = phase.status === "current";
+  const pick = (i: number) => {
+    setAuto(false);
+    setActive(i);
+  };
+  const progress = (active / (ROADMAP_PHASES.length - 1)) * 100;
   return (
     <section
       ref={sectionRef}
-      className="relative mt-32 overflow-hidden"
+      className="home-section relative isolate overflow-hidden"
       id="roadmap"
       data-visible={visible}
     >
-      <div className="max-w-7xl mx-auto px-5">
-        <Heading
-          eyebrow="Roadmap"
-          title="The path to global payouts."
-          intro="Five milestones. A validated foundation, followed by security, broader asset routes and market expansion."
-        />
-        <ol
-          className="roadmap-timeline mt-12 grid lg:grid-cols-5"
-          aria-label="LamportPay development timeline"
-        >
-          {ROADMAP_PHASES.map((p, index) => {
-            const current = p.status === "current";
-            const Icon = icons[index] ?? Globe2;
-            return (
-              <li
-                key={p.phase}
-                className="roadmap-stage relative grid grid-cols-[3.5rem_minmax(0,1fr)] gap-x-5 pb-9 last:pb-0 lg:block lg:pb-0 lg:pr-6"
-                aria-current={current ? "step" : undefined}
-              >
-                <div
-                  className="roadmap-track relative flex justify-center lg:justify-start"
-                  aria-hidden="true"
+      <div className="home-container">
+        <div className="flex flex-wrap items-end justify-between gap-5">
+          <div>
+            <p className="home-eyebrow">Roadmap · Future plan</p>
+            <h2 className="home-heading">The path to global payouts.</h2>
+            <p className="mt-3 max-w-xl text-sm text-muted-foreground">
+              Five milestones from a tested foundation to a global payout network.
+            </p>
+          </div>
+          <Button variant="link" asChild className="px-0 text-home-brand">
+            <a href="/whitepaper">
+              Full roadmap in the whitepaper <ArrowRight />
+            </a>
+          </Button>
+        </div>
+
+        <div className="roadmap-rail relative mt-12" role="tablist" aria-label="Roadmap phases">
+          <span className="roadmap-rail-line" aria-hidden="true">
+            <span className="roadmap-rail-fill" style={{ width: `${progress}%` }} />
+          </span>
+          <div className="relative grid grid-cols-5 gap-2">
+            {ROADMAP_PHASES.map((p, i) => {
+              const Icon = icons[i] ?? Globe2;
+              const on = i === active;
+              const done = i < active;
+              return (
+                <button
+                  key={p.phase}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  aria-controls="roadmap-spotlight"
+                  onClick={() => pick(i)}
+                  className="roadmap-step group flex flex-col items-center gap-3 text-center focus-visible:outline-none"
+                  data-on={on}
+                  data-done={done}
                 >
-                  {index < ROADMAP_PHASES.length - 1 && (
-                    <span className="roadmap-connector absolute bg-border">
-                      <span className="roadmap-flow absolute bg-primary/50" />
-                    </span>
-                  )}
-                  <span
-                    className={`roadmap-node relative z-10 flex size-14 shrink-0 items-center justify-center rounded-full border-2 ${current ? "border-success bg-background text-success" : "border-border bg-background text-primary"}`}
-                  >
-                    <Icon className="size-6" strokeWidth={1.7} />
+                  <span className="roadmap-dot grid size-12 place-items-center rounded-full border-2 bg-card sm:size-14">
+                    <Icon className="size-5 sm:size-6" strokeWidth={1.7} />
                   </span>
-                </div>
-                <div className="min-w-0 lg:mt-7">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                      Phase {String(p.phase).padStart(2, "0")}
-                    </span>
-                    <span
-                      className={`inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider ${
-                        current ? "text-success" : "text-muted-foreground"
-                      }`}
-                    >
-                      <span
-                        className={`size-1.5 rounded-full ${current ? "bg-success" : "bg-muted-foreground/50"}`}
-                        aria-hidden="true"
-                      />
-                      {current ? "DEMO" : "PLANNED"}
-                    </span>
-                  </div>
-                  <h3 className="mt-3 font-semibold leading-snug">{p.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">
-                    {p.summary}
-                  </p>
-                  <div className="mt-5 border-t border-border/60 pt-3 text-xs">
-                    <div className="flex items-center gap-1.5 font-semibold uppercase tracking-wider text-foreground">
-                      <CheckCircle2 className="size-3.5 text-primary" aria-hidden="true" />{" "}
-                      Milestone
-                    </div>
-                    <div className="mt-1 text-muted-foreground">{p.dependsOn}</div>
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
-        <p className="mt-6 text-center text-sm text-muted-foreground max-w-3xl mx-auto">
-          {ROADMAP_NOTE}
+                  <span className="hidden text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:block">
+                    Phase {String(p.phase).padStart(2, "0")}
+                  </span>
+                  <span className="hidden text-sm font-semibold leading-snug md:block">
+                    {p.title}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div
+          id="roadmap-spotlight"
+          role="tabpanel"
+          key={active}
+          className="roadmap-spotlight mt-10 grid overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+        >
+          <div className="roadmap-spotlight-side relative p-7 sm:p-9">
+            <div className="flex items-center gap-3">
+              <span className="grid size-11 place-items-center rounded-xl bg-card text-home-brand">
+                <PhaseIcon className="size-5" />
+              </span>
+              <span
+                className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${current ? "bg-success/15 text-success" : "bg-card text-home-brand"}`}
+              >
+                {current ? "In progress · Demo" : "Planned"}
+              </span>
+            </div>
+            <p className="mt-8 font-mono text-5xl font-semibold text-home-brand/30 sm:text-6xl">
+              {String(phase.phase).padStart(2, "0")}
+            </p>
+            <h3 className="mt-2 text-2xl font-semibold leading-tight text-home-ink">
+              {phase.title}
+            </h3>
+            <p className="mt-3 text-sm text-home-ink/75">{phase.headline}</p>
+          </div>
+          <div className="p-7 sm:p-9">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Focus areas
+            </p>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+              {phase.highlights.map((h, i) => (
+                <li
+                  key={h}
+                  className="roadmap-chip flex items-start gap-2 rounded-xl border border-border bg-background p-3 text-sm font-medium"
+                  style={{ animationDelay: `${120 + i * 90}ms` }}
+                >
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-home-brand" />
+                  {h}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">{phase.summary}</p>
+            <div className="mt-6 flex items-start gap-3 border-t border-border pt-5 text-sm">
+              <Compass className="mt-0.5 size-4 shrink-0 text-home-brand" />
+              <p>
+                <span className="font-semibold">Milestone: </span>
+                <span className="text-muted-foreground">{phase.dependsOn}</span>
+              </p>
+            </div>
+            <div className="mt-6 flex items-center gap-2">
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Previous phase"
+                onClick={() => pick((active - 1 + ROADMAP_PHASES.length) % ROADMAP_PHASES.length)}
+              >
+                <ChevronLeft />
+              </Button>
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Next phase"
+                onClick={() => pick((active + 1) % ROADMAP_PHASES.length)}
+              >
+                <ChevronRight />
+              </Button>
+              <span className="ml-2 text-xs text-muted-foreground">
+                {active + 1} / {ROADMAP_PHASES.length}
+              </span>
+            </div>
+          </div>
+        </div>
+        <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">
+          Planned milestones, not delivery commitments. No dates are committed and planned
+          partnerships are not confirmed relationships.
         </p>
       </div>
     </section>
