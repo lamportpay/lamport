@@ -63,9 +63,8 @@ export function ModeBadge() {
     }
   };
 
-  // TEST MODE has no header badge (sandbox notices sit at the quote and Pay Now
-  // steps); LIVE MODE and a broken setup always show it.
-  if (indicator.tone === "test") return null;
+  // The badge is always visible, including DEVNET / SANDBOX, so the app header
+  // carries the same mode label as the marketing site.
 
   const Icon =
     indicator.tone === "loading" ? Loader2 : ShieldAlert;
