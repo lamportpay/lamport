@@ -35,3 +35,33 @@ export function FlowScene({ nodes, flow, label, branching = false }: { nodes: Sc
     </div>
   );
 }
+
+/** Desktop scene: the vertical journey tree with a traveling pulse. */
+export function FlowSceneVertical({ nodes, flow, label, branching = false }: { nodes: SceneNode[]; flow: Playback; label: string; branching?: boolean }) {
+  const height = nodes.length * 78 + 48;
+  return (
+    <div className="flow-scene relative flex items-center p-4 sm:p-7">
+      <svg viewBox={`0 0 480 ${height}`} className="w-full" role="img" aria-label={label}>
+        <path d={`M36 36 V${height - 48}`} className="flow-wire" />
+        {!branching && <path d={`M36 36 V${36 + flow.active * 78}`} className="flow-wire flow-wire-active" />}
+        {nodes.map(({ title, label: status, icon: Icon, planned }, index) => {
+          const y = 18 + index * 78;
+          const on = index === flow.active;
+          return (
+            <g key={title} data-active={on} data-planned={planned} className="flow-scene-node">
+              <path d={`M36 ${y + 30} H90`} className={`flow-wire ${on ? "flow-wire-active" : ""} ${planned ? "flow-wire-planned" : ""}`} />
+              <circle cx="36" cy={y + 30} r="7" className="flow-junction" />
+              <foreignObject x="90" y={y} width="375" height="64">
+                <Button variant="outline" aria-pressed={on} onClick={() => flow.pick(index)} className={`flow-scene-button h-[60px] w-full justify-start gap-3 whitespace-normal px-4 text-left ${on ? "border-home-brand bg-card text-home-ink" : "border-border bg-card/80"}`}>
+                  <span className="grid size-9 shrink-0 place-items-center rounded-md bg-home-tint text-home-brand"><Icon /></span>
+                  <span className="min-w-0"><span className="block text-sm font-semibold">{title}</span><span className="block text-[10px] font-medium text-muted-foreground">{status}</span></span>
+                </Button>
+              </foreignObject>
+            </g>
+          );
+        })}
+        {!nodes[flow.active]?.planned && <circle cx="36" cy={48 + flow.active * 78} r="13" className="flow-traveler" />}
+      </svg>
+    </div>
+  );
+}
