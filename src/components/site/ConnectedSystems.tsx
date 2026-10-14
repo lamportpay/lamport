@@ -1,5 +1,5 @@
 import { Landmark, Network, ShieldCheck, Layers3, Coins } from "lucide-react";
-import { FlowControls, FlowScene } from "@/components/site/FlowPresentation";
+import { FlowControls, FlowScene, FlowSceneVertical } from "@/components/site/FlowPresentation";
 import { useFlowPlayback } from "@/hooks/use-flow-playback";
 import { FUTURE_EXPLORATION } from "@/content/roadmap";
 import { VerificationJourney } from "@/components/site/VerificationJourney";
@@ -55,9 +55,18 @@ export function ConnectedSystems() {
             Every new route must pass validation
           </span>
         </div>
-        <div ref={flow.ref} {...flow.focusProps} data-running={flow.inView && flow.playing && !flow.reduced} className="flow-presentation mt-8 grid overflow-hidden rounded-lg border border-border">
+        <div ref={flow.ref} {...flow.focusProps} data-running={flow.inView && flow.playing && !flow.reduced} className="flow-presentation mt-8 grid overflow-hidden rounded-lg border border-border md:grid-cols-2">
+          <div className="hidden md:block">
+            <div className="flex items-center gap-3 border-b border-border bg-home-tint px-6 py-5">
+              <Network className="size-6 text-home-brand" />
+              <div><p className="font-semibold">LamportPay</p><p className="mt-1 text-xs text-muted-foreground">One workspace · Your wallet stays yours</p></div>
+            </div>
+            <FlowSceneVertical nodes={sceneNodes} flow={flow} branching label="Infrastructure: existing Solana and Jupiter quotes, planned Hyperliquid and future asset routes" />
+          </div>
           <div className="flow-spotlight p-6 sm:p-8">
-            <FlowControls flow={flow} count={branches.length} label="connected systems" />
+            <div className="md:hidden">
+              <FlowControls flow={flow} count={branches.length} label="connected systems" />
+            </div>
             <div key={selected} className="flow-detail">
               <p className="text-xs font-semibold text-home-brand">{active.status}</p>
               <p className="mt-7 font-mono text-5xl font-semibold text-home-brand/30">0{selected + 1}</p>
@@ -65,8 +74,11 @@ export function ConnectedSystems() {
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{active.detail}</p>
               <p className="mt-4 text-xs font-medium text-home-brand">{active.note}</p>
             </div>
+            <div className="mt-6 hidden md:block">
+              <FlowControls flow={flow} count={branches.length} label="connected systems" />
+            </div>
           </div>
-          <div>
+          <div className="md:hidden">
             <div className="flex items-center gap-3 border-b border-border bg-home-tint px-6 py-5">
               <Network className="size-6 text-home-brand" />
               <div><p className="font-semibold">LamportPay</p><p className="mt-1 text-xs text-muted-foreground">One workspace · Your wallet stays yours</p></div>

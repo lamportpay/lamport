@@ -5,7 +5,7 @@ import {
   ShieldCheck,
   Wallet,
 } from "lucide-react";
-import { FlowControls, FlowScene } from "@/components/site/FlowPresentation";
+import { FlowControls, FlowScene, FlowSceneVertical } from "@/components/site/FlowPresentation";
 import { useFlowPlayback } from "@/hooks/use-flow-playback";
 import { PAYMENT_JOURNEY, PAYMENT_SAFETY } from "@/content/payment-flow";
 
