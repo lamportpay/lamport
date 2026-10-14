@@ -94,11 +94,8 @@ export function PaymentNetwork() {
             <FlowScene nodes={nodes} flow={flow} label="Illustrative payment route: wallet, LamportPay, Jupiter, Stables, bank account" />
           </div>
         </div>
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
+        <div className="mt-5 text-xs text-muted-foreground">
           <span>Infrastructure integrations—not financial backing or bank endorsements.</span>
-          <span className="font-medium">
-            Real bank payouts & production KYC: <span className="text-home-brand">DISABLED</span>
-          </span>
         </div>
         <details className="mt-3 text-xs text-muted-foreground">
           <summary className="cursor-pointer">Current operating mode</summary>

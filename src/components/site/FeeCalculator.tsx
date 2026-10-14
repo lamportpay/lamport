@@ -145,7 +145,8 @@ export function FeeCalculator() {
               </div>
             </div>
 
-            <div className="mt-5 flex gap-2">
+            <p className="mt-5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Quick amounts</p>
+            <div className="mt-2 grid grid-cols-4 gap-2 rounded-xl bg-home-surface p-1.5">
               {PRESETS.map((p) => (
                 <Button
                   key={p}
