@@ -51,21 +51,21 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   {
     phase: 4,
     headline: "Grow partners and payout coverage.",
-    highlights: ["Circle & Tether talks", "Business onboarding", "New markets"],
+    highlights: ["Circle & Tether talks", "Nigeria & Pakistan corridors", "Payout API providers"],
     title: "Partnerships and market expansion",
     status: "proposed",
     summary:
-      "Pursue future partnership opportunities with Circle and Tether, evaluate stablecoin-related APIs, and grow business onboarding and payout coverage. These relationships are planned, not confirmed.",
+      "Pursue future partnership opportunities with Circle and Tether, hold discussions with additional payout API providers such as Yellow Card, and expand payout coverage to new corridors including Nigeria and Pakistan. These relationships and corridors are planned, not confirmed.",
     dependsOn: "Provider agreements, API access and compliance readiness for each market.",
   },
   {
     phase: 5,
     headline: "A global crypto-to-bank payout network.",
-    highlights: ["B2B payout APIs", "Remittance use cases", "Wider blockchains"],
+    highlights: ["B2B payout APIs", "More chains & wallets", "Mobile experience"],
     title: "Global payout ecosystem",
     status: "proposed",
     summary:
-      "Explore B2B payout APIs, remittance use cases, wider blockchain support and a larger strategic partner network.",
+      "Explore B2B payout APIs, remittance use cases, wider blockchain and wallet support, a dedicated mobile experience and a larger strategic partner network.",
     dependsOn: "Scalable infrastructure and the required regulatory permissions.",
   },
 ];

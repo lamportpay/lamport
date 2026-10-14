@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, ChevronDown, Info } from "lucide-react";
+import { ArrowRight, ChevronDown, Info, Loader2 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { percentageModel, splitTotal } from "@/lib/payments/fee-math";
 
@@ -43,8 +43,18 @@ export function FeeCalculator() {
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
   const navigate = useNavigate();
   const [liveRates, setLiveRates] = useState<Partial<Record<CurrencyCode, number>>>({});
+  // Brief "fetching a quote" state whenever the inputs change, so the panel
+  // feels like a live server quote rather than instant local math.
+  const [quoting, setQuoting] = useState(false);
   const cur = CURRENCIES.find((c) => c.code === code)!;
   const rate = liveRates[code] ?? cur.fallbackRate;
+
+  useEffect(() => {
+    if (!Number(amount)) return;
+    setQuoting(true);
+    const id = window.setTimeout(() => setQuoting(false), 550);
+    return () => window.clearTimeout(id);
+  }, [amount, code, token]);
 
   useEffect(() => {
     let cancelled = false;
@@ -172,7 +182,13 @@ export function FeeCalculator() {
           </div>
 
           {/* Recipient gets */}
-          <div className="border-t border-border bg-home-surface/60 p-6 sm:p-8 md:border-l md:border-t-0">
+          <div className="relative border-t border-border bg-home-surface/60 p-6 sm:p-8 md:border-l md:border-t-0">
+            {quoting && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-none bg-home-surface/80 backdrop-blur-sm motion-safe:animate-in motion-safe:fade-in" role="status" aria-live="polite">
+                <Loader2 className="size-7 text-home-brand motion-safe:animate-spin" />
+                <p className="text-xs font-medium text-muted-foreground">Fetching live quote…</p>
+              </div>
+            )}
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recipient gets</p>
             <p
               key={result ? `${cur.code}-${result.local.toFixed(2)}` : "none"}
