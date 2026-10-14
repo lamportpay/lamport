@@ -5,6 +5,7 @@ import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
 import { PAYMENT_COSTS } from "@/content/payment-flow";
+import { BankRestrictions } from "@/components/site/BankRestrictions";
 
 export const Route = createFileRoute("/compliance")({
   head: () =>
@@ -108,6 +109,8 @@ function Compliance() {
             </ul>
           </section>
         </div>
+
+        <BankRestrictions />
 
         <section className="mt-10 border-t border-border pt-6">
           <h2 className="text-2xl font-semibold">Who does what</h2>
