@@ -79,7 +79,6 @@ function VerificationFlow({ compact }: { compact: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [active, setActive] = useState(0);
-  const [auto, setAuto] = useState(true);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -96,14 +95,7 @@ function VerificationFlow({ compact }: { compact: boolean }) {
     o.observe(el);
     return () => o.disconnect();
   }, []);
-  useEffect(() => {
-    if (!visible || !auto) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = window.setInterval(() => setActive((i) => (i + 1) % NODE_Y.length), 3800);
-    return () => window.clearInterval(id);
-  }, [visible, auto]);
   const pick = (i: number) => {
-    setAuto(false);
     setActive((i + NODE_Y.length) % NODE_Y.length);
   };
   const step = VERIFICATION_JOURNEY[active];
@@ -194,7 +186,15 @@ function VerificationFlow({ compact }: { compact: boolean }) {
           </text>
         </svg>
       </div>
-      <div key={active} className="verify-spot p-6 sm:p-8" aria-live="polite">
+      <div className="verify-spot p-6 sm:p-8" aria-live="polite">
+        <div className="mb-5 flex items-center justify-between gap-2">
+          <Button size="icon" variant="outline" aria-label="Previous step" onClick={() => pick(active - 1)}>
+            <ChevronLeft />
+          </Button>
+          <Button size="icon" variant="outline" aria-label="Next step" onClick={() => pick(active + 1)}>
+            <ChevronRight />
+          </Button>
+        </div>
         <div className="flex items-center gap-3">
           <span className="grid size-11 place-items-center rounded-xl bg-home-tint text-home-brand">
             <Icon className="size-5" />
@@ -211,26 +211,19 @@ function VerificationFlow({ compact }: { compact: boolean }) {
         <ol className="mt-6 grid gap-2" aria-label="Customer verification journey">
           {VERIFICATION_JOURNEY.map((st, i) => (
             <li key={st.title}>
-              <button
-                type="button"
+              <Button
+                variant="outline"
                 onClick={() => pick(i)}
                 aria-current={i === active ? "step" : undefined}
-                className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm transition-colors ${i === active ? "border-home-brand bg-home-tint font-semibold" : "border-border hover:bg-muted"}`}
+                className={`h-auto whitespace-normal flex w-full justify-start items-center gap-3 rounded-lg border px-3 py-2 text-left text-sm transition-colors ${i === active ? "border-home-brand bg-home-tint font-semibold" : "border-border hover:bg-muted"}`}
               >
                 <span className="font-mono text-xs text-muted-foreground">0{i + 1}</span>
                 {st.title}
-              </button>
+              </Button>
             </li>
           ))}
         </ol>
-        <div className="mt-5 flex items-center gap-2">
-          <Button size="icon" variant="outline" aria-label="Previous step" onClick={() => pick(active - 1)}>
-            <ChevronLeft />
-          </Button>
-          <Button size="icon" variant="outline" aria-label="Next step" onClick={() => pick(active + 1)}>
-            <ChevronRight />
-          </Button>
-        </div>
+
       </div>
     </div>
   );

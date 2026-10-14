@@ -55,15 +55,9 @@ export function ConnectedSystems() {
             Every new route must pass validation
           </span>
         </div>
-        <div ref={flow.ref} {...flow.focusProps} data-running={flow.inView && flow.playing && !flow.reduced} className="flow-presentation mt-8 grid overflow-hidden rounded-lg border border-border md:grid-cols-2">
-          <div>
-            <div className="flex items-center gap-3 border-b border-border bg-home-tint px-6 py-5">
-              <Network className="size-6 text-home-brand" />
-              <div><p className="font-semibold">LamportPay</p><p className="mt-1 text-xs text-muted-foreground">One workspace · Your wallet stays yours</p></div>
-            </div>
-            <FlowScene nodes={sceneNodes} flow={flow} branching label="Infrastructure: existing Solana and Jupiter quotes, planned Hyperliquid and future asset routes" />
-          </div>
+        <div ref={flow.ref} {...flow.focusProps} data-running={flow.inView && flow.playing && !flow.reduced} className="flow-presentation mt-8 grid overflow-hidden rounded-lg border border-border">
           <div className="flow-spotlight p-6 sm:p-8">
+            <FlowControls flow={flow} count={branches.length} label="connected systems" />
             <div key={selected} className="flow-detail">
               <p className="text-xs font-semibold text-home-brand">{active.status}</p>
               <p className="mt-7 font-mono text-5xl font-semibold text-home-brand/30">0{selected + 1}</p>
@@ -71,7 +65,13 @@ export function ConnectedSystems() {
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{active.detail}</p>
               <p className="mt-4 text-xs font-medium text-home-brand">{active.note}</p>
             </div>
-            <FlowControls flow={flow} count={branches.length} label="connected systems" />
+          </div>
+          <div>
+            <div className="flex items-center gap-3 border-b border-border bg-home-tint px-6 py-5">
+              <Network className="size-6 text-home-brand" />
+              <div><p className="font-semibold">LamportPay</p><p className="mt-1 text-xs text-muted-foreground">One workspace · Your wallet stays yours</p></div>
+            </div>
+            <FlowScene nodes={sceneNodes} flow={flow} branching label="Infrastructure: existing Solana and Jupiter quotes, planned Hyperliquid and future asset routes" />
           </div>
         </div>
         <div className="mt-6 grid gap-5 border-y border-border py-5 md:grid-cols-3">

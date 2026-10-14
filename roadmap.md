@@ -1,5 +1,10 @@
 # Roadmap
 
+## Manual homepage content navigation
+
+- [x] Remove automatic content changes and play/pause from explanatory journeys; put content above step selectors with opposite-corner previous/next controls
+- [x] Verify manual selection and stable reading after waiting beyond the old timer, at 411px and 1280px; no page errors or horizontal overflow, latest build OK
+
 ## Mobile homepage polish
 
 - [x] Compact the mobile hero and align homepage sections, diagrams, map and controls while preserving desktop presentation
