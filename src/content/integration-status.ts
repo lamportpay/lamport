@@ -16,7 +16,7 @@ export const INTEGRATION_GROUPS = [
       { name: "Hyperliquid", status: "IN PROGRESS", detail: FUTURE_EXPLORATION[1].detail, asset: "/partners/hyperliquid.svg" },
       { name: "Major cryptocurrencies", status: "PLANNED", detail: "Bitcoin, Ethereum, Ripple and Litecoin deposits are on the roadmap. Today only USDC on Solana is enabled.", asset: "/tokens/btc-eth.png" },
       { name: "Yellow Card & payout APIs", status: "PLANNED", detail: "Discussions ongoing with Yellow Card and other payout API providers similar to Stables. No agreement or integration is confirmed.", asset: "/partners/yellowcard.svg" },
-      { name: "New countries", status: "PLANNED", detail: "Nigeria, Pakistan and further destinations are planned corridors. They are not active today.", asset: "/flags/NG.svg" },
+      { name: "New countries", status: "PLANNED", detail: "Pakistan and Nigeria are proposed Phase 2 corridors after funding, subject to payout-partner support and local compliance review. They are not active today.", asset: "/flags/NG.svg" },
     ],
   },
   {
@@ -27,11 +27,10 @@ export const INTEGRATION_GROUPS = [
     ],
   },
   {
-    title: "Further ahead", label: "Longer-term goals",
+    title: "Further ahead", label: "Proposed stages",
     entries: [
-      { name: "Live bank payouts", status: "PLANNED", detail: "Production identity verification and real fiat payouts switch on only after production approval. They remain DISABLED today." },
-      { name: "More chains & wallets", status: "PLANNED", detail: "Additional networks and wallet connections beyond Solana are under evaluation. No timeline is committed." },
-      { name: "Mobile experience", status: "PLANNED", detail: "A dedicated mobile app experience is a longer-term goal. The web app works on mobile today." },
+      { name: "Controlled production launch", status: "PLANNED", detail: "External security review, partner sign-off and a LIVE readiness review, then small real-money payouts. Production KYC and fiat payouts remain DISABLED today." },
+      { name: "B2B payout APIs & remittance", status: "PLANNED", detail: "Business payout APIs and remittance use cases on the same payment engine. Depends on partner-licensed products and regulatory approvals; no date committed." },
     ],
   },
 ] as const;
