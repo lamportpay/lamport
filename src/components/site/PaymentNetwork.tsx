@@ -67,9 +67,14 @@ export function PaymentNetwork() {
             <ShieldCheck className="size-4 text-home-brand" /> Non-custodial by design
           </span>
         </div>
-        <div ref={flow.ref} {...flow.focusProps} data-running={flow.inView && flow.playing && !flow.reduced} className="flow-presentation mt-8 grid overflow-hidden rounded-lg border border-border">
+        <div ref={flow.ref} {...flow.focusProps} data-running={flow.inView && flow.playing && !flow.reduced} className="flow-presentation mt-8 grid overflow-hidden rounded-lg border border-border md:grid-cols-2">
+          <div className="hidden md:block">
+            <FlowSceneVertical nodes={nodes} flow={flow} label="Illustrative payment route: wallet, LamportPay, Jupiter, Stables, bank account" />
+          </div>
           <div className="flow-spotlight p-6 sm:p-8">
-            <FlowControls flow={flow} count={nodes.length} label="payment route" />
+            <div className="md:hidden">
+              <FlowControls flow={flow} count={nodes.length} label="payment route" />
+            </div>
             <div key={selected} className="flow-detail">
               <p className="text-xs font-semibold text-home-brand">PAYMENT ROUTE · DEMO / SIMULATED</p>
               <p className="mt-7 font-mono text-5xl font-semibold text-home-brand/30">0{selected + 1}</p>
@@ -81,8 +86,13 @@ export function PaymentNetwork() {
               <span className="flex items-center gap-2"><img src="/tokens/sol.svg" alt="" width="24" height="24" />SOL · swap quotes</span>
               <span className="flex items-center gap-2"><img src="/tokens/usdc.svg" alt="" width="24" height="24" />USDC · direct</span>
             </div>
+            <div className="mt-6 hidden md:block">
+              <FlowControls flow={flow} count={nodes.length} label="payment route" />
+            </div>
           </div>
-          <FlowScene nodes={nodes} flow={flow} label="Illustrative payment route: wallet, LamportPay, Jupiter, Stables, bank account" />
+          <div className="md:hidden">
+            <FlowScene nodes={nodes} flow={flow} label="Illustrative payment route: wallet, LamportPay, Jupiter, Stables, bank account" />
+          </div>
         </div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
           <span>Infrastructure integrations—not financial backing or bank endorsements.</span>
