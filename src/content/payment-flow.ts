@@ -22,7 +22,7 @@ export const PAYMENT_JOURNEY = [
   {
     title: "Sign",
     detail:
-      "Approve in your wallet. In TEST MODE, you sign a devnet memo transaction that moves no funds—not a mainnet deposit or swap.",
+      "Approve in your wallet. In the devnet / sandbox build, you sign a devnet memo transaction that moves no funds—not a mainnet deposit or swap.",
   },
   {
     title: "Processing",
@@ -37,7 +37,7 @@ export const PAYMENT_JOURNEY = [
 ];
 
 export const PAYMENT_SAFETY =
-  "TEST MODE uses Solana devnet and Stables sandbox. Real bank payouts and production identity verification are DISABLED pending production approval.";
+  "DEVNET / SANDBOX: Solana devnet test assets and the Stables sandbox. Real bank payouts and production identity verification are DISABLED pending production approval.";
 
 /** Public identity explanation: ownership proof is not identity/KYC approval. */
 export const VERIFICATION_JOURNEY = [
@@ -67,7 +67,7 @@ export const VERIFICATION_JOURNEY = [
     label: "PRODUCTION PAYOUT DISABLED",
     summary: "Verified sender, checked recipient, then wallet approval.",
     detail:
-      "The server requires an eligible verified Stables customer before preparing a transfer. Own-account holder details come from the verified record; beneficiary payouts require recipient details and purpose. Wallet ownership alone never authorizes a bank payout. TEST MODE approval is a devnet memo that moves no funds.",
+      "The server requires an eligible verified Stables customer before preparing a transfer. Own-account holder details come from the verified record; beneficiary payouts require recipient details and purpose. Wallet ownership alone never authorizes a bank payout. In the devnet / sandbox build, approval is a devnet memo that moves no funds.",
   },
 ] as const;
 
@@ -84,6 +84,6 @@ export const PAYMENT_COSTS = [
   {
     title: "Swap & network costs",
     detail:
-      "Any Jupiter swap costs, price impact and Solana network fees are separate. TEST MODE does not execute mainnet swaps or move payment funds.",
+      "Any Jupiter swap costs, price impact and Solana network fees are separate. The devnet / sandbox build does not execute mainnet swaps or move payment funds.",
   },
 ];

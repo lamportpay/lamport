@@ -1,5 +1,5 @@
 /**
- * TEST MODE / LIVE MODE (shared by server and browser; no secrets here).
+ * DEVNET / SANDBOX mode / LIVE MODE (shared by server and browser; no secrets here).
  *
  * The mode is a property of the SERVER deployment (LAMPORTPAY_MODE), never a
  * browser toggle: a test deployment and a live deployment are separate, with
@@ -20,7 +20,10 @@ export const DEVNET_USDC_MINT = "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
 
 export type ModeProfile = {
   mode: AppMode;
-  label: "TEST MODE" | "LIVE MODE";
+  /** Public name of this mode, as shown to users. */
+  label: "DEVNET / SANDBOX" | "LIVE MODE";
+  /** Compact form for narrow chips (phones). */
+  shortLabel: "SANDBOX" | "LIVE";
   /** Solana cluster for balances, transactions and explorer links. */
   solanaCluster: SolanaCluster;
   /** Stables environment this mode must talk to. */
@@ -47,7 +50,8 @@ export const TEST_MODE_LIMITS = { min: "15", max: "5000" } as const;
 export const MODE_PROFILES: Record<AppMode, ModeProfile> = {
   test: {
     mode: "test",
-    label: "TEST MODE",
+    label: "DEVNET / SANDBOX",
+    shortLabel: "SANDBOX",
     solanaCluster: "devnet",
     stablesEnvironment: "sandbox",
     realFunds: false,
@@ -59,6 +63,7 @@ export const MODE_PROFILES: Record<AppMode, ModeProfile> = {
   live: {
     mode: "live",
     label: "LIVE MODE",
+    shortLabel: "LIVE",
     solanaCluster: "mainnet-beta",
     stablesEnvironment: "production",
     realFunds: true,
@@ -99,6 +104,8 @@ export function clientBuildMode(): AppMode {
 export type ModeIndicator = {
   tone: "test" | "live" | "error" | "loading";
   label: string;
+  /** Compact form for narrow chips (phones). */
+  short: string;
   detail: string;
   /** True when payments/swaps must not be offered from this page. */
   blocking: boolean;
@@ -116,6 +123,7 @@ export function modeIndicator(
     return {
       tone: "loading",
       label: "CHECKING MODE",
+      short: "CHECKING",
       detail: "Checking the server mode…",
       blocking: true,
     };
@@ -124,14 +132,16 @@ export function modeIndicator(
     return {
       tone: "error",
       label: "MODE MISMATCH",
-      detail: `This page was built for ${build.toUpperCase()} MODE but the server runs ${server.mode.toUpperCase()} MODE. Payments are blocked.`,
+      short: "MISMATCH",
+      detail: `This page was built for ${MODE_PROFILES[build].label} but the server runs ${MODE_PROFILES[server.mode].label}. Payments are blocked.`,
       blocking: true,
     };
   }
   if (!server.ok) {
     return {
       tone: "error",
-      label: `${server.mode.toUpperCase()} MODE · BLOCKED`,
+      label: `${MODE_PROFILES[server.mode].label} · BLOCKED`,
+      short: "BLOCKED",
       detail: server.problems.join(" ") || "The server configuration does not match its mode.",
       blocking: true,
     };
@@ -140,13 +150,15 @@ export function modeIndicator(
     return {
       tone: "live",
       label: "LIVE MODE",
+      short: "LIVE",
       detail: "Real funds. Solana mainnet and the production payout partner.",
       blocking: false,
     };
   }
   return {
     tone: "test",
-    label: "TEST MODE",
+    label: MODE_PROFILES.test.label,
+    short: MODE_PROFILES.test.shortLabel,
     detail: "No real funds can move. Solana devnet test assets and the payout partner's sandbox.",
     blocking: false,
   };
