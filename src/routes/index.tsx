@@ -71,22 +71,6 @@ function Index() {
                 </a>
               </Button>
             </div>
-            <dl className="home-hero-stats mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
-              {[
-                { value: "19", label: "Bank payout countries" },
-                { value: "2%", label: "One transparent service fee" },
-                { value: "0", label: "Funds held by LamportPay" },
-              ].map(({ value, label }) => (
-                <div key={label} className="home-hero-stat">
-                  <dt className="order-2 mt-1 text-xs font-medium text-home-ink/70">
-                    {label}
-                  </dt>
-                  <dd className="order-1 text-2xl font-semibold tracking-tight text-home-brand">
-                    {value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
             <p className="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-home-ink">
               <span className="font-semibold">DEMO / SIMULATED</span> · Controlled test phase. Real
               bank payouts and production identity verification remain disabled.

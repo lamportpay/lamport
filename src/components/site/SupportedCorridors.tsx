@@ -1,7 +1,4 @@
-import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
 import { WORLD_LAND_PATH } from "@/lib/world-map-paths";
-import { Flag } from "@/components/app/Flag";
 
 /**
  * Supported-corridors world map.
@@ -49,13 +46,6 @@ function toXY(lon: number, lat: number) {
 }
 
 export function SupportedCorridors() {
-  const [scanning, setScanning] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (media.matches) return;
-    setScanning(true);
-  }, []);
 
   return (
     <section className="home-section border-t border-border" id="supported-corridors" style={{ overflowX: "clip" }}>
@@ -70,7 +60,6 @@ export function SupportedCorridors() {
         </div>
 
         <div className="corridor-map-frame mx-auto mt-10 max-w-4xl">
-          <div className="corridor-map-scan" aria-hidden="true" data-active={scanning} />
           <svg
             viewBox={`0 0 ${W} ${H}`}
             className="corridor-map"
@@ -137,29 +126,6 @@ export function SupportedCorridors() {
               );
             })}
           </svg>
-
-          <ul className="corridor-legend" aria-label="Supported payout countries">
-            {MARKERS.map((m) => (
-              <li
-                key={m.code}
-                className={cn("corridor-legend-item")}
-                style={{ "--ping-delay": `${m.delay}s` } as React.CSSProperties}
-              >
-                <Flag code={m.code} size={20} />
-                <span className="font-semibold text-home-ink">{m.name}</span>
-                <span className="corridor-legend-currency">{m.currency}</span>
-                <span className="corridor-legend-status">Verified in sandbox</span>
-              </li>
-            ))}
-            {PLANNED_MARKERS.map((m) => (
-              <li key={m.code} className="corridor-legend-item corridor-legend-item-planned">
-                <Flag code={m.code} size={20} />
-                <span className="font-semibold text-home-ink">{m.name}</span>
-                <span className="corridor-legend-currency">{m.currency}</span>
-                <span className="corridor-legend-status">Planned — Phase 2, after funding</span>
-              </li>
-            ))}
-          </ul>
         </div>
 
         <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed text-muted-foreground">
