@@ -108,7 +108,12 @@ export function FeeCalculator() {
           </p>
         </div>
 
-        <div className="mx-auto mt-10 grid max-w-5xl overflow-hidden rounded-3xl border border-border bg-background shadow-xl md:grid-cols-2">
+        <div className="relative mx-auto mt-10 max-w-5xl">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-3 rounded-[2rem] bg-[linear-gradient(135deg,color-mix(in_oklab,var(--home-brand)_35%,transparent),transparent_40%,color-mix(in_oklab,var(--home-brand)_20%,transparent))] opacity-70 blur-xl"
+          />
+          <div className="relative grid overflow-hidden rounded-3xl border border-home-brand/25 bg-background shadow-2xl shadow-home-brand/10 ring-1 ring-home-brand/10 md:grid-cols-2">
           {/* You send */}
           <div className="p-6 sm:p-8">
             <div className="flex items-center justify-between">
@@ -254,6 +259,7 @@ export function FeeCalculator() {
               <Info className="mt-0.5 size-3 shrink-0" />
               Rates refresh every 30 s{updatedAt ? ` · updated ${updatedAt.toLocaleTimeString()}` : ""}. Your firm quote comes from Stables on the payment page.
             </p>
+          </div>
           </div>
         </div>
 
