@@ -9,7 +9,8 @@ import blissLogo from "@/assets/partners/bliss-rent.png.asset.json";
 import zohLogo from "@/assets/partners/zoh.png.asset.json";
 import wharfLogo from "@/assets/partners/wharf-street.png.asset.json";
 import secureLedgerLogo from "@/assets/partners/secure-ledger.png.asset.json";
-import greatWinchesterLogo from "@/assets/partners/great-winchester.png.asset.json";
+import greatWinchesterLogo from "@/assets/partners/great-winchester-crest.png.asset.json";
+import agcLogo from "@/assets/partners/agc-official.png.asset.json";
 
 export type EcosystemRegion = "USA" | "UK" | "UAE";
 
@@ -45,7 +46,7 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
       "UAE logistics business ready to adopt LamportPay's payment services for its business payment needs.",
     region: "UAE",
     sector: "Logistics",
-    logo: null,
+    logo: agcLogo.url,
   },
   {
     name: "Wharf Street Studios",
