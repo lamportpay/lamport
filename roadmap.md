@@ -1,5 +1,11 @@
 # Roadmap
 
+## Admin dashboard organization
+
+- [ ] Organize the shared admin menu and page sections; preserve existing access checks and financial actions
+- [ ] Add overview metrics, attention queue, payment status breakdown, searchable recent payments and system activity
+- [ ] Verify layout, filters and navigation; authenticated end-to-end check requires an admin session
+
 ## Bank field and mobile navigation
 
 - [x] Match the bank selector to input height and left-align names (form flow requires a connected wallet for end-to-end verification)

@@ -27,3 +27,4 @@
 - Public (publishable) backend connection values have built-in fallbacks in `vite.config.ts`, because `.env` is gitignored and a clean-checkout build (publish, Vercel, CI) otherwise ships a browser app that crashes with "Missing Supabase environment variable(s)"; only publishable values may go there, never secrets.
 - Bank logos are static official-site assets referenced by a shared bank-name registry; missing assets retain a neutral fallback so branding never changes payout validation.
 - Bank form selectors use the shared Picker field variant, while marketing mobile navigation uses the accessible right-side Sheet; shared controls preserve keyboard navigation and focus handling.
+- Admin overview presentation uses a browser-safe data model and separate content component; all metrics come from the existing protected dashboard function, so UI organization cannot change financial actions or access controls.
