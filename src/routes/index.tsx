@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PaymentNetwork } from "@/components/site/PaymentNetwork";
 import { ConnectedSystems } from "@/components/site/ConnectedSystems";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
+import { HomeGlance } from "@/components/site/HomeGlance";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { EcosystemSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
 import { PAYMENT_COSTS } from "@/content/payment-flow";
@@ -57,7 +58,7 @@ function Index() {
                 </a>
               </Button>
             </div>
-            <p className="mt-6 max-w-lg text-xs leading-relaxed text-home-ink">
+            <p className="mx-auto mt-6 max-w-lg text-xs leading-relaxed text-home-ink">
               <span className="font-semibold">DEMO / SIMULATED</span> · Controlled test phase. Real
               bank payouts and production identity verification remain disabled.
             </p>
