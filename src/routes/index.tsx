@@ -6,6 +6,7 @@ import { PaymentNetwork } from "@/components/site/PaymentNetwork";
 import { ConnectedSystems } from "@/components/site/ConnectedSystems";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { HomeGlance } from "@/components/site/HomeGlance";
+import { HomeCapabilities } from "@/components/site/HomeCapabilities";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
@@ -77,6 +78,7 @@ function Index() {
             </p>
           </div>
         </section>
+        <HomeCapabilities />
         <FeeCalculator />
         <HomeBankNetwork />
         <PaymentNetwork />
