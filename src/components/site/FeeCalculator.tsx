@@ -260,6 +260,7 @@ export function FeeCalculator() {
               Rates refresh every 30 s{updatedAt ? ` · updated ${updatedAt.toLocaleTimeString()}` : ""}. Your firm quote comes from Stables on the payment page.
             </p>
           </div>
+          </div>
         </div>
 
       </div>
