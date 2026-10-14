@@ -1,5 +1,14 @@
 # Roadmap
 
+## Interactive payout map and hero summary
+
+- [x] Make the world map clickable country by country with smooth zoom, plus/minus and reset controls, and a card showing the selected country's flag, name and status
+- [x] Keep Nigeria and Pakistan as planned markets in amber, show other countries by name only, and remove the green ticks from the map
+- [x] Replace the country row under the banner with one compact card: crypto in (SOL, USDC) to local money out as currency symbols
+- [x] Verify a country click zooms correctly with no page errors and no horizontal overflow at phone and desktop sizes
+- [ ] Automatic checks on the newest commit: that run stopped at install because the lock file was only updated by the follow-up sync commit; a clean install from the current lock file plus lint and 524 unit tests now pass locally, so this push re-runs every check on the current copy
+
+
 ## Manual homepage content navigation
 
 - [x] Remove automatic content changes and play/pause from explanatory journeys; put content above step selectors with opposite-corner previous/next controls
@@ -109,7 +118,7 @@
 
 - [x] Declare `@lovable.dev/mcp-js` in package.json and bun.lock (the project's code used it, but the dependency was missing after the import, so the site could not be built)
 - [x] Production build OK; typecheck clean; 489 unit tests pass; agent endpoints respond (protected, 401 without a sign-in; public info endpoint 200)
-- [ ] Automatic sync of this fix to GitHub (still waiting; it is the only difference left between the working copy and main)
+- [x] Automatic sync of this fix to GitHub (on main; the working copy and main match, verified 14 Oct 2026)
 
 ## Done: Partners section — agent
 
