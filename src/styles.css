@@ -478,6 +478,8 @@
   );
   --home-gradient: linear-gradient(115deg, oklch(0.48 0.2 258), oklch(0.43 0.25 295));
   --home-text-gradient: linear-gradient(110deg, oklch(0.45 0.2 258), oklch(0.43 0.25 295));
+  --home-cap-stroke-a: oklch(0.52 0.19 258);
+  --home-cap-stroke-b: oklch(0.45 0.24 292);
 }
 .dark {
   --home-brand: oklch(0.78 0.12 275);
@@ -487,6 +489,8 @@
   --home-tint: oklch(0.25 0.055 275);
   --home-surface: oklch(0.18 0.025 265);
   --home-ink: oklch(0.24 0.055 270);
+  --home-cap-stroke-a: oklch(0.72 0.14 258);
+  --home-cap-stroke-b: oklch(0.74 0.15 292);
 }
 .site-demo-notice {
   background: var(--demo-notice-background);
