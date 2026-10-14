@@ -42,10 +42,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="sticky top-0 z-40 backdrop-blur-lg bg-background/75 border-b border-border/60 print:hidden">
-        <div role="note" aria-label="Current platform mode" className="site-demo-notice flex min-h-9 items-center justify-center gap-2 px-4 py-2 text-center text-xs leading-relaxed">
-          <FlaskConical className="size-4 shrink-0" aria-hidden="true" />
-          <p><strong>DEVNET / SANDBOX</strong></p>
-        </div>
         <LiveRatesTicker />
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center group" aria-label="LamportPay home">
