@@ -1,6 +1,7 @@
-import { ArrowRight } from "lucide-react";
+import { Landmark, ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { BankIcon } from "@/components/app/BankIcon";
+import { Flag } from "@/components/app/Flag";
 import { Button } from "@/components/ui/button";
 import { FlowControls } from "@/components/site/FlowPresentation";
 import { useFlowPlayback } from "@/hooks/use-flow-playback";
