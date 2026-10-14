@@ -375,7 +375,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       </nav>
       {/* Live crypto prices, fixed at the bottom: above the phone tab bar, at the
           page edge on desktop. The spacer keeps it from covering content. */}
-      <CryptoPriceTicker bottomClass="bottom-[calc(4rem+env(safe-area-inset-bottom))] sm:bottom-0" />
+      <CryptoPriceTicker bottomClass="bottom-[calc(4rem+1px+env(safe-area-inset-bottom))] sm:bottom-0" />
       <div aria-hidden="true" className="hidden h-8 sm:block print:hidden" />
       <AccountSheet open={accountOpen} onOpenChange={setAccountOpen} />
     </div>
