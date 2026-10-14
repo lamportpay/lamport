@@ -216,27 +216,6 @@ export function RoadmapSection() {
                 <span className="text-muted-foreground">{phase.dependsOn}</span>
               </p>
             </div>
-            <div className="mt-6 hidden items-center gap-2 md:flex">
-              <Button
-                size="icon"
-                variant="outline"
-                aria-label="Previous phase"
-                onClick={() => pick((active - 1 + ROADMAP_PHASES.length) % ROADMAP_PHASES.length)}
-              >
-                <ChevronLeft />
-              </Button>
-              <Button
-                size="icon"
-                variant="outline"
-                aria-label="Next phase"
-                onClick={() => pick((active + 1) % ROADMAP_PHASES.length)}
-              >
-                <ChevronRight />
-              </Button>
-              <span className="ml-2 text-xs text-muted-foreground">
-                {active + 1} / {ROADMAP_PHASES.length}
-              </span>
-            </div>
           </div>
         </div>
         <div className="roadmap-rail relative order-2 mt-8 md:order-1 md:mt-12" role="tablist" aria-label="Roadmap phases">

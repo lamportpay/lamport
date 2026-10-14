@@ -94,7 +94,10 @@ export function IntegrationStatus() {
                     return (
                       <li key={e.name} className="flex flex-col items-center gap-3 [direction:ltr]">
                         <Logo entry={e} />
-                        <span className="rounded-full bg-home-brand px-2 text-[10px] font-semibold text-primary-foreground">{i + 1}</span>
+                        <span className="flex flex-col items-center gap-1 text-center">
+                          <span className="rounded-full bg-home-brand px-2 text-[10px] font-semibold text-primary-foreground">Step {i + 1}</span>
+                          <span className="text-sm font-semibold leading-snug">{e.name}</span>
+                        </span>
                         <Card entry={e} i={i} />
                       </li>
                     );
