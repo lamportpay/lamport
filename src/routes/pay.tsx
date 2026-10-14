@@ -1384,7 +1384,7 @@ function ConvertForm({
           {estimate.error && <ErrorText error={estimate.error} />}
           {testMode && <SandboxNotice />}
           {paySol && testMode && (
-            <Notice tone="info">The swap is priced, not run. You pay in test USDC.</Notice>
+            <Notice tone="info">The swap is priced, not run. You pay in devnet test USDC.</Notice>
           )}
           {ctaButton("hidden lg:flex w-full justify-center py-3.5 text-base")}
           {needsSignIn && (

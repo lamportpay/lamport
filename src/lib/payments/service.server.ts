@@ -1602,7 +1602,7 @@ export async function createPaymentTransfer(
           retry
             ? `The payout partner's sandbox only creates GBP transfers when the amount converted is a multiple of 20 ${label(sourceCurrency)} (this one converts ${groupThousands(toMajor(BigInt(payment.source_amount_minor), sourceCurrency))}). ` +
                 `Start again with ${retry.total} ${label(sourceCurrency)}: ${retry.net} is converted after the LamportPay fee. Devnet / sandbox only; production has no such rule.`
-            : `The payout partner's test system could not create this transfer (error ${e.status}). Start a new payment with a different amount, or another currency.`,
+            : `The payout partner's sandbox could not create this transfer (error ${e.status}). Start a new payment with a different amount, or another currency.`,
           502,
           "stables_sandbox_error",
           retry
