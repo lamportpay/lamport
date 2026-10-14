@@ -1,5 +1,11 @@
 # Roadmap
 
+## Commercial homepage refresh
+
+- [x] Replace crowded homepage sections with a concise business overview and animated payment workflow
+- [x] Show bank branding, accurate infrastructure roles, business partners and transparent costs
+- [x] Move assistant help to a bottom-right support panel; verify workflow selection, bank country switching and support answers on desktop/mobile (no page errors or overflow; hosted asset service used for local logo verification)
+
 ## Admin dashboard organization
 
 - [x] Organize the shared admin menu and page sections; preserve existing access checks and financial actions

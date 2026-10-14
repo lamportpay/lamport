@@ -1,4 +1,15 @@
-import { ArrowRight, CheckCircle2, Compass, ExternalLink, Globe2, Handshake, Layers3, Network, ShieldCheck, Wallet } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Compass,
+  ExternalLink,
+  Globe2,
+  Handshake,
+  Layers3,
+  Network,
+  ShieldCheck,
+  Wallet,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { CURRENT_FLOW, FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
 import {
@@ -60,20 +71,19 @@ export function FutureVisionSection() {
           </div>
           <ul className="mt-6 grid gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-3">
             {FUTURE_EXPLORATION.map((f, index) => (
-              <li
-                key={f.title}
-                className="min-w-0 border-l border-primary/40 pl-4"
-              >
-                <span className="font-mono text-xs text-primary">{String(index + 1).padStart(2, "0")}</span>
+              <li key={f.title} className="min-w-0 border-l border-primary/40 pl-4">
+                <span className="font-mono text-xs text-primary">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <h3 className="mt-2 font-semibold leading-snug">{f.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.detail}</p>
               </li>
             ))}
           </ul>
           <p className="mt-4 text-xs text-muted-foreground">
-            These plans are separate from what is built. Bitcoin, Ethereum and additional assets
-            are not available for deposits today. Circle and Tether are future partnership goals,
-            not confirmed partners. All new routes depend on feasibility, provider agreements and
+            These plans are separate from what is built. Bitcoin, Ethereum and additional assets are
+            not available for deposits today. Circle and Tether are future partnership goals, not
+            confirmed partners. All new routes depend on feasibility, provider agreements and
             compliance review; no delivery dates are committed.
           </p>
         </div>
@@ -92,25 +102,36 @@ export function RoadmapSection() {
       setVisible(true);
       return;
     }
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry?.isIntersecting) {
-        setVisible(true);
-        observer.disconnect();
-      }
-    }, { threshold: 0.15 });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
   const icons = [Wallet, ShieldCheck, Layers3, Handshake, Globe2];
   return (
-    <section ref={sectionRef} className="relative mt-32 overflow-hidden" id="roadmap" data-visible={visible}>
+    <section
+      ref={sectionRef}
+      className="relative mt-32 overflow-hidden"
+      id="roadmap"
+      data-visible={visible}
+    >
       <div className="max-w-7xl mx-auto px-5">
         <Heading
           eyebrow="Roadmap"
           title="The path to global payouts."
           intro="Five milestones. A validated foundation, followed by security, broader asset routes and market expansion."
         />
-        <ol className="roadmap-timeline mt-12 grid lg:grid-cols-5" aria-label="LamportPay development timeline">
+        <ol
+          className="roadmap-timeline mt-12 grid lg:grid-cols-5"
+          aria-label="LamportPay development timeline"
+        >
           {ROADMAP_PHASES.map((p, index) => {
             const current = p.status === "current";
             const Icon = icons[index] ?? Globe2;
@@ -120,38 +141,49 @@ export function RoadmapSection() {
                 className="roadmap-stage relative grid grid-cols-[3.5rem_minmax(0,1fr)] gap-x-5 pb-9 last:pb-0 lg:block lg:pb-0 lg:pr-6"
                 aria-current={current ? "step" : undefined}
               >
-                <div className="roadmap-track relative flex justify-center lg:justify-start" aria-hidden="true">
-                  {index < ROADMAP_PHASES.length - 1 && <span className="roadmap-connector absolute bg-border"><span className="roadmap-flow absolute bg-primary/50" /></span>}
-                  <span className={`roadmap-node relative z-10 flex size-14 shrink-0 items-center justify-center rounded-full border-2 ${current ? "border-success bg-background text-success" : "border-border bg-background text-primary"}`}>
+                <div
+                  className="roadmap-track relative flex justify-center lg:justify-start"
+                  aria-hidden="true"
+                >
+                  {index < ROADMAP_PHASES.length - 1 && (
+                    <span className="roadmap-connector absolute bg-border">
+                      <span className="roadmap-flow absolute bg-primary/50" />
+                    </span>
+                  )}
+                  <span
+                    className={`roadmap-node relative z-10 flex size-14 shrink-0 items-center justify-center rounded-full border-2 ${current ? "border-success bg-background text-success" : "border-border bg-background text-primary"}`}
+                  >
                     <Icon className="size-6" strokeWidth={1.7} />
                   </span>
                 </div>
                 <div className="min-w-0 lg:mt-7">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-                    Phase {String(p.phase).padStart(2, "0")}
-                  </span>
-                  <span
-                    className={`inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider ${
-                      current
-                        ? "text-success"
-                        : "text-muted-foreground"
-                    }`}
-                  >
-                    <span className={`size-1.5 rounded-full ${current ? "bg-success" : "bg-muted-foreground/50"}`} aria-hidden="true" />
-                    {current ? "DEMO" : "PLANNED"}
-                  </span>
-                </div>
-                <h3 className="mt-3 font-semibold leading-snug">{p.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">
-                  {p.summary}
-                </p>
-                <div className="mt-5 border-t border-border/60 pt-3 text-xs">
-                  <div className="flex items-center gap-1.5 font-semibold uppercase tracking-wider text-foreground">
-                    <CheckCircle2 className="size-3.5 text-primary" aria-hidden="true" /> Milestone
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                      Phase {String(p.phase).padStart(2, "0")}
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider ${
+                        current ? "text-success" : "text-muted-foreground"
+                      }`}
+                    >
+                      <span
+                        className={`size-1.5 rounded-full ${current ? "bg-success" : "bg-muted-foreground/50"}`}
+                        aria-hidden="true"
+                      />
+                      {current ? "DEMO" : "PLANNED"}
+                    </span>
                   </div>
-                  <div className="mt-1 text-muted-foreground">{p.dependsOn}</div>
-                </div>
+                  <h3 className="mt-3 font-semibold leading-snug">{p.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">
+                    {p.summary}
+                  </p>
+                  <div className="mt-5 border-t border-border/60 pt-3 text-xs">
+                    <div className="flex items-center gap-1.5 font-semibold uppercase tracking-wider text-foreground">
+                      <CheckCircle2 className="size-3.5 text-primary" aria-hidden="true" />{" "}
+                      Milestone
+                    </div>
+                    <div className="mt-1 text-muted-foreground">{p.dependsOn}</div>
+                  </div>
                 </div>
               </li>
             );
@@ -172,7 +204,9 @@ export function RoadmapSection() {
 function FlagIcon({ id, className = "" }: { id: EcosystemRegion; className?: string }) {
   const svg = "h-3.5 w-5";
   return (
-    <span className={`inline-flex shrink-0 overflow-hidden rounded-[3px] ring-1 ring-foreground/15 ${className}`}>
+    <span
+      className={`inline-flex shrink-0 overflow-hidden rounded-[3px] ring-1 ring-foreground/15 ${className}`}
+    >
       {id === "USA" && (
         <svg viewBox="0 0 24 16" className={svg} aria-hidden="true">
           <rect width="24" height="16" fill="#fff" />
@@ -236,14 +270,14 @@ function CompanyLogo({ c }: { c: EcosystemCompany }) {
   );
 }
 
-function CompanyCard({ c }: { c: EcosystemCompany }) {
+function CompanyCard({ c, compact = false }: { c: EcosystemCompany; compact?: boolean }) {
   return (
     <li>
       <a
         href={c.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="group flex h-full flex-col gap-4 rounded-2xl border border-border/60 bg-card/80 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
+        className={`group flex h-full flex-col gap-4 border border-border/60 bg-card/80 p-5 transition-all duration-300 hover:border-primary/50 ${compact ? "rounded-lg" : "rounded-2xl hover:-translate-y-1 hover:shadow-lg"}`}
       >
         <div className="flex items-center gap-4">
           <CompanyLogo c={c} />
@@ -254,7 +288,7 @@ function CompanyCard({ c }: { c: EcosystemCompany }) {
             </span>
           </div>
         </div>
-        <p className="text-sm text-muted-foreground flex-1">{c.description}</p>
+        {!compact && <p className="text-sm text-muted-foreground flex-1">{c.description}</p>}
         <div className="flex items-center justify-between">
           <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
             {c.sector}
@@ -268,20 +302,29 @@ function CompanyCard({ c }: { c: EcosystemCompany }) {
   );
 }
 
-export function EcosystemSection() {
+export function EcosystemSection({ compact = false }: { compact?: boolean } = {}) {
   const companies = publicEcosystem();
   const present = ECOSYSTEM_REGIONS.filter((r) => companies.some((c) => c.region === r.id));
   if (companies.length === 0) return null;
   return (
-    <section className="relative mt-32 overflow-hidden" id="ecosystem">
+    <section
+      className={`relative overflow-hidden ${compact ? "home-section" : "mt-32"}`}
+      id="ecosystem"
+    >
       <div className="max-w-6xl mx-auto px-5">
         <Heading
           eyebrow="Business partners"
           title="Partners ready to adopt LamportPay."
-          intro="Our confirmed business partners are ready to use LamportPay's payment services. We are also in discussions with additional businesses to grow our ecosystem and bring more partners on board."
+          intro={
+            compact
+              ? undefined
+              : "Our confirmed business partners are ready to use LamportPay's payment services. We are also in discussions with additional businesses to grow our ecosystem and bring more partners on board."
+          }
         />
         <p className="mt-4 mx-auto max-w-2xl text-center text-sm text-muted-foreground">
-          Onboarding is planned. Fiat payouts remain demo-only until production approval; readiness does not mean live payment processing.
+          {compact
+            ? "Business adoption partners · Onboarding PLANNED, not live payment integrations."
+            : "Onboarding is planned. Fiat payouts remain demo-only until production approval; readiness does not mean live payment processing."}
         </p>
         <div
           aria-label="Countries where our partners are based"
@@ -302,24 +345,26 @@ export function EcosystemSection() {
             ))}
           </div>
         </div>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
-          <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            <Network className="w-4 h-4" /> Integrated today:
-          </span>
-          {[
-            "Solana",
-            "Jupiter (live quotes)",
-            "Licensed payout partner (sandbox)",
-            "Phantom · Solflare",
-          ].map((t) => (
-            <span key={t} className="rounded-full border border-border/60 bg-card/70 px-3 py-1">
-              {t}
+        {!compact && (
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm">
+            <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <Network className="w-4 h-4" /> Integrated today:
             </span>
-          ))}
-        </div>
+            {[
+              "Solana",
+              "Jupiter (live quotes)",
+              "Licensed payout partner (sandbox)",
+              "Phantom · Solflare",
+            ].map((t) => (
+              <span key={t} className="rounded-full border border-border/60 bg-card/70 px-3 py-1">
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
         <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {companies.map((c) => (
-            <CompanyCard key={c.name} c={c} />
+            <CompanyCard key={c.name} c={c} compact={compact} />
           ))}
         </ul>
       </div>
