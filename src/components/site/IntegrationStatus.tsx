@@ -1,14 +1,28 @@
-import { ArrowUpRight, Clock3 } from "lucide-react";
+import { ArrowUpRight, Check, Clock3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { INTEGRATION_GROUPS } from "@/content/integration-status";
 
 const PER_ROW = 3;
 const initials = (n: string) => n.split(" ").map((w) => w[0]).join("").slice(0, 2);
 
-function Logo({ entry }: { entry: { name: string; asset?: string } }) {
+function Logo({ entry }: { entry: { name: string; asset?: string; group: string } }) {
+  const done = entry.group === "Connected today";
+  const inProgress = entry.name === "Hyperliquid";
   return (
     <span className="relative z-10 flex size-12 items-center justify-center rounded-full border-2 border-home-brand bg-background shadow-sm">
+      {inProgress && (
+        <span
+          aria-hidden
+          className="absolute -inset-1.5 rounded-full border-2 border-transparent border-t-amber-400 border-r-amber-400/60 motion-safe:animate-spin"
+          style={{ animationDuration: "1.6s" }}
+        />
+      )}
       {entry.asset ? <img src={entry.asset} alt="" width="28" height="28" className="size-7 object-contain" /> : <span className="text-xs font-bold text-home-brand">{initials(entry.name)}</span>}
+      {done && (
+        <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-amber-400 shadow ring-2 ring-background">
+          <Check className="size-3 text-amber-950" strokeWidth={3.5} />
+        </span>
+      )}
     </span>
   );
 }
