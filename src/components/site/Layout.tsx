@@ -43,7 +43,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 backdrop-blur-lg bg-background/75 border-b border-border/60 print:hidden">
         <div role="note" aria-label="Current platform mode" className="site-demo-notice flex min-h-9 items-center justify-center gap-2 px-4 py-2 text-center text-xs leading-relaxed">
           <FlaskConical className="size-4 shrink-0" aria-hidden="true" />
-          <p><strong>DEVNET / SANDBOX</strong><span className="mx-2" aria-hidden="true">·</span>Real bank payouts & production KYC disabled.</p>
+          <p><strong>DEVNET / SANDBOX</strong></p>
         </div>
         <LiveRatesTicker />
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
