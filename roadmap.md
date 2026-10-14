@@ -2,9 +2,9 @@
 
 ## Commercial homepage refresh
 
-- [ ] Explain Web3 verification compactly in infrastructure and in detail on Workflow using shared content
-- [ ] Polish automatic partner slider with pause/reduced-motion behavior and correct Wharf Street Studios to India
-- [ ] Verify public verification links, autoplay, pause and layouts
+- [x] Explain Web3 verification compactly in infrastructure and in detail on Workflow using shared content; retain How it works for customer steps
+- [x] Polish automatic partner slider with pause/reduced-motion behavior and correct Wharf Street Studios to India
+- [x] Verify public verification links, autoplay, pause and layouts at desktop/phone sizes; no page errors or overflow, latest build OK
 - [x] Polish future assets and markets with compact icons and Nigeria / NGN alongside Pakistan
 - [x] Replace detailed partner cards with an accessible official-logo slider; official AGC wordmark and Great Winchester crest added
 - [x] Add an animated connected-system tree with Hyperliquid explicitly planned and disabled; verified desktop/mobile interactions, no overflow/page errors, reduced motion respected
