@@ -27,7 +27,6 @@ function Index() {
     <div className="commercial-home">
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden">
-          <div className="home-hero-grid" aria-hidden="true" />
           <div className="home-orbits home-orbits-left" aria-hidden="true">
             <span className="home-orbit home-orbit-outer" />
             <span className="home-orbit home-orbit-middle" />
