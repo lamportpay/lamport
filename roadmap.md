@@ -2,7 +2,7 @@
 
 ## Commercial homepage refresh
 
-- [ ] Add sourced bank restrictions, integration-status overview and pending Colosseum submission; verify public claims and desktop/mobile presentation
+- [x] Add sourced bank restrictions, integration-status overview and pending Colosseum submission; verified official deposit-warning scope, source link, desktop/mobile labels, no overflow or page errors and build OK
 - [x] Animate Payment route, Bank destinations and Connected systems with sequenced flows, spotlight panels and accessible playback; verified desktop/mobile autoplay, controls, reduced motion and no page errors or overflow
 - [x] Explain Web3 verification compactly in infrastructure and in detail on Workflow using shared content; retain How it works for customer steps
 - [x] Polish automatic partner slider with pause/reduced-motion behavior and correct Wharf Street Studios to India
