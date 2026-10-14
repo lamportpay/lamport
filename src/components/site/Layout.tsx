@@ -133,7 +133,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
 const socialLinks = [
   { label: "X (Twitter)", href: "https://x.com/LamportPay", icon: Twitter },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/lamport-pay-31a564426/", icon: Linkedin },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/lamportpay", icon: Linkedin },
   { label: "GitHub", href: "https://github.com/lamportpay", icon: Github },
 ] as const;
 
