@@ -523,14 +523,28 @@
 }
 .home-hero {
   min-height: 560px;
-  color: var(--home-ink);
+  color: oklch(0.96 0.015 285);
   background:
-    linear-gradient(to bottom, transparent 58%, var(--card) 94%),
-    radial-gradient(ellipse 70% 60% at 50% 24%, oklch(0.93 0.04 285 / 85%), transparent 72%),
-    radial-gradient(ellipse 60% 65% at 102% 112%, oklch(0.74 0.13 300 / 60%), transparent 72%),
-    radial-gradient(ellipse 55% 60% at -4% 110%, oklch(0.76 0.12 248 / 58%), transparent 72%),
-    radial-gradient(ellipse 46% 34% at 50% -10%, oklch(0.86 0.08 272 / 65%), transparent 70%),
-    var(--card);
+    linear-gradient(to bottom, transparent 55%, var(--card) 97%),
+    radial-gradient(ellipse 55% 45% at 82% 18%, oklch(0.55 0.22 305 / 55%), transparent 70%),
+    radial-gradient(ellipse 50% 42% at 12% 22%, oklch(0.5 0.2 250 / 60%), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 50% 78%, oklch(0.48 0.19 275 / 50%), transparent 72%),
+    radial-gradient(ellipse 34% 30% at 90% 85%, oklch(0.55 0.16 195 / 35%), transparent 70%),
+    radial-gradient(ellipse 30% 26% at 8% 82%, oklch(0.6 0.2 330 / 32%), transparent 70%),
+    radial-gradient(ellipse 90% 70% at 50% 40%, oklch(0.22 0.07 280), transparent 100%),
+    oklch(0.15 0.045 278);
+}
+.home-hero .home-brand-text {
+  background-image: linear-gradient(110deg, oklch(0.85 0.1 250), oklch(0.75 0.16 275));
+}
+.home-hero .home-brand-text-light {
+  background-image: linear-gradient(110deg, oklch(0.78 0.15 300), oklch(0.72 0.17 330));
+}
+.home-hero .text-home-ink {
+  color: oklch(0.96 0.015 285);
+}
+.home-hero .text-home-ink\/70 {
+  color: oklch(0.96 0.015 285 / 72%);
 }
 .home-hero-grid {
   position: absolute;
@@ -538,8 +552,8 @@
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(to right, oklch(0.48 0.23 275 / 6%) 1px, transparent 1px),
-    linear-gradient(to bottom, oklch(0.48 0.23 275 / 6%) 1px, transparent 1px);
+    linear-gradient(to right, oklch(0.85 0.08 275 / 7%) 1px, transparent 1px),
+    linear-gradient(to bottom, oklch(0.85 0.08 275 / 7%) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, black 30%, transparent 75%);
 }
@@ -547,15 +561,15 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid oklch(0.48 0.23 275 / 22%);
+  border: 1px solid oklch(0.85 0.08 285 / 28%);
   border-radius: 999px;
-  background: oklch(0.99 0.005 280 / 80%);
-  backdrop-filter: blur(6px);
+  background: oklch(0.3 0.08 280 / 55%);
+  backdrop-filter: blur(8px);
   padding: 6px 14px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--home-ink);
-  box-shadow: 0 1px 2px oklch(0.48 0.23 275 / 8%);
+  color: oklch(0.94 0.02 285);
+  box-shadow: 0 4px 16px -6px oklch(0.1 0.05 280 / 60%);
 }
 .home-hero-badge-dot {
   width: 7px;
