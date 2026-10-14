@@ -98,6 +98,9 @@ export function SupportedCorridors() {
                     <circle r={7} className="corridor-marker-tick-bg" />
                     <path d="M-3.2 0.4 L-0.8 2.8 L3.4 -2.6" className="corridor-marker-tick-check" />
                   </g>
+                  <text x={x} y={y + 24} textAnchor="middle" className="corridor-marker-label">
+                    {m.name}
+                  </text>
                 </g>
               );
             })}
@@ -109,6 +112,9 @@ export function SupportedCorridors() {
                   <circle cx={x} cy={y} r={4.5} className="corridor-marker-planned-core" />
                   <text x={x} y={y - 16} textAnchor="middle" className="corridor-marker-planned-label">
                     PLANNED
+                  </text>
+                  <text x={x} y={y + 22} textAnchor="middle" className="corridor-marker-planned-name">
+                    {m.name}
                   </text>
                 </g>
               );
