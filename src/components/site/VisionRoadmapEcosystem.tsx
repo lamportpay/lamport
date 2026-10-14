@@ -274,6 +274,7 @@ export function RoadmapSection() {
             })}
           </div>
         </div>
+        </div>
         <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">
           Planned milestones, not delivery commitments. No dates are committed and planned
           partnerships are not confirmed relationships.
