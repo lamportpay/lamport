@@ -2,7 +2,7 @@
 
 ## Commercial homepage refresh
 
-- [ ] Animate Payment route, Bank destinations and Connected systems with sequenced flows, spotlight panels and accessible playback; verify desktop/mobile and reduced motion
+- [x] Animate Payment route, Bank destinations and Connected systems with sequenced flows, spotlight panels and accessible playback; verified desktop/mobile autoplay, controls, reduced motion and no page errors or overflow
 - [x] Explain Web3 verification compactly in infrastructure and in detail on Workflow using shared content; retain How it works for customer steps
 - [x] Polish automatic partner slider with pause/reduced-motion behavior and correct Wharf Street Studios to India
 - [x] Verify public verification links, autoplay, pause and layouts at desktop/phone sizes; no page errors or overflow, latest build OK
