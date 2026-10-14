@@ -23,6 +23,7 @@ export function useModeStatus(): { status: ModeStatus | null; indicator: ModeInd
       indicator: {
         tone: "error",
         label: "MODE UNKNOWN",
+        short: "UNKNOWN",
         detail: "The server mode could not be checked. Payments are blocked until it can.",
         blocking: true,
       },

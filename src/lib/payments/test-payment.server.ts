@@ -79,7 +79,7 @@ export async function confirmTestPayment(
   const profile = requireModeProfile(status);
   if (status.mode !== "test" || profile.realFunds) {
     throw new PaymentError(
-      "This is the TEST MODE payment check; LIVE payments use the real deposit.",
+      "This is the devnet / sandbox payment check; LIVE payments use the real deposit.",
       409,
       "test_mode_only",
     );

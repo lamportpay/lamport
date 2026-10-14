@@ -64,7 +64,7 @@ export function HomeBankNetwork() {
             <p className="home-eyebrow">Bank destinations</p>
             <h2 className="home-heading">Familiar banks. Local currencies.</h2>
             <p className="mt-3 max-w-xl text-sm text-muted-foreground">
-              Explore examples in our test-mode destination picker. Final bank availability is
+              Explore examples in our devnet / sandbox destination picker. Final bank availability is
               checked by Stables.
             </p>
           </div>

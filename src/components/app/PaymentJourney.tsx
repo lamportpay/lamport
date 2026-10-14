@@ -494,7 +494,7 @@ function statusSteps(p: PaymentView): TimelineStep[] {
         settled === false ? (
           "Not included in the transaction"
         ) : testNoFunds ? (
-          "Test mode: no funds moved, so no fee was charged"
+          "Devnet / sandbox: no funds moved, so no fee was charged"
         ) : p.funding && settled ? (
           <TxLink signature={p.funding.signature} label="Same transaction" />
         ) : undefined,

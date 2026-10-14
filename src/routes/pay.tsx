@@ -1071,7 +1071,7 @@ function ConvertForm({
                 {belowMin
                   ? `The minimum is ${grouped(minSendMajor ?? "0")} ${coinKey.toUpperCase()}.`
                   : aboveMax
-                    ? `The ${testMode ? "TEST MODE " : ""}maximum is ${grouped(maxSendMajor ?? "0")} ${coinKey.toUpperCase()} per payment.`
+                    ? `The ${testMode ? "devnet / sandbox " : ""}maximum is ${grouped(maxSendMajor ?? "0")} ${coinKey.toUpperCase()} per payment.`
                     : blocked
                       ? `More than your ${inputAsset.toUpperCase()} balance.${
                           maxMajor ? ` You can send up to ${grouped(maxMajor)}.` : ""
@@ -1354,7 +1354,7 @@ function ConvertForm({
                           est.sol.priceImpactPct !== null
                             ? `${(Math.abs(est.sol.priceImpactPct) * 100).toFixed(3)}%`
                             : "n/a"
-                        }${testMode ? " · mainnet price, not run in test mode" : ""}`
+                        }${testMode ? " · mainnet price, not run in the sandbox" : ""}`
                       : undefined
                   }
                   value={
@@ -1384,7 +1384,7 @@ function ConvertForm({
           {estimate.error && <ErrorText error={estimate.error} />}
           {testMode && <SandboxNotice />}
           {paySol && testMode && (
-            <Notice tone="info">The swap is priced, not run. You pay in test USDC.</Notice>
+            <Notice tone="info">The swap is priced, not run. You pay in devnet test USDC.</Notice>
           )}
           {ctaButton("hidden lg:flex w-full justify-center py-3.5 text-base")}
           {needsSignIn && (

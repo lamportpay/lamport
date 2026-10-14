@@ -71,12 +71,12 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
 ];
 
 export const ROADMAP_NOTE =
-  "A milestone-led roadmap. Solana / Jupiter is integrated and Hyperliquid integration is in progress; Phase 1 remains in test mode. Additional asset routes, provider APIs and Circle / Tether partnership opportunities are planned, not current capabilities or confirmed relationships. No delivery dates are committed.";
+  "A milestone-led roadmap. Solana / Jupiter is integrated and Hyperliquid integration is in progress; Phase 1 runs on Solana devnet with the payout partner's sandbox. Additional asset routes, provider APIs and Circle / Tether partnership opportunities are planned, not current capabilities or confirmed relationships. No delivery dates are committed.";
 
-/** What works today (test mode: Solana devnet + partner sandbox, no real funds). */
+/** What works today (devnet / sandbox: Solana devnet + partner sandbox, no real funds). */
 export const CURRENT_FLOW = [
   { title: "Supported Solana assets", detail: "SOL, USDC and supported SPL tokens" },
-  { title: "Jupiter-powered swap", detail: "Only when needed; live quotes in test mode" },
+  { title: "Jupiter-powered swap", detail: "Only when needed; live quotes on devnet / sandbox" },
   { title: "USDC", detail: "Payout-ready, in your own wallet" },
   { title: "Verified bank payout", detail: "Licensed partner, own or beneficiary account" },
 ] as const;

@@ -393,7 +393,7 @@ describe("3. The mode indicator reflects the server's environment", () => {
     });
     expect(modeIndicator(body.mode, "test")).toMatchObject({
       tone: "test",
-      label: "TEST MODE",
+      label: "DEVNET / SANDBOX",
       blocking: false,
     });
   });

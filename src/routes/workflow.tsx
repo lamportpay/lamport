@@ -41,7 +41,7 @@ const layers = [
     title: "Jupiter routing",
     status: "LIVE · read-only quotes",
     detail:
-      "SOL → USDC route discovery uses mainnet market data. Mainnet swap execution is DISABLED in TEST MODE.",
+      "SOL → USDC route discovery uses mainnet market data. Mainnet swap execution is DISABLED in the devnet / sandbox build.",
   },
   {
     icon: Landmark,
@@ -288,7 +288,7 @@ function WorkflowPage() {
           </div>
           <p className="mb-6 mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             A signed-in preview of SOL → USDC market routing. Nothing is signed or sent here. Its
-            preview range is not a bank-payment limit, and TEST MODE cannot execute a mainnet swap.
+            preview range is not a bank-payment limit, and the devnet / sandbox build cannot execute a mainnet swap.
           </p>
           <SwapRoutePreviewCard />
         </section>

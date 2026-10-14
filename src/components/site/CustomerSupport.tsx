@@ -28,7 +28,7 @@ function answer(question: string) {
         .join(" ")
     );
   if (/bank|country|countries/.test(q))
-    return "The TEST MODE destination picker offers the United States, United Kingdom, India and Philippines. Bank options depend on the destination and currency; Stables checks final availability and bank details. Real bank payouts remain disabled.";
+    return "The devnet / sandbox destination picker offers the United States, United Kingdom, India and Philippines. Bank options depend on the destination and currency; Stables checks final availability and bank details. Real bank payouts remain disabled.";
   if (/safe|wallet|key|seed/.test(q))
     return (
       "You keep your funds and keys in your own wallet. Never share a seed phrase or private key. Sign-in uses a plain-text message, not a payment transaction. " +

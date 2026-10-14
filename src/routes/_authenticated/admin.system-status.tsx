@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { AdminPage, ErrorState, LoadingState, Panel } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
 import { getSystemStatus } from "@/lib/admin-ops.functions";
+import { MODE_PROFILES } from "@/lib/app-mode";
 
 export const Route = createFileRoute("/_authenticated/admin/system-status")({
   head: () => ({ meta: [{ title: "System status | LamportPay Admin" }] }),
@@ -84,11 +85,11 @@ function SystemStatusPage() {
               />
             </ul>
           </Panel>
-          <Panel title="TEST / LIVE mode">
+          <Panel title="Server mode">
             <ul className="divide-y divide-border/50">
               <Check
                 ok={s.mode.ok}
-                label={`${s.mode.mode.toUpperCase()} MODE${s.mode.ok ? "" : " · BLOCKED"} · Solana ${s.mode.solanaCluster} · Stables ${s.mode.stablesEnvironment}`}
+                label={`${MODE_PROFILES[s.mode.mode].label}${s.mode.ok ? "" : " · BLOCKED"} · Solana ${s.mode.solanaCluster} · Stables ${s.mode.stablesEnvironment}`}
                 detail={
                   s.mode.ok ? "Set by LAMPORTPAY_MODE on the server." : s.mode.problems.join(" ")
                 }

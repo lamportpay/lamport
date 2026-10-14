@@ -9,7 +9,7 @@ const branches = [
     name: "Solana · Jupiter",
     status: "LIVE QUOTES",
     detail:
-      "The existing Solana route. Jupiter supplies live prices; TEST MODE does not execute mainnet swaps.",
+      "The existing Solana route. Jupiter supplies live prices; the devnet / sandbox build does not execute mainnet swaps.",
     note: "Existing quote infrastructure",
     planned: false,
   },

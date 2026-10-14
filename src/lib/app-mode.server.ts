@@ -73,13 +73,13 @@ function looksTestCluster(url: string | undefined): boolean {
 function testProblems(env: Env): string[] {
   const problems: string[] = [];
   if (!isSandboxStables(env)) {
-    problems.push("TEST MODE must use the Stables sandbox API, not production.");
+    problems.push("Devnet / sandbox mode must use the Stables sandbox API, not production.");
   }
   if (env["STABLES_API_KEY"]?.trim().startsWith("sti_live_")) {
-    problems.push("TEST MODE must not hold a live Stables key.");
+    problems.push("Devnet / sandbox mode must not hold a live Stables key.");
   }
   if (looksMainnet(testRpcUrl(env))) {
-    problems.push("TEST MODE's Solana RPC (SOLANA_DEVNET_RPC_URL) points at mainnet.");
+    problems.push("The devnet / sandbox Solana RPC (SOLANA_DEVNET_RPC_URL) points at mainnet.");
   }
   // The team's original rule assumed two databases (dev + live). On Lovable's
   // single backend the preview and the published app share one database, so
@@ -87,7 +87,7 @@ function testProblems(env: Env): string[] {
   // acknowledges that with LAMPORTPAY_SHARED_DB=1 (no other DB exists).
   const sharedDb = (env["LAMPORTPAY_SHARED_DB"] ?? "").trim() === "1";
   if (!sharedDb && (env["SUPABASE_URL"] ?? "").includes(LIVE_SUPABASE_REF)) {
-    problems.push("TEST MODE must not use the live database.");
+    problems.push("Devnet / sandbox mode must not use the live database.");
   }
   return problems;
 }
@@ -179,7 +179,7 @@ export function requireRealFundsMode(status: ModeStatus = currentMode()): void {
   const profile = requireModeProfile(status);
   if (!profile.realFunds) {
     throw new PaymentError(
-      "TEST MODE: moving real funds is impossible here. Use test assets; the sandbox deposit is simulated by an admin.",
+      "Devnet / sandbox mode: moving real funds is impossible here. Use devnet test assets; the sandbox deposit is simulated by an admin.",
       409,
       "test_mode_no_real_funds",
     );
@@ -213,14 +213,14 @@ export function endpointAllowed(
   if (kind === "stables") {
     const sandbox = host.includes(STABLES_SANDBOX_HOST_MARK);
     if (mode === "test" && !sandbox)
-      return { ok: false, reason: "TEST MODE: the production Stables API is blocked." };
+      return { ok: false, reason: "Devnet / sandbox mode: the production Stables API is blocked." };
     if (mode === "live" && sandbox)
       return { ok: false, reason: "LIVE MODE: the Stables sandbox is blocked." };
     return { ok: true };
   }
   if (kind === "solana_rpc") {
     if (mode === "test" && looksMainnet(url))
-      return { ok: false, reason: "TEST MODE: Solana mainnet RPC is blocked." };
+      return { ok: false, reason: "Devnet / sandbox mode: Solana mainnet RPC is blocked." };
     if (mode === "live" && looksTestCluster(url))
       return { ok: false, reason: "LIVE MODE: Solana test clusters are blocked." };
     return { ok: true };
@@ -236,7 +236,7 @@ export function endpointAllowed(
       return {
         ok: false,
         reason:
-          "TEST MODE: Jupiter swap transactions run on Solana mainnet only, so building or sending one is blocked. Price quotes are read-only and allowed.",
+          "Devnet / sandbox mode: Jupiter swap transactions run on Solana mainnet only, so building or sending one is blocked. Price quotes are read-only and allowed.",
       };
   }
   return { ok: true };

@@ -90,7 +90,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         />
         <ArchRow
           k="Blockchain"
-           v="Solana wallet connection and transaction verification. TEST MODE signs a real devnet memo that moves no funds; Jupiter mainnet execution is disabled."
+           v="Solana wallet connection and transaction verification. The devnet / sandbox build signs a real devnet memo that moves no funds; Jupiter mainnet execution is disabled."
         />
         <ArchRow
           k="Partner"
@@ -119,7 +119,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         USDC payments do not require a swap. For an eligible SOL route, Jupiter supplies the
         conversion quote into USDC, including route costs and price impact. LIVE · read-only market
-        quotes are available in TEST MODE; mainnet swap execution is DISABLED. Additional asset
+        quotes are available in the devnet / sandbox build; mainnet swap execution is DISABLED. Additional asset
         intake requires an explicit allowlist and a validated conversion route, not just a wallet balance.
       </p>
     ),
@@ -131,7 +131,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         Stables is the sole payout infrastructure provider shown for the current flow
         (DEMO/SIMULATED). In the production design, a verified sender authorizes a transfer to
         the single-use deposit address returned by Stables for that payment. LamportPay never
-        holds those funds. Stables reports the bank-payout outcome; TEST MODE instead simulates
+        holds those funds. Stables reports the bank-payout outcome; the devnet / sandbox build instead simulates
         the deposit and follows sandbox status updates. Real bank payouts remain DISABLED.
       </p>
     ),
@@ -142,7 +142,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         USDC on Solana is the enabled settlement currency. The model includes USDT on Solana,
         but USDT payments are currently DISABLED. SOL routing is available where supported by
-        the wallet; TEST MODE does not execute the conversion or move payment funds.
+        the wallet; the devnet / sandbox build does not execute the conversion or move payment funds.
         Bitcoin, Ethereum and other networks are PLANNED exploration, not accepted deposits.
         Hyperliquid is PLANNED / integration in progress; trading, deposits and withdrawals remain DISABLED.
       </p>
@@ -155,7 +155,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         The app offers configured destination countries and fills the payout currency from a
         country reference table. That reference is not a promise of coverage: Stables quotes
         determine whether a country/currency pair is available, and Stables validates the required
-        bank fields. TEST MODE restricts the country picker to sandbox destinations; production
+        bank fields. The devnet / sandbox build restricts the country picker to sandbox destinations; production
         coverage is not confirmed. Limits are shown in the payment app and checked before approval.
       </p>
     ),
@@ -218,7 +218,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         <p>
           Optional minimum and maximum fee bounds are off by default. In production, LamportPay's
           revenue transfer is separate from the Stables deposit within the user-signed transaction;
-          no additional LamportPay swap fee is charged. TEST MODE collects no real revenue.
+          no additional LamportPay swap fee is charged. The devnet / sandbox build collects no real revenue.
         </p>
       </div>
     ),
@@ -230,7 +230,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         <List
           items={ROADMAP_PHASES.map(
             (p) =>
-              `Phase ${p.phase}: ${p.title} (${p.status === "current" ? "DEMO / TEST MODE" : "PLANNED"}). ${p.summary} Milestone: ${p.dependsOn}`,
+              `Phase ${p.phase}: ${p.title} (${p.status === "current" ? "DEMO / DEVNET-SANDBOX" : "PLANNED"}). ${p.summary} Milestone: ${p.dependsOn}`,
           )}
         />
         <p className="text-sm">{ROADMAP_NOTE}</p>

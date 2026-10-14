@@ -157,7 +157,7 @@ export function TestPayPanel({
       {busy === "sign" && (
         <p className="flex items-start gap-2 text-xs text-muted-foreground" role="status">
           <ShieldCheck className="w-4 h-4 shrink-0 text-primary" />
-          Review and approve this transaction in your wallet. TEST MODE: it is a Solana devnet
+          Review and approve this transaction in your wallet. It is a Solana devnet
           transaction that moves no funds — only a tiny devnet network fee. Never share your seed
           phrase.
         </p>
