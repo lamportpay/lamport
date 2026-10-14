@@ -48,7 +48,7 @@ function Source({ value }: { value: "admin" | "env" | "test_mode" }) {
       {value === "admin"
         ? "set in admin"
         : value === "test_mode"
-          ? "TEST MODE limit (stored value applies in LIVE MODE)"
+          ? "Devnet / sandbox limit (stored value applies in LIVE MODE)"
           : ".env default"}
     </span>
   );

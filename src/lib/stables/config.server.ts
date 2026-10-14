@@ -58,7 +58,7 @@ export function getStablesConfig(): StablesConfig {
     return { configured: false, reason: "LIVE MODE cannot use a Stables test key." };
   }
   if (mode === "test" && apiKey.startsWith("sti_live_")) {
-    return { configured: false, reason: "TEST MODE cannot use a live Stables key." };
+    return { configured: false, reason: "Devnet / sandbox mode cannot use a live Stables key." };
   }
 
   return { configured: true, apiKey, apiUrl, environment };
