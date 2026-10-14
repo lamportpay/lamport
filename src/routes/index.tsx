@@ -8,6 +8,7 @@ import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { HomeGlance } from "@/components/site/HomeGlance";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { IntegrationStatus } from "@/components/site/IntegrationStatus";
+import { SupportedCorridors } from "@/components/site/SupportedCorridors";
 import { EcosystemSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { pageSeo } from "@/lib/seo";
@@ -96,6 +97,7 @@ function Index() {
         <PaymentNetwork />
         <HomeBankNetwork />
         <ConnectedSystems />
+        <SupportedCorridors />
         <EcosystemSection compact />
         <IntegrationStatus />
         <RoadmapSection />
