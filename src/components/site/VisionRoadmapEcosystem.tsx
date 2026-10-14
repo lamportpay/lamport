@@ -233,7 +233,7 @@ export function RoadmapSection() {
                   aria-selected={on}
                   aria-controls="roadmap-spotlight"
                   onClick={() => pick(i)}
-                  className="roadmap-step group flex flex-col items-center gap-3 text-center focus-visible:outline-none"
+                  className="roadmap-step group flex flex-col items-center gap-3 rounded-xl border border-transparent px-1 py-2 text-center transition-colors hover:bg-home-tint focus-visible:outline-2 focus-visible:outline-ring data-[on=true]:border-home-brand/30 data-[on=true]:bg-home-tint data-[on=true]:shadow-sm"
                   data-on={on}
                   data-done={done}
                 >
