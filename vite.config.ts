@@ -60,6 +60,11 @@ export default defineConfig(({ command, mode }) => {
     Object.entries(viteEnv).map(([key, value]) => [`import.meta.env.${key}`, JSON.stringify(value)]),
   );
 
+  // Dev server: `buffer` is CommonJS, so the browser has to receive it through
+  // Vite's dependency pre-bundler (see optimizeDeps.include below). Serving
+  // node_modules/buffer/index.js raw hands the browser a module with no exports.
+  const isDevServer = command === "serve";
+
   return {
     define: envDefine,
     css: { transformer: "lightningcss" },
@@ -85,7 +90,14 @@ export default defineConfig(({ command, mode }) => {
       ],
     },
     optimizeDeps: {
-      include: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime"],
+      include: [
+        "react",
+        "react-dom",
+        "react-dom/client",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "lamportpay-real-buffer",
+      ],
     },
     plugins: [
       tailwindcss(),
@@ -126,8 +138,13 @@ export default defineConfig(({ command, mode }) => {
         // (web3.js needs the full API to serialize a transaction), the server
         // gets Node's own Buffer through src/lib/buffer-server-buffer.ts.
         resolveId(id, _importer, options) {
-          if (id === "lamportpay-real-buffer")
-            return options?.ssr ? bufferServerStub : realBufferPackage;
+          if (id === "lamportpay-real-buffer") {
+            if (options?.ssr) return bufferServerStub;
+            // Dev: leave it to Vite's pre-bundler (optimizeDeps.include) so the
+            // CommonJS package arrives as ESM. The build keeps the direct path.
+            if (isDevServer) return null;
+            return realBufferPackage;
+          }
           if (id === "buffer" || id === "buffer/")
             return options?.ssr ? bufferServerStub : browserBufferShim;
           // node:buffer stays native on the server: that is what the stub re-exports.
