@@ -44,6 +44,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           <FlaskConical className="size-4 shrink-0" aria-hidden="true" />
           <p><strong>DEVNET / SANDBOX</strong><span className="mx-2" aria-hidden="true">·</span>Real bank payouts & production KYC disabled.</p>
         </div>
+        <LiveRatesTicker />
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center group" aria-label="LamportPay home">
             <BrandLogo />
