@@ -158,10 +158,7 @@ const STATUS_TEXT = {
 
 export function HomeCapabilities() {
   return (
-    <section
-      aria-labelledby="home-capabilities-heading"
-      className="home-capabilities home-section"
-    >
+    <section aria-labelledby="home-capabilities-heading" className="home-capabilities home-section">
       {/* Shared gradient for the hexagon strokes; referenced by id from every icon. */}
       <svg aria-hidden="true" focusable="false" width="0" height="0" className="absolute">
         <defs>
