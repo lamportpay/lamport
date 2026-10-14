@@ -1,5 +1,11 @@
 # Roadmap
 
+## Mode wording: Devnet / Sandbox
+
+- [x] Rename the customer-facing mode name from "TEST MODE" / "TESTNET / DEMO MODE" to "DEVNET / SANDBOX" in the site notice, hero, journeys, docs, compliance, white paper, workflow, payment page, admin labels and server messages
+- [x] Keep the server's own mode key, limits, error codes and endpoint guards untouched; LIVE MODE keeps its name so real funds stay unmistakable
+- [x] Verify every public page shows the new wording with none of the old labels left, no page errors, typecheck clean and 524 unit tests passing
+
 ## Homepage navigation and accessibility
 
 - [x] Expose desktop navigation and visible Open App action; retain mobile drawer
