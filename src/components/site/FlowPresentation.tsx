@@ -20,7 +20,17 @@ export function FlowScene({ nodes, flow, label, branching = false }: { nodes: Sc
   const height = nodes.length * 78 + 48;
   return (
     <div className="flow-scene relative flex items-center p-4 sm:p-7">
-      <svg viewBox={`0 0 480 ${height}`} className="w-full" role="img" aria-label={label}>
+      <ol className="grid w-full gap-2 md:hidden" aria-label={label}>
+        {nodes.map(({ title, label: status, icon: Icon, planned }, index) => (
+          <li key={title}>
+            <Button variant="outline" aria-pressed={index === flow.active} onClick={() => flow.pick(index)} className={`h-auto min-h-14 w-full justify-start gap-3 whitespace-normal rounded-lg px-3 py-2 text-left ${index === flow.active ? "border-home-brand bg-card text-home-ink" : "border-border bg-card/80"} ${planned ? "border-dashed" : ""}`}>
+              <span className="grid size-8 shrink-0 place-items-center rounded-md bg-home-tint text-home-brand"><Icon className="size-4" /></span>
+              <span className="min-w-0"><span className="block text-sm font-semibold">{title}</span><span className="block text-[10px] font-medium text-muted-foreground">{status}</span></span>
+            </Button>
+          </li>
+        ))}
+      </ol>
+      <svg viewBox={`0 0 480 ${height}`} className="hidden w-full md:block" role="img" aria-label={label}>
         <path d={`M36 36 V${height - 48}`} className="flow-wire" />
         {!branching && <path d={`M36 36 V${36 + flow.active * 78}`} className="flow-wire flow-wire-active" />}
         {nodes.map(({ title, label: status, icon: Icon, planned }, index) => {

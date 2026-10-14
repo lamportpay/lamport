@@ -1,5 +1,10 @@
 # Roadmap
 
+## Mobile homepage polish
+
+- [x] Compact the mobile hero and align homepage sections, diagrams, map and controls while preserving desktop presentation
+- [x] Verify at 360px/411px and desktop: menu → Docs, bank switching, roadmap controls, calculator → /pay handoff, no page errors or horizontal overflow; animated map scroll stable and latest build OK
+
 ## Commercial homepage refresh
 
 - [x] Add sourced bank restrictions, integration-status overview and pending Colosseum submission; verified official deposit-warning scope, source link, desktop/mobile labels, no overflow or page errors and build OK
