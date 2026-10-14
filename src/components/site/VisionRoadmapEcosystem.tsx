@@ -301,13 +301,21 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
                 </h3>
                 <div className="mt-4 flex items-center justify-center gap-2 border-t border-border pt-3 text-[11px] text-muted-foreground">
                   {c.region === "UAE" ? (
-                    <svg viewBox="0 0 24 16" width="20" height="14" aria-hidden="true" className="shrink-0 rounded-sm">
+                    <svg
+                      viewBox="0 0 24 16"
+                      width="20"
+                      height="14"
+                      aria-hidden="true"
+                      className="shrink-0 rounded-sm"
+                    >
                       <rect width="24" height="16" fill="#fff" />
                       <rect width="24" height="5.33" fill="#00843D" />
                       <rect y="10.67" width="24" height="5.33" fill="#000" />
                       <rect width="7" height="16" fill="#C8102E" />
                     </svg>
-                  ) : <Flag code={regionCodes[c.region]} size={20} />}
+                  ) : (
+                    <Flag code={regionCodes[c.region]} size={20} />
+                  )}
                   {regionNames[c.region]}
                 </div>
               </a>
