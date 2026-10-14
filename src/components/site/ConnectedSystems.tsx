@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowDown, Check, Landmark, LockKeyhole, Network, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FUTURE_EXPLORATION } from "@/content/roadmap";
+import { VerificationJourney } from "@/components/site/VerificationJourney";
 
 const branches = [
   {
@@ -138,6 +139,7 @@ export function ConnectedSystems() {
           and withdrawals are disabled. Technology providers are not investors or guarantors;
           production KYC and fiat payouts remain disabled.
         </p>
+        <VerificationJourney compact />
       </div>
     </section>
   );

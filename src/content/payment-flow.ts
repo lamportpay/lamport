@@ -10,6 +10,14 @@ export const PAYMENT_JOURNEY = [
 
 export const PAYMENT_SAFETY = "TEST MODE uses Solana devnet and Stables sandbox. Real bank payouts and production identity verification are DISABLED pending production approval.";
 
+/** Public identity explanation: ownership proof is not identity/KYC approval. */
+export const VERIFICATION_JOURNEY = [
+  { title: "Prove wallet ownership", label: "LIVE · MESSAGE SIGN-IN", summary: "One message signature. No payment or seed phrase.", detail: "Connect a Solana wallet and sign a plain-text sign-in message. This proves control of the wallet—not your legal identity. It is not a transaction and does not move funds." },
+  { title: "Verify the signed proof", label: "LIVE · SERVER CHECKS", summary: "Origin, freshness and signature checked by LamportPay.", detail: "LamportPay checks the message origin, age and Ed25519 signature and prevents signature reuse. The verified wallet is linked to the customer account; payment requests must use the linked wallet." },
+  { title: "Complete hosted identity checks", label: "DEMO / SIMULATED · KYC", summary: "Stables handles identity checks on its hosted page.", detail: "After a quote and bank-detail checks, any required identity verification takes place on Stables’ hosted sandbox page. LamportPay keeps the verification link and status, not identity documents. Wallet-only customers provide the email Stables requires." },
+  { title: "Check eligibility before transfer", label: "PRODUCTION PAYOUT DISABLED", summary: "Verified sender, checked recipient, then wallet approval.", detail: "The server requires an eligible verified Stables customer before preparing a transfer. Own-account holder details come from the verified record; beneficiary payouts require recipient details and purpose. Wallet ownership alone never authorizes a bank payout. TEST MODE approval is a devnet memo that moves no funds." },
+] as const;
+
 export const PAYMENT_COSTS = [
   { title: "LamportPay fee", detail: "One fee, taken out of the total you send—not an extra conversion fee plus a swap fee. The app shows the fee amount before approval." },
   { title: "Payout partner fee", detail: "Stables costs are quoted separately. They are not included in LamportPay’s fee." },

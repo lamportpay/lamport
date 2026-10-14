@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { PAYMENT_JOURNEY } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
+import { VerificationJourney } from "@/components/site/VerificationJourney";
 
 export const Route = createFileRoute("/workflow")({
   head: () => pageSeo({
     path: "/workflow",
-    title: "LamportPay Workflow — Integrations and Sandbox Status",
-    description: "Explore the LamportPay integration workflow: wallet identity, quote-first checkout, Stables sandbox verification, devnet approval and authoritative transfer status.",
+    title: "LamportPay Workflow — Web3 Identity and Payment Architecture",
+    description: "Understand LamportPay’s wallet-signature verification, hosted Stables sandbox KYC, payment eligibility and non-custodial Solana payment architecture.",
   }),
   component: WorkflowPage,
 });
@@ -67,6 +68,8 @@ function WorkflowPage() {
             {PAYMENT_JOURNEY.map((step, index) => <li key={step.title} className="flex items-center gap-3 text-xs font-medium"><span className="text-muted-foreground">{String(index + 1).padStart(2, "0")}</span>{step.title}{index < PAYMENT_JOURNEY.length - 1 && <ArrowRight aria-hidden="true" className="size-3 text-muted-foreground" />}</li>)}
           </ol>
         </section>
+
+        <VerificationJourney />
 
         <section className="mt-12" aria-labelledby="mapping-heading">
           <h2 id="mapping-heading" className="text-2xl font-semibold">From request to receipt</h2>
