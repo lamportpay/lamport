@@ -386,7 +386,7 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
             >
               {paused ? <Play /> : <Pause />}
             </Button>
-            <div className="hidden gap-2 md:flex">
+            <div className="flex gap-2 md:hidden">
               <Button
                 variant="outline"
                 size="icon"
