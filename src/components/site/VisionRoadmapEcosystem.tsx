@@ -197,7 +197,12 @@ export function RoadmapSection() {
 }
 
 const regionCodes = { USA: "US", UK: "GB", UAE: "AE", IN: "IN" };
-const regionNames = { USA: "United States", UK: "United Kingdom", UAE: "United Arab Emirates", IN: "India" };
+const regionNames = {
+  USA: "United States",
+  UK: "United Kingdom",
+  UAE: "United Arab Emirates",
+  IN: "India",
+};
 
 function CompanyLogo({ c }: { c: EcosystemCompany }) {
   const [broken, setBroken] = useState(false);
@@ -246,9 +251,15 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
     update();
     media.addEventListener("change", update);
     const el = section.current;
-    const observer = new IntersectionObserver(([entry]) => setInView(Boolean(entry?.isIntersecting)), { threshold: 0.25 });
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(Boolean(entry?.isIntersecting)),
+      { threshold: 0.25 },
+    );
     if (el) observer.observe(el);
-    return () => { media.removeEventListener("change", update); observer.disconnect(); };
+    return () => {
+      media.removeEventListener("change", update);
+      observer.disconnect();
+    };
   }, []);
   useEffect(() => {
     if (paused || interacting || reducedMotion || !inView) return;
@@ -257,7 +268,10 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
       if (!el || document.hidden) return;
       const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
       const item = el.querySelector("li");
-      el.scrollTo({ left: atEnd ? 0 : el.scrollLeft + (item?.getBoundingClientRect().width ?? 260) + 16, behavior: "smooth" });
+      el.scrollTo({
+        left: atEnd ? 0 : el.scrollLeft + (item?.getBoundingClientRect().width ?? 260) + 16,
+        behavior: "smooth",
+      });
     }, 3500);
     return () => window.clearInterval(timer);
   }, [paused, interacting, reducedMotion, inView]);
@@ -278,7 +292,9 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
       onMouseEnter={() => setInteracting(true)}
       onMouseLeave={() => setInteracting(false)}
       onFocusCapture={() => setInteracting(true)}
-      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false); }}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false);
+      }}
       className={`relative overflow-hidden ${compact ? "home-section" : "mt-32"}`}
       id="ecosystem"
     >
@@ -292,7 +308,17 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" aria-label={paused ? "Play partner slider" : "Pause partner slider"} title={paused ? "Play partner slider" : "Pause partner slider"} aria-pressed={paused} disabled={reducedMotion} onClick={() => setPaused(value => !value)}>{paused ? <Play /> : <Pause />}</Button>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label={paused ? "Play partner slider" : "Pause partner slider"}
+              title={paused ? "Play partner slider" : "Pause partner slider"}
+              aria-pressed={paused}
+              disabled={reducedMotion}
+              onClick={() => setPaused((value) => !value)}
+            >
+              {paused ? <Play /> : <Pause />}
+            </Button>
             <Button
               variant="outline"
               size="icon"
