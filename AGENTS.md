@@ -29,3 +29,4 @@
 - Bank form selectors use the shared Picker field variant, while marketing mobile navigation uses the accessible right-side Sheet; shared controls preserve keyboard navigation and focus handling.
 - Admin overview presentation uses a browser-safe data model and separate content component; all metrics come from the existing protected dashboard function, so UI organization cannot change financial actions or access controls.
 - Homepage workflow, bank exploration and support are browser-safe presentation modules; reuse shared payment explanations and the official bank registry so marketing cannot change financial behavior or imply new provider relationships.
+- Ecosystem company branding and links live in shared content; logo presentation must preserve original proportions and use a text fallback rather than fabricated artwork, keeping homepage and other public listings consistent.

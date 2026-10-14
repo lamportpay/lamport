@@ -248,23 +248,25 @@ function FlagIcon({ id, className = "" }: { id: EcosystemRegion; className?: str
 
 function initials(name: string) {
   const words = name.split(/\s+/).filter((w) => /^[A-Za-z]/.test(w));
-  return (words[0][0] + (words[1]?.[0] ?? "")).toUpperCase();
+  return ((words[0]?.[0] ?? "") + (words[1]?.[0] ?? "")).toUpperCase();
 }
 
 function CompanyLogo({ c }: { c: EcosystemCompany }) {
   const [broken, setBroken] = useState(false);
   return (
-    <div className="w-14 h-14 shrink-0 rounded-2xl bg-background border border-border/60 flex items-center justify-center overflow-hidden shadow-sm transition-transform duration-300 group-hover:scale-105">
+    <div className="flex h-28 w-full items-center justify-center overflow-hidden border-b border-border bg-background px-6 py-4">
       {c.logo && !broken ? (
         <img
           src={c.logo}
           alt={`${c.name} logo`}
           loading="lazy"
           onError={() => setBroken(true)}
-          className="w-10 h-10 object-contain"
+          className="max-h-20 max-w-full object-contain"
         />
       ) : (
-        <span className="font-semibold text-primary">{initials(c.name)}</span>
+        <span className="text-2xl font-semibold text-primary">
+          {c.name === "AGC Global Logistics" ? "AGC Global Logistics" : initials(c.name)}
+        </span>
       )}
     </div>
   );
@@ -277,25 +279,25 @@ function CompanyCard({ c, compact = false }: { c: EcosystemCompany; compact?: bo
         href={c.url}
         target="_blank"
         rel="noopener noreferrer"
-        className={`group flex h-full flex-col gap-4 border border-border/60 bg-card/80 p-5 transition-all duration-300 hover:border-primary/50 ${compact ? "rounded-lg" : "rounded-2xl hover:-translate-y-1 hover:shadow-lg"}`}
+        className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card transition-colors hover:border-primary/50"
       >
-        <div className="flex items-center gap-4">
-          <CompanyLogo c={c} />
+        <CompanyLogo c={c} />
+        <div className="flex flex-1 flex-col gap-4 p-5">
           <div className="min-w-0">
-            <h3 className="font-semibold leading-tight">{c.name}</h3>
+            <h3 className="text-lg font-semibold leading-snug">{c.name}</h3>
             <span className="mt-1 inline-flex items-center gap-1 text-xs font-mono text-primary">
               {new URL(c.url).hostname.replace(/^www\./, "")} <ExternalLink className="w-3 h-3" />
             </span>
           </div>
-        </div>
-        {!compact && <p className="text-sm text-muted-foreground flex-1">{c.description}</p>}
-        <div className="flex items-center justify-between">
-          <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
-            {c.sector}
-          </span>
-          <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            <CheckCircle2 className="w-3 h-3 text-primary" /> Ready to adopt
-          </span>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            {compact ? `${c.sector} · Business payments` : c.description}
+          </p>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold text-primary">ONBOARDING PLANNED</span>
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <CheckCircle2 className="w-3 h-3 text-primary" /> Ready to adopt
+            </span>
+          </div>
         </div>
       </a>
     </li>
@@ -328,17 +330,14 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
         </p>
         <div
           aria-label="Countries where our partners are based"
-          className="mx-auto mt-8 w-fit max-w-full rounded-2xl border border-border/60 bg-card/70 p-2.5 shadow-sm"
+          className="mx-auto mt-8 w-fit max-w-full border-y border-border py-3"
         >
           <div className="flex flex-wrap items-center justify-center gap-2">
             <span className="flex items-center gap-1.5 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               <Globe2 className="w-3.5 h-3.5" /> Partners in
             </span>
             {present.map((r) => (
-              <span
-                key={r.id}
-                className="flex items-center gap-2 rounded-xl border border-border/60 bg-background/80 px-3 py-1.5"
-              >
+              <span key={r.id} className="flex items-center gap-2 px-3 py-1.5">
                 <FlagIcon id={r.id} />
                 <span className="text-xs font-semibold uppercase tracking-wider">{r.label}</span>
               </span>

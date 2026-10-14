@@ -2,6 +2,7 @@
 
 ## Commercial homepage refresh
 
+- [x] Improve real asset icons, present Pakistan / PKR as a planned market, and refresh partner logo presentation including Great Winchester Investment Company (six companies; logos load, desktop/mobile no errors or overflow)
 - [x] Verify deeper gradient ring motion, reduced-motion behavior and the planned currency outlook beneath bank destinations (desktop/mobile, no overflow, build OK; exact future fiat currencies remain unconfirmed)
 - [x] Replace crowded homepage sections with a concise business overview and animated payment workflow
 - [x] Show bank branding, accurate infrastructure roles, business partners and transparent costs
@@ -69,7 +70,7 @@
 - [x] Describe confirmed businesses as ready to adopt LamportPay's payment services, not live integrations or payout providers
 - [x] State that discussions with additional businesses are underway for future onboarding
 - [x] Correct company country groups: Wharf Street Studios USA, Secure Ledger Solutions UK, AGC Global Logistics UAE
-- [ ] Confirm the sixth partner's identity and whether the rental company is Bliss Rent or Vessel Rent (waiting on owner)
+- [x] Owner confirmed Bliss Rent and named Great Winchester Investment Company as the sixth partner; official-site link and brand icon verified
 
 ## Done: Public roadmap refresh
 
