@@ -881,3 +881,52 @@
     animation: roadmap-focus 2.4s ease-in-out infinite;
   }
 }
+/* Animated verification tree. */
+.verify-scene {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, color-mix(in oklch, var(--home-brand) 14%, transparent), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, color-mix(in oklch, var(--home-brand) 12%, transparent), transparent 70%),
+    var(--home-tint);
+}
+.vf-trunk-bg { stroke: var(--border); stroke-width: 6; fill: none; stroke-linecap: round; }
+.vf-trunk {
+  stroke: url(#vf-grad); stroke-width: 6; fill: none; stroke-linecap: round;
+  stroke-dasharray: 350; transition: stroke-dashoffset 900ms ease;
+}
+.vf-branch-line {
+  fill: none; stroke: var(--border); stroke-width: 3; stroke-dasharray: 160; stroke-dashoffset: 160;
+  transition: stroke-dashoffset 700ms ease 250ms, stroke 300ms;
+}
+.vf-branch[data-on="true"] .vf-branch-line { stroke: var(--home-brand); stroke-dashoffset: 0; }
+.vf-leaf { opacity: 0.35; transition: opacity 400ms ease 500ms; }
+.vf-leaf rect { fill: var(--card); stroke: var(--border); }
+.vf-leaf text { font-size: 11px; font-weight: 600; fill: var(--muted-foreground); }
+.vf-branch[data-on="true"] .vf-leaf { opacity: 1; }
+.vf-branch[data-current="true"] .vf-leaf rect { stroke: var(--home-brand); }
+.vf-branch[data-current="true"] .vf-leaf text { fill: var(--home-ink); }
+.vf-node { fill: var(--card); stroke: var(--border); stroke-width: 3; transition: fill 300ms, stroke 300ms; }
+.vf-node-num { font-size: 12px; font-weight: 700; fill: var(--muted-foreground); pointer-events: none; }
+.vf-branch[data-on="true"] .vf-node { stroke: var(--home-brand); }
+.vf-branch[data-current="true"] .vf-node { fill: var(--home-brand); }
+.vf-branch[data-current="true"] .vf-node-num { fill: var(--primary-foreground); }
+.vf-traveler { transition: transform 900ms cubic-bezier(.6,.0,.3,1); pointer-events: none; }
+.vf-halo { fill: none; stroke: var(--home-brand); stroke-width: 2; opacity: 0.5; transform-origin: center; }
+.vf-user-bg { fill: url(#vf-grad); }
+.vf-user-ink { fill: var(--primary-foreground); stroke: none; }
+.vf-wallet rect { fill: var(--card); stroke: var(--home-brand); stroke-width: 2; }
+.vf-wallet circle { fill: var(--home-brand); }
+.vf-caption { font-size: 11px; font-weight: 600; fill: var(--muted-foreground); }
+.vf-bank rect { fill: var(--card); stroke: var(--border); transition: stroke 300ms, fill 300ms; }
+.vf-bank text { font-size: 11px; font-weight: 700; fill: var(--muted-foreground); }
+.vf-bank[data-on="true"] rect { fill: var(--home-brand); stroke: var(--home-brand); }
+.vf-bank[data-on="true"] text { fill: var(--primary-foreground); }
+@keyframes vf-pulse { 0% { transform: scale(0.8); opacity: .7 } 100% { transform: scale(1.5); opacity: 0 } }
+@keyframes vf-bob { 0%,100% { transform: translate(180px,38px) } 50% { transform: translate(180px,33px) } }
+@media (prefers-reduced-motion: no-preference) {
+  .verify-flow[data-visible="true"] .vf-halo { animation: vf-pulse 1.6s ease-out infinite; }
+  .verify-flow[data-visible="true"] .vf-user { animation: vf-bob 2.6s ease-in-out infinite; }
+  .verify-spot { animation: roadmap-spot-in 450ms ease-out both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vf-trunk, .vf-branch-line, .vf-leaf, .vf-traveler { transition: none; }
+}
