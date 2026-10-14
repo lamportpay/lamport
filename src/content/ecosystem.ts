@@ -1,7 +1,6 @@
 /**
  * Strategic ecosystem partners, confirmed by the owner on 11 Oct 2026.
- * Businesses ready to adopt LamportPay services. `region` only feeds the partner-country
- * flags box — the partner cards themselves are not grouped or labelled by country.
+ * Businesses ready to adopt LamportPay services. `region` feeds country labels and flags.
  * Readiness does not mean completed onboarding or live payment processing.
  * No valuations, revenue, investments or commitments are stated.
  */
@@ -12,7 +11,7 @@ import secureLedgerLogo from "@/assets/partners/secure-ledger.png.asset.json";
 import greatWinchesterLogo from "@/assets/partners/great-winchester-crest.png.asset.json";
 import agcLogo from "@/assets/partners/agc-official.png.asset.json";
 
-export type EcosystemRegion = "USA" | "UK" | "UAE";
+export type EcosystemRegion = "USA" | "UK" | "UAE" | "IN";
 
 export type EcosystemCompany = {
   name: string;
@@ -27,6 +26,7 @@ export const ECOSYSTEM_REGIONS: { id: EcosystemRegion; label: string }[] = [
   { id: "USA", label: "United States" },
   { id: "UK", label: "United Kingdom" },
   { id: "UAE", label: "United Arab Emirates" },
+  { id: "IN", label: "India" },
 ];
 
 export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
@@ -52,8 +52,8 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
     name: "Wharf Street Studios",
     url: "https://www.wharfstreetstudios.com/",
     description:
-      "US media and gaming studio ready to adopt LamportPay's payment services for its business payment needs.",
-    region: "USA",
+      "Indian media and gaming studio ready to adopt LamportPay's payment services for its business payment needs.",
+    region: "IN",
     sector: "Media & Gaming",
     logo: wharfLogo.url,
   },
