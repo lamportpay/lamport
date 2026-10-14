@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, ChevronDown, Info } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { percentageModel, splitTotal } from "@/lib/payments/fee-math";
 
 /**
@@ -10,13 +10,16 @@ import { percentageModel, splitTotal } from "@/lib/payments/fee-math";
  * Rates: live mid-market reference with fallbacks. Estimate only — Stables quotes the real numbers.
  */
 const CURRENCIES = [
-  { code: "USD", country: "United States", fallbackRate: 1, payoutFee: 5 },
-  { code: "GBP", country: "United Kingdom", fallbackRate: 0.79, payoutFee: 1 },
-  { code: "INR", country: "India", fallbackRate: 88.5, payoutFee: 5 },
-  { code: "PHP", country: "Philippines", fallbackRate: 58.5, payoutFee: 0.34 },
+  { code: "USD", iso: "US", country: "United States", fallbackRate: 1, payoutFee: 5 },
+  { code: "GBP", iso: "GB", country: "United Kingdom", fallbackRate: 0.79, payoutFee: 1 },
+  { code: "INR", iso: "IN", country: "India", fallbackRate: 88.5, payoutFee: 5 },
+  { code: "PHP", iso: "PH", country: "Philippines", fallbackRate: 58.5, payoutFee: 0.34 },
 ] as const;
 type CurrencyCode = (typeof CURRENCIES)[number]["code"];
 const RATES_URL = "https://open.er-api.com/v6/latest/USD";
+const SOL_MINT = "So11111111111111111111111111111111111111112";
+const SOL_PRICE_URL = `https://lite-api.jup.ag/price/v3?ids=${SOL_MINT}`;
+const REFRESH_MS = 30_000;
 const STABLES_PLATFORM = 0.0025;
 const MODEL = percentageModel(200n);
 const PRESETS = [100, 250, 500, 1000];
@@ -35,30 +38,49 @@ function compute(value: number, cur: (typeof CURRENCIES)[number], rate: number) 
 export function FeeCalculator() {
   const [amount, setAmount] = useState("500");
   const [code, setCode] = useState<CurrencyCode>("USD");
+  const [token, setToken] = useState<"USDC" | "SOL">("USDC");
+  const [solPrice, setSolPrice] = useState<number | null>(null);
+  const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
+  const navigate = useNavigate();
   const [liveRates, setLiveRates] = useState<Partial<Record<CurrencyCode, number>>>({});
   const cur = CURRENCIES.find((c) => c.code === code)!;
   const rate = liveRates[code] ?? cur.fallbackRate;
 
   useEffect(() => {
     let cancelled = false;
-    fetch(RATES_URL)
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((data: { rates?: Record<string, number> }) => {
-        if (cancelled || !data.rates) return;
-        const next: Partial<Record<CurrencyCode, number>> = {};
-        for (const c of CURRENCIES) {
-          const v = data.rates[c.code];
-          if (typeof v === "number" && v > 0) next[c.code] = v;
-        }
-        setLiveRates(next);
-      })
-      .catch(() => {});
+    const load = () => {
+      fetch(RATES_URL)
+        .then((r) => (r.ok ? r.json() : Promise.reject()))
+        .then((data: { rates?: Record<string, number> }) => {
+          if (cancelled || !data.rates) return;
+          const next: Partial<Record<CurrencyCode, number>> = {};
+          for (const c of CURRENCIES) {
+            const v = data.rates[c.code];
+            if (typeof v === "number" && v > 0) next[c.code] = v;
+          }
+          setLiveRates(next);
+          setUpdatedAt(new Date());
+        })
+        .catch(() => {});
+      fetch(SOL_PRICE_URL)
+        .then((r) => (r.ok ? r.json() : Promise.reject()))
+        .then((data: Record<string, { usdPrice?: number }>) => {
+          const v = data[SOL_MINT]?.usdPrice;
+          if (!cancelled && typeof v === "number" && v > 0) setSolPrice(v);
+        })
+        .catch(() => {});
+    };
+    load();
+    const id = window.setInterval(load, REFRESH_MS);
     return () => {
       cancelled = true;
+      window.clearInterval(id);
     };
   }, []);
 
-  const value = Number(amount);
+  const entered = Number(amount);
+  // Value in USDC: SOL is priced live via Jupiter.
+  const value = token === "SOL" ? (solPrice ? entered * solPrice : 0) : entered;
   const result = useMemo(
     () => (value >= 15 && value <= 1_000_000 ? compute(value, cur, rate) : null),
     [value, cur, rate],
@@ -80,14 +102,14 @@ export function FeeCalculator() {
           <div className="p-6 sm:p-8">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">You send</p>
-              <span className="rounded-full bg-home-brand/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-home-brand">Demo</span>
+              <span className="flex items-center gap-1.5 rounded-full bg-home-brand/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-home-brand"><span className="size-1.5 rounded-full bg-home-brand motion-safe:animate-pulse" />Live rates</span>
             </div>
 
             <div className="mt-4 flex items-end gap-3">
               <input
                 value={amount}
                 inputMode="decimal"
-                aria-label="Amount you send in USDC"
+                aria-label={`Amount you send in ${token}`}
                 onChange={(e) => {
                   const v = e.target.value.replace(/[^0-9.]/g, "");
                   if ((v.match(/\./g) ?? []).length > 1) return;
@@ -98,7 +120,18 @@ export function FeeCalculator() {
                 className="w-full min-w-0 bg-transparent text-5xl font-semibold tabular-nums tracking-tight outline-none placeholder:text-muted-foreground/40"
                 placeholder="0"
               />
-              <span className="mb-1.5 shrink-0 rounded-full border border-border bg-home-surface px-3.5 py-1.5 text-sm font-semibold">USDC</span>
+              <div className="relative mb-1.5 shrink-0">
+                <select
+                  aria-label="Token you send"
+                  value={token}
+                  onChange={(e) => setToken(e.target.value as "USDC" | "SOL")}
+                  className="appearance-none rounded-full border border-border bg-home-surface py-1.5 pl-3.5 pr-8 text-sm font-semibold outline-none focus:border-home-brand"
+                >
+                  <option value="USDC">USDC</option>
+                  <option value="SOL">SOL</option>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+              </div>
             </div>
 
             <div className="mt-5 flex gap-2">
@@ -151,7 +184,7 @@ export function FeeCalculator() {
                   {fmt(result.local)} <span className="text-xl font-medium text-muted-foreground">{cur.code}</span>
                 </>
               ) : (
-                <span className="text-2xl text-muted-foreground">Min. 15 USDC</span>
+                <span className="text-2xl text-muted-foreground">{token === "SOL" && !solPrice ? "Loading SOL price…" : "Min. 15 USDC"}</span>
               )}
             </p>
 
@@ -160,6 +193,12 @@ export function FeeCalculator() {
                 <dt className="text-muted-foreground">Estimated USDC settlement</dt>
                 <dd className="font-medium tabular-nums">{value > 0 ? `${fmt(value)} USDC` : "—"}</dd>
               </div>
+              {token === "SOL" && (
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="text-muted-foreground">SOL price · Jupiter</dt>
+                  <dd className="font-medium tabular-nums">{solPrice ? `$${fmt(solPrice)}` : "—"}</dd>
+                </div>
+              )}
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-muted-foreground">FX rate{liveRates[code] ? " · live" : ""}</dt>
                 <dd className="font-medium tabular-nums">1 USD = {fmt(rate, rate < 2 ? 2 : 1)} {cur.code}</dd>
@@ -178,30 +217,26 @@ export function FeeCalculator() {
               </div>
             </dl>
 
-            <Link
-              to="/pay"
-              className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-[image:var(--home-gradient)] px-6 py-4 text-sm font-semibold text-primary-foreground shadow-lg transition motion-safe:hover:scale-[1.01] motion-safe:active:scale-[0.99]"
+            <button
+              type="button"
+              disabled={!result}
+              onClick={() =>
+                void navigate({
+                  to: "/pay",
+                  search: { amount: value.toFixed(2), country: cur.iso },
+                })
+              }
+              className="mt-6 flex items-center justify-center gap-2 rounded-2xl bg-[image:var(--home-gradient)] px-6 py-4 text-sm font-semibold text-primary-foreground shadow-lg transition disabled:opacity-50 motion-safe:hover:scale-[1.01] motion-safe:active:scale-[0.99]"
             >
-              Send a payment <ArrowRight className="size-4" />
-            </Link>
+              Get live quote & pay <ArrowRight className="size-4" />
+            </button>
             <p className="mt-4 flex items-start justify-center gap-1.5 text-center text-[11px] leading-relaxed text-muted-foreground">
               <Info className="mt-0.5 size-3 shrink-0" />
-              Demo values only. No real crypto, fiat, or KYC is processed.
+              Rates refresh every 30 s{updatedAt ? ` · updated ${updatedAt.toLocaleTimeString()}` : ""}. Your firm quote comes from Stables on the payment page.
             </p>
           </div>
         </div>
 
-        <div className="mx-auto mt-6 max-w-sm overflow-hidden rounded-xl border border-border bg-background text-sm">
-          <div className="grid grid-cols-2 border-b border-border px-4 py-2 text-xs font-semibold text-muted-foreground">
-            <span>You send</span><span className="text-right">All fees ({cur.code})</span>
-          </div>
-          {PRESETS.map((p) => (
-            <div key={p} className="grid grid-cols-2 px-4 py-2 odd:bg-home-surface">
-              <span>{fmt(p, 0)} USDC</span>
-              <span className="text-right font-medium">≈ {fmt(compute(p, cur, rate).totalPct, 1)}%</span>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );
