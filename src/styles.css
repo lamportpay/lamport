@@ -1309,7 +1309,7 @@
 .bank-flow-trunk { position: relative; height: 48px; width: 2px; margin: 12px auto; background: var(--border); overflow: hidden; }
 .bank-flow-trunk span { display: block; height: 18px; background: var(--home-gradient); }
 @media (min-width: 768px) {
-  .flow-spotlight { border-left: 1px solid var(--border); }
+  .flow-spotlight { border-left: 0; }
   #banks .flow-spotlight { border-left: 0; border-right: 1px solid var(--border); }
 }
 @media (prefers-reduced-motion: no-preference) {
