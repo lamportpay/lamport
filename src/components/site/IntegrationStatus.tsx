@@ -39,7 +39,7 @@ export function IntegrationStatus() {
             <Clock3 className="mt-1 size-6 shrink-0 text-home-brand" />
             <div><p className="home-eyebrow">Colosseum · Decision pending</p><h3 className="text-lg font-semibold">Project submitted for consideration.</h3><p className="mt-2 max-w-xl text-xs leading-relaxed text-muted-foreground">Submission reported by the LamportPay team. No selection, investment, backing or endorsement is confirmed.</p></div>
           </div>
-          <Button asChild variant="link" className="px-0 text-home-brand"><a href="https://www.colosseum.org/" target="_blank" rel="noopener noreferrer">Colosseum <ArrowUpRight /></a></Button>
+          <Button asChild variant="link" className="px-0 text-home-brand"><a href="https://colosseum.com/arena/projects/lamportpay" target="_blank" rel="noopener noreferrer">View project on Colosseum <ArrowUpRight /></a></Button>
         </div>
         <p className="mt-4 text-xs text-muted-foreground">Token symbols identify assets, not issuer partnerships. Technology connections are not financial backing.</p>
       </div>
