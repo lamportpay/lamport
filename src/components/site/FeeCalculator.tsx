@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PAYMENT_COSTS } from "@/content/payment-flow";
 import { percentageModel, splitTotal } from "@/lib/payments/fee-math";
 
@@ -74,11 +73,11 @@ export function FeeCalculator() {
           </div>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="calc-amount">You send (USDC)</Label>
+              <label className="text-sm font-medium" htmlFor="calc-amount">You send (USDC)</label>
               <Input id="calc-amount" inputMode="decimal" type="number" min="0" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="calc-currency">Payout currency</Label>
+              <label className="text-sm font-medium" htmlFor="calc-currency">Payout currency</label>
               <select
                 id="calc-currency"
                 value={code}
