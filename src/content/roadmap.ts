@@ -11,11 +11,17 @@ export type RoadmapPhase = {
   summary: string;
   /** Public-facing readiness milestone, not an internal approval workflow. */
   dependsOn: string;
+  /** One-line headline for the homepage spotlight. */
+  headline: string;
+  /** Three short scan-friendly focus points. */
+  highlights: [string, string, string];
 };
 
 export const ROADMAP_PHASES: RoadmapPhase[] = [
   {
     phase: 1,
+    headline: "Prove the full payment journey end to end.",
+    highlights: ["Wallet + swap flow", "USDC quote & receipt", "Payout sandbox"],
     title: "Core product validation",
     status: "current",
     summary:
@@ -24,6 +30,8 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   },
   {
     phase: 2,
+    headline: "Harden security before real customers.",
+    highlights: ["Security reviews", "Corridor validation", "Production safeguards"],
     title: "Security and controlled launch",
     status: "proposed",
     summary:
@@ -32,6 +40,8 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   },
   {
     phase: 3,
+    headline: "Accept more assets through more liquidity.",
+    highlights: ["Hyperliquid in progress", "BTC & ETH routes", "More provider APIs"],
     title: "Liquidity and asset integrations",
     status: "proposed",
     summary:
@@ -40,6 +50,8 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   },
   {
     phase: 4,
+    headline: "Grow partners and payout coverage.",
+    highlights: ["Circle & Tether talks", "Business onboarding", "New markets"],
     title: "Partnerships and market expansion",
     status: "proposed",
     summary:
@@ -48,6 +60,8 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   },
   {
     phase: 5,
+    headline: "A global crypto-to-bank payout network.",
+    highlights: ["B2B payout APIs", "Remittance use cases", "Wider blockchains"],
     title: "Global payout ecosystem",
     status: "proposed",
     summary:
