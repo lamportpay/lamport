@@ -1,15 +1,12 @@
-import { useEffect, useRef, useState } from "react";
 import {
-  ArrowDown,
-  ArrowRight,
-  Check,
   Coins,
   Landmark,
   Route,
   ShieldCheck,
   Wallet,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { FlowControls, FlowScene } from "@/components/site/FlowPresentation";
+import { useFlowPlayback } from "@/hooks/use-flow-playback";
 import { PAYMENT_JOURNEY, PAYMENT_SAFETY } from "@/content/payment-flow";
 
 const nodes = [
@@ -52,30 +49,15 @@ const nodes = [
 ];
 
 export function PaymentNetwork() {
-  const [selected, setSelected] = useState(1);
-  const [visible, setVisible] = useState(false);
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const section = ref.current;
-    if (!section) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
+  const flow = useFlowPlayback(nodes.length);
+  const selected = flow.active;
+  const active = nodes[selected] ?? nodes[0];
+  return () => observer.disconnect();
   }, []);
   const active = nodes[selected] ?? nodes[1];
   return (
     <section
       id="payment-network"
-      ref={ref}
-      data-visible={visible}
       className="payment-network home-section border-b border-border"
     >
       <div className="home-container">
@@ -88,66 +70,22 @@ export function PaymentNetwork() {
             <ShieldCheck className="size-4 text-home-brand" /> Non-custodial by design
           </span>
         </div>
-        <div className="network-inputs mt-8 flex items-center justify-center gap-3 text-sm">
-          <span className="flex items-center gap-2">
-            <img src="/tokens/sol.svg" alt="" width="22" height="22" /> SOL{" "}
-            <span className="text-muted-foreground">via swap quotes</span>
-          </span>
-          <span className="text-border">|</span>
-          <span className="flex items-center gap-2">
-            <img src="/tokens/usdc.svg" alt="" width="22" height="22" /> USDC{" "}
-            <span className="text-muted-foreground">direct route</span>
-          </span>
-        </div>
-        <div
-          className="network-fork mx-auto mt-4 hidden h-6 w-64 border-x border-b border-home-brand/30 lg:block"
-          aria-hidden="true"
-        >
-          <span className="mx-auto mt-6 block h-5 w-px bg-home-brand/40" />
-        </div>
-        <ol
-          className="network-tree mt-7 grid gap-7 lg:grid-cols-5 lg:gap-5"
-          aria-label="Payment infrastructure workflow"
-        >
-          {nodes.map(({ title, label, icon: Icon, note }, index) => (
-            <li key={title} className="network-stage relative min-w-0">
-              <Button
-                variant="outline"
-                aria-pressed={selected === index}
-                onClick={() => setSelected(index)}
-                className={`network-node h-auto w-full flex-col items-start whitespace-normal p-5 text-left shadow-none ${selected === index ? "border-home-brand bg-home-tint ring-1 ring-home-brand" : "bg-card"}`}
-              >
-                <span className="flex w-full items-center justify-between">
-                  <Icon className="size-6 text-home-brand" />
-                  <span className="font-mono text-xs text-muted-foreground">0{index + 1}</span>
-                </span>
-                <span className="mt-3 text-[10px] font-semibold text-home-brand">{label}</span>
-                <span className="text-base font-semibold">{title}</span>
-                <span className="text-xs font-normal leading-relaxed text-muted-foreground">
-                  {note}
-                </span>
-              </Button>
-              {index < nodes.length - 1 && (
-                <span
-                  aria-hidden="true"
-                  className="network-edge absolute -bottom-7 left-1/2 flex h-7 items-center text-home-brand lg:-right-5 lg:bottom-auto lg:left-auto lg:top-1/2 lg:w-5"
-                >
-                  <ArrowDown className="size-4 lg:hidden" />
-                  <ArrowRight className="hidden size-4 lg:block" />
-                </span>
-              )}
-            </li>
-          ))}
-        </ol>
-        <div
-          className="mt-6 grid gap-4 border-y border-border py-5 md:grid-cols-[200px_1fr]"
-          aria-live="polite"
-        >
-          <div className="flex items-center gap-2 text-sm font-semibold">
-            <Check className="size-4 text-home-brand" />
-            {active.title}
+        <div ref={flow.ref} {...flow.focusProps} data-running={flow.inView && flow.playing && !flow.reduced} className="flow-presentation mt-8 grid overflow-hidden rounded-lg border border-border md:grid-cols-2">
+          <FlowScene nodes={nodes} flow={flow} label="Illustrative payment route: wallet, LamportPay, Jupiter, Stables, bank account" />
+          <div className="flow-spotlight p-6 sm:p-8">
+            <div key={selected} className="flow-detail">
+              <p className="text-xs font-semibold text-home-brand">PAYMENT ROUTE · DEMO / SIMULATED</p>
+              <p className="mt-7 font-mono text-5xl font-semibold text-home-brand/30">0{selected + 1}</p>
+              <h3 className="mt-3 text-2xl font-semibold text-home-ink">{active.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{active.detail}</p>
+              <p className="mt-4 text-xs font-medium text-home-brand">{active.note}</p>
+            </div>
+            <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-border pt-5 text-xs font-medium">
+              <span className="flex items-center gap-2"><img src="/tokens/sol.svg" alt="" width="24" height="24" />SOL · swap quotes</span>
+              <span className="flex items-center gap-2"><img src="/tokens/usdc.svg" alt="" width="24" height="24" />USDC · direct</span>
+            </div>
+            <FlowControls flow={flow} count={nodes.length} label="payment route" />
           </div>
-          <p className="text-sm leading-relaxed text-muted-foreground">{active.detail}</p>
         </div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
           <span>Infrastructure integrations—not financial backing or bank endorsements.</span>

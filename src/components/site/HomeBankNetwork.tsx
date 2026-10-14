@@ -1,9 +1,10 @@
-import { useState } from "react";
 import { Landmark, ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { BankIcon } from "@/components/app/BankIcon";
 import { Flag } from "@/components/app/Flag";
 import { Button } from "@/components/ui/button";
+import { FlowControls } from "@/components/site/FlowPresentation";
+import { useFlowPlayback } from "@/hooks/use-flow-playback";
 
 const destinations = [
   {
@@ -44,8 +45,9 @@ const shortNames: Record<string, string> = {
 };
 
 export function HomeBankNetwork() {
-  const [country, setCountry] = useState("GB");
-  const destination = destinations.find((d) => d.code === country) ?? destinations[0];
+  const flow = useFlowPlayback(destinations.length, 1);
+  const destination = destinations[flow.active] ?? destinations[0];
+  const country = destination.code;
   return (
     <section
       className="home-section relative isolate overflow-hidden bg-home-surface border-b border-border"
@@ -68,39 +70,27 @@ export function HomeBankNetwork() {
           </div>
           <Landmark className="hidden size-10 text-home-brand md:block" strokeWidth={1.3} />
         </div>
-        <div
-          role="group"
-          aria-label="Bank destination country"
-          className="mt-8 grid grid-cols-2 gap-2 md:flex md:flex-wrap"
-        >
-          {destinations.map((d) => (
-            <Button
-              key={d.code}
-              variant="outline"
-              aria-pressed={country === d.code}
-              onClick={() => setCountry(d.code)}
-              className={`h-12 justify-start gap-2 whitespace-normal px-3 text-left text-xs md:text-sm ${country === d.code ? "border-home-brand bg-home-tint text-home-brand" : "bg-card"}`}
-            >
-              <Flag code={d.code} size={24} />
-              {d.name}
-            </Button>
-          ))}
-        </div>
-        <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-live="polite">
-          {destination.banks.map((name) => (
-            <div
-              key={name}
-              className="flex min-h-24 items-center gap-4 rounded-lg border border-border bg-card p-5"
-            >
-              <BankIcon name={name} country={destination.code} size={44} />
-              <div className="min-w-0">
-                <p className="text-sm font-semibold">{shortNames[name] ?? name}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {destination.currency} · Bank account
-                </p>
-              </div>
+        <div ref={flow.ref} {...flow.focusProps} data-running={flow.inView && flow.playing && !flow.reduced} className="flow-presentation mt-8 grid overflow-hidden rounded-lg border border-border md:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
+          <div className="flow-spotlight p-6 sm:p-8">
+            <div key={country} className="flow-detail">
+              <p className="text-xs font-semibold text-home-brand">BANK DESTINATIONS · DEMO / SIMULATED</p>
+              <div className="mt-7 flex items-center gap-4"><Flag code={country} size={44} /><span className="text-4xl font-semibold text-home-ink">{destination.currency}</span></div>
+              <h3 className="mt-4 text-2xl font-semibold text-home-ink">{destination.name}</h3>
+              <p className="mt-3 text-sm text-muted-foreground">Local currency. Familiar bank accounts. Availability checked by Stables.</p>
             </div>
-          ))}
+            <div role="group" aria-label="Bank destination country" className="mt-6 grid grid-cols-2 gap-2">
+              {destinations.map((d, index) => <Button key={d.code} variant="outline" aria-pressed={country === d.code} onClick={() => flow.pick(index)} className={`h-12 justify-start gap-2 whitespace-normal px-3 text-left text-xs ${country === d.code ? "border-home-brand bg-home-tint text-home-brand" : "bg-card"}`}><Flag code={d.code} size={24} />{d.name}</Button>)}
+            </div>
+            <FlowControls flow={flow} count={destinations.length} label="bank destinations" />
+          </div>
+          <div className="bank-flow-scene p-6 sm:p-8">
+            <div className="flex items-center justify-center gap-3 text-sm font-semibold"><img src="/tokens/usdc.svg" width="28" height="28" alt="" />USDC <ArrowRight className="size-4 text-home-brand" /><Flag code={country} size={28} />{destination.currency}</div>
+            <div className="bank-flow-trunk" aria-hidden="true"><span /></div>
+            <div key={country} className="grid gap-3 sm:grid-cols-2">
+              {destination.banks.map((name) => <div key={name} className="bank-flow-item flex min-h-28 items-center gap-3 rounded-lg border border-border bg-card p-4"><BankIcon name={name} country={country} size={44} /><div className="min-w-0"><p className="text-sm font-semibold">{shortNames[name] ?? name}</p><p className="mt-1 text-xs text-muted-foreground">{destination.currency} · Bank account</p></div></div>)}
+            </div>
+            <p className="mt-5 text-center text-[10px] font-semibold text-home-brand">ILLUSTRATIVE ROUTE · FIAT PAYOUT DISABLED</p>
+          </div>
         </div>
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
           <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
