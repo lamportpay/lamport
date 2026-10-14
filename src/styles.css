@@ -465,7 +465,7 @@
   --home-tint: oklch(0.96 0.025 275);
   --home-surface: oklch(0.975 0.009 265);
   --home-ink: oklch(0.24 0.055 270);
-  --home-hero-veil: oklch(0.99 0.005 265 / 58%);
+  --home-orbit-gradient: conic-gradient(from 210deg, oklch(0.65 0.2 250 / 65%), oklch(0.52 0.25 295 / 60%), oklch(0.78 0.13 220 / 55%), oklch(0.65 0.2 250 / 65%));
   --home-gradient: linear-gradient(115deg, oklch(0.48 0.2 258), oklch(0.43 0.25 295));
   --home-text-gradient: linear-gradient(110deg, oklch(0.45 0.2 258), oklch(0.43 0.25 295));
 }
@@ -518,9 +518,37 @@
 .home-hero {
   min-height: 510px;
   color: var(--home-ink);
+  background: var(--card);
 }
-.home-hero-veil {
-  background: var(--home-hero-veil);
+.home-orbits {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to right, transparent 25%, black 70%);
+}
+.home-orbit {
+  position: absolute;
+  top: 50%;
+  left: 80%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--home-orbit-gradient);
+  transform: translate(-50%, -50%) rotate(-25deg) scaleX(1.16);
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px));
+}
+.home-orbit-outer {
+  width: 1000px;
+  opacity: 0.45;
+}
+.home-orbit-middle {
+  width: 760px;
+  opacity: 0.65;
+}
+.home-orbit-inner {
+  width: 520px;
+  opacity: 0.8;
 }
 .network-node {
   min-height: 192px;
@@ -616,8 +644,12 @@
   .home-hero {
     min-height: 500px;
   }
-  .home-hero img {
-    object-position: 60% center;
+  .home-orbits {
+    mask-image: linear-gradient(to right, transparent 35%, black 100%);
+    opacity: 0.4;
+  }
+  .home-orbit {
+    left: 130%;
   }
   .network-inputs {
     flex-direction: column;

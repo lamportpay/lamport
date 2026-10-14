@@ -8,7 +8,6 @@ import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { EcosystemSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
 import { PAYMENT_COSTS } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
-import hero from "@/assets/home-commerce.jpg";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -26,15 +25,11 @@ function Index() {
     <div className="commercial-home">
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden border-b border-border">
-          <img
-            src={hero}
-            alt=""
-            width={1920}
-            height={1024}
-            fetchPriority="high"
-            className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
-          />
-          <div className="home-hero-veil absolute inset-0 -z-10" />
+          <div className="home-orbits" aria-hidden="true">
+            <span className="home-orbit home-orbit-outer" />
+            <span className="home-orbit home-orbit-middle" />
+            <span className="home-orbit home-orbit-inner" />
+          </div>
           <div className="home-container py-14 md:py-20">
             <p className="home-eyebrow">Digital assets. Everyday payments.</p>
             <h1 className="mt-4 text-5xl font-semibold leading-tight md:text-7xl">LamportPay</h1>
