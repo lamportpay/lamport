@@ -78,13 +78,13 @@ function Index() {
           </div>
         </section>
         <FeeCalculator />
-        <SupportedCorridors />
         <HomeBankNetwork />
         <PaymentNetwork />
         <ConnectedSystems />
         <EcosystemSection compact />
         <IntegrationStatus />
         <RoadmapSection />
+        <SupportedCorridors />
         <section className="home-section border-t border-border">
           <div className="home-container flex flex-wrap items-center justify-between gap-6">
             <div>
