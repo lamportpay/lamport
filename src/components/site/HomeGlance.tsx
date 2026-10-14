@@ -12,10 +12,10 @@ const CRYPTO_IN = [
 ] as const;
 
 const MONEY_OUT = [
-  { code: "USD", label: "US dollar" },
-  { code: "GBP", label: "British pound" },
-  { code: "INR", label: "Indian rupee" },
-  { code: "PHP", label: "Philippine peso" },
+  { code: "USD", country: "US", label: "US dollar" },
+  { code: "GBP", country: "GB", label: "British pound" },
+  { code: "INR", country: "IN", label: "Indian rupee" },
+  { code: "PHP", country: "PH", label: "Philippine peso" },
 ];
 
 export function HomeGlance() {
