@@ -106,54 +106,6 @@ export function HomeBankNetwork() {
         </div>
       </div>
       <BankRestrictions />
-      <div className="home-container mt-12 border-t border-border pt-10" id="future-currencies">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="home-eyebrow">Country expansion outlook · PLANNED</p>
-            <h3 className="home-heading">Next markets we are planning.</h3>
-          </div>
-          <p className="max-w-sm text-sm text-muted-foreground">
-            Priority countries for future local bank payouts.
-          </p>
-        </div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { name: "Pakistan", code: "PK", currency: "PKR", note: "Large remittance market" },
-            { name: "Nigeria", code: "NG", currency: "NGN", note: "Large stablecoin market" },
-          ].map((market) => (
-            <div
-              key={market.code}
-              className="flex items-center gap-4 rounded-xl border border-border bg-card p-5"
-            >
-              <Flag code={market.code} size={36} />
-              <div className="flex-1">
-                <p className="text-sm font-semibold">{market.name}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {market.currency} · {market.note}
-                </p>
-              </div>
-              <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
-            </div>
-          ))}
-          <div className="flex items-center gap-4 rounded-xl border border-dashed border-border bg-card p-5">
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-home-tint text-home-brand">
-              <Landmark className="size-4" />
-            </span>
-            <div className="flex-1">
-              <p className="text-sm font-semibold">Emerging markets</p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                More local currencies, reviewed country by country
-              </p>
-            </div>
-            <span className="text-[10px] font-semibold text-home-brand">PLANNED</span>
-          </div>
-        </div>
-        <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">
-          Expansion plans—not confirmed payout corridors. Pakistan and Nigeria
-          coverage requires provider and compliance validation; no bank partnership or launch date
-          is implied.
-        </p>
-      </div>
     </section>
   );
 }

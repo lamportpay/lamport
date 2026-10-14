@@ -1124,6 +1124,10 @@
   stroke: oklch(1 0 0);
   stroke-width: 2;
 }
+.corridor-marker-flag {
+  clip-path: inset(0 round 2.5px);
+  filter: drop-shadow(0 0 1px oklch(0.3 0.05 280 / 0.35));
+}
 .corridor-marker-ping {
   fill: none;
   stroke: oklch(0.55 0.22 280);

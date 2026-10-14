@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { WORLD_LAND_PATH } from "@/lib/world-map-paths";
+import { Flag } from "@/components/app/Flag";
 
 /**
  * Supported-corridors world map.
@@ -94,9 +95,17 @@ export function SupportedCorridors() {
                   <circle cx={x} cy={y} r={26} className="corridor-marker-ping" />
                   <circle cx={x} cy={y} r={14} className="corridor-marker-ping corridor-marker-ping-late" />
                   <circle cx={x} cy={y} r={6.5} className="corridor-marker-core" />
-                  <g className="corridor-marker-tick" transform={`translate(${x + 9}, ${y - 11})`}>
-                    <circle r={7} className="corridor-marker-tick-bg" />
-                    <path d="M-3.2 0.4 L-0.8 2.8 L3.4 -2.6" className="corridor-marker-tick-check" />
+                  <image
+                    href={`/flags/${m.code}.svg`}
+                    x={x - 10}
+                    y={y - 29}
+                    width={20}
+                    height={13.3}
+                    className="corridor-marker-flag"
+                  />
+                  <g className="corridor-marker-tick" transform={`translate(${x + 10}, ${y - 26})`}>
+                    <circle r={6.5} className="corridor-marker-tick-bg" />
+                    <path d="M-3 0.4 L-0.8 2.6 L3.2 -2.4" className="corridor-marker-tick-check" />
                   </g>
                   <text x={x} y={y + 24} textAnchor="middle" className="corridor-marker-label">
                     {m.name}
@@ -110,7 +119,15 @@ export function SupportedCorridors() {
                 <g key={m.code} className="corridor-marker-planned">
                   <circle cx={x} cy={y} r={10} className="corridor-marker-planned-ring" />
                   <circle cx={x} cy={y} r={4.5} className="corridor-marker-planned-core" />
-                  <text x={x} y={y - 16} textAnchor="middle" className="corridor-marker-planned-label">
+                  <image
+                    href={`/flags/${m.code}.svg`}
+                    x={x - 10}
+                    y={y - 27}
+                    width={20}
+                    height={13.3}
+                    className="corridor-marker-flag"
+                  />
+                  <text x={x} y={y - 33} textAnchor="middle" className="corridor-marker-planned-label">
                     PLANNED
                   </text>
                   <text x={x} y={y + 22} textAnchor="middle" className="corridor-marker-planned-name">
@@ -128,7 +145,7 @@ export function SupportedCorridors() {
                 className={cn("corridor-legend-item")}
                 style={{ "--ping-delay": `${m.delay}s` } as React.CSSProperties}
               >
-                <span className="corridor-legend-dot" aria-hidden="true" />
+                <Flag code={m.code} size={20} />
                 <span className="font-semibold text-home-ink">{m.name}</span>
                 <span className="corridor-legend-currency">{m.currency}</span>
                 <span className="corridor-legend-status">Verified in sandbox</span>
@@ -136,7 +153,7 @@ export function SupportedCorridors() {
             ))}
             {PLANNED_MARKERS.map((m) => (
               <li key={m.code} className="corridor-legend-item corridor-legend-item-planned">
-                <span className="corridor-legend-dot corridor-legend-dot-planned" aria-hidden="true" />
+                <Flag code={m.code} size={20} />
                 <span className="font-semibold text-home-ink">{m.name}</span>
                 <span className="corridor-legend-currency">{m.currency}</span>
                 <span className="corridor-legend-status">Planned — Phase 2, after funding</span>
