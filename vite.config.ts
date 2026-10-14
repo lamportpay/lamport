@@ -31,6 +31,12 @@ const bufferServerStub = fileURLToPath(
   new URL("./src/lib/buffer-server-buffer.ts", import.meta.url),
 );
 
+// Dev-only virtual module: node_modules/buffer/index.js is CommonJS, and Vite
+// serves that file raw (no exports at all) when it is reached by path. The
+// bridge imports the pre-bundled ESM copy instead, so the polyfill's default
+// import gets the real package in the preview too.
+const bufferDevBridge = "\0lamportpay-buffer-dev";
+
 // @solana-mobile/wallet-adapter-mobile (pulled in by @solana/wallet-adapter-react)
 // calls Node's util.inherits at module scope, which throws in the SSR runtime
 // and 500s every server-rendered page. It is browser-only code, so stub it for
@@ -60,6 +66,11 @@ export default defineConfig(({ command, mode }) => {
     Object.entries(viteEnv).map(([key, value]) => [`import.meta.env.${key}`, JSON.stringify(value)]),
   );
 
+  // Dev server: `buffer` is CommonJS, so the browser has to receive it through
+  // Vite's dependency pre-bundler (see optimizeDeps.include below). Serving
+  // node_modules/buffer/index.js raw hands the browser a module with no exports.
+  const isDevServer = command === "serve";
+
   return {
     define: envDefine,
     css: { transformer: "lightningcss" },
@@ -85,7 +96,14 @@ export default defineConfig(({ command, mode }) => {
       ],
     },
     optimizeDeps: {
-      include: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "react/jsx-dev-runtime"],
+      include: [
+        "react",
+        "react-dom",
+        "react-dom/client",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "buffer",
+      ],
     },
     plugins: [
       tailwindcss(),
@@ -126,13 +144,33 @@ export default defineConfig(({ command, mode }) => {
         // (web3.js needs the full API to serialize a transaction), the server
         // gets Node's own Buffer through src/lib/buffer-server-buffer.ts.
         resolveId(id, _importer, options) {
-          if (id === "lamportpay-real-buffer")
-            return options?.ssr ? bufferServerStub : realBufferPackage;
-          if (id === "buffer" || id === "buffer/")
-            return options?.ssr ? bufferServerStub : browserBufferShim;
+          if (id === bufferDevBridge) return bufferDevBridge;
+          if (id === "lamportpay-real-buffer") {
+            if (options?.ssr) return bufferServerStub;
+            // Dev: the package file is CommonJS and Vite serves it raw, so the
+            // browser gets the ESM bridge over the pre-bundled copy instead.
+            if (isDevServer) return bufferDevBridge;
+            return realBufferPackage;
+          }
+          if (id === "buffer" || id === "buffer/") {
+            if (options?.ssr) return bufferServerStub;
+            // Dev: let Vite pre-bundle the real package (optimizeDeps.include)
+            // so the bridge can import it; the build keeps the polyfill shim.
+            if (isDevServer) return null;
+            return browserBufferShim;
+          }
           // node:buffer stays native on the server: that is what the stub re-exports.
           if (id === "node:buffer" && !options?.ssr) return browserBufferShim;
           return null;
+        },
+        load(id) {
+          if (id !== bufferDevBridge) return null;
+          return [
+            'import bufferPkg from "buffer";',
+            "const Buffer = bufferPkg.Buffer ?? bufferPkg;",
+            "export { Buffer };",
+            "export default { Buffer };",
+          ].join("\n");
         },
       },
       tanstackStart({

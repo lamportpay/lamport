@@ -12,7 +12,11 @@
 // buffer package file. A plain "buffer/index.js" import gets re-aliased to a
 // minimal mock by Nitro's Cloudflare preset (Lovable preview), which broke
 // wallet signing there with "writeUIntLE is not a function" (11 Oct 2026).
-import { Buffer as PackageBuffer } from "lamportpay-real-buffer";
+// Default import: Vite's dev pre-bundle of this CommonJS package exposes
+// `module.exports` as the default export only, so a named import fails there.
+import bufferPackage from "lamportpay-real-buffer";
+
+const PackageBuffer = (bufferPackage as { Buffer?: unknown }).Buffer ?? bufferPackage;
 
 type BufferEncoding = "utf8" | "utf-8" | "hex" | "base64";
 

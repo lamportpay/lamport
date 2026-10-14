@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { ModeBadge } from "@/components/app/ModeBadge";
 import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
 import { BrandLogo } from "@/components/site/Layout";
+import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 import { LiveRatesTicker } from "@/components/site/LiveRatesTicker";
 import { AppWalletIsland } from "@/components/site/wallet/WalletIsland";
 import { supabase } from "@/integrations/supabase/client";
@@ -329,8 +330,9 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <div className="h-px bg-[image:var(--gradient-uv)] opacity-40" />
         <LiveRatesTicker />
       </header>
-      {/* Phones: the content clears the fixed bottom tab bar (and the home indicator). */}
-      <main className="flex-1 pb-[calc(4rem+env(safe-area-inset-bottom))] sm:pb-0">{children}</main>
+      {/* Phones: the content clears the fixed bottom tab bar, the price ticker
+          above it and the home indicator. */}
+      <main className="flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-0">{children}</main>
       {/* Phones: an app-style bottom tab bar, in thumb reach. */}
       <nav
         className="sm:hidden fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/85 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] print:hidden"
@@ -371,6 +373,10 @@ export function AppLayout({ children }: { children: ReactNode }) {
           </button>
         </div>
       </nav>
+      {/* Live crypto prices, fixed at the bottom: above the phone tab bar, at the
+          page edge on desktop. The spacer keeps it from covering content. */}
+      <CryptoPriceTicker bottomClass="bottom-[calc(4rem+1px+env(safe-area-inset-bottom))] sm:bottom-0" />
+      <div aria-hidden="true" className="hidden h-8 sm:block print:hidden" />
       <AccountSheet open={accountOpen} onOpenChange={setAccountOpen} />
     </div>
   );

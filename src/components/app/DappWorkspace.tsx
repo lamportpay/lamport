@@ -47,7 +47,7 @@ export function DappWorkspace({
       )}
       {/* Phones: room at the bottom for a docked action (MobileDock), when the page has one. */}
       <div
-        className={`${rail ? "max-w-[1440px]" : "max-w-[1160px]"} mx-auto px-4 lg:px-8 py-4 lg:py-8 max-sm:has-[[data-mobile-dock]]:pb-[calc(var(--dock-h,9rem)+1.5rem)]`}
+        className={`${rail ? "max-w-[1440px]" : "max-w-[1160px]"} mx-auto px-4 lg:px-8 py-4 lg:py-8 max-sm:has-[[data-mobile-dock]]:pb-[calc(var(--dock-h,9rem)+1.5rem+1.875rem)]`}
       >
         <div
           className={`grid gap-4 lg:gap-6 ${
@@ -302,7 +302,9 @@ export function MobileDock({ children, className }: { children: ReactNode; class
         <div
           ref={dock}
           className={cn(
-            "fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 border-t border-border/60 bg-background/95 backdrop-blur-xl px-4 py-3 shadow-[0_-12px_30px_-18px_oklch(0.52_0.22_275/0.35)] print:hidden",
+            // 1.875rem: the fixed price ticker strip sits between this dock and
+            // the tab bar, so the dock has to clear it too.
+            "fixed inset-x-0 bottom-[calc(4rem+1px+1.875rem+env(safe-area-inset-bottom))] z-30 border-t border-border/60 bg-background/95 backdrop-blur-xl px-4 py-3 shadow-[0_-12px_30px_-18px_oklch(0.52_0.22_275/0.35)] print:hidden",
             className,
           )}
         >

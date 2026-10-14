@@ -21,7 +21,11 @@ const fmtPrice = (n: number) =>
     ? n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : n.toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 6 });
 
-export function CryptoPriceTicker() {
+/**
+ * `bottomClass` lifts the strip above another fixed bar (the app's phone tab
+ * bar) without changing its behaviour anywhere else.
+ */
+export function CryptoPriceTicker({ bottomClass = "bottom-0" }: { bottomClass?: string }) {
   const [coins, setCoins] = useState<Coin[]>([]);
 
   useEffect(() => {
@@ -68,7 +72,7 @@ export function CryptoPriceTicker() {
     <div
       role="note"
       aria-label="Live cryptocurrency prices, top 20 by market cap"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/90 backdrop-blur-lg print:hidden"
+      className={`fixed inset-x-0 z-40 border-t border-border/60 bg-background/90 backdrop-blur-lg print:hidden ${bottomClass}`}
     >
       <div className="crypto-ticker overflow-hidden py-1.5 text-[11px]">
         <div className="crypto-ticker-track flex w-max items-center gap-6 motion-reduce:animate-none">
