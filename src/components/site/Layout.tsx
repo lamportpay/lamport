@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { LiveRatesTicker } from "@/components/site/LiveRatesTicker";
+import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
   return (
@@ -123,6 +124,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       </header>
       <main className="flex-1">{children}</main>
       <SiteFooter />
+      <CryptoPriceTicker />
+      {/* spacer so the fixed bottom ticker never covers page content */}
+      <div aria-hidden="true" className="h-8 print:hidden" />
     </div>
   );
 }
