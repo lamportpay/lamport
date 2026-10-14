@@ -459,9 +459,13 @@
   --color-home-tint: var(--home-tint);
   --color-home-surface: var(--home-surface);
   --color-home-ink: var(--home-ink);
+  --color-home-connector: var(--home-connector);
 }
 :root {
   --home-brand: oklch(0.48 0.23 275);
+  --home-connector: oklch(0.55 0.05 270);
+  --demo-notice-background: oklch(0.93 0.12 88);
+  --demo-notice-foreground: oklch(0.29 0.055 65);
   --home-tint: oklch(0.96 0.025 275);
   --home-surface: oklch(0.975 0.009 265);
   --home-ink: oklch(0.24 0.055 270);
@@ -477,9 +481,16 @@
 }
 .dark {
   --home-brand: oklch(0.78 0.12 275);
+  --home-connector: oklch(0.72 0.05 270);
+  --demo-notice-background: oklch(0.32 0.06 65);
+  --demo-notice-foreground: oklch(0.94 0.09 88);
   --home-tint: oklch(0.25 0.055 275);
   --home-surface: oklch(0.18 0.025 265);
   --home-ink: oklch(0.24 0.055 270);
+}
+.site-demo-notice {
+  background: var(--demo-notice-background);
+  color: var(--demo-notice-foreground);
 }
 .commercial-home {
   letter-spacing: 0;
@@ -856,12 +867,12 @@
     margin-top: 12px;
     font-size: 14px;
   }
-  .home-hero .home-container > .flex {
+  .home-hero .home-container > .flex:not(.home-currency-summary) {
     display: grid;
     gap: 8px;
     margin-top: 20px;
   }
-  .home-hero .home-container > .flex a {
+  .home-hero .home-container > .flex:not(.home-currency-summary) a {
     width: 100%;
     height: 44px;
   }
@@ -1298,12 +1309,14 @@
 }
 .flow-spotlight { background: var(--card); }
 .flow-detail { min-height: 230px; }
-.flow-wire { fill: none; stroke: var(--border); stroke-width: 3; stroke-linecap: round; }
+.flow-wire { fill: none; stroke: var(--home-connector); stroke-width: 3; stroke-linecap: round; }
 .flow-wire-active { stroke: var(--home-brand); }
 .flow-wire-planned { stroke-dasharray: 5 7; }
-.flow-junction { fill: var(--card); stroke: var(--border); stroke-width: 2; }
+.flow-junction { fill: var(--card); stroke: var(--home-connector); stroke-width: 2; }
 .flow-scene-node[data-active="true"] .flow-junction { fill: var(--home-brand); stroke: var(--home-brand); }
-.flow-scene-button { transition: border-color 400ms, box-shadow 400ms; }
+.flow-scene-button { cursor: pointer; transition: border-color 180ms, background-color 180ms, box-shadow 180ms; }
+.flow-scene-button:hover { background: var(--home-tint); border-color: var(--home-brand); box-shadow: var(--shadow-soft); }
+.flow-scene-button:focus-visible { outline: 2px solid var(--home-brand); outline-offset: -3px; background: var(--home-tint); }
 .flow-scene-node[data-active="true"] .flow-scene-button { box-shadow: var(--shadow-soft); }
 .flow-traveler { fill: none; stroke: var(--home-brand); stroke-width: 2; opacity: .45; transition: cy 900ms ease; }
 .bank-flow-trunk { position: relative; height: 48px; width: 2px; margin: 12px auto; background: var(--border); overflow: hidden; }

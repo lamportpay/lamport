@@ -182,7 +182,7 @@ export function RoadmapSection() {
                 {current ? "In progress · Demo" : "Planned"}
               </span>
             </div>
-            <p className="mt-8 font-mono text-5xl font-semibold text-home-brand/30 sm:text-6xl">
+            <p className="mt-8 font-mono text-5xl font-semibold text-home-brand sm:text-6xl">
               {String(phase.phase).padStart(2, "0")}
             </p>
             <h3 className="mt-2 text-2xl font-semibold leading-tight text-home-ink">

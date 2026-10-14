@@ -1,5 +1,12 @@
 # Roadmap
 
+## Homepage navigation and accessibility
+
+- [x] Expose desktop navigation and visible Open App action; retain mobile drawer
+- [x] Add persistent demo notice and integrate currencies into the hero
+- [x] Improve flow hover/focus feedback and number/connector contrast
+- [x] Verify at 1268/820/390/360px: desktop links, mobile Docs drawer, manual Jupiter selection and keyboard focus, persistent notice, Open App → /pay, no page errors or horizontal overflow; preview build OK
+
 ## Interactive payout map and hero summary
 
 - [x] Make the world map clickable country by country with smooth zoom, plus/minus and reset controls, and a card showing the selected country's flag, name and status

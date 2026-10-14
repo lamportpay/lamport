@@ -1,5 +1,5 @@
 /**
- * Compact "Crypto in → Local money out" card under the hero.
+ * Compact "Crypto in → Local money out" summary integrated into the hero.
  * Shows only what works in TEST MODE today: SOL/USDC in, USD/GBP/INR/PHP out.
  */
 import { ArrowRight } from "lucide-react";
@@ -19,11 +19,8 @@ const MONEY_OUT = [
 
 export function HomeGlance() {
   return (
-    <section aria-label="Crypto in, local money out" className="py-6">
-      <div className="home-container">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-4 rounded-2xl border border-border bg-card px-5 py-4 shadow-sm sm:justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Crypto in</span>
+    <div aria-label="Crypto in, local money out" className="home-currency-summary mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-3 sm:gap-5">
+          <div className="flex items-center gap-3" aria-label="Crypto in">
             {CRYPTO_IN.map(({ symbol, label }) => (
               <span key={symbol} className="inline-flex items-center gap-1.5 text-sm font-semibold" title={label}>
                 <TokenIcon symbol={symbol} size={22} />
@@ -32,8 +29,7 @@ export function HomeGlance() {
             ))}
           </div>
           <ArrowRight aria-hidden className="size-5 text-home-brand" />
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Local money out</span>
+          <div className="flex items-center gap-2" aria-label="Local money out">
             {MONEY_OUT.map(({ symbol, code }) => (
               <span
                 key={code}
@@ -45,8 +41,6 @@ export function HomeGlance() {
               </span>
             ))}
           </div>
-        </div>
-      </div>
-    </section>
+    </div>
   );
 }

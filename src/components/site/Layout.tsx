@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, ArrowRight, Twitter, Linkedin, Github, Mail } from "lucide-react";
+import { Menu, ArrowRight, Twitter, Linkedin, Github, Mail, FlaskConical } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import logoUrl from "@/assets/lamportpay-logo.png";
 import { cn } from "@/lib/utils";
@@ -28,21 +28,32 @@ const nav = [
   { to: "/contact", label: "Contact" },
 ] as const;
 
+const primaryNav = [
+  { to: "/pay", label: "Swap" },
+  { to: "/how-it-works", label: "How it works" },
+  { to: "/docs", label: "Docs" },
+  { to: "/contact", label: "Company" },
+] as const;
+
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="sticky top-0 z-40 backdrop-blur-lg bg-background/75 border-b border-border/60 print:hidden">
-        <div className="max-w-7xl mx-auto px-5 h-16 flex items-center justify-between">
+        <div role="note" aria-label="Current platform mode" className="site-demo-notice flex min-h-9 items-center justify-center gap-2 px-4 py-2 text-center text-xs leading-relaxed">
+          <FlaskConical className="size-4 shrink-0" aria-hidden="true" />
+          <p><strong>TESTNET / DEMO MODE</strong><span className="mx-2" aria-hidden="true">·</span>Real bank payouts & production KYC disabled.</p>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center group" aria-label="LamportPay home">
             <BrandLogo />
           </Link>
-          <nav className="hidden lg:flex items-center gap-1">
-            {nav.map((n) => (
+          <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-1">
+            {primaryNav.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
-                className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-md"
+                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-ring transition-colors rounded-md"
                 activeProps={{
                   className: "px-3 py-2 text-sm text-foreground font-medium rounded-md",
                 }}
@@ -51,31 +62,13 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               </Link>
             ))}
           </nav>
-          <div className="hidden lg:flex items-center gap-2">
-            <div className="flex items-center gap-1 mr-1">
-              {socialLinks.map(({ label, href, icon: Icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="inline-flex items-center justify-center w-8 h-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition"
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
-            <Link
-              to="/pay"
-              className="px-4 py-2 text-sm font-medium rounded-full bg-foreground text-background hover:opacity-90 transition"
-            >
-              Swap
-            </Link>
-          </div>
+          <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-0">
+          <Button asChild className="h-10 rounded-lg px-4">
+            <Link to="/pay">Open App</Link>
+          </Button>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden shrink-0" aria-label="Open menu">
+              <Button variant="ghost" size="icon" className="md:hidden shrink-0" aria-label="Open menu">
                 <Menu className="w-5 h-5" />
               </Button>
             </SheetTrigger>
@@ -123,6 +116,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
               </div>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
       </header>
       <main className="flex-1">{children}</main>

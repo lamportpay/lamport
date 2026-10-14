@@ -77,7 +77,7 @@ export function PaymentNetwork() {
             </div>
             <div key={selected} className="flow-detail">
               <p className="text-xs font-semibold text-home-brand">PAYMENT ROUTE · DEMO / SIMULATED</p>
-              <p className="mt-7 font-mono text-5xl font-semibold text-home-brand/30">0{selected + 1}</p>
+              <p className="mt-7 font-mono text-5xl font-semibold text-home-brand">0{selected + 1}</p>
               <h3 className="mt-3 text-2xl font-semibold text-home-ink">{active.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{active.detail}</p>
               <p className="mt-4 text-xs font-medium text-home-brand">{active.note}</p>
