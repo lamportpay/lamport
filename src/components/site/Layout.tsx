@@ -124,6 +124,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       </header>
       <main className="flex-1">{children}</main>
       <SiteFooter />
+      <CryptoPriceTicker />
+      {/* spacer so the fixed bottom ticker never covers page content */}
+      <div aria-hidden="true" className="h-8 print:hidden" />
     </div>
   );
 }
