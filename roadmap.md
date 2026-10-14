@@ -2,6 +2,9 @@
 
 ## Commercial homepage refresh
 
+- [ ] Polish future assets and markets with compact icons and Nigeria / NGN alongside Pakistan
+- [ ] Replace detailed partner cards with an accessible official-logo slider
+- [ ] Add an animated connected-system tree with Hyperliquid explicitly planned and disabled; verify desktop/mobile and reduced motion
 - [x] Improve real asset icons, present Pakistan / PKR as a planned market, and refresh partner logo presentation including Great Winchester Investment Company (six companies; logos load, desktop/mobile no errors or overflow)
 - [x] Verify deeper gradient ring motion, reduced-motion behavior and the planned currency outlook beneath bank destinations (desktop/mobile, no overflow, build OK; exact future fiat currencies remain unconfirmed)
 - [x] Replace crowded homepage sections with a concise business overview and animated payment workflow
