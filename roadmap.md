@@ -120,3 +120,5 @@
 - [x] Example placeholders and format checks for every bank field, per country
 - [x] Marketing "Convert" button renamed "Swap" (/pay URL unchanged)
 - [x] Mobile app-style polish of /pay first screen
+- [x] Bank guidance moved from homepage to Compliance page
+- [x] Map scan beam no longer causes page overflow / scroll jumps

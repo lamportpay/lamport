@@ -1109,7 +1109,9 @@
 /* Supported corridors world map */
 .corridor-map-frame {
   position: relative;
-  overflow: visible;
+  /* Clip the moving scan beam so it never widens the page (caused scroll jumps). */
+  overflow: hidden;
+  contain: paint;
   padding: clamp(0.25rem, 1vw, 0.75rem);
 }
 .corridor-map { display: block; width: 100%; height: auto; }

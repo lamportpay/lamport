@@ -5,7 +5,6 @@ import { Flag } from "@/components/app/Flag";
 import { Button } from "@/components/ui/button";
 import { FlowControls } from "@/components/site/FlowPresentation";
 import { useFlowPlayback } from "@/hooks/use-flow-playback";
-import { BankRestrictions } from "@/components/site/BankRestrictions";
 
 const destinations = [
   {
@@ -96,7 +95,10 @@ export function HomeBankNetwork() {
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
           <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
             Illustrative bank listings, not direct bank partnerships or endorsements. Fiat payout is
-            DISABLED; sandbox support varies by country and currency.
+            DISABLED; sandbox support varies by country and currency.{" "}
+            <Link to="/compliance" hash="bank-restrictions" className="font-medium text-home-brand underline-offset-4 hover:underline">
+              Read official bank guidance
+            </Link>
           </p>
           <Button variant="link" asChild className="px-0 text-home-brand">
             <Link to="/pay">
@@ -105,7 +107,6 @@ export function HomeBankNetwork() {
           </Button>
         </div>
       </div>
-      <BankRestrictions />
     </section>
   );
 }

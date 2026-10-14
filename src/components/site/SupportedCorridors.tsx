@@ -58,7 +58,7 @@ export function SupportedCorridors() {
   }, []);
 
   return (
-    <section className="home-section border-t border-border" id="supported-corridors">
+    <section className="home-section border-t border-border" id="supported-corridors" style={{ overflowX: "clip" }}>
       <div className="home-container">
         <div className="mx-auto max-w-2xl text-center">
           <p className="home-eyebrow">Global payout reach</p>
