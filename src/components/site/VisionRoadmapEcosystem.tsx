@@ -386,26 +386,28 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
             >
               {paused ? <Play /> : <Pause />}
             </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Previous partners"
-              title="Previous partners"
-              disabled={position.start}
-              onClick={() => move(-1)}
-            >
-              <ChevronLeft />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              aria-label="Next partners"
-              title="Next partners"
-              disabled={position.end}
-              onClick={() => move(1)}
-            >
-              <ChevronRight />
-            </Button>
+            <div className="hidden gap-2 md:flex">
+              <Button
+                variant="outline"
+                size="icon"
+                aria-label="Previous partners"
+                title="Previous partners"
+                disabled={position.start}
+                onClick={() => move(-1)}
+              >
+                <ChevronLeft />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                aria-label="Next partners"
+                title="Next partners"
+                disabled={position.end}
+                onClick={() => move(1)}
+              >
+                <ChevronRight />
+              </Button>
+            </div>
           </div>
         </div>
         <ul
