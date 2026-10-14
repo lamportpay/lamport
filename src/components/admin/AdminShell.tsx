@@ -4,7 +4,7 @@
  * area. Apart from the logo it shares nothing with the marketing site's header
  * or footer, so admin reads as its own product.
  */
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
@@ -20,6 +20,9 @@ import {
   type LucideIcon,
   BadgeCheck,
   Send,
+  ArrowUpRight,
+  ShieldCheck,
+  Search,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
@@ -39,18 +42,25 @@ import { BrandLogo } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
+import { Input } from "@/components/ui/input";
+import { useModeStatus } from "@/lib/use-mode-status";
 
 type NavItem = { to: string; label: string; icon: LucideIcon };
 
 const ADMIN_NAV: { section: string; items: NavItem[] }[] = [
   {
-    section: "Operations",
+    section: "Workspace",
     items: [
       { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
       { to: "/admin/payments", label: "Payments", icon: ReceiptText },
-      { to: "/admin/users", label: "Users & roles", icon: Users },
-      { to: "/admin/verified-customers", label: "Verified customers", icon: BadgeCheck },
       { to: "/admin/payouts", label: "Payouts", icon: Send },
+    ],
+  },
+  {
+    section: "Customers & access",
+    items: [
+      { to: "/admin/verified-customers", label: "Verified customers", icon: BadgeCheck },
+      { to: "/admin/users", label: "Users & roles", icon: Users },
     ],
   },
   {
@@ -86,27 +96,49 @@ function Brand() {
 }
 
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+  const [search, setSearch] = useState("");
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const groups = ADMIN_NAV.map((group) => ({
+    ...group,
+    items: group.items.filter((item) =>
+      `${group.section} ${item.label}`.toLowerCase().includes(search.trim().toLowerCase()),
+    ),
+  })).filter((group) => group.items.length);
   return (
-    <nav className="space-y-6" aria-label="Admin">
-      {ADMIN_NAV.map((group) => (
+    <nav className="space-y-5" aria-label="Admin">
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          aria-label="Find admin page"
+          placeholder="Find a page…"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="bg-background pl-9"
+        />
+      </div>
+      {groups.length === 0 && <p className="px-3 text-xs text-muted-foreground">No pages found.</p>}
+      {groups.map((group) => (
         <div key={group.section} className="space-y-1">
           <div className="px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             {group.section}
           </div>
           {group.items.map(({ to, label, icon: Icon }) => (
-            <Link
+            <Button
+              asChild
+              variant="ghost"
               key={to}
-              to={to}
-              onClick={onNavigate}
-              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition"
-              activeProps={{
-                className:
-                  "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm bg-muted text-foreground font-medium",
-              }}
+              className={`h-10 w-full justify-start px-3 text-sm ${pathname === to || pathname.startsWith(`${to}/`) ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground" : "text-muted-foreground"}`}
             >
-              <Icon className="w-4 h-4 shrink-0" />
-              {label}
-            </Link>
+              <Link
+                key={to}
+                to={to}
+                onClick={onNavigate}
+                aria-current={pathname === to || pathname.startsWith(`${to}/`) ? "page" : undefined}
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                {label}
+              </Link>
+            </Button>
           ))}
         </div>
       ))}
@@ -133,20 +165,19 @@ function useSignOut() {
   return { busy, signOut };
 }
 
-export function AdminShell({
-  email,
-  children,
-}: {
-  email: string | null;
-  children: ReactNode;
-}) {
+export function AdminShell({ email, children }: { email: string | null; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { busy, signOut } = useSignOut();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const currentPage = ADMIN_NAV.flatMap((group) => group.items).find(
+    (item) => pathname === item.to || pathname.startsWith(`${item.to}/`),
+  );
+  const { status, indicator } = useModeStatus();
 
   return (
-    <div className="min-h-screen bg-muted/30 text-foreground">
+    <div className="min-h-screen bg-muted/40 text-foreground">
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed inset-y-0 left-0 w-60 flex-col border-r border-border/60 bg-background">
+      <aside className="hidden lg:flex fixed inset-y-0 left-0 w-64 flex-col border-r border-sidebar-border bg-sidebar">
         <div className="h-16 flex items-center border-b border-border/60 px-3">
           <Brand />
         </div>
@@ -154,15 +185,22 @@ export function AdminShell({
           <SidebarNav />
         </div>
         <div className="border-t border-border/60 p-3 text-xs text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">
-            View public site
-          </Link>
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full justify-between text-xs text-muted-foreground"
+          >
+            <Link to="/">
+              View public site
+              <ArrowUpRight />
+            </Link>
+          </Button>
         </div>
       </aside>
 
       {/* Mobile drawer */}
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="left" className="w-64 p-0">
+        <SheetContent side="left" className="w-72 overflow-y-auto bg-sidebar p-0">
           <SheetTitle className="sr-only">Admin navigation</SheetTitle>
           <div className="h-16 flex items-center border-b border-border/60 px-3">
             <Brand />
@@ -173,16 +211,18 @@ export function AdminShell({
         </SheetContent>
       </Sheet>
 
-      <div className="lg:pl-60">
+      <div className="lg:pl-64">
         <header className="sticky top-0 z-30 h-16 flex items-center justify-between gap-3 border-b border-border/60 bg-background/90 backdrop-blur px-4 md:px-6">
           <div className="flex items-center gap-2">
-            <button
-              className="lg:hidden p-2 rounded-md hover:bg-muted"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
               onClick={() => setOpen(true)}
               aria-label="Open navigation"
             >
               <Menu className="w-5 h-5" />
-            </button>
+            </Button>
             <Link
               to="/admin/dashboard"
               aria-label="LamportPay Admin dashboard"
@@ -190,8 +230,21 @@ export function AdminShell({
             >
               <BrandLogo className="h-7" />
             </Link>
+            <div className="hidden sm:flex items-center gap-2 text-sm">
+              <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground">Admin</span>
+              <span className="text-muted-foreground">/</span>
+              <span className="font-medium">{currentPage?.label ?? "Workspace"}</span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
+            <span className="rounded-md border border-border bg-muted px-2 py-1 text-[10px] font-semibold sm:text-xs">
+              {status
+                ? status.mode === "test"
+                  ? "DEMO / SIMULATED"
+                  : indicator.label
+                : "MODE UNVERIFIED"}
+            </span>
             {email && (
               <span className="hidden sm:block text-sm text-muted-foreground truncate max-w-[220px]">
                 {email}
@@ -203,7 +256,9 @@ export function AdminShell({
             </Button>
           </div>
         </header>
-        <main className="px-4 md:px-6 py-6 max-w-6xl">{children}</main>
+        <main className="mx-auto w-full min-w-0 max-w-[1600px] px-4 py-6 md:px-7 md:py-8">
+          {children}
+        </main>
       </div>
     </div>
   );
@@ -224,9 +279,12 @@ export function AdminPage({
   children: ReactNode;
 }) {
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <div className="space-y-2">
-        <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground flex gap-1.5">
+        <nav
+          aria-label="Breadcrumb"
+          className="text-xs text-muted-foreground flex flex-wrap gap-1.5"
+        >
           <Link to="/admin/dashboard" className="hover:text-foreground">
             Admin
           </Link>
@@ -244,13 +302,15 @@ export function AdminPage({
           ))}
         </nav>
         <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
             {description && (
-              <p className="text-sm text-muted-foreground mt-1 max-w-2xl">{description}</p>
+              <p className="text-sm text-muted-foreground mt-1 max-w-2xl break-words">
+                {description}
+              </p>
             )}
           </div>
-          {actions && <div className="flex gap-2">{actions}</div>}
+          {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
         </div>
       </div>
       {children}
@@ -271,7 +331,7 @@ export function Panel({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-border/60 bg-background p-5 space-y-4">
+    <section className="min-w-0 rounded-lg border border-border bg-card p-4 sm:p-5 space-y-4">
       {(title || actions) && (
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
@@ -290,16 +350,21 @@ export function StatCard({
   label,
   value,
   hint,
+  icon: Icon,
 }: {
   label: string;
   value: ReactNode;
   hint?: ReactNode;
+  icon?: LucideIcon;
 }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-background p-4">
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="text-2xl font-semibold tracking-tight mt-1">{value}</div>
-      {hint && <div className="text-xs text-muted-foreground mt-1">{hint}</div>}
+    <div className="min-w-0 rounded-lg border border-border bg-card p-5">
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-xs font-medium text-muted-foreground">{label}</div>
+        {Icon && <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />}
+      </div>
+      <div className="mt-3 break-words text-2xl font-semibold tabular-nums">{value}</div>
+      {hint && <div className="text-xs text-muted-foreground mt-2">{hint}</div>}
     </div>
   );
 }
