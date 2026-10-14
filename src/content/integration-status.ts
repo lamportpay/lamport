@@ -11,17 +11,11 @@ export const INTEGRATION_GROUPS = [
     ],
   },
   {
-    title: "In discussion", label: "Talks ongoing, no agreement",
-    entries: [
-      { name: "Yellow Card", status: "PLANNED", detail: "Discussions ongoing with Yellow Card and other payout API providers similar to Stables. No agreement or integration is confirmed.", asset: "/partners/yellowcard.svg" },
-      { name: "More payout providers", status: "PLANNED", detail: "Talks with additional payout API companies to widen coverage. Nothing is signed or enabled." },
-    ],
-  },
-  {
     title: "On the roadmap", label: "Goals, not enabled",
     entries: [
       { name: "Hyperliquid", status: "PLANNED", detail: FUTURE_EXPLORATION[1].detail, asset: "/partners/hyperliquid.svg" },
-      { name: "Major cryptocurrencies", status: "PLANNED", detail: "Bitcoin, Ethereum, Ripple and Litecoin deposits are on the roadmap. Today only USDC on Solana is enabled.", asset: "/tokens/btc.svg" },
+      { name: "Major cryptocurrencies", status: "PLANNED", detail: "Bitcoin, Ethereum, Ripple and Litecoin deposits are on the roadmap. Today only USDC on Solana is enabled.", asset: "/tokens/btc-eth.png" },
+      { name: "Yellow Card & payout APIs", status: "PLANNED", detail: "Discussions ongoing with Yellow Card and other payout API providers similar to Stables. No agreement or integration is confirmed.", asset: "/partners/yellowcard.svg" },
       { name: "New countries", status: "PLANNED", detail: "Nigeria, Pakistan and further destinations are planned corridors. They are not active today.", asset: "/flags/NG.svg" },
     ],
   },
@@ -30,6 +24,14 @@ export const INTEGRATION_GROUPS = [
     entries: [
       { name: "Circle", status: "PLANNED", detail: FUTURE_EXPLORATION[3].detail, asset: "/tokens/usdc.svg" },
       { name: "Tether", status: "PLANNED", detail: FUTURE_EXPLORATION[4].detail, asset: "/tokens/usdt.svg" },
+    ],
+  },
+  {
+    title: "Further ahead", label: "Longer-term goals",
+    entries: [
+      { name: "Live bank payouts", status: "PLANNED", detail: "Production identity verification and real fiat payouts switch on only after production approval. They remain DISABLED today." },
+      { name: "More chains & wallets", status: "PLANNED", detail: "Additional networks and wallet connections beyond Solana are under evaluation. No timeline is committed." },
+      { name: "Mobile experience", status: "PLANNED", detail: "A dedicated mobile app experience is a longer-term goal. The web app works on mobile today." },
     ],
   },
 ] as const;
