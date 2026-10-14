@@ -3,7 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/auth/reset")({
+export const Route = createFileRoute("/auth_/reset")({
   ssr: false,
   head: () => ({
     meta: [
