@@ -98,10 +98,24 @@ function Brand() {
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const [search, setSearch] = useState("");
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const groups = ADMIN_NAV.map((group) => ({ ...group, items: group.items.filter((item) => `${group.section} ${item.label}`.toLowerCase().includes(search.trim().toLowerCase())) })).filter((group) => group.items.length);
+  const groups = ADMIN_NAV.map((group) => ({
+    ...group,
+    items: group.items.filter((item) =>
+      `${group.section} ${item.label}`.toLowerCase().includes(search.trim().toLowerCase()),
+    ),
+  })).filter((group) => group.items.length);
   return (
     <nav className="space-y-5" aria-label="Admin">
-      <div className="relative"><Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" /><Input aria-label="Find admin page" placeholder="Find a page…" value={search} onChange={(event) => setSearch(event.target.value)} className="bg-background pl-9" /></div>
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          aria-label="Find admin page"
+          placeholder="Find a page…"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="bg-background pl-9"
+        />
+      </div>
       {groups.length === 0 && <p className="px-3 text-xs text-muted-foreground">No pages found.</p>}
       {groups.map((group) => (
         <div key={group.section} className="space-y-1">
@@ -109,15 +123,22 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             {group.section}
           </div>
           {group.items.map(({ to, label, icon: Icon }) => (
-            <Button asChild variant="ghost" key={to} className={`h-10 w-full justify-start px-3 text-sm ${pathname === to || pathname.startsWith(`${to}/`) ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground" : "text-muted-foreground"}`}><Link
+            <Button
+              asChild
+              variant="ghost"
               key={to}
-              to={to}
-              onClick={onNavigate}
-              aria-current={pathname === to || pathname.startsWith(`${to}/`) ? "page" : undefined}
+              className={`h-10 w-full justify-start px-3 text-sm ${pathname === to || pathname.startsWith(`${to}/`) ? "bg-sidebar-accent font-semibold text-sidebar-accent-foreground" : "text-muted-foreground"}`}
             >
-              <Icon className="w-4 h-4 shrink-0" />
-              {label}
-            </Link></Button>
+              <Link
+                key={to}
+                to={to}
+                onClick={onNavigate}
+                aria-current={pathname === to || pathname.startsWith(`${to}/`) ? "page" : undefined}
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                {label}
+              </Link>
+            </Button>
           ))}
         </div>
       ))}
@@ -144,17 +165,13 @@ function useSignOut() {
   return { busy, signOut };
 }
 
-export function AdminShell({
-  email,
-  children,
-}: {
-  email: string | null;
-  children: ReactNode;
-}) {
+export function AdminShell({ email, children }: { email: string | null; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { busy, signOut } = useSignOut();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const currentPage = ADMIN_NAV.flatMap((group) => group.items).find((item) => pathname === item.to || pathname.startsWith(`${item.to}/`));
+  const currentPage = ADMIN_NAV.flatMap((group) => group.items).find(
+    (item) => pathname === item.to || pathname.startsWith(`${item.to}/`),
+  );
   const { status, indicator } = useModeStatus();
 
   return (
@@ -168,7 +185,16 @@ export function AdminShell({
           <SidebarNav />
         </div>
         <div className="border-t border-border/60 p-3 text-xs text-muted-foreground">
-          <Button asChild variant="ghost" className="w-full justify-between text-xs text-muted-foreground"><Link to="/">View public site<ArrowUpRight /></Link></Button>
+          <Button
+            asChild
+            variant="ghost"
+            className="w-full justify-between text-xs text-muted-foreground"
+          >
+            <Link to="/">
+              View public site
+              <ArrowUpRight />
+            </Link>
+          </Button>
         </div>
       </aside>
 
@@ -204,10 +230,21 @@ export function AdminShell({
             >
               <BrandLogo className="h-7" />
             </Link>
-            <div className="hidden sm:flex items-center gap-2 text-sm"><ShieldCheck className="h-4 w-4 text-muted-foreground" /><span className="text-muted-foreground">Admin</span><span className="text-muted-foreground">/</span><span className="font-medium">{currentPage?.label ?? "Workspace"}</span></div>
+            <div className="hidden sm:flex items-center gap-2 text-sm">
+              <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground">Admin</span>
+              <span className="text-muted-foreground">/</span>
+              <span className="font-medium">{currentPage?.label ?? "Workspace"}</span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="rounded-md border border-border bg-muted px-2 py-1 text-[10px] font-semibold sm:text-xs">{status ? status.mode === "test" ? "DEMO / SIMULATED" : indicator.label : "MODE UNVERIFIED"}</span>
+            <span className="rounded-md border border-border bg-muted px-2 py-1 text-[10px] font-semibold sm:text-xs">
+              {status
+                ? status.mode === "test"
+                  ? "DEMO / SIMULATED"
+                  : indicator.label
+                : "MODE UNVERIFIED"}
+            </span>
             {email && (
               <span className="hidden sm:block text-sm text-muted-foreground truncate max-w-[220px]">
                 {email}
@@ -219,7 +256,9 @@ export function AdminShell({
             </Button>
           </div>
         </header>
-        <main className="mx-auto w-full min-w-0 max-w-[1600px] px-4 py-6 md:px-7 md:py-8">{children}</main>
+        <main className="mx-auto w-full min-w-0 max-w-[1600px] px-4 py-6 md:px-7 md:py-8">
+          {children}
+        </main>
       </div>
     </div>
   );
@@ -242,7 +281,10 @@ export function AdminPage({
   return (
     <div className="min-w-0 space-y-6">
       <div className="space-y-2">
-        <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground flex flex-wrap gap-1.5">
+        <nav
+          aria-label="Breadcrumb"
+          className="text-xs text-muted-foreground flex flex-wrap gap-1.5"
+        >
           <Link to="/admin/dashboard" className="hover:text-foreground">
             Admin
           </Link>
@@ -263,7 +305,9 @@ export function AdminPage({
           <div className="min-w-0">
             <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
             {description && (
-              <p className="text-sm text-muted-foreground mt-1 max-w-2xl break-words">{description}</p>
+              <p className="text-sm text-muted-foreground mt-1 max-w-2xl break-words">
+                {description}
+              </p>
             )}
           </div>
           {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -315,7 +359,10 @@ export function StatCard({
 }) {
   return (
     <div className="min-w-0 rounded-lg border border-border bg-card p-5">
-      <div className="flex items-start justify-between gap-2"><div className="text-xs font-medium text-muted-foreground">{label}</div>{Icon && <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />}</div>
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-xs font-medium text-muted-foreground">{label}</div>
+        {Icon && <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />}
+      </div>
       <div className="mt-3 break-words text-2xl font-semibold tabular-nums">{value}</div>
       {hint && <div className="text-xs text-muted-foreground mt-2">{hint}</div>}
     </div>
