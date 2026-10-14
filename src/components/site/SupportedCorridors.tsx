@@ -1,53 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { WORLD_LAND_PATH } from "@/lib/world-map-paths";
 
 /**
  * Supported-corridors world map.
- * A dotted world map (simplified equirectangular land mask) with pulsing
- * markers on the four countries where LamportPay's sandbox payout route
- * completes end to end: United States, United Kingdom, India, Philippines.
+ * Real world land outlines (Natural Earth 110m, equirectangular projection)
+ * with pulsing markers on the four countries where LamportPay's sandbox
+ * payout route completes end to end: US, UK, India, Philippines.
  * Purely presentational — it must never imply live fiat payouts.
  */
 
-// Coarse land mask: 64 columns x 26 rows, equirectangular projection.
-// "#" = land, "." = ocean. Hand-tuned for a clean dotted look.
-const MASK = [
-  "................................................................",
-  "....######......................................................",
-  "...#########..........####..######..............................",
-  "..###########........#####..######..######..#####...............",
-  "..##########..........####...####..#####################........",
-  "...########............###....##..########################......",
-  "....#####......##......###....#...#########################.....",
-  ".....###......####......##....#...##########################....",
-  "......#......######.....##........##########################....",
-  "............########....##.........########################.....",
-  ".............########...##..........######################......",
-  "..............######.....#............####################......",
-  "...............####......#.............##################.......",
-  "................##.......#..............################........",
-  "................##......................##############..#.......",
-  "...............####......................############...##......",
-  "..............######......................##########....###.....",
-  "..............######.......................########.....##......",
-  "...............####.........................######......#.......",
-  "................##...........................####...............",
-  "................#.............................##................",
-  "................................................................",
-  "................................................................",
-  "................................................................",
-  "................................................................",
-  "................................................................",
-];
-
-const COLS = 64;
-const ROWS = 26;
+const W = 1000;
+const H = 500;
 
 interface Marker {
   code: string;
   name: string;
   currency: string;
-  // lon/lat on the equirectangular grid
   lon: number;
   lat: number;
   delay: number;
@@ -61,9 +30,7 @@ const MARKERS: Marker[] = [
 ];
 
 function toXY(lon: number, lat: number) {
-  const x = ((lon + 180) / 360) * COLS;
-  const y = ((90 - lat) / 180) * ROWS;
-  return { x, y };
+  return { x: ((lon + 180) / 360) * W, y: ((90 - lat) / 180) * H };
 }
 
 export function SupportedCorridors() {
@@ -73,16 +40,6 @@ export function SupportedCorridors() {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (media.matches) return;
     setScanning(true);
-  }, []);
-
-  const dots = useMemo(() => {
-    const out: { x: number; y: number }[] = [];
-    MASK.forEach((row, y) => {
-      for (let x = 0; x < row.length; x += 1) {
-        if (row[x] === "#") out.push({ x, y });
-      }
-    });
-    return out;
   }, []);
 
   return (
@@ -100,31 +57,29 @@ export function SupportedCorridors() {
         <div className="corridor-map-frame mx-auto mt-10 max-w-4xl">
           <div className="corridor-map-scan" aria-hidden="true" data-active={scanning} />
           <svg
-            viewBox={`0 0 ${COLS} ${ROWS}`}
+            viewBox={`0 0 ${W} ${H}`}
             className="corridor-map"
             role="img"
             aria-label="World map highlighting the United States, United Kingdom, India and the Philippines as supported payout countries"
           >
-            {dots.map((d) => (
-              <circle
-                key={`${d.x}-${d.y}`}
-                cx={d.x + 0.5}
-                cy={d.y + 0.5}
-                r={0.22}
-                className="corridor-map-dot"
-              />
-            ))}
+            <defs>
+              <linearGradient id="corridor-land" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="oklch(0.72 0.13 285)" />
+                <stop offset="100%" stopColor="oklch(0.66 0.14 255)" />
+              </linearGradient>
+            </defs>
+            <path d={WORLD_LAND_PATH} className="corridor-land" fill="url(#corridor-land)" />
             {MARKERS.map((m) => {
               const { x, y } = toXY(m.lon, m.lat);
               return (
-<g
+                <g
                   key={m.code}
                   className="corridor-marker"
                   style={{ "--ping-delay": `${m.delay}s` } as React.CSSProperties}
                 >
-                  <circle cx={x} cy={y} r={1.6} className="corridor-marker-ping" />
-                  <circle cx={x} cy={y} r={0.9} className="corridor-marker-ping corridor-marker-ping-late" />
-                  <circle cx={x} cy={y} r={0.45} className="corridor-marker-core" />
+                  <circle cx={x} cy={y} r={26} className="corridor-marker-ping" />
+                  <circle cx={x} cy={y} r={14} className="corridor-marker-ping corridor-marker-ping-late" />
+                  <circle cx={x} cy={y} r={6.5} className="corridor-marker-core" />
                 </g>
               );
             })}
@@ -132,7 +87,7 @@ export function SupportedCorridors() {
 
           <ul className="corridor-legend" aria-label="Supported payout countries">
             {MARKERS.map((m) => (
-<li
+              <li
                 key={m.code}
                 className={cn("corridor-legend-item")}
                 style={{ "--ping-delay": `${m.delay}s` } as React.CSSProperties}

@@ -1120,12 +1120,21 @@
   box-shadow: 0 20px 60px -30px oklch(0.55 0.22 280 / 0.35);
 }
 .corridor-map { display: block; width: 100%; height: auto; }
-.corridor-map-dot { fill: oklch(0.62 0.14 280 / 0.35); }
-.corridor-marker-core { fill: oklch(0.5 0.24 285); }
+.corridor-land {
+  fill-opacity: 0.28;
+  stroke: oklch(0.55 0.18 275 / 0.55);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.corridor-marker-core {
+  fill: oklch(0.48 0.24 285);
+  stroke: oklch(1 0 0);
+  stroke-width: 2;
+}
 .corridor-marker-ping {
   fill: none;
   stroke: oklch(0.55 0.22 280);
-  stroke-width: 0.12;
+  stroke-width: 2;
   opacity: 0;
   transform-origin: center;
   transform-box: fill-box;
