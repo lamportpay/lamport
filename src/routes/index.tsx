@@ -93,35 +93,6 @@ function Index() {
           </div>
         </section>
         <HomeGlance />
-        <div className="border-b border-border bg-card">
-          <div className="home-container grid grid-cols-1 gap-4 py-6 sm:grid-cols-3">
-            {[
-              {
-                icon: Wallet,
-                title: "Your wallet stays yours",
-                text: "No custody of funds or private keys",
-              },
-              {
-                icon: Coins,
-                title: "One transparent service fee",
-                text: "2% of the total sent · Partner costs separate",
-              },
-              {
-                icon: Globe2,
-                title: "Local bank destinations",
-                text: "Own account or beneficiary · Sandbox",
-              },
-            ].map(({ icon: Icon, title, text }) => (
-              <div key={title} className="flex items-center gap-3">
-                <Icon className="size-5 shrink-0 text-home-brand" strokeWidth={1.6} />
-                <div>
-                  <p className="text-sm font-semibold">{title}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
         <PaymentNetwork />
         <HomeBankNetwork />
         <ConnectedSystems />
