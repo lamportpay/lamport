@@ -27,41 +27,66 @@ function Index() {
     <div className="commercial-home">
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden">
+          <div className="home-hero-grid" aria-hidden="true" />
           <div className="home-orbits home-orbits-center" aria-hidden="true">
             <span className="home-orbit home-orbit-outer" />
             <span className="home-orbit home-orbit-middle" />
             <span className="home-orbit home-orbit-inner" />
           </div>
-          <div className="home-container py-14 text-center md:py-20">
-            <p className="home-eyebrow">Digital assets. Everyday payments.</p>
-            <h1 className="mt-4 text-5xl font-semibold leading-tight md:text-7xl">
+          <div className="home-container relative py-16 text-center md:py-24">
+            <p className="home-hero-badge">
+              <span className="home-hero-badge-dot" aria-hidden="true" />
+              Built on Solana · Non-custodial payments
+            </p>
+            <h1 className="mx-auto mt-6 max-w-3xl text-5xl font-semibold leading-[1.08] tracking-tight md:text-7xl">
               <span className="home-brand-text">Lamport</span>
               <span className="home-brand-text-light">Pay</span>
             </h1>
-            <p className="mt-3 text-2xl font-medium leading-snug md:text-4xl">
+            <p className="mt-4 text-2xl font-medium leading-snug tracking-tight md:text-4xl">
               Crypto in. <span className="home-brand-text">Local money out.</span>
             </p>
-            <p className="mx-auto mt-5 max-w-lg text-base leading-relaxed text-home-ink md:text-lg">
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-home-ink md:text-lg">
               A connected route from your Solana wallet to local-currency bank payments. Your
               wallet. A clear quote. One payment journey.
             </p>
-            <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button
                 asChild
                 size="lg"
-                className="h-12 bg-home-brand text-primary-foreground hover:bg-home-brand/90"
+                className="home-hero-cta h-12 bg-home-brand px-7 text-primary-foreground hover:bg-home-brand/90"
               >
                 <Link to="/pay">
                   Open payment app <ArrowRight />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-12 bg-card/90">
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="h-12 border-home-brand/25 bg-card/80 px-7 backdrop-blur-sm"
+              >
                 <a href="#payment-network">
                   Explore the payment route <ArrowUpRight />
                 </a>
               </Button>
             </div>
-            <p className="mx-auto mt-6 max-w-lg text-xs leading-relaxed text-home-ink">
+            <dl className="home-hero-stats mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
+              {[
+                { value: "19", label: "Bank payout countries" },
+                { value: "2%", label: "One transparent service fee" },
+                { value: "0", label: "Funds held by LamportPay" },
+              ].map(({ value, label }) => (
+                <div key={label} className="home-hero-stat">
+                  <dt className="order-2 mt-1 text-xs font-medium text-muted-foreground">
+                    {label}
+                  </dt>
+                  <dd className="order-1 text-2xl font-semibold tracking-tight text-home-brand">
+                    {value}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-home-ink">
               <span className="font-semibold">DEMO / SIMULATED</span> · Controlled test phase. Real
               bank payouts and production identity verification remain disabled.
             </p>
