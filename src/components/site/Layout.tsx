@@ -5,6 +5,7 @@ import logoUrl from "@/assets/lamportpay-logo.png";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { LiveRatesTicker } from "@/components/site/LiveRatesTicker";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
   return (
