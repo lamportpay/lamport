@@ -141,8 +141,9 @@ const contactEmail = "hello@lamportpay.com";
 
 function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 mt-24 bg-secondary/40 print:hidden">
-      <div className="max-w-7xl mx-auto px-5 py-12 grid gap-10 md:grid-cols-4">
+    <footer className="dark site-footer relative overflow-hidden mt-24 bg-background text-foreground print:hidden">
+      <div aria-hidden className="site-footer-glow pointer-events-none absolute inset-0" />
+      <div className="relative max-w-7xl mx-auto px-5 py-12 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <BrandLogo className="mb-3" />
           <p className="text-sm text-muted-foreground max-w-sm">
@@ -230,7 +231,7 @@ function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-border/60">
+      <div className="relative border-t border-border/60">
         <div className="max-w-7xl mx-auto px-5 py-5 space-y-2 text-xs text-muted-foreground">
           <div>
             <span className="font-medium text-foreground">Lamport Pay Ltd</span> — legal entity

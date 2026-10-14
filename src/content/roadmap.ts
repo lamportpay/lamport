@@ -61,11 +61,11 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   {
     phase: 5,
     headline: "A global crypto-to-bank payout network.",
-    highlights: ["B2B payout APIs", "More chains & wallets", "Mobile experience"],
+    highlights: ["B2B payout APIs", "Remittance use cases", "All major crypto"],
     title: "Global payout ecosystem",
     status: "proposed",
     summary:
-      "Explore B2B payout APIs, remittance use cases, wider blockchain and wallet support, a dedicated mobile experience and a larger strategic partner network.",
+      "Explore B2B payout APIs, remittance use cases, payments in all major cryptocurrencies and a larger partner network.",
     dependsOn: "Scalable infrastructure and the required regulatory permissions.",
   },
 ];

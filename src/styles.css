@@ -1094,3 +1094,11 @@
 @media (prefers-reduced-motion: reduce) {
   .flow-traveler, .flow-scene-button { transition: none; }
 }
+
+/* Footer: dark navy with blue–violet glow, matching the Colosseum pitch deck. */
+.site-footer { background-color: oklch(0.14 0.03 270); }
+.site-footer-glow {
+  background:
+    radial-gradient(60% 90% at 100% 0%, oklch(0.42 0.2 285 / 0.55), transparent 70%),
+    radial-gradient(45% 70% at 0% 100%, oklch(0.45 0.1 220 / 0.35), transparent 70%);
+}
