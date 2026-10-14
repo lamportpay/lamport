@@ -88,7 +88,7 @@ export function DashboardContent({ data: d }: { data: AdminDashboardData }) {
                 <span
                   className={`rounded-md px-2 py-1 text-xs font-medium ${attention ? "bg-destructive/10 text-destructive" : "bg-success/10 text-success"}`}
                 >
-                  {attention ? `${attention} indicators` : "No open indicators"}
+                  {attention ? `${attention} ${attention === 1 ? "indicator" : "indicators"}` : "No open indicators"}
                 </span>
               }
             >
@@ -207,7 +207,7 @@ export function DashboardContent({ data: d }: { data: AdminDashboardData }) {
               {d.recent.length ? "No payments match these filters." : "No payments yet."}
             </EmptyState>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="relative max-w-full overflow-x-auto">
               <table className="w-full min-w-[640px] text-left text-sm">
                 <thead className="border-y border-border bg-muted/40 text-xs text-muted-foreground">
                   <tr>

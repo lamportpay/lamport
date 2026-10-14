@@ -2,9 +2,10 @@
 
 ## Admin dashboard organization
 
-- [ ] Organize the shared admin menu and page sections; preserve existing access checks and financial actions
-- [ ] Add overview metrics, attention queue, payment status breakdown, searchable recent payments and system activity
-- [ ] Verify layout, filters and navigation; authenticated end-to-end check requires an admin session
+- [x] Organize the shared admin menu and page sections; preserve existing access checks and financial actions
+- [x] Add overview metrics, attention queue, payment status breakdown, searchable recent payments and system activity
+- [x] Verify isolated desktop/phone presentation, payment filters and menu navigation; four unit checks pass
+- [ ] Verify dashboard with real admin records (available preview session has no admin role; no permissions changed)
 
 ## Bank field and mobile navigation
 
