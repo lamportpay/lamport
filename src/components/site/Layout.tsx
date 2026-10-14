@@ -141,12 +141,12 @@ const contactEmail = "hello@lamportpay.com";
 
 function SiteFooter() {
   return (
-    <footer className="dark site-footer relative overflow-hidden mt-24 bg-background text-foreground print:hidden">
+    <footer className="site-footer relative overflow-hidden mt-24 text-white print:hidden">
       <div aria-hidden className="site-footer-glow pointer-events-none absolute inset-0" />
       <div className="relative max-w-7xl mx-auto px-5 py-12 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
-          <BrandLogo className="mb-3" />
-          <p className="text-sm text-muted-foreground max-w-sm">
+          <BrandLogo className="mb-3 site-footer-logo" />
+          <p className="text-sm text-white/80 max-w-sm">
             Crypto in. Local money out. Convert USDC from your own Solana wallet into local currency
             in the bank account you choose.
 
@@ -159,7 +159,7 @@ function SiteFooter() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border/60 bg-card/70 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-secondary transition"
+                className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/30 bg-white/10 text-white/85 hover:text-white hover:bg-white/20 transition"
               >
                 <Icon className="w-4 h-4" />
               </a>
@@ -167,77 +167,77 @@ function SiteFooter() {
             <a
               href={`mailto:${contactEmail}`}
               aria-label={`Email ${contactEmail}`}
-              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border/60 bg-card/70 text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-secondary transition"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/30 bg-white/10 text-white/85 hover:text-white hover:bg-white/20 transition"
             >
               <Mail className="w-4 h-4" />
             </a>
           </div>
           <a
             href={`mailto:${contactEmail}`}
-            className="mt-3 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition"
+            className="mt-3 inline-flex items-center gap-2 text-sm text-white/80 hover:text-white transition"
           >
             <Mail className="w-3.5 h-3.5" />
             {contactEmail}
           </a>
         </div>
         <div>
-          <div className="text-sm font-semibold mb-3">Product</div>
-          <ul className="space-y-2 text-sm text-muted-foreground">
+          <div className="text-sm font-semibold mb-3 text-white">Product</div>
+          <ul className="space-y-2 text-sm text-white/80">
             <li>
-              <Link to="/pay" className="hover:text-foreground">
+              <Link to="/pay" className="hover:text-white">
                 Swap
               </Link>
             </li>
             <li>
-              <Link to="/how-it-works" className="hover:text-foreground">
+              <Link to="/how-it-works" className="hover:text-white">
                 How it works
               </Link>
             </li>
             <li>
-              <Link to="/workflow" className="hover:text-foreground">
+              <Link to="/workflow" className="hover:text-white">
                 Workflow overview
               </Link>
             </li>
             <li>
-              <Link to="/docs" className="hover:text-foreground">
+              <Link to="/docs" className="hover:text-white">
                 Developer docs
               </Link>
             </li>
             <li>
-              <Link to="/blog" className="hover:text-foreground">
+              <Link to="/blog" className="hover:text-white">
                 Blog
               </Link>
             </li>
           </ul>
         </div>
         <div>
-          <div className="text-sm font-semibold mb-3">Company</div>
-          <ul className="space-y-2 text-sm text-muted-foreground">
+          <div className="text-sm font-semibold mb-3 text-white">Company</div>
+          <ul className="space-y-2 text-sm text-white/80">
             <li>
-              <Link to="/whitepaper" className="hover:text-foreground">
+              <Link to="/whitepaper" className="hover:text-white">
                 White paper
               </Link>
             </li>
             <li>
-              <Link to="/compliance" className="hover:text-foreground">
+              <Link to="/compliance" className="hover:text-white">
                 Compliance
               </Link>
             </li>
             <li>
-              <Link to="/contact" className="hover:text-foreground">
+              <Link to="/contact" className="hover:text-white">
                 Contact
               </Link>
             </li>
           </ul>
         </div>
       </div>
-      <div className="relative border-t border-border/60">
-        <div className="max-w-7xl mx-auto px-5 py-5 space-y-2 text-xs text-muted-foreground">
+      <div className="relative border-t border-white/20">
+        <div className="max-w-7xl mx-auto px-5 py-5 space-y-2 text-xs text-white/75">
           <div>
-            <span className="font-medium text-foreground">Lamport Pay Ltd</span> — legal entity
-            operating the <span className="font-medium text-foreground">LamportPay</span> platform.
+            <span className="font-medium text-white">Lamport Pay Ltd</span> — legal entity
+            operating the <span className="font-medium text-white">LamportPay</span> platform.
             Contact:{" "}
-            <a href={`mailto:${contactEmail}`} className="hover:text-foreground underline">
+            <a href={`mailto:${contactEmail}`} className="hover:text-white underline">
               {contactEmail}
             </a>
           </div>
