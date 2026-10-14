@@ -79,10 +79,10 @@ function Index() {
           </div>
         </section>
         <HomeCapabilities />
-        <FeeCalculator />
         <HomeBankNetwork />
         <PaymentNetwork />
         <ConnectedSystems />
+        <FeeCalculator />
         <EcosystemSection compact />
         <IntegrationStatus />
         <RoadmapSection />
