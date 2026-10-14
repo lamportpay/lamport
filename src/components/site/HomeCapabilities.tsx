@@ -7,12 +7,14 @@
  * payout, real KYC or a confirmed partnership.
  */
 
+import type { ReactNode } from "react";
+
 type Capability = {
   key: string;
   label: string;
   status: "live" | "demo" | "planned";
   title: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 };
 
 const STROKE = "url(#home-cap-stroke)";
