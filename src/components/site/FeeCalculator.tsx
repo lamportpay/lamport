@@ -199,8 +199,6 @@ export function FeeCalculator() {
                   <dd className="font-medium tabular-nums">{solPrice ? `$${fmt(solPrice)}` : "—"}</dd>
                 </div>
               )}
-              <div className="hidden">
-              </div>
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-muted-foreground">FX rate{liveRates[code] ? " · live" : ""}</dt>
                 <dd className="font-medium tabular-nums">1 USD = {fmt(rate, rate < 2 ? 2 : 1)} {cur.code}</dd>
