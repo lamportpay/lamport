@@ -64,6 +64,7 @@ function Index() {
             </p>
           </div>
         </section>
+        <HomeGlance />
         <div className="border-b border-border bg-card">
           <div className="home-container grid grid-cols-1 gap-4 py-6 sm:grid-cols-3">
             {[
