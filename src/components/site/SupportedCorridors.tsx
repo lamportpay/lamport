@@ -117,7 +117,11 @@ export function SupportedCorridors() {
             {MARKERS.map((m) => {
               const { x, y } = toXY(m.lon, m.lat);
               return (
-                <g key={m.code} className="corridor-marker" style={{ animationDelay: `${m.delay}s` }}>
+<g
+                  key={m.code}
+                  className="corridor-marker"
+                  style={{ "--ping-delay": `${m.delay}s` } as React.CSSProperties}
+                >
                   <circle cx={x} cy={y} r={1.6} className="corridor-marker-ping" />
                   <circle cx={x} cy={y} r={0.9} className="corridor-marker-ping corridor-marker-ping-late" />
                   <circle cx={x} cy={y} r={0.45} className="corridor-marker-core" />
@@ -128,7 +132,11 @@ export function SupportedCorridors() {
 
           <ul className="corridor-legend" aria-label="Supported payout countries">
             {MARKERS.map((m) => (
-              <li key={m.code} className={cn("corridor-legend-item")} style={{ animationDelay: `${m.delay}s` }}>
+<li
+                key={m.code}
+                className={cn("corridor-legend-item")}
+                style={{ "--ping-delay": `${m.delay}s` } as React.CSSProperties}
+              >
                 <span className="corridor-legend-dot" aria-hidden="true" />
                 <span className="font-semibold text-home-ink">{m.name}</span>
                 <span className="corridor-legend-currency">{m.currency}</span>
