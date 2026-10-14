@@ -28,7 +28,7 @@ function Index() {
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden">
           <div className="home-hero-grid" aria-hidden="true" />
-          <div className="home-orbits home-orbits-center" aria-hidden="true">
+          <div className="home-orbits home-orbits-left" aria-hidden="true">
             <span className="home-orbit home-orbit-outer" />
             <span className="home-orbit home-orbit-middle" />
             <span className="home-orbit home-orbit-inner" />
