@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Landmark, ArrowRight, Bitcoin, Coins, Globe2 } from "lucide-react";
+import { Landmark, ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { BankIcon } from "@/components/app/BankIcon";
 import { Flag } from "@/components/app/Flag";
 import { Button } from "@/components/ui/button";
-import { FUTURE_EXPLORATION } from "@/content/roadmap";
+import bitcoinLogo from "@/assets/tokens/bitcoin.png.asset.json";
+import ethereumLogo from "@/assets/tokens/ethereum.png.asset.json";
 
 const destinations = [
   {
@@ -112,12 +113,14 @@ export function HomeBankNetwork() {
         <h3 className="home-heading">More assets. More local destinations.</h3>
         <div className="mt-7 grid gap-6 md:grid-cols-3">
           {[
-            { title: "Bitcoin · BTC", Icon: Bitcoin, detail: "A future Bitcoin intake and conversion route. Deposits are not available today." },
-            { title: "Ethereum · ETH", Icon: Coins, detail: "A future Ethereum intake and conversion route. Deposits are not available today." },
-            { title: "More local currencies", Icon: Globe2, detail: FUTURE_EXPLORATION[5].detail },
-          ].map(({ title, Icon, detail }) => (
+            { title: "Bitcoin · BTC", image: bitcoinLogo.url, detail: "From Bitcoin to local money. A future intake and conversion route; deposits are not enabled." },
+            { title: "Ethereum · ETH", image: ethereumLogo.url, detail: "More choice for Ethereum holders. Intake and conversion are planned, not enabled today." },
+            { title: "Pakistan · PKR", image: null, detail: "A priority future market for local bank payments. Exploring business relationships and payout coverage in Pakistan." },
+          ].map(({ title, image, detail }) => (
             <div key={title} className="border-t-2 border-home-brand/40 pt-5">
-              <Icon className="mb-4 size-7 text-home-brand" strokeWidth={1.5} />
+              <div className="mb-5 flex h-16 items-center">
+                {image ? <img src={image} alt="" width={64} height={64} className="size-16 object-contain" /> : <Flag code="PK" size={64} />}
+              </div>
               <p className="text-[10px] font-semibold text-home-brand">PLANNED</p>
               <h4 className="mt-2 text-lg font-semibold">{title}</h4>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{detail}</p>
@@ -125,8 +128,9 @@ export function HomeBankNetwork() {
           ))}
         </div>
         <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
-          Future exploration, not enabled payment options. Additional local currencies and launch dates
-          are not yet confirmed; availability depends on validated routes and payout coverage.
+          PLANNED, not enabled payment options. Pakistan / PKR is a target market, not a confirmed
+          payout corridor or bank partnership. New routes require coverage and compliance validation;
+          no launch dates are committed.
         </p>
       </div>
     </section>
