@@ -145,15 +145,14 @@ export function RoadmapSection() {
           </Button>
         </div>
 
-
-
+        <div className="flex flex-col">
         <div
           id="roadmap-spotlight"
           role="tabpanel"
-          className="roadmap-spotlight mt-10 grid overflow-hidden rounded-2xl border border-border bg-card md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+          className="roadmap-spotlight order-1 mt-10 grid overflow-hidden rounded-2xl border border-border bg-card md:order-2 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
         >
           <div className="roadmap-spotlight-side relative p-7 sm:p-9">
-            <div className="mb-6 grid grid-cols-[auto_1fr_auto] items-center gap-2">
+            <div className="mb-6 grid grid-cols-[auto_1fr_auto] items-center gap-2 md:hidden">
               <Button
                 size="icon"
                 variant="outline"
@@ -217,10 +216,30 @@ export function RoadmapSection() {
                 <span className="text-muted-foreground">{phase.dependsOn}</span>
               </p>
             </div>
-
+            <div className="mt-6 hidden items-center gap-2 md:flex">
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Previous phase"
+                onClick={() => pick((active - 1 + ROADMAP_PHASES.length) % ROADMAP_PHASES.length)}
+              >
+                <ChevronLeft />
+              </Button>
+              <Button
+                size="icon"
+                variant="outline"
+                aria-label="Next phase"
+                onClick={() => pick((active + 1) % ROADMAP_PHASES.length)}
+              >
+                <ChevronRight />
+              </Button>
+              <span className="ml-2 text-xs text-muted-foreground">
+                {active + 1} / {ROADMAP_PHASES.length}
+              </span>
+            </div>
           </div>
         </div>
-        <div className="roadmap-rail relative mt-12" role="tablist" aria-label="Roadmap phases">
+        <div className="roadmap-rail relative order-2 mt-8 md:order-1 md:mt-12" role="tablist" aria-label="Roadmap phases">
           <span className="roadmap-rail-line" aria-hidden="true">
             <span className="roadmap-rail-fill" style={{ width: `${progress}%` }} />
           </span>
@@ -254,6 +273,7 @@ export function RoadmapSection() {
               );
             })}
           </div>
+        </div>
         </div>
         <p className="mt-5 max-w-3xl text-xs leading-relaxed text-muted-foreground">
           Planned milestones, not delivery commitments. No dates are committed and planned
