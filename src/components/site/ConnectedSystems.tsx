@@ -34,9 +34,6 @@ export function ConnectedSystems() {
   const selected = flow.active;
   const active = branches[selected] ?? branches[0];
   const sceneNodes = branches.map((branch, index) => ({ title: branch.name, label: branch.status, planned: branch.planned, icon: [Coins, Layers3, Network][index] ?? Network }));
-  return () => observer.disconnect();
-  }, []);
-  const active = branches[selected] ?? branches[0];
   return (
     <section
       id="infrastructure"

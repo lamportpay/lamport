@@ -52,9 +52,6 @@ export function PaymentNetwork() {
   const flow = useFlowPlayback(nodes.length);
   const selected = flow.active;
   const active = nodes[selected] ?? nodes[0];
-  return () => observer.disconnect();
-  }, []);
-  const active = nodes[selected] ?? nodes[1];
   return (
     <section
       id="payment-network"
