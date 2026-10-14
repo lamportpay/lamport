@@ -42,7 +42,7 @@ function Index() {
               <span className="home-brand-text">Lamport</span>
               <span className="home-brand-text-light">Pay</span>
             </h1>
-            <p className="mt-4 text-2xl font-medium leading-snug tracking-tight md:text-4xl">
+            <p className="mt-4 text-2xl font-semibold leading-snug tracking-tight text-home-ink md:text-4xl">
               Crypto in. <span className="home-brand-text">Local money out.</span>
             </p>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-home-ink md:text-lg">
@@ -77,7 +77,7 @@ function Index() {
                 { value: "0", label: "Funds held by LamportPay" },
               ].map(({ value, label }) => (
                 <div key={label} className="home-hero-stat">
-                  <dt className="order-2 mt-1 text-xs font-medium text-muted-foreground">
+                  <dt className="order-2 mt-1 text-xs font-medium text-home-ink/70">
                     {label}
                   </dt>
                   <dd className="order-1 text-2xl font-semibold tracking-tight text-home-brand">
