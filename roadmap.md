@@ -1,5 +1,12 @@
 # Roadmap
 
+## Homepage navigation and accessibility
+
+- [ ] Expose desktop navigation and visible Open App action; retain mobile drawer
+- [ ] Add persistent demo notice and integrate currencies into the hero
+- [ ] Improve flow hover/focus feedback and number/connector contrast
+- [ ] Verify desktop/mobile navigation, manual steps, sticky notice and app handoff
+
 ## Interactive payout map and hero summary
 
 - [x] Make the world map clickable country by country with smooth zoom, plus/minus and reset controls, and a card showing the selected country's flag, name and status

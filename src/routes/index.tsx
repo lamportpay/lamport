@@ -34,7 +34,7 @@ function Index() {
             <span className="home-orbit home-orbit-middle" />
             <span className="home-orbit home-orbit-inner" />
           </div>
-          <div className="home-container relative py-16 text-center md:py-24">
+          <div className="home-container relative py-12 text-center md:py-14">
             <p className="home-hero-badge">
               <span className="home-hero-badge-dot" aria-hidden="true" />
               Built on Solana · Non-custodial payments
@@ -46,6 +46,7 @@ function Index() {
             <p className="mt-4 text-2xl font-semibold leading-snug tracking-tight text-home-ink md:text-4xl">
               Crypto in. <span className="home-brand-text">Local money out.</span>
             </p>
+            <HomeGlance />
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-home-ink md:text-lg">
               A connected route from your Solana wallet to local-currency bank payments. Your
               wallet. A clear quote. One payment journey.
@@ -57,7 +58,7 @@ function Index() {
                 className="home-hero-cta h-12 bg-home-brand px-7 text-primary-foreground hover:bg-home-brand/90"
               >
                 <Link to="/pay">
-                  Open payment app <ArrowRight />
+                  Open App <ArrowRight />
                 </Link>
               </Button>
               <Button
@@ -71,13 +72,11 @@ function Index() {
                 </a>
               </Button>
             </div>
-            <p className="mx-auto mt-8 max-w-lg text-xs leading-relaxed text-home-ink">
-              <span className="font-semibold">DEMO / SIMULATED</span> · Controlled test phase. Real
-              bank payouts and production identity verification remain disabled.
+            <p className="mx-auto mt-5 max-w-lg text-xs leading-relaxed text-home-ink">
+              Your keys stay yours. No real funds move in TEST MODE.
             </p>
           </div>
         </section>
-        <HomeGlance />
         <PaymentNetwork />
         <HomeBankNetwork />
         <ConnectedSystems />

@@ -26,7 +26,7 @@
 - Platform-generated files under `src/integrations/supabase/` are hand-edited never, so a lint finding inside one is fixed by adding that file to the ignores list in `eslint.config.js`, not by editing the generated file (a hand-edit is overwritten on regeneration and breaks CI until then).
 - Public (publishable) backend connection values have built-in fallbacks in `vite.config.ts`, because `.env` is gitignored and a clean-checkout build (publish, Vercel, CI) otherwise ships a browser app that crashes with "Missing Supabase environment variable(s)"; only publishable values may go there, never secrets.
 - Bank logos are static official-site assets referenced by a shared bank-name registry; missing assets retain a neutral fallback so branding never changes payout validation.
-- Bank form selectors use the shared Picker field variant, while marketing mobile navigation uses the accessible right-side Sheet; shared controls preserve keyboard navigation and focus handling.
+- Bank selectors use shared Picker fields. SiteLayout owns the sticky mode notice and desktop links/mobile Sheet; preserve keyboard focus and keep financial mode enforcement server-side.
 - Admin overview presentation uses a browser-safe data model and separate content component; all metrics come from the existing protected dashboard function, so UI organization cannot change financial actions or access controls.
 - Homepage/workflow shares browser-safe verification content; distinguish wallet proof from hosted KYC without changing financial checks.
 - Ecosystem branding/links live in shared content; preserve logo proportions and text fallbacks. Sliders use native scrolling, accessible controls and reduced-motion support.
