@@ -264,7 +264,9 @@ function CompanyLogo({ c }: { c: EcosystemCompany }) {
           className="max-h-20 max-w-full object-contain"
         />
       ) : (
-        <span className="text-2xl font-semibold text-primary">{c.name === "AGC Global Logistics" ? "AGC Global Logistics" : initials(c.name)}</span>
+        <span className="text-2xl font-semibold text-primary">
+          {c.name === "AGC Global Logistics" ? "AGC Global Logistics" : initials(c.name)}
+        </span>
       )}
     </div>
   );
@@ -287,13 +289,15 @@ function CompanyCard({ c, compact = false }: { c: EcosystemCompany; compact?: bo
               {new URL(c.url).hostname.replace(/^www\./, "")} <ExternalLink className="w-3 h-3" />
             </span>
           </div>
-        <p className="text-sm leading-relaxed text-muted-foreground flex-1">{compact ? `${c.sector} · Business payments` : c.description}</p>
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-semibold text-primary">ONBOARDING PLANNED</span>
-          <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            <CheckCircle2 className="w-3 h-3 text-primary" /> Ready to adopt
-          </span>
-        </div>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            {compact ? `${c.sector} · Business payments` : c.description}
+          </p>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-semibold text-primary">ONBOARDING PLANNED</span>
+            <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <CheckCircle2 className="w-3 h-3 text-primary" /> Ready to adopt
+            </span>
+          </div>
         </div>
       </a>
     </li>
@@ -333,10 +337,7 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
               <Globe2 className="w-3.5 h-3.5" /> Partners in
             </span>
             {present.map((r) => (
-              <span
-                key={r.id}
-                className="flex items-center gap-2 px-3 py-1.5"
-              >
+              <span key={r.id} className="flex items-center gap-2 px-3 py-1.5">
                 <FlagIcon id={r.id} />
                 <span className="text-xs font-semibold uppercase tracking-wider">{r.label}</span>
               </span>

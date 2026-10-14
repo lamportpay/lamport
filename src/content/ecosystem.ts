@@ -32,7 +32,8 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
   {
     name: "Great Winchester Investment Company",
     url: "https://greatwinchester.com/",
-    description: "Investment business ready to explore adoption of LamportPay's business payment services.",
+    description:
+      "Investment business ready to explore adoption of LamportPay's business payment services.",
     region: "UK",
     sector: "Investment",
     logo: greatWinchesterLogo.url,
@@ -40,7 +41,8 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
   {
     name: "AGC Global Logistics",
     url: "https://agcgl.com/",
-    description: "UAE logistics business ready to adopt LamportPay's payment services for its business payment needs.",
+    description:
+      "UAE logistics business ready to adopt LamportPay's payment services for its business payment needs.",
     region: "UAE",
     sector: "Logistics",
     logo: null,
@@ -66,7 +68,8 @@ export const ECOSYSTEM_COMPANIES: EcosystemCompany[] = [
   {
     name: "Bliss Rent",
     url: "https://bliss.rent/",
-    description: "Dubai car-rental booking business ready to adopt LamportPay's payment services for car bookings and rentals.",
+    description:
+      "Dubai car-rental booking business ready to adopt LamportPay's payment services for car bookings and rentals.",
     region: "UAE",
     sector: "Mobility",
     logo: blissLogo.url,

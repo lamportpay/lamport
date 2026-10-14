@@ -113,13 +113,38 @@ export function HomeBankNetwork() {
         <h3 className="home-heading">More assets. More local destinations.</h3>
         <div className="mt-7 grid gap-6 md:grid-cols-3">
           {[
-            { title: "Bitcoin · BTC", image: bitcoinLogo.url, detail: "From Bitcoin to local money. A future intake and conversion route; deposits are not enabled." },
-            { title: "Ethereum · ETH", image: ethereumLogo.url, detail: "More choice for Ethereum holders. Intake and conversion are planned, not enabled today." },
-            { title: "Pakistan · PKR", image: null, detail: "A priority future market for local bank payments. Exploring business relationships and payout coverage in Pakistan." },
+            {
+              title: "Bitcoin · BTC",
+              image: bitcoinLogo.url,
+              detail:
+                "From Bitcoin to local money. A future intake and conversion route; deposits are not enabled.",
+            },
+            {
+              title: "Ethereum · ETH",
+              image: ethereumLogo.url,
+              detail:
+                "More choice for Ethereum holders. Intake and conversion are planned, not enabled today.",
+            },
+            {
+              title: "Pakistan · PKR",
+              image: null,
+              detail:
+                "A priority future market for local bank payments. Exploring business relationships and payout coverage in Pakistan.",
+            },
           ].map(({ title, image, detail }) => (
             <div key={title} className="border-t-2 border-home-brand/40 pt-5">
               <div className="mb-5 flex h-16 items-center">
-                {image ? <img src={image} alt="" width={64} height={64} className="size-16 object-contain" /> : <Flag code="PK" size={64} />}
+                {image ? (
+                  <img
+                    src={image}
+                    alt=""
+                    width={64}
+                    height={64}
+                    className="size-16 object-contain"
+                  />
+                ) : (
+                  <Flag code="PK" size={64} />
+                )}
               </div>
               <p className="text-[10px] font-semibold text-home-brand">PLANNED</p>
               <h4 className="mt-2 text-lg font-semibold">{title}</h4>
@@ -129,8 +154,8 @@ export function HomeBankNetwork() {
         </div>
         <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
           PLANNED, not enabled payment options. Pakistan / PKR is a target market, not a confirmed
-          payout corridor or bank partnership. New routes require coverage and compliance validation;
-          no launch dates are committed.
+          payout corridor or bank partnership. New routes require coverage and compliance
+          validation; no launch dates are committed.
         </p>
       </div>
     </section>
