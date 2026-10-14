@@ -35,12 +35,12 @@ function Compliance() {
     "Supports a bank-payout design for a verified sender's own account or a beneficiary's account. Current payouts are sandbox demonstrations only.",
     "Follows the payout partner's transfer status. The partner's record is authoritative.",
     "Keeps an append-only audit log of admin actions.",
-    "Uses USDC on Solana as the enabled settlement currency; eligible SOL routing uses Jupiter quotes without mainnet execution in TEST MODE.",
+    "Uses USDC on Solana as the enabled settlement currency; eligible SOL routing uses Jupiter quotes without mainnet execution in the devnet / sandbox build.",
   ];
   const roles: { activity: string; who: string }[] = [
     {
       activity: "Wallet funds and authorization",
-      who: "You control your wallet. In the production design, you send USDC directly to the single-use deposit address Stables issues for the payment. LamportPay holds no funds. TEST MODE moves no payment funds.",
+      who: "You control your wallet. In the production design, you send USDC directly to the single-use deposit address Stables issues for the payment. LamportPay holds no funds. The devnet / sandbox build moves no payment funds.",
     },
     {
       activity: "Identity verification (KYC)",
@@ -57,13 +57,13 @@ function Compliance() {
     },
     {
       activity: "Crypto conversion route",
-      who: "Jupiter supplies eligible Solana-to-USDC routing. LIVE · read-only market quotes are available; TEST MODE mainnet swap execution is DISABLED.",
+      who: "Jupiter supplies eligible Solana-to-USDC routing. LIVE · read-only market quotes are available; mainnet swap execution is DISABLED in the devnet / sandbox build.",
     },
     {
       activity: "Quote, fee disclosure, checkout and status tracking",
       who: "LamportPay.",
     },
-    { activity: "Approving the transaction", who: "You, in your own wallet. Sign-in uses a plain-text message; TEST MODE Pay Now uses a real devnet memo transaction that moves no funds." },
+    { activity: "Approving the transaction", who: "You, in your own wallet. Sign-in uses a plain-text message; devnet / sandbox Pay Now uses a real devnet memo transaction that moves no funds." },
   ];
   return (
     <SiteLayout>
