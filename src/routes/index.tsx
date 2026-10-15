@@ -13,6 +13,7 @@ import { SupportedCorridors } from "@/components/site/SupportedCorridors";
 import { EcosystemSection } from "@/components/site/VisionRoadmapEcosystem";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { HomeTeam } from "@/components/site/HomeTeam";
+import { HeroRibbon } from "@/components/site/HeroRibbon";
 import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
 import { pageSeo } from "@/lib/seo";
 
@@ -32,6 +33,7 @@ function Index() {
     <div className="commercial-home">
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden">
+          <HeroRibbon />
           <div className="home-orbits home-orbits-left" aria-hidden="true">
             <span className="home-orbit home-orbit-outer" />
             <span className="home-orbit home-orbit-middle" />
