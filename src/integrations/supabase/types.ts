@@ -167,6 +167,30 @@ export type Database = {
         }
         Relationships: []
       }
+      early_access_signups: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          mobile: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          mobile: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          mobile?: string
+          name?: string
+        }
+        Relationships: []
+      }
       identity_events: {
         Row: {
           created_at: string

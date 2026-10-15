@@ -35,6 +35,7 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as ApiAskAiRouteImport } from './routes/api/ask-ai'
+import { Route as ApiEarlyAccessRouteImport } from './routes/api/early-access'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
 import { Route as ApiKycRouteImport } from './routes/api/kyc'
 import { Route as AuthResetRouteImport } from './routes/auth_.reset'
@@ -46,6 +47,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAuditLogsRouteImport } from './routes/_authenticated/admin.audit-logs'
 import { Route as AuthenticatedAdminComplaintsRouteImport } from './routes/_authenticated/admin.complaints'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
+import { Route as AuthenticatedAdminEarlyAccessRouteImport } from './routes/_authenticated/admin.early-access'
 import { Route as AuthenticatedAdminFeesRevenueRouteImport } from './routes/_authenticated/admin.fees-revenue'
 import { Route as AuthenticatedAdminPayoutsRouteImport } from './routes/_authenticated/admin.payouts'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
@@ -214,6 +216,11 @@ const ApiAskAiRoute = ApiAskAiRouteImport.update({
   path: '/api/ask-ai',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiEarlyAccessRoute = ApiEarlyAccessRouteImport.update({
+  id: '/api/early-access',
+  path: '/api/early-access',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiIntegrationStatusRoute = ApiIntegrationStatusRouteImport.update({
   id: '/api/integration-status',
   path: '/api/integration-status',
@@ -271,6 +278,12 @@ const AuthenticatedAdminDashboardRoute =
   AuthenticatedAdminDashboardRouteImport.update({
     id: '/dashboard',
     path: '/dashboard',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminEarlyAccessRoute =
+  AuthenticatedAdminEarlyAccessRouteImport.update({
+    id: '/early-access',
+    path: '/early-access',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminFeesRevenueRoute =
@@ -502,6 +515,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
   '/auth/reset': typeof AuthResetRoute
@@ -512,6 +526,7 @@ export interface FileRoutesByFullPath {
   '/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
   '/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/admin/early-access': typeof AuthenticatedAdminEarlyAccessRoute
   '/admin/fees-revenue': typeof AuthenticatedAdminFeesRevenueRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
@@ -575,6 +590,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
   '/auth/reset': typeof AuthResetRoute
@@ -585,6 +601,7 @@ export interface FileRoutesByTo {
   '/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
   '/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/admin/early-access': typeof AuthenticatedAdminEarlyAccessRoute
   '/admin/fees-revenue': typeof AuthenticatedAdminFeesRevenueRoute
   '/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
@@ -651,6 +668,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
   '/auth_/reset': typeof AuthResetRoute
@@ -661,6 +679,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
   '/_authenticated/admin/complaints': typeof AuthenticatedAdminComplaintsRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
+  '/_authenticated/admin/early-access': typeof AuthenticatedAdminEarlyAccessRoute
   '/_authenticated/admin/fees-revenue': typeof AuthenticatedAdminFeesRevenueRoute
   '/_authenticated/admin/payouts': typeof AuthenticatedAdminPayoutsRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
@@ -727,6 +746,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
     | '/auth/reset'
@@ -737,6 +757,7 @@ export interface FileRouteTypes {
     | '/admin/audit-logs'
     | '/admin/complaints'
     | '/admin/dashboard'
+    | '/admin/early-access'
     | '/admin/fees-revenue'
     | '/admin/payouts'
     | '/admin/reports'
@@ -800,6 +821,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
     | '/auth/reset'
@@ -810,6 +832,7 @@ export interface FileRouteTypes {
     | '/admin/audit-logs'
     | '/admin/complaints'
     | '/admin/dashboard'
+    | '/admin/early-access'
     | '/admin/fees-revenue'
     | '/admin/payouts'
     | '/admin/reports'
@@ -875,6 +898,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
     | '/auth_/reset'
@@ -885,6 +909,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/audit-logs'
     | '/_authenticated/admin/complaints'
     | '/_authenticated/admin/dashboard'
+    | '/_authenticated/admin/early-access'
     | '/_authenticated/admin/fees-revenue'
     | '/_authenticated/admin/payouts'
     | '/_authenticated/admin/reports'
@@ -950,6 +975,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
   ApiAskAiRoute: typeof ApiAskAiRoute
+  ApiEarlyAccessRoute: typeof ApiEarlyAccessRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
   ApiKycRoute: typeof ApiKycRoute
   AuthResetRoute: typeof AuthResetRoute
@@ -1166,6 +1192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAskAiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/early-access': {
+      id: '/api/early-access'
+      path: '/api/early-access'
+      fullPath: '/api/early-access'
+      preLoaderRoute: typeof ApiEarlyAccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/integration-status': {
       id: '/api/integration-status'
       path: '/api/integration-status'
@@ -1241,6 +1274,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AuthenticatedAdminDashboardRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/early-access': {
+      id: '/_authenticated/admin/early-access'
+      path: '/early-access'
+      fullPath: '/admin/early-access'
+      preLoaderRoute: typeof AuthenticatedAdminEarlyAccessRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/fees-revenue': {
@@ -1502,6 +1542,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAuditLogsRoute: typeof AuthenticatedAdminAuditLogsRoute
   AuthenticatedAdminComplaintsRoute: typeof AuthenticatedAdminComplaintsRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
+  AuthenticatedAdminEarlyAccessRoute: typeof AuthenticatedAdminEarlyAccessRoute
   AuthenticatedAdminFeesRevenueRoute: typeof AuthenticatedAdminFeesRevenueRoute
   AuthenticatedAdminPayoutsRoute: typeof AuthenticatedAdminPayoutsRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
@@ -1518,6 +1559,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAuditLogsRoute: AuthenticatedAdminAuditLogsRoute,
   AuthenticatedAdminComplaintsRoute: AuthenticatedAdminComplaintsRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
+  AuthenticatedAdminEarlyAccessRoute: AuthenticatedAdminEarlyAccessRoute,
   AuthenticatedAdminFeesRevenueRoute: AuthenticatedAdminFeesRevenueRoute,
   AuthenticatedAdminPayoutsRoute: AuthenticatedAdminPayoutsRoute,
   AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
@@ -1580,6 +1622,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
   ApiAskAiRoute: ApiAskAiRoute,
+  ApiEarlyAccessRoute: ApiEarlyAccessRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
   ApiKycRoute: ApiKycRoute,
   AuthResetRoute: AuthResetRoute,

@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   Search,
   MessageSquareWarning,
+  Rocket,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
@@ -61,6 +62,7 @@ const ADMIN_NAV: { section: string; items: NavItem[] }[] = [
     section: "Customers & access",
     items: [
       { to: "/admin/complaints", label: "Complaints & chats", icon: MessageSquareWarning },
+      { to: "/admin/early-access", label: "Early access", icon: Rocket },
       { to: "/admin/verified-customers", label: "Verified customers", icon: BadgeCheck },
       { to: "/admin/users", label: "Users & roles", icon: Users },
     ],
