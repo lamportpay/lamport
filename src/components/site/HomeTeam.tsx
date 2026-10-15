@@ -1,4 +1,4 @@
-import zoaibAli from "@/assets/team/team-zoaib-ali.png.asset.json";
+import zoaibAli from "@/assets/team/team-zoaib-ali.jpg.asset.json";
 import zaheerMuneer from "@/assets/team/team-zaheer-muneer.jpg.asset.json";
 import ghazanfarAbbas from "@/assets/team/team-ghazanfar-abbas.jpg.asset.json";
 import izzat from "@/assets/team/team-izzat.jpg.asset.json";
