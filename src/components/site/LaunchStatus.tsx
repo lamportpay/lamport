@@ -42,8 +42,8 @@ export function LaunchStatus() {
         aria-live="polite"
       >
         <span className="news-split-tag">{item.tag}</span>
-        <span>{item.headline}</span>
-        <ArrowRight className="inline h-3.5 w-3.5" aria-hidden />
+        <span className="news-split-line">{item.headline}</span>
+        <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
       </Link>
       <Link to="/news" className="launch-status-all hidden sm:inline">
         All news
