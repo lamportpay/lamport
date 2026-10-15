@@ -35,8 +35,16 @@ function PartnersPage() {
       <section className="max-w-6xl mx-auto px-5 mt-14">
         <h2 className="text-2xl font-semibold mb-4">Integrations</h2>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {integrationPartners.map((p) => (
-            <IntegrationCard key={p.name} item={p} />
+          {integrationPartners.map((p, i) => (
+            <IntegrationCard
+              key={p.name}
+              item={p}
+              className={
+                integrationPartners.length % 3 === 2 && i === integrationPartners.length - 1
+                  ? "lg:col-span-2"
+                  : undefined
+              }
+            />
           ))}
         </div>
         <p className="mt-6 text-xs text-muted-foreground">
