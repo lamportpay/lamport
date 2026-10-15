@@ -218,12 +218,12 @@ export function CustomerSupport() {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="group fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-primary py-1.5 pl-1.5 pr-4 text-primary-foreground shadow-lg shadow-primary/30 transition-all hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/40"
+          className="group fixed bottom-5 right-5 z-40 flex items-center gap-2.5 rounded-full bg-foreground py-2 pl-2.5 pr-5 text-background shadow-lg shadow-foreground/25 ring-1 ring-border/40 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-foreground/35"
           aria-label="Ask AI — open LamportPay assistant"
           title="Ask AI"
         >
-          <Mark size="size-9" inner="size-6" />
-          <span className="text-sm font-semibold">Ask AI</span>
+          <Mark size="size-8" inner="size-5" />
+          <span className="text-sm font-semibold tracking-wide">Ask AI</span>
         </button>
       </DialogTrigger>
       <DialogContent className="home-support left-auto right-4 top-auto bottom-4 w-[calc(100%-2rem)] max-w-sm translate-x-0 translate-y-0 gap-0 overflow-hidden rounded-lg p-0">
