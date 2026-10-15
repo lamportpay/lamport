@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import type { useFlowPlayback } from "@/hooks/use-flow-playback";
 
 type Playback = ReturnType<typeof useFlowPlayback>;
-export function FlowControls({ flow, count }: { flow: Playback; count: number; label: string }) {
-  return (
-    <div className="mb-5 text-center font-mono text-xs text-muted-foreground md:hidden">
-      {String(flow.active + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-    </div>
-  );
+export function FlowControls({ flow, count, label }: { flow: Playback; count: number; label: string }) {
+  // Mobile shows no step counter or arrows — users swipe the scenes themselves.
+  void flow;
+  void count;
+  void label;
+  return null;
 }
 
 export type SceneNode = { title: string; label: string; icon: LucideIcon; planned?: boolean };

@@ -86,7 +86,7 @@ export function HomeBankNetwork() {
           <div className="bank-flow-scene p-6 sm:p-8">
             <div className="flex items-center justify-center gap-3 text-sm font-semibold"><img src="/tokens/usdc.svg" width="28" height="28" alt="" />USDC <ArrowRight className="size-4 text-home-brand" /><Flag code={country} size={28} />{destination.currency}</div>
             <div className="bank-flow-trunk" aria-hidden="true"><span /></div>
-            <div key={country} className="grid gap-3 sm:grid-cols-2">
+            <div key={country} className="bank-flow-list grid gap-3 sm:grid-cols-2">
               {destination.banks.map((name) => <div key={name} className="bank-flow-item flex min-h-28 items-center gap-3 rounded-lg border border-border bg-card p-4"><BankIcon name={name} country={country} size={44} /><div className="min-w-0"><p className="text-sm font-semibold">{shortNames[name] ?? name}</p><p className="mt-1 text-xs text-muted-foreground">{destination.currency} · Bank account</p></div></div>)}
             </div>
             <p className="mt-5 text-center text-[10px] font-semibold text-home-brand">ILLUSTRATIVE ROUTE · FIAT PAYOUT DISABLED</p>
