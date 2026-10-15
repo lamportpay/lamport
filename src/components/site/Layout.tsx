@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { CookieConsent, openCookieSettings } from "@/components/site/CookieConsent";
+import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { ColosseumBanner } from "@/components/site/ColosseumBanner";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
@@ -206,6 +207,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       </main>
       <SiteFooter />
       <CookieConsent />
+      <CustomerSupport />
     </div>
   );
 }

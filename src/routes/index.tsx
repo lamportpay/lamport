@@ -7,7 +7,6 @@ import { ConnectedSystems } from "@/components/site/ConnectedSystems";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { HomeGlance } from "@/components/site/HomeGlance";
 import { HomeCapabilities } from "@/components/site/HomeCapabilities";
-import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
@@ -83,7 +82,6 @@ function Index() {
         <IntegrationStatus />
         <SupportedCorridors />
         <HomeCtaBanner />
-        <CustomerSupport />
       </SiteLayout>
     </div>
   );
