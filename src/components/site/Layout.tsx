@@ -154,7 +154,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           )}
           aria-hidden={!scrolled}
         >
-          <div className="overflow-hidden">
+          <div className="min-h-0 overflow-hidden">
             <ColosseumBanner />
           </div>
         </div>
