@@ -11,7 +11,7 @@ export const Route = createFileRoute("/roadmap")({
       path: "/roadmap",
       title: "Roadmap — LamportPay",
       description:
-        "LamportPay’s phase-by-phase roadmap tracker: seven phases done, security review and go-live in progress, then liquidity, partnerships and a global payout ecosystem.",
+        "LamportPay’s phase-by-phase roadmap tracker: seven phases done, security review and go-live in progress, then liquidity, automation and security systems, partnerships and a global payout ecosystem.",
     }),
   component: RoadmapPage,
 });
@@ -28,7 +28,8 @@ function RoadmapPage() {
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-home-ink md:text-lg">
               Thirteen phases, tracked one by one: seven are done, we are in phase eight (security review
-              and go-live), then automation, marketing and three growth phases.
+              and go-live), then marketing, liquidity, automation and security systems, partnerships
+              and a global payout ecosystem.
             </p>
           </div>
         </section>
