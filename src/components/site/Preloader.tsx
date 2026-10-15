@@ -6,14 +6,14 @@ import { useEffect, useState } from "react";
  * so fast loads still feel intentional and slow loads never hang on it.
  */
 export function Preloader() {
-  const [visible, setVisible] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return !window.sessionStorage.getItem("lp-preloader-seen");
-  });
+  const [visible, setVisible] = useState(true);
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
-    if (!visible) return;
+    if (window.sessionStorage.getItem("lp-preloader-seen")) {
+      setVisible(false);
+      return;
+    }
     window.sessionStorage.setItem("lp-preloader-seen", "1");
 
     const started = Date.now();
@@ -38,7 +38,7 @@ export function Preloader() {
       window.setTimeout(finish, 2500);
     }
     return () => window.removeEventListener("load", finish);
-  }, [visible]);
+  }, []);
 
   if (!visible) return null;
 
