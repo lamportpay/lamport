@@ -4,6 +4,8 @@ import { COMPLAINT_RE } from "@/lib/ask-ai-faq";
 /**
  * Saves Ask AI chats for the admin "Complaints & chats" page. Answers are
  * built-in FAQs on the client, so no AI model (and no credits) is used.
+ * Ordinary Q&A is never stored — only complaints and messages that include
+ * a contact email (e.g. the contact form) reach the database.
  */
 export const Route = createFileRoute("/api/ask-ai")({
   server: {
@@ -32,6 +34,8 @@ export const Route = createFileRoute("/api/ask-ai")({
           .map((t) => t.match(/[^@\s]+@[^@\s]+\.[^@\s]+/)?.[0])
           .filter(Boolean)
           .pop();
+
+        if (!complaints.length && !email) return Response.json({ ok: true, stored: false });
 
         const row: Record<string, unknown> = {
           session_id: sessionId,
