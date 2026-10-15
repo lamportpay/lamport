@@ -87,6 +87,23 @@ export const TEAM: TeamMember[] = [
     socials: {},
   },
   {
+    slug: "safi-ullah-adam",
+    name: "Safi Ullah Adam",
+    role: "Advisor — Technology & AI",
+    category: "Advisors",
+    photo: safiUllahAdam,
+    summary: "AI architecture, technical strategy and platform infrastructure advisory.",
+    focus: ["AI architecture", "Technical strategy", "Platform infrastructure"],
+    history: [
+      {
+        period: "LamportPay",
+        title: "Advisor — Technology & AI",
+        detail: "Advises on AI architecture, technical strategy and platform infrastructure.",
+      },
+    ],
+    socials: {},
+  },
+  {
     slug: "izzat",
     name: "Izzat",
     role: "Marketing & Community",
@@ -100,23 +117,6 @@ export const TEAM: TeamMember[] = [
         title: "Marketing & Community",
         detail:
           "Runs community growth, the ambassador programme and outreach across the ecosystem.",
-      },
-    ],
-    socials: {},
-  },
-  {
-    slug: "safi-ullah-adam",
-    name: "Safi Ullah Adam",
-    role: "Advisor — Technology & AI",
-    category: "Advisors",
-    photo: safiUllahAdam,
-    summary: "AI architecture, technical strategy and platform infrastructure advisory.",
-    focus: ["AI architecture", "Technical strategy", "Platform infrastructure"],
-    history: [
-      {
-        period: "LamportPay",
-        title: "Advisor — Technology & AI",
-        detail: "Advises on AI architecture, technical strategy and platform infrastructure.",
       },
     ],
     socials: {},

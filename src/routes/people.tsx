@@ -154,7 +154,7 @@ function People() {
           ))}
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {visible.map((m) => (
             <PersonCard key={m.slug} m={m} onOpen={() => setActive(m)} />
           ))}
