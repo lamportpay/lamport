@@ -75,8 +75,8 @@ export function LaunchPopup() {
             LamportPay is going live
           </DialogTitle>
           <DialogDescription className="text-sm leading-relaxed text-muted-foreground">
-            The platform is built and security testing is almost complete. We are launching as soon
-            as possible — be part of it from day one.
+            The platform is built and core security controls are in place. Our dedicated security
+            phase comes next, followed by a controlled launch — be part of it from day one.
           </DialogDescription>
           <div className="launch-popup-offer">
             <Gift className="h-5 w-5 shrink-0 text-primary" aria-hidden />
