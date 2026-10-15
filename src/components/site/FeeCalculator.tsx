@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 /**
  * Payout estimate calculator — two-panel "You send / Recipient gets" layout.
- * Stables fees mirror the sandbox quotes recorded on 30 Sep 2026:
+ * Stables fees mirror the test-environment quotes recorded on 30 Sep 2026:
  * 0.25% platform fee + a fixed bank payout (payment-method) fee per currency.
  * Rates: live mid-market reference with fallbacks. Estimate only — Stables quotes the real numbers.
  */
