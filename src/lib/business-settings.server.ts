@@ -349,6 +349,18 @@ export function feeModelOf(
   };
 }
 
+/**
+ * The fee model for one payment: the configured one, or no fee at all when
+ * this customer's fee is waived (early access, see lib/early-access.ts). A
+ * waiver never changes the configured settings, only this payment's model.
+ */
+export function feeModelFor(
+  settings: Pick<BusinessSettings, "conversionFeeBps" | "feeMin" | "feeMax">,
+  waived: boolean,
+): FeeModel {
+  return waived ? { bps: 0n, minMinor: null, maxMinor: null } : feeModelOf(settings);
+}
+
 /** One line for admins and the audit log: "2%", "2% (min 1, max 50)", "fixed 3". */
 export function feeModelLabel(
   settings: Pick<BusinessSettings, "conversionFeeBps" | "feeMin" | "feeMax">,
