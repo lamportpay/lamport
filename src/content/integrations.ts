@@ -23,7 +23,7 @@ export const licensedPartner: IntegrationItem = {
     "Hosted identity verification — LamportPay stores only a link and a status",
     "Single-use deposit address for every transfer",
     "Bank account validation and local-currency payout",
-    "Currently connected to the Stables sandbox; real payouts start after production approval",
+    "Currently connected to the Stables sandbox; mainnet settlement starts after production approval",
   ],
 };
 

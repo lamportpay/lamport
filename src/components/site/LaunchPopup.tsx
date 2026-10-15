@@ -72,11 +72,11 @@ export function LaunchPopup() {
         </div>
         <div className="space-y-4 px-6 pb-6 pt-5">
           <DialogTitle className="text-2xl font-semibold leading-tight">
-            Live payouts coming soon
+            Mainnet launch coming soon
           </DialogTitle>
           <DialogDescription className="text-sm leading-relaxed text-muted-foreground">
-            Our website is live and the payment flow is built and tested. Real crypto-to-bank
-            payouts open as soon as our security phase is complete. Join early access to be first in line.
+            Our website is live and the payment flow is built and battle-tested on devnet.
+            Mainnet go-live follows as soon as our security phase is complete. Join early access to be first in line.
           </DialogDescription>
           <div className="launch-popup-offer">
             <Gift className="h-5 w-5 shrink-0 text-primary" aria-hidden />
