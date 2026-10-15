@@ -21,7 +21,7 @@ import { StablesError } from "@/lib/stables/client.server";
 import type { StablesConfig } from "@/lib/stables/config.server";
 import { PAYMENT_CURRENCIES, type PaymentCurrency } from "@/lib/tokens";
 import { PaymentError } from "./errors";
-import { feeModelOf, limitsForCorridor } from "@/lib/business-settings.server";
+import { feeModelFor, feeModelOf, limitsForCorridor } from "@/lib/business-settings.server";
 import { platformFee as computePlatformFee, type FeeRule } from "./fee-math";
 import { getPaymentLimits, limitsFromMajor, limitsMessage, outsideLimits } from "./limits.server";
 import {
@@ -44,6 +44,9 @@ export type PricedCandidates = {
   failures: Partial<Record<PaymentCurrency, PreviewFailure>>;
 };
 
+/** Why LamportPay charged no fee on a payment (recorded with the quote). */
+export type FeeWaiverInfo = { reason: string; rank: number };
+
 /** LamportPay's fee for one payment, with the model that produced it (audit). */
 export type PlatformFeeQuote = {
   bps: number;
@@ -52,6 +55,8 @@ export type PlatformFeeQuote = {
   minMinor: bigint | null;
   maxMinor: bigint | null;
   rule: FeeRule;
+  /** Set when this payment's fee was waived (early access); null when charged. */
+  waiver: FeeWaiverInfo | null;
 };
 
 export type SettlementPlan = {

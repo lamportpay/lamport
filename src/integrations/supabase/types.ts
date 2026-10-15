@@ -174,6 +174,7 @@ export type Database = {
           id: string
           mobile: string
           name: string
+          wallet_address: string | null
         }
         Insert: {
           created_at?: string
@@ -181,6 +182,7 @@ export type Database = {
           id?: string
           mobile: string
           name: string
+          wallet_address?: string | null
         }
         Update: {
           created_at?: string
@@ -188,6 +190,7 @@ export type Database = {
           id?: string
           mobile?: string
           name?: string
+          wallet_address?: string | null
         }
         Relationships: []
       }
@@ -737,6 +740,8 @@ export type Database = {
           platform_fee_minor: number | null
           platform_fee_received_minor: number | null
           platform_fee_rule: string | null
+          platform_fee_waiver: string | null
+          platform_fee_waiver_rank: number | null
           platform_fee_wallet: string | null
           pre_hold_status: string | null
           pricing_snapshot: Json | null
@@ -786,6 +791,8 @@ export type Database = {
           platform_fee_minor?: number | null
           platform_fee_received_minor?: number | null
           platform_fee_rule?: string | null
+          platform_fee_waiver?: string | null
+          platform_fee_waiver_rank?: number | null
           platform_fee_wallet?: string | null
           pre_hold_status?: string | null
           pricing_snapshot?: Json | null
@@ -835,6 +842,8 @@ export type Database = {
           platform_fee_minor?: number | null
           platform_fee_received_minor?: number | null
           platform_fee_rule?: string | null
+          platform_fee_waiver?: string | null
+          platform_fee_waiver_rank?: number | null
           platform_fee_wallet?: string | null
           pre_hold_status?: string | null
           pricing_snapshot?: Json | null
