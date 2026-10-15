@@ -27,8 +27,8 @@ function RoadmapPage() {
               The LamportPay roadmap.
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-home-ink md:text-lg">
-              Eleven phases, tracked one by one: seven are done, we are in phase eight (security review
-              and go-live), and three growth phases come next.
+              Thirteen phases, tracked one by one: seven are done, we are in phase eight (security review
+              and go-live), then automation, marketing and three growth phases.
             </p>
           </div>
         </section>
