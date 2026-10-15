@@ -11,6 +11,9 @@ import {
   LockKeyhole,
   Landmark,
   ShieldCheck,
+  Percent,
+  HandCoins,
+  Fuel,
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
@@ -39,6 +42,8 @@ const stepIcons = [
   Activity,
   CheckCircle2,
 ];
+const costIcons = [Percent, HandCoins, Fuel];
+
 const protections = [
   {
     icon: LockKeyhole,
@@ -105,12 +110,28 @@ function HowItWorks() {
             Know the costs before you approve
           </h2>
           <div className="mt-6 grid gap-6 md:grid-cols-3">
-            {PAYMENT_COSTS.map((cost) => (
-              <div key={cost.title}>
-                <h3 className="font-semibold">{cost.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{cost.detail}</p>
-              </div>
-            ))}
+            {PAYMENT_COSTS.map((cost, index) => {
+              const CostIcon = costIcons[index % costIcons.length];
+              return (
+                <article
+                  key={cost.title}
+                  className="overflow-hidden rounded-xl border border-border bg-card"
+                >
+                  <div
+                    aria-hidden="true"
+                    className="flex h-28 items-center justify-center border-b border-border bg-gradient-to-br from-primary/10 via-transparent to-violet-500/10"
+                  >
+                    <CostIcon className="size-12 text-primary" strokeWidth={1.4} />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-semibold">{cost.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {cost.detail}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
 
@@ -120,10 +141,20 @@ function HowItWorks() {
           </h2>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             {protections.map(({ icon: Icon, title, detail }) => (
-              <article key={title} className="rounded-lg border border-border bg-card p-5">
-                <Icon aria-hidden="true" className="size-5 text-primary" />
-                <h3 className="mt-4 font-semibold">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+              <article
+                key={title}
+                className="overflow-hidden rounded-xl border border-border bg-card"
+              >
+                <div
+                  aria-hidden="true"
+                  className="flex h-28 items-center justify-center border-b border-border bg-gradient-to-br from-primary/10 via-transparent to-violet-500/10"
+                >
+                  <Icon className="size-12 text-primary" strokeWidth={1.4} />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-semibold">{title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+                </div>
               </article>
             ))}
           </div>
