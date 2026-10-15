@@ -714,10 +714,17 @@ function ConvertForm({
       ? estimate.data
       : null;
 
+  // Early access (the first 10 who joined) pays no LamportPay fee. The server
+  // decides this — the calculator answer carries it — the page only reflects it.
+  const feeWaived = Boolean(est?.lamportpayFee.waiver);
+
   // What leaves the wallet in the coin: as typed, or what the SOL buys. LamportPay's
   // fee comes out of it (owner decision 2026-09-30); the rest goes to the payout partner.
   const totalMinor = paySol ? (est ? parseAmount(est.amount, coinKey) : null) : typedMinor;
-  const split = totalMinor !== null ? splitTotal(totalMinor, feeModel) : null;
+  const split =
+    totalMinor !== null
+      ? splitTotal(totalMinor, feeWaived ? { bps: 0n, minMinor: null, maxMinor: null } : feeModel)
+      : null;
   const amountMinor = split && split.netMinor > 0n ? split.netMinor : null;
   const fee = split ? { minor: split.feeMinor, rule: split.rule } : null;
   const feeMinor = fee?.minor ?? null;
@@ -1303,11 +1310,13 @@ function ConvertForm({
               <FeeRow
                 label="LamportPay fee"
                 value={
-                  !feeOn
-                    ? "None"
-                    : feeMinor !== null
-                      ? `${formatMinor(feeMinor, coinKey)} ${coinKey.toUpperCase()}`
-                      : "—"
+                  feeWaived
+                    ? "Waived (early access)"
+                    : !feeOn
+                      ? "None"
+                      : feeMinor !== null
+                        ? `${formatMinor(feeMinor, coinKey)} ${coinKey.toUpperCase()}`
+                        : "—"
                 }
               />
               <FeeRow
@@ -1818,7 +1827,7 @@ function PaymentPanel({
   const aside = (
     <MobileCollapse
       title="Fees & details"
-      summary={`LamportPay fee ${p.platformFee ? money(p.platformFee.amountMinor, p.platformFee.currency) : "—"} · rate ${p.exchangeRate !== null ? `1 ${p.source.currency.toUpperCase()} = ${Number(p.exchangeRate.toPrecision(6))} ${p.destination.currency.toUpperCase()}` : "—"}`}
+      summary={`LamportPay fee ${p.feeWaiver ? "waived (early access)" : p.platformFee ? money(p.platformFee.amountMinor, p.platformFee.currency) : "—"} · rate ${p.exchangeRate !== null ? `1 ${p.source.currency.toUpperCase()} = ${Number(p.exchangeRate.toPrecision(6))} ${p.destination.currency.toUpperCase()}` : "—"}`}
     >
       <div className="space-y-4">
         <GlowCard>
@@ -3315,7 +3324,10 @@ function DepositCard({ payment, onFunded }: { payment: PaymentView; onFunded: ()
       {walletOnly ? (
         <div className="grid gap-3">
           <KV k="Deposit amount" v={`${deposit.amount} ${coin}`} />
-          <KV k="LamportPay fee" v={`${payment.platformFee!.amount} ${coin}`} />
+          <KV
+            k="LamportPay fee"
+            v={payment.feeWaiver ? "Waived (early access)" : `${payment.platformFee!.amount} ${coin}`}
+          />
           <KV k="Total from your wallet" v={`${payment.totalToPay.amount} ${coin}`} />
           <KV k="Network" v={deposit.network === "solana" ? "Solana (mainnet)" : deposit.network} />
         </div>
