@@ -182,7 +182,7 @@ function People() {
                 <img
                   src={active.photo}
                   alt={`Portrait of ${active.name}`}
-                  className={`size-full object-cover object-top ${active.photoClass ?? ""}`}
+                  className={`size-full object-cover object-top ${active.sheetPhotoClass ?? active.photoClass ?? ""}`}
                 />
                 <span className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-primary via-violet-500 to-blue-500" />
               </div>

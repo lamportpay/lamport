@@ -25,8 +25,10 @@ export type TeamMember = {
   history: { period: string; title: string; detail: string }[];
   /** Only filled in when the person has shared the profile URL. */
   socials: { linkedin?: string; twitter?: string; github?: string };
-  /** Extra framing so every face sits at the same size and height. */
+  /** Extra framing so every face sits at the same size and height (card crops). */
   photoClass?: string;
+  /** Framing for the wider portrait in the open profile panel. */
+  sheetPhotoClass?: string;
 };
 
 export const TEAM: TeamMember[] = [
@@ -63,7 +65,8 @@ export const TEAM: TeamMember[] = [
       },
     ],
     socials: {},
-    photoClass: "scale-[1.18] origin-top",
+    photoClass: "scale-[1.43] origin-top",
+    sheetPhotoClass: "scale-[1.11] origin-top",
   },
   {
     slug: "ghazanfar-abbas",
