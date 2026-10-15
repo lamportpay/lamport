@@ -2,6 +2,7 @@
 
 - [x] Hero's two action buttons stay on one swipeable row on phones instead of stacking
 - [x] "All in one" capability strip shows as one swipeable row on phones; the grid returns at 700px and wider
+- [x] Hero's coin/flag strip (SOL · USDC → USD GBP INR PHP) stays on one swipeable row on phones instead of wrapping to two lines; both ends fade so the swipe is obvious and the last item is never hidden
 - [x] Verified at 390px, 360px and 1280px: one row on phones, even grid on desktop, no page overflow, no page errors, build OK
 
 # Roadmap
