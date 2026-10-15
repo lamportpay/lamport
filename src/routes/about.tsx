@@ -65,6 +65,7 @@ function About() {
           Solana into money in a local bank account — simply, transparently and without handing
           their funds to us.
         </p>
+        <AboutPartners />
 
         <div className="mt-12 grid gap-10 md:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-10">
@@ -133,7 +134,6 @@ function About() {
           </aside>
         </div>
       </section>
-      <AboutPartners />
     </SiteLayout>
   );
 }

@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandFrame, PageHeroDecor } from "@/components/site/BrandFrame";
 import { Menu, ArrowRight, Twitter, Linkedin, Github, Mail } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import logoUrl from "@/assets/lamportpay-logo.png";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
