@@ -272,6 +272,9 @@ type Row = {
   platform_fee_minor?: number | null;
   platform_fee_received_minor?: number | null;
   platform_fee_rule?: string | null;
+  /** Why this payment's fee is zero (early access), and the place in line. */
+  platform_fee_waiver?: string | null;
+  platform_fee_waiver_rank?: number | null;
   quote_id: string | null;
   quote_expires_at: string | null;
   transfer_id: string | null;
