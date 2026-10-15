@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { FAQS } from "@/lib/ask-ai-faq";
 import { Button } from "@/components/ui/button";
+import { SiteLayout } from "@/components/site/Layout";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/faq")({
@@ -40,6 +41,7 @@ function openAskAi() {
 function FaqPage() {
   const [openId, setOpenId] = useState<string | null>(FAQS[0]?.id ?? null);
   return (
+    <SiteLayout>
     <div className="relative">
       {/* Hero */}
       <section className="relative overflow-hidden">
