@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandFrame, PageHeroDecor } from "@/components/site/BrandFrame";
 import { Menu, ArrowRight, Twitter, Linkedin, Github, Mail } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import logoUrl from "@/assets/lamportpay-logo.png";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -43,10 +43,24 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (st) => st.location.pathname });
   const isHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <BrandFrame />
-      <header className="sticky top-0 z-40 backdrop-blur-lg bg-background/75 border-b border-border/60 print:hidden">
+      <header
+        className={cn(
+          "sticky top-0 z-40 border-b transition-colors duration-300 print:hidden",
+          scrolled
+            ? "border-border/60 bg-background shadow-sm"
+            : "border-transparent bg-transparent",
+        )}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center group" aria-label="LamportPay home">
             <BrandLogo />
@@ -121,6 +135,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           </Sheet>
           </div>
         </div>
+        <CryptoPriceTicker inline />
         <ColosseumBanner />
       </header>
       <main className={cn("flex-1", !isHome && "site-subpage relative isolate")}>
@@ -129,10 +144,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <SiteFooter />
-      <CryptoPriceTicker />
       <CookieConsent />
-      {/* spacer so the fixed bottom ticker never covers page content */}
-      <div aria-hidden="true" className="h-8 print:hidden" />
     </div>
   );
 }

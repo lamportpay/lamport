@@ -1924,3 +1924,15 @@ body.has-cookie-banner .site-footer-legal {
   from { clip-path: inset(-0.2em 100% -0.2em 0); }
   to { clip-path: inset(-0.2em -0.1em -0.2em 0); }
 }
+
+/* About page: auto-moving partner logo marquee (decorative, not interactive). */
+.partner-marquee {
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.partner-marquee-track {
+  animation: crypto-ticker-scroll 35s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .partner-marquee-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
+  .partner-marquee-dup { display: none; }
+}
