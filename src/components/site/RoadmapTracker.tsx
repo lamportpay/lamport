@@ -119,8 +119,8 @@ export function RoadmapTracker() {
           ))}
         </div>
 
-        {/* Scrollable timeline */}
-        <div className="mt-6 max-h-[78vh] overflow-y-auto rounded-2xl border border-border bg-home-surface p-4 md:p-6">
+        {/* Timeline (scrolls with the page) */}
+        <div className="mt-6 rounded-2xl border border-border bg-home-surface p-4 md:p-6">
           <ol className="relative space-y-4 border-l-2 border-border pl-6 md:pl-8">
             {shown.map((p) => {
               const doneCount = p.items.filter((i) => i.done).length;
