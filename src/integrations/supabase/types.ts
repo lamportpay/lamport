@@ -935,6 +935,57 @@ export type Database = {
         }
         Relationships: []
       }
+      support_chats: {
+        Row: {
+          admin_note: string | null
+          complaint_category: string | null
+          complaint_summary: string | null
+          contact_email: string | null
+          created_at: string
+          id: string
+          is_complaint: boolean
+          last_question: string | null
+          message_count: number
+          messages: Json
+          session_id: string
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          admin_note?: string | null
+          complaint_category?: string | null
+          complaint_summary?: string | null
+          contact_email?: string | null
+          created_at?: string
+          id?: string
+          is_complaint?: boolean
+          last_question?: string | null
+          message_count?: number
+          messages?: Json
+          session_id: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          admin_note?: string | null
+          complaint_category?: string | null
+          complaint_summary?: string | null
+          contact_email?: string | null
+          created_at?: string
+          id?: string
+          is_complaint?: boolean
+          last_question?: string | null
+          message_count?: number
+          messages?: Json
+          session_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
