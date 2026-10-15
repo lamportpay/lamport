@@ -27,12 +27,12 @@ export function HomeLatestNews() {
             </Link>
           </Button>
         </div>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="home-news-row mt-10">
           {posts.map((p) => {
             const Icon = ART[p.category] ?? Newspaper;
             return (
               <Link key={p.slug} to="/blog/$slug" params={{ slug: p.slug }}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                className="home-news-card group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                 <div className="home-news-art relative flex aspect-[16/10] items-center justify-center overflow-hidden">
                   <span className="absolute -right-6 -top-6 size-28 rounded-full border border-primary/20" />
                   <span className="absolute -bottom-10 -left-8 size-36 rounded-full border border-primary/15" />
