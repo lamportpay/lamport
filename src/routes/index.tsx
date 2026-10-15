@@ -85,7 +85,26 @@ function Index() {
         <ConnectedSystems />
         <EcosystemSection compact />
         <IntegrationStatus />
-        <RoadmapSection />
+        <section className="home-section border-t border-border">
+          <div className="home-container flex flex-wrap items-center justify-between gap-6">
+            <div>
+              <p className="home-eyebrow">Where we are headed</p>
+              <h2 className="home-heading">The LamportPay roadmap.</h2>
+              <p className="mt-3 text-sm text-muted-foreground">
+                What is live today, what is in progress, and what is planned next.
+              </p>
+            </div>
+            <Button
+              asChild
+              size="lg"
+              className="h-12 bg-home-brand text-primary-foreground hover:bg-home-brand/90"
+            >
+              <Link to="/roadmap">
+                View the full roadmap <ArrowRight />
+              </Link>
+            </Button>
+          </div>
+        </section>
         <SupportedCorridors />
         <section className="home-section border-t border-border">
           <div className="home-container flex flex-wrap items-center justify-between gap-6">

@@ -18,6 +18,7 @@ import { Route as DocsRouteImport } from './routes/docs'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PayRouteImport } from './routes/pay'
+import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SwapRouteImport } from './routes/swap'
@@ -116,6 +117,11 @@ const McpRoute = McpRouteImport.update({
 const PayRoute = PayRouteImport.update({
   id: '/pay',
   path: '/pay',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoadmapRoute = RoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SendRoute = SendRouteImport.update({
@@ -430,6 +436,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/pay': typeof PayRoute
+  '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
@@ -495,6 +502,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/pay': typeof PayRoute
+  '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
@@ -561,6 +569,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/pay': typeof PayRoute
+  '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
@@ -628,6 +637,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/pay'
+    | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
@@ -693,6 +703,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/pay'
+    | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
@@ -758,6 +769,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/mcp'
     | '/pay'
+    | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
@@ -825,6 +837,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   McpRoute: typeof McpRoute
   PayRoute: typeof PayRoute
+  RoadmapRoute: typeof RoadmapRoute
   SendRoute: typeof SendRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SwapRoute: typeof SwapRoute
@@ -928,6 +941,13 @@ declare module '@tanstack/react-router' {
       path: '/pay'
       fullPath: '/pay'
       preLoaderRoute: typeof PayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roadmap': {
+      id: '/roadmap'
+      path: '/roadmap'
+      fullPath: '/roadmap'
+      preLoaderRoute: typeof RoadmapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/send': {
@@ -1381,6 +1401,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   McpRoute: McpRoute,
   PayRoute: PayRoute,
+  RoadmapRoute: RoadmapRoute,
   SendRoute: SendRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SwapRoute: SwapRoute,

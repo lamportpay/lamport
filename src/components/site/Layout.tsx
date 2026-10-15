@@ -24,6 +24,7 @@ const nav = [
   { to: "/how-it-works", label: "How it works" },
   { to: "/workflow", label: "Workflow" },
   { to: "/whitepaper", label: "White paper" },
+  { to: "/roadmap", label: "Roadmap" },
   { to: "/compliance", label: "Compliance" },
   { to: "/docs", label: "Docs" },
   { to: "/blog", label: "Blog" },
