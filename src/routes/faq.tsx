@@ -142,5 +142,6 @@ function FaqPage() {
         </div>
       </section>
     </div>
+    </SiteLayout>
   );
 }
