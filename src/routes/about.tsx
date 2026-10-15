@@ -109,6 +109,9 @@ function About() {
                   </Link>
                 </Button>
                 <Button asChild variant="outline">
+                  <Link to="/people">Meet our people</Link>
+                </Button>
+                <Button asChild variant="outline">
                   <Link to="/contact">Contact us</Link>
                 </Button>
               </div>

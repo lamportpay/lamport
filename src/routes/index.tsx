@@ -12,7 +12,6 @@ import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
 import { EcosystemSection } from "@/components/site/VisionRoadmapEcosystem";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
-import { HomeTeam } from "@/components/site/HomeTeam";
 import { HeroRibbon } from "@/components/site/HeroRibbon";
 import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
 import { pageSeo } from "@/lib/seo";
@@ -85,7 +84,6 @@ function Index() {
         <EcosystemSection compact />
         <IntegrationStatus />
         <SupportedCorridors />
-        <HomeTeam />
         <HomeCtaBanner />
         <CustomerSupport />
       </SiteLayout>

@@ -30,6 +30,7 @@ const nav = [
   { to: "/whitepaper", label: "White paper" },
   { to: "/roadmap", label: "Roadmap" },
   { to: "/about", label: "About us" },
+  { to: "/people", label: "Our people" },
   { to: "/partners", label: "Partners" },
   { to: "/technology", label: "Technology" },
   { to: "/blog", label: "Blog" },
@@ -228,6 +229,11 @@ function SiteFooter() {
             <li>
               <Link to="/about" className="hover:text-white">
                 About us
+              </Link>
+            </li>
+            <li>
+              <Link to="/people" className="hover:text-white">
+                Our people
               </Link>
             </li>
             <li>
