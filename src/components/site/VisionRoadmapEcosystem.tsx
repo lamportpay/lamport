@@ -271,11 +271,7 @@ const regionNames = {
 
 function CompanyLogo({ c }: { c: EcosystemCompany }) {
   const [broken, setBroken] = useState(false);
-  if (!c.logo || broken) {
-    return (
-      <span className="text-center text-base font-semibold text-foreground">{c.name}</span>
-    );
-  }
+  if (!c.logo || broken) return null;
   return (
     <img
       src={c.logo}
