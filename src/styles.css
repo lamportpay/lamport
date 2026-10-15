@@ -2156,3 +2156,34 @@ body.has-cookie-banner .site-footer-legal {
   color: oklch(1 0 0 / 0.92);
   max-width: 62ch;
 }
+
+/* Launch popup */
+.launch-popup { background: var(--background); border-radius: 1.25rem; }
+.launch-popup-hero {
+  position: relative; height: 120px; display: flex; align-items: flex-end; justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: radial-gradient(circle at 80% 20%, color-mix(in oklab, var(--primary-foreground) 25%, transparent), transparent 55%),
+    linear-gradient(135deg, var(--home-brand, var(--primary)), oklch(0.55 0.24 300));
+}
+.launch-popup-mark {
+  display: grid; place-items: center; width: 64px; height: 64px; border-radius: 1rem;
+  background: var(--background); box-shadow: 0 10px 30px -10px color-mix(in oklab, var(--foreground) 40%, transparent);
+  transform: translateY(32px);
+}
+.launch-popup-pill {
+  display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .75rem; border-radius: 999px;
+  font-size: 12px; font-weight: 600; color: var(--primary-foreground);
+  background: color-mix(in oklab, var(--primary-foreground) 18%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary-foreground) 35%, transparent);
+}
+.launch-popup-offer {
+  display: flex; gap: .75rem; padding: .85rem 1rem; border-radius: .9rem;
+  background: color-mix(in oklab, var(--primary) 9%, var(--background));
+  border: 1px solid color-mix(in oklab, var(--primary) 25%, transparent);
+}
+.launch-popup-cta {
+  color: var(--primary-foreground);
+  background: linear-gradient(135deg, var(--home-brand, var(--primary)), oklch(0.55 0.24 300));
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.launch-popup-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--primary) 60%, transparent); }
