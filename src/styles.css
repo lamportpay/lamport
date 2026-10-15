@@ -1233,18 +1233,8 @@
   }
   .commercial-home #integration-status ol[aria-label="Integration timeline"] {
     margin-top: 24px;
-    margin-left: 18px;
-    padding-left: 28px;
-  }
-  .commercial-home #integration-status ol[aria-label="Integration timeline"] > li + li {
-    margin-top: 16px;
-  }
-  .commercial-home #integration-status ol[aria-label="Integration timeline"] > li > span {
-    left: -48px;
-  }
-  .commercial-home #integration-status ol[aria-label="Integration timeline"] > li > span > span {
-    width: 36px;
-    height: 36px;
+    margin-left: 0;
+    padding-left: 0;
   }
   .commercial-home #integration-status ol[aria-label="Integration timeline"] > li > div {
     padding: 12px;
@@ -1627,7 +1617,36 @@
   contain: paint;
   padding: clamp(0.25rem, 1vw, 0.75rem);
 }
-.corridor-map { display: block; width: 100%; height: auto; }
+.corridor-map { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; user-select: none; }
+.corridor-map:active { cursor: grabbing; }
+:root { --corridor-neutral: oklch(0.82 0.05 275); }
+@media (max-width: 767px) {
+  .commercial-home .corridor-map-frame { padding: 0; }
+  .corridor-map { height: 320px; }
+}
+
+/* Connectors follow the actual logo positions in one responsive list. */
+.integration-timeline { position: relative; display: grid; gap: 24px; margin-top: 32px; padding: 0; list-style: none; }
+.integration-path-layer { position: absolute; inset: 0; pointer-events: none; }
+.integration-path-layer svg { display: block; overflow: visible; }
+.integration-stop { position: relative; display: flex; align-items: flex-start; gap: 20px; min-width: 0; }
+.integration-card { flex: 1; min-width: 0; }
+.integration-path-track, .integration-path-draw { fill: none; stroke: var(--home-brand); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.integration-path-track { opacity: 0.16; }
+.integration-path-draw { opacity: 0.8; }
+.integration-progress-ring { border: 3px solid var(--warning); border-left-color: transparent; border-bottom-color: transparent; }
+@media (min-width: 768px) {
+  .integration-timeline { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 24px; margin-top: 40px; }
+  .integration-stop { grid-column: var(--integration-column); grid-row: var(--integration-row); flex-direction: column; align-items: center; gap: 20px; padding-inline: 20px; }
+  .integration-card { width: 100%; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .integration-timeline[data-motion-ready="true"] .integration-stop { opacity: 0; transform: translateY(26px); transition: opacity 0.65s ease, transform 0.75s cubic-bezier(0.22, 1, 0.36, 1); }
+  .integration-timeline[data-motion-ready="true"] .integration-stop[data-visible="true"] { opacity: 1; transform: none; }
+  .integration-timeline[data-motion-ready="true"] .integration-path-draw { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .integration-timeline[data-motion-ready="true"] [data-visible="true"] > .integration-path-draw { stroke-dashoffset: 0; }
+  .integration-stop[data-visible="true"] .integration-progress-ring { animation: spin 4.5s linear infinite; }
+}
 .corridor-land {
   fill-opacity: 0.28;
   stroke: oklch(0.55 0.18 275 / 0.55);
