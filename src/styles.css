@@ -608,12 +608,12 @@
   justify-content: safe center;
   gap: 12px;
   margin-top: 32px;
-  padding: 0 22px 4px;
+  padding: 0 84px 4px 34px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, #000 88%, transparent 99%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 78%, transparent 96%);
 }
 .home-hero-actions::-webkit-scrollbar {
   display: none;
@@ -626,6 +626,38 @@
     overflow-x: visible;
     mask-image: none;
     padding: 0 0 4px;
+  }
+}
+/* Phones: the "crypto in → local money out" icon strip keeps to one swipeable row
+   instead of breaking into two lines. Same treatment as the hero actions above: it
+   centres itself while everything fits, and the right edge fades so the partly
+   visible coin or flag reads as "swipe", not "cut off". */
+.home-currency-summary {
+  flex-wrap: nowrap;
+  justify-content: safe center;
+  gap: 12px;
+  padding: 0 84px 4px 34px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 78%, transparent 96%);
+}
+.home-currency-summary::-webkit-scrollbar {
+  display: none;
+}
+.home-currency-summary > * {
+  flex: 0 0 auto;
+}
+.home-currency-summary > div {
+  flex-wrap: nowrap;
+}
+@media (min-width: 640px) {
+  .home-currency-summary {
+    gap: 20px;
+    padding: 0;
+    overflow-x: visible;
+    mask-image: none;
   }
 }
 .home-hero .text-home-brand {
@@ -726,14 +758,14 @@
   align-items: flex-start;
   gap: 16px;
   margin: 16px 0 0;
-  padding: 2px 44px 8px 0;
+  padding: 2px 62px 8px 30px;
   list-style: none;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 82%, transparent);
 }
 .home-cap-grid::-webkit-scrollbar {
   display: none;
