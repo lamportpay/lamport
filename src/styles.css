@@ -2121,6 +2121,7 @@ body.has-cookie-banner .site-footer-legal {
   );
 }
 .launch-status-dot {
+  flex: none;
   width: 8px;
   height: 8px;
   border-radius: 9999px;
