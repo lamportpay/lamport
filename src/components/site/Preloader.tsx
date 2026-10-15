@@ -45,6 +45,7 @@ export function Preloader() {
   return (
     <div
       aria-hidden="true"
+      data-preloader
       className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background transition-opacity duration-500 ${
         leaving ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
