@@ -32,4 +32,4 @@
 - Ecosystem branding/links live in shared content; preserve logo proportions and text fallbacks. Sliders use native scrolling, accessible controls and reduced-motion support.
 - Journey content is manual-only, above selectors, with previous/next controls, so reading stays uninterrupted. Decorative motion is viewport-gated and reduced-motion-aware, never financial state. Scope phone styling to `.commercial-home`. Public deposit warnings are not payout blacklists; pending submissions imply no backing.
 - Heading reveals read the heading's own box on scroll/resize, never an IntersectionObserver on the heading: its own clip-path zeroes the observer's ratio, so the text would stay permanently hidden.
-- Ask AI chats are saved server-side only (`/api/ask-ai` onFinish → `support_chats`, admin-only RLS); the model files complaints via its `file_complaint` tool, so the browser never writes chat rows directly.
+- Subdirectories may have their own AGENTS.md (e.g. src/routes/api); read it before changing files there.
