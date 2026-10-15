@@ -613,7 +613,7 @@
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, #000 88%, transparent 99%);
+  mask-image: linear-gradient(to right, #000 78%, transparent 96%);
 }
 .home-hero-actions::-webkit-scrollbar {
   display: none;
@@ -641,7 +641,7 @@
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, #000 88%, transparent 99%);
+  mask-image: linear-gradient(to right, #000 78%, transparent 96%);
 }
 .home-currency-summary::-webkit-scrollbar {
   display: none;
