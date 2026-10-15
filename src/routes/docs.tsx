@@ -8,8 +8,8 @@ import { PAYMENT_COSTS, PAYMENT_JOURNEY } from "@/content/payment-flow";
 export const Route = createFileRoute("/docs")({
   head: () => pageSeo({
     path: "/docs",
-    title: "LamportPay Docs — Architecture and Payment API Reference",
-    description: "Current LamportPay architecture, wallet identity, quote-first payment APIs, Stables test environment, Jupiter read-only routing, fees and operational safeguards.",
+    title: "LamportPay Docs — Architecture and Payment Flow",
+    description: "Current LamportPay architecture, wallet identity, quote-first payment flow, Stables test environment, Jupiter read-only routing, fees and operational safeguards.",
   }),
   component: Docs,
 });
@@ -23,64 +23,23 @@ const stack = [
   { title: "Data & operations", detail: "Lovable Cloud / PostgreSQL stores payment records, identity links, verification status, timeline events and append-only admin audit records—not customer balances." },
 ];
 
-type Endpoint = { method: "GET" | "POST"; path: string; detail: string };
-const paymentEndpoints: Endpoint[] = [
-  { method: "POST", path: "/api/wallet/sign-in", detail: "Verify the wallet sign-in message and one-time signature; establish the customer session." },
-  { method: "POST", path: "/api/wallet/holdings", detail: "Read wallet holdings through a server-side Solana request." },
-  { method: "POST", path: "/api/quote/estimate", detail: "Estimate the payment route, payout amount and costs before checkout verification." },
-  { method: "POST", path: "/api/payments", detail: "Create a payment record for the signed-in customer." },
-  { method: "GET", path: "/api/payments", detail: "List the signed-in customer's payment history." },
-  { method: "POST", path: "/api/payments/:id/quote", detail: "Generate the payment quote; verification is not required to reach the quoted stage." },
-  { method: "POST", path: "/api/payments/:id/payout-details", detail: "Check the required bank fields with Stables before review." },
-  { method: "GET", path: "/api/kyc", detail: "Read the server-decided customer verification state." },
-  { method: "POST", path: "/api/kyc", detail: "Resolve the Stables-hosted verification link when verification is required." },
-  { method: "POST", path: "/api/payments/:id/transfer", detail: "Create the Stables transfer for a verified sender. Returns its transfer reference and deposit instructions; this is not proof of payout." },
-  { method: "POST", path: "/api/payments/:id/test-payment", detail: "Demo only: verify the signed test-network memo, then simulate the deposit. Moves no payment funds." },
-  { method: "GET", path: "/api/payments/:id", detail: "Read payment status, timeline and receipt information; open transfers synchronize with Stables." },
-];
-const routingEndpoints: Endpoint[] = [
-  { method: "POST", path: "/api/jupiter/quote", detail: "Read an eligible SOL-to-USDC market route. A quote is not an executed swap." },
-  { method: "POST", path: "/api/jupiter/order", detail: "Mainnet order preparation. DISABLED in the demo build." },
-  { method: "POST", path: "/api/jupiter/execute", detail: "Mainnet swap execution. DISABLED in the demo build." },
-  { method: "POST", path: "/api/payments/:id/funding-transaction", detail: "Prepare the unsigned production USDC funding transaction. Real-funds funding is DISABLED in the demo build." },
-  { method: "POST", path: "/api/payments/:id/funding", detail: "Verify a production funding signature. Not the demo memo endpoint." },
-  { method: "POST", path: "/api/public/stables-webhook", detail: "Receive Stables transfer events. Requires a valid Svix signature; the public path does not permit unsigned events." },
-];
 const contents = [
   { id: "architecture", title: "Architecture" },
   { id: "identity", title: "Identity & access" },
   { id: "journey", title: "Payment sequence" },
-  { id: "payment-api", title: "Payment APIs" },
-  { id: "routing-api", title: "Routing & events" },
   { id: "costs", title: "Amounts & costs" },
   { id: "operations", title: "Status & safeguards" },
   { id: "boundaries", title: "Integration boundaries" },
 ];
 
-function ApiReference({ endpoints }: { endpoints: Endpoint[] }) {
-  return (
-    <dl className="mt-5 divide-y divide-border border-y border-border">
-      {endpoints.map((endpoint) => (
-        <div key={`${endpoint.method} ${endpoint.path}`} className="py-4">
-          <dt className="flex items-start gap-3 text-sm font-mono">
-            <span className="w-10 shrink-0 font-semibold text-primary">{endpoint.method}</span>
-            <code className="min-w-0 break-all text-foreground">{endpoint.path}</code>
-          </dt>
-          <dd className="mt-2 text-sm leading-relaxed text-muted-foreground sm:pl-13">{endpoint.detail}</dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
 function Docs() {
   return (
     <SiteLayout>
       <section className="max-w-6xl mx-auto px-5 py-12 md:py-16">
-        <div className="text-xs font-semibold uppercase tracking-wider text-primary">Developer docs</div>
+        <div className="text-xs font-semibold uppercase tracking-wider text-primary">Documentation</div>
         <h1 className="mt-3 text-4xl md:text-5xl font-semibold">LamportPay Docs</h1>
-        <p className="mt-4 max-w-3xl text-lg text-muted-foreground">Payment architecture, wallet identity and the API sequence behind the current demo experience.</p>
-        <p className="mt-3 text-xs text-muted-foreground">Updated 12 October 2026 · App-internal API reference</p>
+        <p className="mt-4 max-w-3xl text-lg text-muted-foreground">How LamportPay works under the hood: architecture, wallet identity, the payment sequence and our safeguards. LamportPay does not offer a public API; we build on partner APIs from Stables and Jupiter.</p>
+        <p className="mt-3 text-xs text-muted-foreground">Updated 12 October 2026</p>
         <PaymentFlowStatus />
 
         <div className="mt-12 grid gap-10 md:grid-cols-[200px_minmax(0,1fr)]">
@@ -113,18 +72,6 @@ function Docs() {
                 {PAYMENT_JOURNEY.map((step) => <li key={step.title}><strong className="text-foreground">{step.title}. </strong>{step.detail}</li>)}
               </ol>
               <p className="mt-5 text-sm text-muted-foreground leading-relaxed">A transfer is created only for a verified sender. Own-account payouts use the verified holder name; beneficiary payouts require the beneficiary's name, type and an appropriate payment purpose. Bank details are validated by Stables in either case.</p>
-            </section>
-
-            <section id="payment-api" className="scroll-mt-24">
-              <h2 className="text-2xl font-semibold">Payment APIs</h2>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">These endpoints support the LamportPay app; they are not a released third-party B2B API contract. <code>:id</code> denotes the payment identifier. The table describes purposes, not request-body schemas.</p>
-              <ApiReference endpoints={paymentEndpoints} />
-            </section>
-
-            <section id="routing-api" className="scroll-mt-24">
-              <h2 className="text-2xl font-semibold">Routing, funding & events</h2>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">Read-only routing is distinct from mainnet execution. Production funding paths remain guarded; the current demo uses the dedicated test-payment endpoint instead.</p>
-              <ApiReference endpoints={routingEndpoints} />
             </section>
 
             <section id="costs" className="scroll-mt-24">
