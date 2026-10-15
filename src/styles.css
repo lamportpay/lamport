@@ -628,36 +628,48 @@
     padding: 0 0 4px;
   }
 }
-/* Phones: the "crypto in → local money out" icon strip keeps to one swipeable row
-   instead of breaking into two lines. Same treatment as the hero actions above: it
-   centres itself while everything fits, and the right edge fades so the partly
-   visible coin or flag reads as "swipe", not "cut off". */
+/* Phones show every currency in two centered, non-scrolling rows. */
 .home-currency-summary {
-  flex-wrap: nowrap;
-  justify-content: safe center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
-  padding: 0 84px 4px 34px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 78%, transparent 96%);
+  padding: 0;
 }
-.home-currency-summary::-webkit-scrollbar {
+.home-currency-summary > svg {
   display: none;
 }
-.home-currency-summary > * {
-  flex: 0 0 auto;
+.home-currency-crypto {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
-.home-currency-summary > div {
-  flex-wrap: nowrap;
+.home-currency-fiat {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 8px;
+}
+.home-currency-fiat > span {
+  justify-content: center;
+  white-space: nowrap;
 }
 @media (min-width: 640px) {
   .home-currency-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 20px;
-    padding: 0;
-    overflow-x: visible;
-    mask-image: none;
+  }
+  .home-currency-summary > svg {
+    display: block;
+    flex-shrink: 0;
+  }
+  .home-currency-crypto,
+  .home-currency-fiat {
+    display: flex;
+    gap: 12px;
   }
 }
 .home-hero .text-home-brand {

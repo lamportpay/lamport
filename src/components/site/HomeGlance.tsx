@@ -22,10 +22,9 @@ export function HomeGlance() {
   return (
     <div
       aria-label="Crypto in, local money out"
-      tabIndex={0}
-      className="home-currency-summary mx-auto mt-5 flex max-w-xl items-center justify-center gap-3 sm:gap-5"
+      className="home-currency-summary mx-auto mt-5 max-w-xl"
     >
-          <div className="flex items-center gap-3" aria-label="Crypto in">
+          <div className="home-currency-crypto" aria-label="Crypto in">
             {CRYPTO_IN.map(({ symbol, label }) => (
               <span key={symbol} className="inline-flex items-center gap-1.5 text-sm font-semibold" title={label}>
                 <TokenIcon symbol={symbol} size={22} />
@@ -34,7 +33,7 @@ export function HomeGlance() {
             ))}
           </div>
           <ArrowRight aria-hidden className="size-5 text-home-brand" />
-          <div className="flex items-center gap-3" aria-label="Local money out">
+          <div className="home-currency-fiat" aria-label="Local money out">
             {MONEY_OUT.map(({ code, country, label }) => (
               <span key={code} className="inline-flex items-center gap-1.5 text-sm font-semibold" title={label}>
                 <Flag code={country} size={22} />
