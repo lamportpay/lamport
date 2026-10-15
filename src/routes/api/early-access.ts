@@ -8,10 +8,6 @@ const SOLANA_ADDRESS = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const schema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(255),
-  mobile: z
-    .string()
-    .trim()
-    .regex(/^\+?[0-9 ()-]{6,25}$/),
   /**
    * The Solana wallet connected when joining. It decides the early-access fee
    * waiver (see lib/early-access.ts), so it is stored only as a candidate

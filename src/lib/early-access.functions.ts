@@ -8,7 +8,6 @@ export type EarlyAccessRow = {
   id: string;
   name: string;
   email: string;
-  mobile: string;
   /** Wallet linked when joining; what the fee waiver is matched against. */
   wallet_address: string | null;
   created_at: string;
@@ -31,7 +30,7 @@ export const listEarlyAccessAdmin = createServerFn({ method: "POST" })
     if (!isAdmin) throw new Error("Admin role required.");
     const { data, error } = await context.supabase
       .from("early_access_signups")
-      .select("id,name,email,mobile,wallet_address,created_at")
+      .select("id,name,email,wallet_address,created_at")
       .order("created_at", { ascending: true })
       .limit(500);
     if (error) throw new Error("Could not load signups.");
