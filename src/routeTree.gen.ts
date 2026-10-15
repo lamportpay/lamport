@@ -17,6 +17,7 @@ import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PartnersRouteImport } from './routes/partners'
@@ -119,6 +120,11 @@ const CookiesRoute = CookiesRouteImport.update({
 const DocsRoute = DocsRouteImport.update({
   id: '/docs',
   path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -478,6 +484,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
+  '/faq': typeof FaqRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
@@ -551,6 +558,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
+  '/faq': typeof FaqRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
@@ -625,6 +633,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
+  '/faq': typeof FaqRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
   '/partners': typeof PartnersRoute
@@ -700,6 +709,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/docs'
+    | '/faq'
     | '/how-it-works'
     | '/mcp'
     | '/partners'
@@ -773,6 +783,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/docs'
+    | '/faq'
     | '/how-it-works'
     | '/mcp'
     | '/partners'
@@ -846,6 +857,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/docs'
+    | '/faq'
     | '/how-it-works'
     | '/mcp'
     | '/partners'
@@ -921,6 +933,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CookiesRoute: typeof CookiesRoute
   DocsRoute: typeof DocsRoute
+  FaqRoute: typeof FaqRoute
   HowItWorksRoute: typeof HowItWorksRoute
   McpRoute: typeof McpRoute
   PartnersRoute: typeof PartnersRoute
@@ -1025,6 +1038,13 @@ declare module '@tanstack/react-router' {
       path: '/docs'
       fullPath: '/docs'
       preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -1542,6 +1562,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CookiesRoute: CookiesRoute,
   DocsRoute: DocsRoute,
+  FaqRoute: FaqRoute,
   HowItWorksRoute: HowItWorksRoute,
   McpRoute: McpRoute,
   PartnersRoute: PartnersRoute,
