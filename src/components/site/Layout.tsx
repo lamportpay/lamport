@@ -125,6 +125,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
+      <ColosseumBanner />
       <main className="flex-1">{children}</main>
       <SiteFooter />
       <CryptoPriceTicker />
