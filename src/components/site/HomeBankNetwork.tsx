@@ -83,7 +83,7 @@ export function HomeBankNetwork() {
               {destinations.map((d, index) => <Button key={d.code} variant="outline" aria-pressed={country === d.code} onClick={() => flow.pick(index)} className={`h-12 justify-start gap-2 whitespace-normal px-3 text-left text-xs ${country === d.code ? "border-home-brand bg-home-tint text-home-brand" : "bg-card"}`}><Flag code={d.code} size={24} />{d.name}</Button>)}
             </div>
           </div>
-          <div className="bank-flow-scene p-6 sm:p-8">
+          <div className="bank-flow-scene min-w-0 p-6 sm:p-8">
             <div className="flex items-center justify-center gap-3 text-sm font-semibold"><img src="/tokens/usdc.svg" width="28" height="28" alt="" />USDC <ArrowRight className="size-4 text-home-brand" /><Flag code={country} size={28} />{destination.currency}</div>
             <div className="bank-flow-trunk" aria-hidden="true"><span /></div>
             <div key={country} className="bank-flow-list grid gap-3 sm:grid-cols-2">
