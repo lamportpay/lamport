@@ -756,24 +756,24 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
   margin: 16px 0 0;
-  padding: 2px 62px 8px 30px;
+  padding: 2px 16px 8px;
   list-style: none;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 82%, transparent);
 }
 .home-cap-grid::-webkit-scrollbar {
   display: none;
 }
 .home-cap-item {
   display: flex;
-  flex: 0 0 auto;
-  width: 92px;
+  /* 4 full icons + half of the 5th stay in view, so the swipe hint is the
+     half-visible icon itself. */
+  flex: 0 0 calc((100% - 42px) / 4.5);
   scroll-snap-align: center;
   flex-direction: column;
   align-items: center;

@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Fingerprint,
   KeyRound,
   ShieldCheck,
@@ -187,14 +185,6 @@ function VerificationFlow({ compact }: { compact: boolean }) {
         </svg>
       </div>
       <div className="verify-spot p-6 sm:p-8" aria-live="polite">
-        <div className="mb-5 flex items-center justify-between gap-2 md:hidden">
-          <Button size="icon" variant="outline" aria-label="Previous step" onClick={() => pick(active - 1)}>
-            <ChevronLeft />
-          </Button>
-          <Button size="icon" variant="outline" aria-label="Next step" onClick={() => pick(active + 1)}>
-            <ChevronRight />
-          </Button>
-        </div>
         <div className="flex items-center gap-3">
           <span className="grid size-11 place-items-center rounded-xl bg-home-tint text-home-brand">
             <Icon className="size-5" />
