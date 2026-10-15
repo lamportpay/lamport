@@ -1158,6 +1158,27 @@
     min-height: 76px;
     padding: 12px;
   }
+  /* Mobile: bank cards become a swipeable flex row — 2 full cards + a half
+     visible third as the scroll hint, no scrollbar shown. */
+  .commercial-home .bank-flow-list {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    padding: 2px 16px 8px;
+    margin-inline: -16px;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 84%, transparent 97%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 84%, transparent 97%);
+  }
+  .commercial-home .bank-flow-list::-webkit-scrollbar {
+    display: none;
+  }
+  .commercial-home .bank-flow-list > .bank-flow-item {
+    flex: 0 0 calc((100% - 20px) / 2.5);
+    scroll-snap-align: start;
+  }
   .commercial-home .bank-flow-trunk {
     height: 24px;
     margin-block: 8px;
