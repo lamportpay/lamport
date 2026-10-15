@@ -3,7 +3,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ArrowUpRight, Github, Linkedin, Twitter, Users } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { pageSeo } from "@/lib/seo";
 import { TEAM, TEAM_CATEGORIES, type TeamMember } from "@/lib/team";
 
@@ -218,7 +224,9 @@ function People() {
                       <span className="absolute -left-[27px] top-1 size-3 rounded-full bg-gradient-to-br from-primary to-violet-500 ring-4 ring-background" />
                       <p className="text-xs font-semibold text-muted-foreground">{h.period}</p>
                       <p className="font-semibold">{h.title}</p>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{h.detail}</p>
+                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                        {h.detail}
+                      </p>
                     </li>
                   ))}
                 </ol>

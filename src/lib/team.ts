@@ -44,7 +44,8 @@ export const TEAM: TeamMember[] = [
       {
         period: "LamportPay",
         title: "Founder & CEO",
-        detail: "Founded Lamport Pay Ltd and leads strategy, partner relationships and the funding round.",
+        detail:
+          "Founded Lamport Pay Ltd and leads strategy, partner relationships and the funding round.",
       },
     ],
     socials: {},
@@ -81,7 +82,8 @@ export const TEAM: TeamMember[] = [
       {
         period: "LamportPay",
         title: "CTO & Lead Developer",
-        detail: "Built the LamportPay payment engine, wallet sign-in and the partner payout integration.",
+        detail:
+          "Built the LamportPay payment engine, wallet sign-in and the partner payout integration.",
       },
     ],
     socials: {},
@@ -98,7 +100,8 @@ export const TEAM: TeamMember[] = [
       {
         period: "LamportPay",
         title: "Marketing & Community",
-        detail: "Runs community growth, the ambassador programme and outreach across the ecosystem.",
+        detail:
+          "Runs community growth, the ambassador programme and outreach across the ecosystem.",
       },
     ],
     socials: {},
