@@ -51,21 +51,21 @@ function PersonCard({ m, onOpen }: { m: TeamMember; onOpen: () => void }) {
       <button
         type="button"
         onClick={onOpen}
-        className="relative block aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-primary/15 to-violet-500/15 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        className="relative block aspect-square w-full overflow-hidden bg-gradient-to-br from-primary/15 to-violet-500/15 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         aria-label={`Open profile of ${m.name}`}
       >
         <img
           src={m.photo}
           alt={`Portrait of ${m.name}`}
           loading="lazy"
-          className="size-full object-cover object-top transition duration-500 group-hover:scale-105"
+          className={`size-full object-cover object-top transition duration-500 ${m.photoClass ?? "group-hover:scale-105"}`}
         />
         <span className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-primary via-violet-500 to-blue-500" />
       </button>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-lg font-bold">{m.name}</h3>
+      <div className="flex flex-1 flex-col p-4">
+        <h3 className="text-base font-bold">{m.name}</h3>
         <p className="mt-0.5 text-sm font-semibold text-primary">{m.role}</p>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{m.summary}</p>
+        <p className="mt-2 flex-1 text-[13px] leading-relaxed text-muted-foreground">{m.summary}</p>
         <div className="mt-4 flex items-center justify-between gap-3">
           <Socials m={m} />
           <button
@@ -84,9 +84,7 @@ function PersonCard({ m, onOpen }: { m: TeamMember; onOpen: () => void }) {
 function People() {
   const [filter, setFilter] = useState<"All" | (typeof TEAM_CATEGORIES)[number]>("All");
   const [active, setActive] = useState<TeamMember | null>(null);
-  const groups = TEAM_CATEGORIES.filter((c) => filter === "All" || c === filter)
-    .map((c) => ({ c, members: TEAM.filter((m) => m.category === c) }))
-    .filter((g) => g.members.length);
+  const visible = filter === "All" ? TEAM : TEAM.filter((m) => m.category === filter);
 
   return (
     <SiteLayout>
@@ -96,7 +94,7 @@ function People() {
           aria-hidden="true"
           className="pointer-events-none absolute -right-32 -top-32 size-[520px] rounded-full bg-gradient-to-br from-primary/20 via-violet-500/15 to-transparent blur-3xl"
         />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 md:grid-cols-[1.1fr_1fr] md:py-20">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 md:py-16">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
               <Users className="size-3.5" /> Our people
@@ -126,23 +124,6 @@ function People() {
               </div>
             </dl>
           </div>
-          <div className="grid grid-cols-3 gap-3" aria-hidden="true">
-            {TEAM.slice(0, 5).map((m, i) => (
-              <div
-                key={m.slug}
-                className={`overflow-hidden rounded-2xl border border-border bg-card shadow-lg shadow-primary/10 ${
-                  i === 0 ? "col-span-2 row-span-2" : ""
-                }`}
-              >
-                <img src={m.photo} alt="" className="size-full min-h-28 object-cover object-top" />
-              </div>
-            ))}
-            <div className="grid place-items-center rounded-2xl bg-gradient-to-br from-primary via-violet-500 to-blue-500 p-3 text-center text-sm font-semibold text-primary-foreground">
-              Crypto in.
-              <br />
-              Local money out.
-            </div>
-          </div>
         </div>
       </section>
 
@@ -166,21 +147,9 @@ function People() {
           ))}
         </div>
 
-        <div className="mt-10 space-y-14">
-          {groups.map(({ c, members }) => (
-            <div key={c}>
-              <div className="flex items-baseline justify-between gap-4 border-b border-border pb-3">
-                <h2 className="text-2xl font-semibold">{c}</h2>
-                <span className="text-sm text-muted-foreground">
-                  {members.length} {members.length === 1 ? "person" : "people"}
-                </span>
-              </div>
-              <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {members.map((m) => (
-                  <PersonCard key={m.slug} m={m} onOpen={() => setActive(m)} />
-                ))}
-              </div>
-            </div>
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {visible.map((m) => (
+            <PersonCard key={m.slug} m={m} onOpen={() => setActive(m)} />
           ))}
         </div>
 
@@ -212,7 +181,7 @@ function People() {
                 <img
                   src={active.photo}
                   alt={`Portrait of ${active.name}`}
-                  className="size-full object-cover object-top"
+                  className={`size-full object-cover object-top ${active.photoClass ?? ""}`}
                 />
                 <span className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-primary via-violet-500 to-blue-500" />
               </div>
