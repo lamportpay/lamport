@@ -66,7 +66,7 @@ const stages = [
     provider: "Stables · Jupiter when needed",
     status: "SANDBOX/SIMULATED · payout quote",
     today:
-      "Get a Stables demo-mode quote before verification. SOL estimates use a read-only Jupiter route. Show the LamportPay fee and separate provider costs.",
+      "Get a Stables sandbox quote before verification. SOL estimates use a read-only Jupiter route. Show the LamportPay fee and separate provider costs.",
     production:
       "An approved Stables production quote determines corridor support, pricing and customer limits.",
   },

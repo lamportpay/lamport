@@ -13,7 +13,7 @@ export const Route = createFileRoute("/compliance")({
       path: "/compliance",
       title: "LamportPay Compliance — Verification, Responsibilities and Safeguards",
       description:
-        "LamportPay's non-custodial model, Stables-hosted verification, own-account and beneficiary bank-payout design, security safeguards and demo-only status.",
+        "LamportPay's non-custodial model, Stables-hosted verification, own-account and beneficiary bank-payout design, security safeguards and sandbox status.",
     }),
   component: Compliance,
 });

@@ -74,7 +74,7 @@ export function HomeBankNetwork() {
           <div className="flow-spotlight p-6 sm:p-8">
             <FlowControls flow={flow} count={destinations.length} label="bank destinations" />
             <div key={country} className="flow-detail">
-              <p className="text-xs font-semibold text-home-brand">BANK DESTINATIONS · SANDBOX / SIMULATED</p>
+              <p className="text-xs font-semibold text-home-brand">BANK DESTINATIONS · SANDBOX</p>
               <div className="mt-7 flex items-center gap-4"><Flag code={country} size={44} /><span className="text-4xl font-semibold text-home-ink">{destination.currency}</span></div>
               <h3 className="mt-4 text-2xl font-semibold text-home-ink">{destination.name}</h3>
               <p className="mt-3 text-sm text-muted-foreground">Local currency. Familiar bank accounts. Availability checked by Stables.</p>

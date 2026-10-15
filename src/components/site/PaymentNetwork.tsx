@@ -34,7 +34,7 @@ const nodes = [
   },
   {
     title: "Stables",
-    label: "SANDBOX / SIMULATED",
+    label: "SANDBOX",
     icon: ShieldCheck,
     detail: PAYMENT_JOURNEY[3].detail,
     note: "Hosted verification & payout infrastructure",
@@ -76,7 +76,7 @@ export function PaymentNetwork() {
               <FlowControls flow={flow} count={nodes.length} label="payment route" />
             </div>
             <div key={selected} className="flow-detail">
-              <p className="text-xs font-semibold text-home-brand">PAYMENT ROUTE · SANDBOX / SIMULATED</p>
+              <p className="text-xs font-semibold text-home-brand">PAYMENT ROUTE · SANDBOX</p>
               <p className="mt-7 font-mono text-5xl font-semibold text-home-brand">0{selected + 1}</p>
               <h3 className="mt-3 text-2xl font-semibold text-home-ink">{active.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{active.detail}</p>

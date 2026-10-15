@@ -37,7 +37,7 @@ export const PAYMENT_JOURNEY = [
 ];
 
 export const PAYMENT_SAFETY =
-  "SANDBOX / SIMULATED: test-network assets and the payout partner's test environment. Real bank payouts and production identity verification are DISABLED pending production approval.";
+  "SANDBOX: test-network assets and the payout partner's test environment. Real bank payouts and production identity verification are DISABLED pending production approval.";
 
 /** Public identity explanation: ownership proof is not identity/KYC approval. */
 export const VERIFICATION_JOURNEY = [
@@ -57,7 +57,7 @@ export const VERIFICATION_JOURNEY = [
   },
   {
     title: "Complete hosted identity checks",
-    label: "SANDBOX / SIMULATED · KYC",
+    label: "SANDBOX · KYC",
     summary: "Stables handles identity checks on its hosted page.",
     detail:
       "After a quote and bank-detail checks, any required identity verification takes place on Stables’ hosted verification page. LamportPay keeps the verification link and status, not identity documents. Wallet-only customers provide the email Stables requires.",

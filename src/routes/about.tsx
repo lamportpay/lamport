@@ -48,7 +48,7 @@ const facts = [
   { label: "Network", value: "Solana" },
   { label: "Settlement asset", value: "USDC" },
   { label: "Payout partner", value: "Stables" },
-  { label: "Stage", value: "Sandbox / simulated" },
+  { label: "Stage", value: "Sandbox" },
 ];
 
 function About() {

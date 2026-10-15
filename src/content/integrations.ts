@@ -1,7 +1,7 @@
 // Shared, browser-safe content for the Partners and Technology pages.
 // Status labels follow the approved set: LIVE, SANDBOX/SIMULATED, IN PROGRESS, PLANNED.
 
-export type IntegrationStatus = "Live" | "Sandbox / simulated" | "In progress" | "Planned";
+export type IntegrationStatus = "Live" | "Sandbox" | "In progress" | "Planned";
 
 export type IntegrationItem = {
   name: string;
@@ -15,7 +15,7 @@ export type IntegrationItem = {
 export const licensedPartner: IntegrationItem = {
   name: "Stables",
   role: "Licensed payout & identity partner",
-  status: "Sandbox / simulated",
+  status: "Sandbox",
   href: "https://stables.money",
   detail:
     "Stables is LamportPay's licensed payout partner. Identity verification (KYC) runs on Stables' hosted page, and Stables converts stablecoins and pays out to local bank accounts. LamportPay never holds customer funds or keys.",

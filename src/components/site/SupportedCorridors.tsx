@@ -160,7 +160,7 @@ export function SupportedCorridors() {
         </div>
 
         <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed text-muted-foreground">
-          <span className="font-semibold">SANDBOX / SIMULATED</span> · Corridor status reflects
+          <span className="font-semibold">SANDBOX</span> · Corridor status reflects
           sandbox test completions. Production bank payouts remain disabled until approval.
         </p>
       </div>

@@ -230,7 +230,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         <List
           items={ROADMAP_PHASES.map(
             (p) =>
-              `Phase ${p.phase}: ${p.title} (${p.status === "current" ? "SANDBOX / SIMULATED" : "PLANNED"}). ${p.summary} Milestone: ${p.dependsOn}`,
+              `Phase ${p.phase}: ${p.title} (${p.status === "current" ? "SANDBOX" : "PLANNED"}). ${p.summary} Milestone: ${p.dependsOn}`,
           )}
         />
         <p className="text-sm">{ROADMAP_NOTE}</p>
