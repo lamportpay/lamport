@@ -271,20 +271,19 @@ const regionNames = {
 
 function CompanyLogo({ c }: { c: EcosystemCompany }) {
   const [broken, setBroken] = useState(false);
+  if (!c.logo || broken) {
+    return (
+      <span className="text-center text-base font-semibold text-foreground">{c.name}</span>
+    );
+  }
   return (
-    <div className="flex h-28 items-center justify-center px-3">
-      {c.logo && !broken ? (
-        <img
-          src={c.logo}
-          alt={`${c.name} logo`}
-          loading="lazy"
-          onError={() => setBroken(true)}
-          className="max-h-20 max-w-full object-contain"
-        />
-      ) : (
-        <span className="text-center text-lg font-semibold text-foreground">{c.name}</span>
-      )}
-    </div>
+    <img
+      src={c.logo}
+      alt={`${c.name} logo`}
+      loading="lazy"
+      onError={() => setBroken(true)}
+      className="partner-logo max-h-14 max-w-full object-contain"
+    />
   );
 }
 
