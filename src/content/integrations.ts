@@ -97,23 +97,56 @@ export const techStack: { group: string; items: IntegrationItem[] }[] = [
     group: "Data & infrastructure",
     items: [
       {
-        name: "Supabase (Postgres)",
-        role: "Database & authentication",
+        name: "SQL (Postgres)",
+        role: "Database",
         status: "Live",
         detail:
-          "Payment records, audit log and accounts live in Postgres with row-level security. The admin audit log is append-only.",
+          "Our database is designed and written in SQL by our own team. Payment records, accounts and the admin audit log live in Postgres with row-level security, and the audit log is append-only.",
       },
       {
-        name: "Vercel",
+        name: "Node.js",
+        role: "Server runtime",
+        status: "Live",
+        detail:
+          "Server-side logic — payment orchestration, webhooks, reconciliation and admin tooling — runs on Node.js.",
+      },
+      {
+        name: "Cloud hosting",
         role: "Hosting",
         status: "Live",
-        detail: "Global hosting for the website and app, with scheduled reconciliation jobs.",
+        detail:
+          "The website and app are hosted on managed cloud infrastructure today, with a planned move to AWS as we scale.",
+      },
+      {
+        name: "AWS",
+        role: "Future infrastructure",
+        status: "Planned",
+        detail: "Our roadmap includes migrating the platform's infrastructure to AWS.",
       },
       {
         name: "Resend",
         role: "Transactional email",
         status: "Planned",
         detail: "Payment receipts and account emails will be sent through Resend.",
+      },
+    ],
+  },
+  {
+    group: "How we build",
+    items: [
+      {
+        name: "In-house engineering team",
+        role: "Core development",
+        status: "Live",
+        detail:
+          "LamportPay's core platform — the payment engine, database design, security controls and integrations — is designed and built from scratch by our own developers.",
+      },
+      {
+        name: "AI-assisted tooling",
+        role: "Productivity & automation",
+        status: "Live",
+        detail:
+          "Our team uses AI tools such as ChatGPT, Claude and Lovable to speed up coding, testing, automation and marketing. They assist our developers — the architecture, financial logic and security decisions are made and reviewed by the team.",
       },
     ],
   },

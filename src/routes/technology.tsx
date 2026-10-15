@@ -10,7 +10,7 @@ export const Route = createFileRoute("/technology")({
       path: "/technology",
       title: "Technology stack — LamportPay",
       description:
-        "How LamportPay is built: TypeScript, React, Supabase Postgres, Vercel, Resend email, signed webhooks and automated security checks.",
+        "How LamportPay is built: TypeScript, React, a SQL (Postgres) database, Node.js, cloud hosting with a planned move to AWS, signed webhooks and automated security checks.",
     }),
   component: TechnologyPage,
 });
