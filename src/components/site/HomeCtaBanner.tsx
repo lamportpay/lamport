@@ -16,8 +16,8 @@ export function HomeCtaBanner() {
             Send stablecoins. Your bank gets local money.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm text-home-connector sm:text-base">
-            Connect your Solana wallet, see the full cost before you sign, and follow every step
-            to the bank. No custody, one clear fee.
+            Connect your Solana wallet, see the full cost before you sign, and follow every step to
+            the bank. No custody, one clear fee.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
