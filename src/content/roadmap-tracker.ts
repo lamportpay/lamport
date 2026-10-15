@@ -82,7 +82,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
     stage: "Build",
     summary: "Ran the full journey end to end in the partner sandbox with no real funds.",
     items: [
-      { label: "End-to-end sandbox payouts (US, UK, India, Philippines)", done: true },
+      { label: "Sandbox payouts: US, UK, IN, PH", done: true },
       { label: "Automated tests and CI checks", done: true },
       { label: "Error and recovery cases", done: true },
     ],
