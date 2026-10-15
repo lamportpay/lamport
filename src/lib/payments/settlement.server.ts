@@ -22,6 +22,7 @@ import type { StablesConfig } from "@/lib/stables/config.server";
 import { PAYMENT_CURRENCIES, type PaymentCurrency } from "@/lib/tokens";
 import { PaymentError } from "./errors";
 import { FEE_WAIVER_REASON } from "@/lib/early-access";
+import type { FeeWaiver } from "./fee-waiver.server";
 import { feeModelFor, feeModelOf, limitsForCorridor } from "@/lib/business-settings.server";
 import { platformFee as computePlatformFee, type FeeRule } from "./fee-math";
 import { getPaymentLimits, limitsFromMajor, limitsMessage, outsideLimits } from "./limits.server";
