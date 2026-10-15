@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { POSTS } from "@/content/blog";
+import { NEWS } from "@/content/news";
 import { canonical } from "@/lib/seo";
 
 const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
@@ -19,6 +20,7 @@ const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
   { path: "/people", priority: "0.6", changefreq: "monthly" },
   { path: "/contact", priority: "0.6", changefreq: "monthly" },
   { path: "/faq", priority: "0.7", changefreq: "monthly" },
+  { path: "/news", priority: "0.8", changefreq: "weekly" },
 ];
 
 function buildSitemap() {
@@ -32,6 +34,12 @@ function buildSitemap() {
     ...POSTS.map((p) => ({
       loc: canonical(`/blog/${p.slug}`),
       lastmod: p.updated ?? p.published,
+      changefreq: "monthly",
+      priority: "0.8",
+    })),
+    ...NEWS.map((n) => ({
+      loc: canonical(`/news/${n.slug}`),
+      lastmod: n.published,
       changefreq: "monthly",
       priority: "0.8",
     })),
