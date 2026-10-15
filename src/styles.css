@@ -538,6 +538,9 @@
 }
 .home-hero {
   min-height: 560px;
+  /* Extend the hero behind the transparent header so its colours show through before scrolling. */
+  margin-top: calc(-1 * var(--site-header-h, 0px));
+  padding-top: var(--site-header-h, 0px);
   color: oklch(0.24 0.06 265);
   background:
     linear-gradient(to bottom, transparent 60%, var(--card) 98%),
@@ -1855,7 +1858,7 @@ body.has-cookie-banner .site-footer-legal {
 @keyframes brand-frame-flow { from { transform: translateY(-3%); } to { transform: translateY(3%); } }
 
 .site-subpage > .page-hero-decor {
-  position: absolute; inset: 0 0 auto 0; height: 360px; z-index: -1;
+  position: absolute; inset: 0 0 auto 0; height: calc(360px + var(--site-header-h, 0px)); z-index: -1;
   overflow: hidden; pointer-events: none;
   background:
     radial-gradient(60% 80% at 85% 0%, color-mix(in oklab, var(--primary) 14%, transparent), transparent 70%),
@@ -1866,7 +1869,7 @@ body.has-cookie-banner .site-footer-legal {
 .hero-ribbon-compact { opacity: 0.45; }
 .hero-ribbon-compact .hero-ribbon-svg { top: 82%; height: 110%; }
 .page-hero-icon {
-  position: absolute; right: max(2rem, calc((100vw - 72rem) / 2 + 1rem)); top: 64px;
+  position: absolute; right: max(2rem, calc((100vw - 72rem) / 2 + 1rem)); top: calc(64px + var(--site-header-h, 0px));
   width: 112px; height: 112px; display: none; place-items: center;
   border-radius: 9999px; color: var(--primary);
   background: color-mix(in oklab, var(--background) 70%, transparent);
@@ -1874,7 +1877,7 @@ body.has-cookie-banner .site-footer-legal {
 }
 @media (min-width: 1024px) { .page-hero-icon { display: grid; } }
 .page-hero-icon-glyph { position: absolute; inset: 0; margin: auto; }
-.page-hero-icon-low { top: 210px; }
+.page-hero-icon-low { top: calc(210px + var(--site-header-h, 0px)); }
 .page-hero-icon-ring {
   position: absolute; inset: -6px; border-radius: 9999px;
   border: 2px solid transparent;
