@@ -50,6 +50,20 @@ export function SupportedCorridors() {
   const [view, setView] = useState({ k: 1, x: 0, y: 0 });
   const mapRef = useRef<SVGSVGElement>(null);
   const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  // Gestures stay off while the visitor scrolls past; a tap on the map turns them on.
+  const [active, setActive] = useState(false);
+  const activeRef = useRef(false);
+  activeRef.current = active;
+
+  useEffect(() => {
+    if (!active) return;
+    const off = (e: PointerEvent) => {
+      if (frameRef.current && !frameRef.current.contains(e.target as Node)) setActive(false);
+    };
+    document.addEventListener("pointerdown", off);
+    return () => document.removeEventListener("pointerdown", off);
+  }, [active]);
 
   useEffect(() => {
     const svg = mapRef.current;
@@ -60,6 +74,8 @@ export function SupportedCorridors() {
       .scaleExtent([1, 8])
       .touchable(() => true)
       .clickDistance(6)
+      .filter((event: Event & { button?: number; ctrlKey?: boolean }) =>
+        activeRef.current && (event.type === "wheel" || !event.ctrlKey) && !event.button)
       .on("zoom", (event) => {
         const { k, x, y } = event.transform;
         setView({ k, x, y });
@@ -90,6 +106,7 @@ export function SupportedCorridors() {
     const cy = (y0 + y1) / 2;
     moveTo(k, W / 2 - k * cx, H / 2 - k * cy);
     setSelected(f.properties.name);
+    setActive(true);
   };
   const reset = () => { moveTo(1, 0, 0); setSelected(null); };
   const zoomBy = (factor: number) => {
@@ -114,7 +131,7 @@ export function SupportedCorridors() {
           </p>
         </div>
 
-        <div className="corridor-map-frame relative mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl">
+        <div ref={frameRef} onPointerDownCapture={() => setActive(true)} data-active={active ? "true" : "false"} className="corridor-map-frame relative mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl">
           <svg ref={mapRef} viewBox={`0 0 ${W} ${H}`} className="corridor-map" role="img" tabIndex={0} aria-label="Interactive world map of LamportPay payout corridors" onKeyDown={(event) => {
             const svg = mapRef.current;
             const behavior = zoomRef.current;
@@ -185,6 +202,12 @@ export function SupportedCorridors() {
               </Button>
             ))}
           </div>
+
+          {!active && (
+            <div className="corridor-map-hint pointer-events-none absolute left-1/2 top-3 -translate-x-1/2 rounded-full border border-border bg-background/90 px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur">
+              Tap a country to explore the map
+            </div>
+          )}
 
           {selected && (
             <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex items-center gap-3 rounded-lg border border-border bg-background/95 px-4 py-2.5 shadow-md backdrop-blur sm:right-auto">

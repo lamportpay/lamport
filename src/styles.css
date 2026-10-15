@@ -1619,6 +1619,8 @@
 }
 .corridor-map { display: block; width: 100%; height: auto; touch-action: none; cursor: grab; user-select: none; }
 .corridor-map:active { cursor: grabbing; }
+.corridor-map-frame[data-active="false"] .corridor-map { touch-action: pan-x pan-y; cursor: pointer; }
+.home-news-art { background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 14%, var(--background)), color-mix(in oklab, var(--accent) 22%, var(--background))); }
 :root { --corridor-neutral: oklch(0.82 0.05 275); }
 @media (max-width: 767px) {
   .commercial-home .corridor-map-frame { padding: 0; }
