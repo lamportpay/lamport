@@ -16,6 +16,13 @@ export function ScrollReveal() {
     const headings = Array.from(document.querySelectorAll<HTMLElement>("main h1, main h2"));
     if (sections.length === 0 && headings.length === 0) return;
 
+    // No observer support: show everything rather than leave text clipped away.
+    if (typeof IntersectionObserver === "undefined") {
+      for (const el of sections) el.classList.add("reveal-visible");
+      for (const h of headings) h.classList.add("type-visible");
+      return;
+    }
+
     // Sections fade in when they enter and fade out again when they leave.
     const observer = new IntersectionObserver(
       (entries) => {
