@@ -43,12 +43,11 @@ export const NEWS: NewsItem[] = [
         ],
       },
       {
-        heading: "What happens before launch",
+        heading: "What happens next",
         bullets: [
           "A dedicated security phase: independent external audit, penetration testing and hardening",
-          "Final end-to-end testing on production infrastructure",
-          "Production approval from our payout partner",
-          "Opening real payouts to the first users",
+          "Opening real payouts to more users and more countries",
+          "More assets, partners and chains — see the roadmap",
         ],
       },
       {
