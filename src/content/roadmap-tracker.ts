@@ -104,7 +104,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
     title: "Security review and go-live",
     status: "current",
     stage: "Launch",
-    summary: "Core security controls are built. This phase funds a full independent audit, penetration testing and hardening before a controlled live launch.",
+    summary: "Core security controls are built. This phase funds a full independent audit, penetration testing and hardening before a controlled mainnet launch.",
     items: [
       { label: "Non-custodial: we never hold funds or keys", done: true },
       { label: "Signed webhooks and one-time wallet signatures", done: true },
@@ -113,7 +113,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
       { label: "Independent external security audit", done: false },
       { label: "Penetration testing and hardening", done: false },
       { label: "Monitoring, alerting and incident response", done: false },
-      { label: "Partner production approval and live launch", done: false },
+      { label: "Partner production approval and mainnet go-live", done: false },
     ],
   },
   {

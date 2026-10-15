@@ -18,16 +18,16 @@ export const NEWS: NewsItem[] = [
   {
     slug: "lamportpay-going-live",
     tag: "Launch",
-    title: "LamportPay is live — real payouts open after the security phase",
-    headline: "LamportPay is live. Real payouts open as soon as our security phase is complete — join early access.",
+    title: "LamportPay is live — mainnet launch follows the security phase",
+    headline: "LamportPay is live. Mainnet go-live follows as soon as our security phase is complete — join early access.",
     summary:
-      "The LamportPay website is live. The payment flow is built and tested in our payout partner's sandbox, and goes live as soon as the Phase 8 security work is complete. The first 10 early-access users pay no LamportPay fee.",
+      "The LamportPay website is live. The payment flow is built and battle-tested on devnet with our payout partner's sandbox, and moves to Solana mainnet as soon as the Phase 8 security work is complete. The first 10 early-access users pay no LamportPay fee.",
     published: "2026-10-15",
     keywords: ["LamportPay launch", "crypto to bank payout", "Solana stablecoin payout", "USDC to bank", "early access"],
     body: [
       {
         paragraphs: [
-          "LamportPay turns USDC on Solana into a payout to a local bank account, through our licensed payout partner Stables. The website is live. The payment flow is built and tested end to end in the partner sandbox; real payouts open as soon as our Phase 8 security work — independent audit, penetration testing and hardening — is complete.",
+          "LamportPay turns USDC on Solana into a payout to a local bank account, through our licensed payout partner Stables. The website is live. The payment flow is built and battle-tested end to end on devnet with the partner sandbox; mainnet go-live follows as soon as our Phase 8 security work — independent audit, penetration testing and hardening — is complete.",
         ],
       },
       {
@@ -46,7 +46,7 @@ export const NEWS: NewsItem[] = [
         heading: "What happens next",
         bullets: [
           "A dedicated security phase: independent external audit, penetration testing and hardening",
-          "Switching on the live payment flow for real payouts, starting with a controlled launch",
+          "Mainnet go-live: switching on on-chain settlement on Solana mainnet, starting with a controlled launch",
           "More assets, partners and chains — see the roadmap",
         ],
       },

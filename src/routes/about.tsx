@@ -102,7 +102,7 @@ function About() {
               <p className="mt-3 text-muted-foreground leading-relaxed">
                 LamportPay is in a controlled sandbox phase. Wallet sign-in and live swap quotes work
                 today; bank payouts and identity checks run in our partner's sandbox until
-                production approval. Our next step is a dedicated security phase — an independent audit and hardening — before a controlled launch; see the public roadmap.
+                production approval. Our next step is a dedicated security phase — an independent audit and hardening — before a controlled mainnet launch; see the public roadmap.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <Button asChild>
