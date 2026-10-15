@@ -42,6 +42,8 @@ const stepIcons = [
   Activity,
   CheckCircle2,
 ];
+const costIcons = [Percent, HandCoins, Fuel];
+
 const protections = [
   {
     icon: LockKeyhole,
