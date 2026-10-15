@@ -154,7 +154,7 @@ function BlogIndex() {
         <aside className="mt-16 rounded-3xl border border-border/60 bg-secondary/40 p-6 md:p-8">
           <h2 className="text-xl font-semibold tracking-tight">See the architecture in practice</h2>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            The demo shows the full route. The SOL to USDC conversion runs live against Solana under
+            The sandbox shows the full route. The SOL to USDC conversion runs live against Solana under
             strict limits with output returning to your own wallet; identity checks, fiat conversion
             and local payout are simulated.
           </p>

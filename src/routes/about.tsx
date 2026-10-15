@@ -32,13 +32,13 @@ const values = [
     icon: Globe2,
     title: "Local money, globally",
     detail:
-      "Our goal is simple: crypto in, local money out — starting with the US, UK, India and the Philippines in our demo environment.",
+      "Our goal is simple: crypto in, local money out — starting with the US, UK, India and the Philippines in our sandbox environment.",
   },
   {
     icon: Building2,
     title: "Honest about status",
     detail:
-      "Every capability is labeled Live, Demo, Disabled or Planned. We never claim a payout, partnership or licence we do not have.",
+      "Every capability is labeled Live, Sandbox, Disabled or Planned. We never claim a payout, partnership or licence we do not have.",
   },
 ];
 
@@ -48,7 +48,7 @@ const facts = [
   { label: "Network", value: "Solana" },
   { label: "Settlement asset", value: "USDC" },
   { label: "Payout partner", value: "Stables" },
-  { label: "Stage", value: "Demo / simulated" },
+  { label: "Stage", value: "Sandbox" },
 ];
 
 function About() {
@@ -91,7 +91,7 @@ function About() {
             <div>
               <h2 className="text-2xl font-semibold">Where we are</h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
-                LamportPay is in a controlled demo phase. Wallet sign-in and live swap quotes work
+                LamportPay is in a controlled sandbox phase. Wallet sign-in and live swap quotes work
                 today; bank payouts and identity checks run in our partner's sandbox until
                 production approval. Our next steps are on the public roadmap.
               </p>

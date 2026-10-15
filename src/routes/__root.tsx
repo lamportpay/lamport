@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "LamportPay is a multi-asset crypto-to-local-currency payment routing demo. Crypto in. Local money out.",
+          "LamportPay is a multi-asset crypto-to-local-currency payment routing sandbox. Crypto in. Local money out.",
       },
       { name: "author", content: "LamportPay" },
       { property: "og:site_name", content: "LamportPay" },

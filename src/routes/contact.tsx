@@ -10,7 +10,7 @@ export const Route = createFileRoute("/contact")({
       path: "/contact",
       title: "Contact and Waitlist | LamportPay",
       description:
-        "Request demo access, discuss a regulated payout partnership, ask about API access, or reach the LamportPay team at hello@lamportpay.com.",
+        "Request sandbox access, discuss a regulated payout partnership, ask about API access, or reach the LamportPay team at hello@lamportpay.com.",
     }),
   component: Contact,
 });
@@ -57,7 +57,7 @@ function Contact() {
             </div>
             <h2 className="mt-5 text-2xl font-semibold tracking-tight">Thanks.</h2>
             <p className="mt-2 text-muted-foreground">
-              Your LamportPay request has been saved for demo purposes.
+              Your LamportPay request has been saved for sandbox purposes.
             </p>
             <button
               onClick={() => {

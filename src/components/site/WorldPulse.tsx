@@ -166,10 +166,10 @@ export function WorldPulse() {
             Global Payment Mesh · AI-routed
           </div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
-            Jupiter-powered swap demo — built for future payout routing.
+            Jupiter-powered swap sandbox — built for future payout routing.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            This demo shows how a Solana wallet can swap SOL to USDC through Jupiter. Local-currency
+            This sandbox shows how a Solana wallet can swap SOL to USDC through Jupiter. Local-currency
             payout remains disabled until licensed partner approval.
           </p>
         </div>
@@ -407,16 +407,16 @@ export function WorldPulse() {
                   >
                     <div className="flex items-center justify-between gap-3">
                       <span className="font-mono text-white/90">SOL → USDC route preview</span>
-                      <span className="text-uv font-semibold text-xs">Demo</span>
+                      <span className="text-uv font-semibold text-xs">Sandbox</span>
                     </div>
                     <div className="text-[11px] text-white/50 mt-0.5 font-mono">
-                      Demo preview only · Output: connected wallet
+                      Sandbox preview only · Output: connected wallet
                     </div>
                   </li>
                 ))}
               </ul>
               <div className="mt-5 text-[11px] text-white/40 font-mono leading-relaxed">
-                * Simulated route preview. Demo values only. No payout is executed.
+                * Simulated route preview. Sandbox values only. No payout is executed.
               </div>
             </div>
           </div>

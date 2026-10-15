@@ -9,7 +9,7 @@ const branches = [
     name: "Solana · Jupiter",
     status: "LIVE QUOTES",
     detail:
-      "The existing Solana route. Jupiter supplies live prices; the demo build does not execute mainnet swaps.",
+      "The existing Solana route. Jupiter supplies live prices; the sandbox build does not execute mainnet swaps.",
     note: "Existing quote infrastructure",
     planned: false,
   },
@@ -88,7 +88,7 @@ export function ConnectedSystems() {
         </div>
         <div className="mt-6 grid gap-5 border-y border-border py-5 md:grid-cols-3">
           <div className="flex items-center gap-3"><img src="/tokens/usdc.svg" alt="" width="28" height="28" /><div><p className="text-sm font-semibold">USDC settlement</p><p className="mt-1 text-xs text-muted-foreground">Single-use deposit · Non-custodial</p></div></div>
-          <div className="flex items-center gap-3"><ShieldCheck className="size-6 text-home-brand" /><div><p className="text-sm font-semibold">Stables</p><p className="mt-1 text-xs text-muted-foreground">DEMO / SIMULATED · Payout infrastructure</p></div></div>
+          <div className="flex items-center gap-3"><ShieldCheck className="size-6 text-home-brand" /><div><p className="text-sm font-semibold">Stables</p><p className="mt-1 text-xs text-muted-foreground">SANDBOX · Payout infrastructure</p></div></div>
           <div className="flex items-center gap-3"><Landmark className="size-6 text-home-brand" /><div><p className="text-sm font-semibold">Local bank account</p><p className="mt-1 text-xs text-muted-foreground">Fiat payout DISABLED</p></div></div>
         </div>
         <p className="mt-5 text-xs leading-relaxed text-muted-foreground">

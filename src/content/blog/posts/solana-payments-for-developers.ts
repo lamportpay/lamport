@@ -70,8 +70,8 @@ export const post: BlogPost = {
     { type: "p", text: "The Solana legs of LamportPay are built against these rules: mints are pinned as constants, transaction verification happens server-side at finalized commitment, RPC access is cluster-aware with a documented fallback, the swap output is guarded to the connected wallet only, and amounts are capped on both client and server. Signing always happens in the user's own wallet. The fiat payout leg beyond USDC settlement is a labelled simulation, pending a regulated payout infrastructure partner." },
   ],
   productLinks: [
-    { to: "/docs", label: "Developer docs", note: "Architecture, stack and the API surface behind the demo." },
-    { to: "/swap", label: "Swap demo", note: "See commitment-level verification and destination guards in practice." },
+    { to: "/docs", label: "Developer docs", note: "Architecture, stack and the API surface behind the sandbox." },
+    { to: "/swap", label: "Swap sandbox", note: "See commitment-level verification and destination guards in practice." },
     { to: "/workflow", label: "Workflow overview", note: "Integration status for each Solana and payout component." },
   ],
   relatedSlugs: ["why-stablecoins-settle-cross-border-payments", "web3-payment-rails-architecture"],

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { CheckCircle2, Globe2, ShieldCheck, Route } from "lucide-react";
 
 const PEOPLE = [
-  { name: "Jupiter route preview", city: "Demo mode", corridor: "SOL → USDC" },
+  { name: "Jupiter route preview", city: "Sandbox mode", corridor: "SOL → USDC" },
   { name: "Output: connected wallet", city: "No custody", corridor: "SOL → USDC" },
   { name: "Fiat payout disabled", city: "Fiat off", corridor: "SOL → USDC" },
   { name: "Built using Jupiter Swap API", city: "Solana", corridor: "SOL → USDC" },
@@ -10,7 +10,7 @@ const PEOPLE = [
   { name: "Test amount 0.001 SOL", city: "Limit 0.01 SOL", corridor: "SOL → USDC" },
   { name: "Slippage checked", city: "Pre-sign review", corridor: "SOL → USDC" },
   { name: "Signed in your wallet", city: "You approve", corridor: "SOL → USDC" },
-  { name: "KYC disabled", city: "Demo only", corridor: "SOL → USDC" },
+  { name: "KYC disabled", city: "Sandbox only", corridor: "SOL → USDC" },
   { name: "No user funds held", city: "Non-custodial", corridor: "SOL → USDC" },
   { name: "On-chain receipt", city: "Solscan link", corridor: "SOL → USDC" },
   { name: "Verified bank payouts", city: "/pay", corridor: "USDC · USDT" },
@@ -73,7 +73,7 @@ export function VerifiedUsers() {
         <div className="text-center">
           <div className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-widest text-white/70 border border-white/10 rounded-full px-3 py-1.5 bg-black/40 backdrop-blur">
             <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" />
-            Jupiter-powered SOL → USDC swap demo
+            Jupiter-powered SOL → USDC swap sandbox
           </div>
           <h2 className="mt-6 text-6xl md:text-8xl font-semibold tracking-tight text-white tabular-nums">
             <span className="bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">
@@ -86,7 +86,7 @@ export function VerifiedUsers() {
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-[11px] font-mono uppercase tracking-widest text-white/50">
             <span className="flex items-center gap-1.5">
-              <Globe2 className="w-3.5 h-3.5" /> Demo mode
+              <Globe2 className="w-3.5 h-3.5" /> Sandbox mode
             </span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
             <span className="flex items-center gap-1.5">

@@ -1,4 +1,4 @@
-// Demo team section — placeholder people until the owner sends the real team and layout.
+// Sandbox team section — placeholder people until the owner sends the real team and layout.
 const team = [
   { initials: "AB", name: "Team member", role: "Founder & CEO" },
   { initials: "CD", name: "Team member", role: "CTO" },

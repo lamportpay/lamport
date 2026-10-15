@@ -3,7 +3,7 @@
  *
  * Nine outlined hexagons, one line icon each, with an uppercase label and a
  * capability pill. Every pill must use an approved label: LIVE,
- * DEMO / SIMULATED, DISABLED or PLANNED. Nothing here may claim a live bank
+ * SANDBOX, DISABLED or PLANNED. Nothing here may claim a live bank
  * payout, real KYC or a confirmed partnership.
  */
 
@@ -64,7 +64,7 @@ const CAPABILITIES: Capability[] = [
     key: "bank-out",
     label: "Bank payouts out",
     status: "demo",
-    title: "Local bank payouts run in the demo build.",
+    title: "Local bank payouts run in the sandbox build.",
     icon: (
       <>
         <path d="M4 10.4 12 5l8 5.4" />
@@ -95,7 +95,7 @@ const CAPABILITIES: Capability[] = [
     key: "identity",
     label: "Hosted identity check",
     status: "demo",
-    title: "Identity verification runs on the payout partner's hosted page, in the demo build.",
+    title: "Identity verification runs on the payout partner's hosted page, in the sandbox build.",
     icon: (
       <>
         <rect x="3.4" y="6" width="17.2" height="12" rx="2.2" />
@@ -152,7 +152,7 @@ const CAPABILITIES: Capability[] = [
 
 const STATUS_TEXT = {
   live: "Live",
-  demo: "Demo / simulated",
+  demo: "Sandbox",
   planned: "In progress",
 } as const;
 
@@ -210,7 +210,7 @@ export function HomeCapabilities() {
         </ul>
 
         <p className="home-cap-note">
-          Live means the step works today. Demo / simulated means it runs in a test environment, where no real money moves. In progress means it is not finished.
+          Live means the step works today. Sandbox means it runs in a test environment, where no real money moves. In progress means it is not finished.
         </p>
       </div>
     </section>

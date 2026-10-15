@@ -58,7 +58,7 @@ export function CitiesNeverSleep() {
             Cities never sleep
           </div>
           <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">
-            A demo built for <span className="text-uv">a future payout flow.</span>
+            A sandbox built for <span className="text-uv">a future payout flow.</span>
           </h2>
           <p className="mt-3 text-muted-foreground">
             LamportPay currently demonstrates wallet connection and Jupiter SOL-to-USDC swap
@@ -117,7 +117,7 @@ export function CitiesNeverSleep() {
         <div className="mt-6 rounded-2xl border border-border/60 bg-card/60 backdrop-blur px-4 py-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-[11px] font-mono text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" />
-            DEMO MODE
+            SANDBOX MODE
           </span>
           <span>JUPITER ROUTE PREVIEW</span>
           <span>SOL → USDC</span>

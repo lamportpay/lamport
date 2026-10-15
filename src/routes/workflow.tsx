@@ -41,14 +41,14 @@ const layers = [
     title: "Jupiter routing",
     status: "LIVE · read-only quotes",
     detail:
-      "SOL → USDC route discovery uses mainnet market data. Mainnet swap execution is DISABLED in the demo build.",
+      "SOL → USDC route discovery uses mainnet market data. Mainnet swap execution is DISABLED in the sandbox build.",
   },
   {
     icon: Landmark,
     title: "Stables payout",
-    status: "DEMO/SIMULATED",
+    status: "SANDBOX/SIMULATED",
     detail:
-      "Demo quotes, hosted verification and transfer status. Production KYC and real bank payouts are DISABLED.",
+      "Sandbox quotes, hosted verification and transfer status. Production KYC and real bank payouts are DISABLED.",
   },
 ];
 
@@ -64,16 +64,16 @@ const stages = [
   {
     title: "Amount & quote",
     provider: "Stables · Jupiter when needed",
-    status: "DEMO/SIMULATED · payout quote",
+    status: "SANDBOX/SIMULATED · payout quote",
     today:
-      "Get a Stables demo-mode quote before verification. SOL estimates use a read-only Jupiter route. Show the LamportPay fee and separate provider costs.",
+      "Get a Stables sandbox quote before verification. SOL estimates use a read-only Jupiter route. Show the LamportPay fee and separate provider costs.",
     production:
       "An approved Stables production quote determines corridor support, pricing and customer limits.",
   },
   {
     title: "Payout details",
     provider: "Stables",
-    status: "DEMO/SIMULATED",
+    status: "SANDBOX/SIMULATED",
     today:
       "Validate the bank fields Stables requires. Own-account holder names come from the verified record; beneficiaries require their details and a payment purpose.",
     production:
@@ -82,27 +82,27 @@ const stages = [
   {
     title: "Verification & review",
     provider: "Stables hosted page",
-    status: "DEMO/SIMULATED · KYC",
+    status: "SANDBOX/SIMULATED · KYC",
     today:
-      "Complete any required demo verification with Stables, then review the recipient, quote and costs. LamportPay does not collect identity documents.",
+      "Complete any required sandbox verification with Stables, then review the recipient, quote and costs. LamportPay does not collect identity documents.",
     production:
       "Production KYC is DISABLED until approval. Transfers require a verified Stables customer.",
   },
   {
     title: "Wallet approval",
     provider: "Solana test network",
-    status: "DEMO/SIMULATED",
+    status: "SANDBOX/SIMULATED",
     today:
-      "Sign a real test-network memo transaction that moves no funds. The server checks the signer, memo, freshness and success before simulating the demo deposit.",
+      "Sign a real test-network memo transaction that moves no funds. The server checks the signer, memo, freshness and success before simulating the sandbox deposit.",
     production:
       "DISABLED: user-signed funding to Stables’ single-use deposit address, with any applicable fee transfer and settlement checks.",
   },
   {
     title: "Status & receipt",
     provider: "Stables · signed webhooks",
-    status: "DEMO/SIMULATED",
+    status: "SANDBOX/SIMULATED",
     today:
-      "Signed webhooks and reconciliation follow Stables’ demo transfer status. Processing is not completion; a receipt updates only when the reported status changes.",
+      "Signed webhooks and reconciliation follow Stables’ sandbox transfer status. Processing is not completion; a receipt updates only when the reported status changes.",
     production:
       "The same provider-authoritative status model, with live bank settlement only after production approval.",
   },
@@ -136,7 +136,7 @@ function WorkflowPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <Link to="/pay">
-                Open demo <ArrowRight aria-hidden="true" />
+                Open sandbox <ArrowRight aria-hidden="true" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
@@ -180,7 +180,7 @@ function WorkflowPage() {
             From request to receipt
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Current demo behavior, alongside the production path that remains disabled.
+            Current sandbox behavior, alongside the production path that remains disabled.
           </p>
           <div className="mt-6">
             {stages.map((stage, index) => (
@@ -198,7 +198,7 @@ function WorkflowPage() {
                 <p className="mt-2 text-xs text-muted-foreground">{stage.provider}</p>
                 <div className="mt-4 grid gap-5 md:grid-cols-2 md:gap-8">
                   <div>
-                    <h4 className="text-xs font-semibold uppercase">Today · demo</h4>
+                    <h4 className="text-xs font-semibold uppercase">Today · sandbox</h4>
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                       {stage.today}
                     </p>
@@ -229,7 +229,7 @@ function WorkflowPage() {
           </p>
           <div className="mt-6 overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-left text-sm">
-              <caption className="sr-only">Demo payment API sequence</caption>
+              <caption className="sr-only">Sandbox payment API sequence</caption>
               <thead className="bg-secondary">
                 <tr>
                   <th scope="col" className="px-4 py-3 font-semibold">
@@ -288,7 +288,7 @@ function WorkflowPage() {
           </div>
           <p className="mb-6 mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             A signed-in preview of SOL → USDC market routing. Nothing is signed or sent here. Its
-            preview range is not a bank-payment limit, and the demo build cannot execute a mainnet swap.
+            preview range is not a bank-payment limit, and the sandbox build cannot execute a mainnet swap.
           </p>
           <SwapRoutePreviewCard />
         </section>

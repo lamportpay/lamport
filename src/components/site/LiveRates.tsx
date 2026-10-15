@@ -54,7 +54,7 @@ export function LiveRatesTicker() {
             <span className="relative rounded-full w-2.5 h-2.5 bg-[color:var(--success)]" />
           </span>
           <span className="text-[11px] font-semibold uppercase tracking-widest text-white/80 flex items-center gap-1.5">
-            <Activity className="w-3 h-3" /> Demo mode
+            <Activity className="w-3 h-3" /> Sandbox mode
           </span>
         </div>
         <div className="flex-1 overflow-hidden">
@@ -100,7 +100,7 @@ export function StatsStrip() {
       sub: "Jupiter scans Solana liquidity sources to optimize swap execution.",
     },
     {
-      k: "Demo only",
+      k: "Sandbox only",
       v: "LamportPay status",
       sub: "Real fiat payout is disabled until licensed partner approval.",
     },

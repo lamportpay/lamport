@@ -81,7 +81,7 @@ function validateAmount(sol: string): string | null {
   const n = Number(sol);
   if (!Number.isFinite(n) || n <= 0) return "Enter a SOL amount greater than zero.";
   if (n < MIN_SOL) return "Minimum test amount is 0.001 SOL.";
-  if (n > MAX_SOL) return "Maximum demo swap amount is 0.01 SOL.";
+  if (n > MAX_SOL) return "Maximum sandbox swap amount is 0.01 SOL.";
   return null;
 }
 

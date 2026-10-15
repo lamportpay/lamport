@@ -28,7 +28,7 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
                 You send
               </div>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-semibold">
-                DEMO
+                SANDBOX
               </span>
             </div>
             <div className="flex gap-3 items-center">
@@ -125,7 +125,7 @@ export function TransferSimulator({ compact = false }: { compact?: boolean }) {
             )}
             <p className="text-[11px] text-muted-foreground flex items-start gap-1.5 leading-relaxed">
               <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              Demo values only. No real crypto, fiat, or KYC is processed.
+              Sandbox values only. No real crypto, fiat, or KYC is processed.
             </p>
           </div>
         </div>

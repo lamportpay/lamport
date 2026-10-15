@@ -116,7 +116,7 @@ function RolesPage() {
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  placeholder="demo.user@example.com"
+                  placeholder="sandbox.user@example.com"
                   maxLength={200}
                 />
                 <Select value={role} onValueChange={(value) => setRole(value as AssignableRole)}>

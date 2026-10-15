@@ -151,7 +151,7 @@ export function LiveSwapTheater() {
       <div className="max-w-7xl mx-auto px-5">
         <div className="text-center max-w-3xl mx-auto">
           <div className="text-xs font-semibold uppercase tracking-wider text-primary flex items-center justify-center gap-2">
-            <Flame className="w-3.5 h-3.5" /> Jupiter route preview · Demo mode
+            <Flame className="w-3.5 h-3.5" /> Jupiter route preview · Sandbox mode
           </div>
           <h2 className="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">
             See how a Jupiter SOL → USDC swap is routed.
@@ -183,7 +183,7 @@ export function LiveSwapTheater() {
             />
             <Counter
               label="Mode"
-              value="Demo mode"
+              value="Sandbox mode"
               icon={<Sparkles className="w-3 h-3" />}
               sub="Swap limits 0.001–0.01 SOL"
             />
@@ -320,9 +320,9 @@ export function LiveSwapTheater() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-sm font-medium text-white truncate">
-                            Jupiter route preview · <span className="text-white/50">Demo mode</span>
+                            Jupiter route preview · <span className="text-white/50">Sandbox mode</span>
                           </span>
-                          <span className="text-[10px] text-white/40 font-mono shrink-0">demo</span>
+                          <span className="text-[10px] text-white/40 font-mono shrink-0">sandbox</span>
                         </div>
                         <div className="flex items-center gap-1.5 mt-0.5 text-[12px] font-mono">
                           <span
@@ -471,7 +471,7 @@ function JustSentMarquee() {
             <span className="text-white/30">·</span>
             <span className="text-white/40">Fiat payout disabled</span>
             <span className="text-white/30">·</span>
-            <span className="text-white/40">Demo mode</span>
+            <span className="text-white/40">Sandbox mode</span>
             <span className="text-white/20">·</span>
           </span>
         ))}
@@ -509,11 +509,11 @@ export function HeroFloatingCards() {
             </div>
             <div className="min-w-0 flex-1">
               <div className="text-xs font-medium truncate">Jupiter route preview</div>
-              <div className="text-[10px] text-muted-foreground font-mono">Demo mode</div>
+              <div className="text-[10px] text-muted-foreground font-mono">Sandbox mode</div>
             </div>
             <span className="text-[10px] font-semibold text-[color:var(--success)] flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--success)] animate-live-dot" />{" "}
-              demo
+              sandbox
             </span>
           </div>
           <div className="mt-2 flex items-center justify-between text-sm font-mono">

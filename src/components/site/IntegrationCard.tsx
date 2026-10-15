@@ -4,7 +4,7 @@ import type { IntegrationItem, IntegrationStatus } from "@/content/integrations"
 
 const tone: Record<IntegrationStatus, string> = {
   Live: "bg-primary/10 text-primary border-primary/20",
-  "Demo / simulated": "bg-accent text-accent-foreground border-border",
+  "Sandbox": "bg-accent text-accent-foreground border-border",
   "In progress": "bg-secondary text-secondary-foreground border-border",
   Planned: "bg-muted text-muted-foreground border-border",
 };

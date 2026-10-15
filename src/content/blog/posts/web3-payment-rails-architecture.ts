@@ -71,7 +71,7 @@ export const post: BlogPost = {
     { type: "p", text: "The ordering is deliberate: everything above step seven can be built, tested and demonstrated without a regulatory dependency, and each step makes the next one safer. LamportPay follows this sequence — the wallet, conversion and verification components run live under tight limits, the state and admin layers exist for the demonstrated flow, and the identity and fiat payout legs are labelled simulations pending a regulated payout infrastructure partner." },
   ],
   productLinks: [
-    { to: "/docs", label: "Developer docs", note: "Stack, endpoints and architecture behind the demo." },
+    { to: "/docs", label: "Developer docs", note: "Stack, endpoints and architecture behind the sandbox." },
     { to: "/workflow", label: "Workflow overview", note: "Component-level integration status across the whole route." },
     { to: "/whitepaper", label: "White paper", note: "Longer-form architecture and roadmap." },
   ],
