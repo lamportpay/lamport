@@ -25,7 +25,14 @@ const fmtPrice = (n: number) =>
  * `bottomClass` lifts the strip above another fixed bar (the app's phone tab
  * bar) without changing its behaviour anywhere else.
  */
-export function CryptoPriceTicker({ bottomClass = "bottom-0" }: { bottomClass?: string }) {
+export function CryptoPriceTicker({
+  bottomClass = "bottom-0",
+  inline = false,
+}: {
+  bottomClass?: string;
+  /** Render as a strip inside the header instead of a fixed bottom bar. */
+  inline?: boolean;
+}) {
   const [coins, setCoins] = useState<Coin[]>([]);
 
   useEffect(() => {
@@ -72,7 +79,11 @@ export function CryptoPriceTicker({ bottomClass = "bottom-0" }: { bottomClass?: 
     <div
       role="note"
       aria-label="Live cryptocurrency prices, top 20 by market cap"
-      className={`fixed inset-x-0 z-40 border-t border-border/60 bg-background/90 backdrop-blur-lg print:hidden ${bottomClass}`}
+      className={
+        inline
+          ? "border-t border-border/40 print:hidden"
+          : `fixed inset-x-0 z-40 border-t border-border/60 bg-background/90 backdrop-blur-lg print:hidden ${bottomClass}`
+      }
     >
       <div className="crypto-ticker overflow-hidden py-1.5 text-[11px]">
         <div className="crypto-ticker-track flex w-max items-center gap-6 motion-reduce:animate-none">
