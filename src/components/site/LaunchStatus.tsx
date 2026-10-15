@@ -25,7 +25,8 @@ export function LaunchStatus() {
     return () => window.clearInterval(t);
   }, [paused]);
 
-  // Measure after the new headline is in the DOM (and again once fonts settle).
+  // Measure after the new headline is in the DOM, and again whenever the text or
+  // the bar changes size (late web fonts, viewport changes).
   useEffect(() => {
     const measure = () => {
       const line = lineRef.current;
@@ -38,11 +39,20 @@ export function LaunchStatus() {
       setShift(over > 6 ? Math.round(over + 12) : 0);
     };
     measure();
-    const t = window.setTimeout(measure, 80);
+    const t = window.setTimeout(measure, 120);
     window.addEventListener("resize", measure);
+    const ro =
+      typeof ResizeObserver === "undefined"
+        ? undefined
+        : new ResizeObserver(measure);
+    if (ro) {
+      if (lineRef.current) ro.observe(lineRef.current);
+      if (runRef.current) ro.observe(runRef.current);
+    }
     return () => {
       window.clearTimeout(t);
       window.removeEventListener("resize", measure);
+      ro?.disconnect();
     };
   }, [i]);
 
