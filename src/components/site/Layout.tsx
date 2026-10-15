@@ -1,4 +1,5 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { BrandFrame, PageHeroDecor } from "@/components/site/BrandFrame";
 import { Menu, ArrowRight, Twitter, Linkedin, Github, Mail } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import logoUrl from "@/assets/lamportpay-logo.png";
@@ -45,8 +46,11 @@ const primaryNav = [
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const pathname = useRouterState({ select: (st) => st.location.pathname });
+  const isHome = pathname === "/";
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <BrandFrame />
       <header className="sticky top-0 z-40 backdrop-blur-lg bg-background/75 border-b border-border/60 print:hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center group" aria-label="LamportPay home">
@@ -124,7 +128,10 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         </div>
         <ColosseumBanner />
       </header>
-      <main className="flex-1">{children}</main>
+      <main className={cn("flex-1", !isHome && "site-subpage relative isolate")}>
+        {!isHome && <PageHeroDecor pathname={pathname} />}
+        {children}
+      </main>
       <SiteFooter />
       <CryptoPriceTicker />
       <CookieConsent />
