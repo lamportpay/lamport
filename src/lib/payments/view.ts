@@ -49,6 +49,12 @@ export type PaymentView = {
      */
     settled: boolean | null;
   } | null;
+  /**
+   * Set when this payment's LamportPay fee was waived (early access: one of the
+   * first people who joined), with their place in line. Null when the fee was
+   * charged as configured.
+   */
+  feeWaiver: { rank: number } | null;
   /** What leaves the wallet in total: the Stables amount plus LamportPay's fee. */
   totalToPay: { amountMinor: string; amount: string; currency: string };
   quote: { id: string; expiresAt: string | null } | null;
@@ -562,6 +568,10 @@ export function toPaymentView(
               ? BigInt(row.platform_fee_received_minor ?? 0) >= feeMinor
               : null,
           }
+        : null,
+    feeWaiver:
+      row.platform_fee_waiver === FEE_WAIVER_REASON
+        ? { rank: row.platform_fee_waiver_rank ?? 0 }
         : null,
     totalToPay: {
       amountMinor: payMinor.toString(),
