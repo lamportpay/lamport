@@ -7,7 +7,7 @@ import { PAYMENT_SAFETY } from "@/content/payment-flow";
 export type Faq = { id: string; question: string; keywords: RegExp; answer: string };
 
 export const COMPLAINT_RE =
-  /complain|complaint|stuck|not (received|arrived|working)|didn'?t (get|receive|arrive)|problem|issue|error|fail|failed|refund|lost|missing|scam|wrong|help me|contact (me|team)|shikayat|masla|pareshan/i;
+  /complain|complaint|stuck|not (received|arrived|working)|didn'?t (get|receive|arrive)|problem|issue|error|fail|failed|refund|lost|missing|scam|help me|contact (me|team)|shikayat|masla|pareshan/i;
 
 export const FAQS: Faq[] = [
   {
