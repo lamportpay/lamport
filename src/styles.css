@@ -608,12 +608,12 @@
   justify-content: safe center;
   gap: 12px;
   margin-top: 32px;
-  padding: 0 22px 4px;
+  padding: 0 84px 4px 34px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, #000 78%, transparent 96%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 78%, transparent 96%);
 }
 .home-hero-actions::-webkit-scrollbar {
   display: none;
@@ -636,12 +636,12 @@
   flex-wrap: nowrap;
   justify-content: safe center;
   gap: 12px;
-  padding: 0 22px 4px;
+  padding: 0 84px 4px 34px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, #000 78%, transparent 96%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 78%, transparent 96%);
 }
 .home-currency-summary::-webkit-scrollbar {
   display: none;
@@ -758,14 +758,14 @@
   align-items: flex-start;
   gap: 16px;
   margin: 16px 0 0;
-  padding: 2px 44px 8px 0;
+  padding: 2px 62px 8px 30px;
   list-style: none;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, #000 84%, transparent);
+  mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 82%, transparent);
 }
 .home-cap-grid::-webkit-scrollbar {
   display: none;
