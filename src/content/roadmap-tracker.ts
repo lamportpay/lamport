@@ -107,12 +107,8 @@ export const TRACKER_PHASES: TrackerPhase[] = [
     summary: "Most security work is done and tested. Final external audit, then a controlled live launch.",
     items: [
       { label: "Non-custodial: we never hold funds or keys", done: true },
-      { label: "Database access rules on every table", done: true },
       { label: "Signed webhooks and one-time wallet signatures", done: true },
       { label: "Admin sign-in with password + email code", done: true },
-      { label: "Tamper-proof audit log and fee ledger", done: true },
-      { label: "Rate limits and emergency payment controls", done: true },
-      { label: "Automated secret and dependency scans", done: true },
       { label: "Security scans passed, no critical issues", done: true },
       { label: "Independent external audit", done: false },
       { label: "Partner production approval and live launch", done: false },
