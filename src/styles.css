@@ -598,9 +598,7 @@
   background: oklch(1 0 0 / 95%);
   color: oklch(0.25 0.1 265);
 }
-/* Phones: the two hero actions stay in one row the visitor can swipe instead of
-   stacking into a column. The row centres itself while both still fit, and the
-   right edge fades so a partly off-screen button reads as "swipe", not "cut". */
+/* Keep both actions on one swipeable row without fading their labels or focus rings. */
 .home-hero-actions {
   display: flex;
   flex-wrap: nowrap;
@@ -608,18 +606,20 @@
   justify-content: safe center;
   gap: 12px;
   margin-top: 32px;
-  padding: 0 84px 4px 34px;
+  padding: 4px 2px 12px;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, transparent 0%, #000 9%, #000 78%, transparent 96%);
+  scroll-padding-inline: 2px;
+  scroll-snap-type: x proximity;
 }
 .home-hero-actions::-webkit-scrollbar {
   display: none;
 }
 .home-hero-actions > * {
   flex: 0 0 auto;
+  scroll-snap-align: start;
 }
 @media (min-width: 640px) {
   .home-hero-actions {
@@ -848,10 +848,11 @@
     mask-image: none;
     padding: 0;
     gap: 18px 10px;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(9, minmax(0, 1fr));
   }
   .home-cap-item {
     width: auto;
+    min-width: 0;
   }
 }
 @media (min-width: 1024px) {
