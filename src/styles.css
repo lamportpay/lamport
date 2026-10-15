@@ -765,7 +765,7 @@
   scroll-snap-type: x proximity;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, #000 92%, transparent);
+  mask-image: linear-gradient(to right, #000 84%, transparent);
 }
 .home-cap-grid::-webkit-scrollbar {
   display: none;
