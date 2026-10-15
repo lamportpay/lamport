@@ -165,7 +165,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <div className="space-y-3">
         <p>
-          The seven-step journey is a user-facing progress indicator, not a separate settlement
+          The eight-step journey is a user-facing progress indicator, not a separate settlement
           ledger. Before transfer creation, LamportPay records payment setup, verification and
           quote stages. Once a Stables transfer exists, its status is authoritative and the app
           follows it without moving a payment backwards.
