@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { PAYMENT_JOURNEY, PAYMENT_COSTS } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
+import { ScrollJourney } from "@/components/site/ScrollJourney";
 
 export const Route = createFileRoute("/how-it-works")({
   head: () =>
@@ -98,30 +99,7 @@ function HowItWorks() {
               Quote first. Verify before approval.
             </span>
           </div>
-          <ol className="mt-8">
-            {PAYMENT_JOURNEY.map((step, index) => {
-              const Icon = stepIcons[index] ?? CheckCircle2;
-              return (
-                <li
-                  key={step.title}
-                  className="grid grid-cols-[3rem_1fr] gap-4 border-b border-border py-6 first:pt-0 last:border-0 md:grid-cols-[3rem_12rem_1fr] md:gap-6"
-                >
-                  <div className="flex size-12 items-center justify-center rounded-lg border border-border bg-secondary text-primary">
-                    <Icon aria-hidden="true" className="size-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-muted-foreground">
-                      {String(index + 1).padStart(2, "0")}
-                    </p>
-                    <h3 className="mt-1 text-lg font-semibold">{step.title}</h3>
-                  </div>
-                  <p className="col-start-2 text-sm leading-relaxed text-muted-foreground md:col-start-auto md:pt-1">
-                    {step.detail}
-                  </p>
-                </li>
-              );
-            })}
-          </ol>
+          <ScrollJourney steps={PAYMENT_JOURNEY} icons={stepIcons} />
         </section>
 
         <section className="mt-14 border-t border-border pt-10" aria-labelledby="costs-heading">
