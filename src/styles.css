@@ -971,6 +971,13 @@
   .commercial-home #ecosystem h2 {
     font-size: 24px;
   }
+  /* The capability strip stays tight so it reads as part of the hero. */
+  .home-capabilities {
+    padding-block: 20px 24px;
+  }
+  .home-cap-heading {
+    font-size: 15px;
+  }
   .home-hero {
     min-height: 0;
   }
