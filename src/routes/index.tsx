@@ -10,7 +10,6 @@ import { HomeCapabilities } from "@/components/site/HomeCapabilities";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
-import { EcosystemSection } from "@/components/site/VisionRoadmapEcosystem";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { HeroRibbon } from "@/components/site/HeroRibbon";
 import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
@@ -22,7 +21,7 @@ export const Route = createFileRoute("/")({
       path: "/",
       title: "LamportPay — Crypto in. Local money out.",
       description:
-        "Explore LamportPay’s non-custodial payment journey: Solana wallets, Jupiter swap quotes, USDC settlement and Stables bank-payout sandbox. Meet our business ecosystem.",
+        "Explore LamportPay’s non-custodial payment journey: Solana wallets, Jupiter swap quotes, USDC settlement and Stables bank-payout sandbox.",
     }),
   component: Index,
 });
@@ -81,7 +80,6 @@ function Index() {
         <PaymentNetwork />
         <FeeCalculator />
         <ConnectedSystems />
-        <EcosystemSection compact />
         <IntegrationStatus />
         <SupportedCorridors />
         <HomeCtaBanner />

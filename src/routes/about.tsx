@@ -3,6 +3,7 @@ import { ArrowRight, Building2, Globe2, ShieldCheck, Wallet } from "lucide-react
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
 import { pageSeo } from "@/lib/seo";
+import { AboutPartners } from "@/components/site/AboutPartners";
 
 export const Route = createFileRoute("/about")({
   head: () =>
@@ -132,6 +133,7 @@ function About() {
           </aside>
         </div>
       </section>
+      <AboutPartners />
     </SiteLayout>
   );
 }
