@@ -24,25 +24,18 @@ export function BrandLogo({ className = "" }: { className?: string }) {
   );
 }
 
+// Header order: product first, then resources, then company — Contact last.
 const nav = [
-  { to: "/about", label: "About us" },
   { to: "/how-it-works", label: "How it works" },
   { to: "/partners", label: "Partners" },
   { to: "/roadmap", label: "Roadmap" },
-  { to: "/people", label: "Our people" },
+  { to: "/docs", label: "Docs" },
   { to: "/faq", label: "FAQs" },
+  { to: "/people", label: "Our people" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
-const primaryNav = [
-  { to: "/about", label: "About us" },
-  { to: "/how-it-works", label: "How it works" },
-  { to: "/partners", label: "Partners" },
-  { to: "/roadmap", label: "Roadmap" },
-  { to: "/people", label: "Our people" },
-  { to: "/faq", label: "FAQs" },
-  { to: "/contact", label: "Contact" },
-] as const;
+const primaryNav = nav;
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
