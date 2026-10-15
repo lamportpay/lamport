@@ -64,9 +64,9 @@ function Index() {
                 variant="outline"
                 className="home-hero-ghost h-12 px-7 backdrop-blur-sm"
               >
-                <a href="#payment-network">
+                <Link to="/how-it-works">
                   Explore the payment route <ArrowUpRight />
-                </a>
+                </Link>
               </Button>
             </div>
             <p className="mx-auto mt-5 max-w-lg text-xs leading-relaxed text-home-ink">
