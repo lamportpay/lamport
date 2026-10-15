@@ -41,6 +41,8 @@ import { Route as ApiKycRouteImport } from './routes/api/kyc'
 import { Route as AuthResetRouteImport } from './routes/auth_.reset'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
@@ -244,6 +246,16 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/news/$slug',
+  path: '/news/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
@@ -520,7 +532,9 @@ export interface FileRoutesByFullPath {
   '/api/kyc': typeof ApiKycRoute
   '/auth/reset': typeof AuthResetRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
@@ -595,7 +609,9 @@ export interface FileRoutesByTo {
   '/api/kyc': typeof ApiKycRoute
   '/auth/reset': typeof AuthResetRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/blog': typeof BlogIndexRoute
+  '/news': typeof NewsIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
@@ -673,7 +689,9 @@ export interface FileRoutesById {
   '/api/kyc': typeof ApiKycRoute
   '/auth_/reset': typeof AuthResetRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/audit-logs': typeof AuthenticatedAdminAuditLogsRoute
@@ -751,7 +769,9 @@ export interface FileRouteTypes {
     | '/api/kyc'
     | '/auth/reset'
     | '/blog/$slug'
+    | '/news/$slug'
     | '/blog/'
+    | '/news/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/audit-logs'
@@ -826,7 +846,9 @@ export interface FileRouteTypes {
     | '/api/kyc'
     | '/auth/reset'
     | '/blog/$slug'
+    | '/news/$slug'
     | '/blog'
+    | '/news'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/audit-logs'
@@ -903,7 +925,9 @@ export interface FileRouteTypes {
     | '/api/kyc'
     | '/auth_/reset'
     | '/blog/$slug'
+    | '/news/$slug'
     | '/blog/'
+    | '/news/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/audit-logs'
@@ -980,7 +1004,9 @@ export interface RootRouteChildren {
   ApiKycRoute: typeof ApiKycRoute
   AuthResetRoute: typeof AuthResetRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  NewsSlugRoute: typeof NewsSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  NewsIndexRoute: typeof NewsIndexRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiCronReconcilePaymentsRoute: typeof ApiCronReconcilePaymentsRoute
@@ -1232,6 +1258,20 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/news/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.lovable/oauth/consent': {
@@ -1627,7 +1667,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiKycRoute: ApiKycRoute,
   AuthResetRoute: AuthResetRoute,
   BlogSlugRoute: BlogSlugRoute,
+  NewsSlugRoute: NewsSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
+  NewsIndexRoute: NewsIndexRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiCronReconcilePaymentsRoute: ApiCronReconcilePaymentsRoute,
