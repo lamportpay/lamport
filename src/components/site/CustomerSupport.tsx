@@ -11,30 +11,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FAQS, SUGGESTED, answerFaq } from "@/lib/ask-ai-faq";
+import { COMPLAINT_RE, FAQS, SUGGESTED, answerFaq } from "@/lib/ask-ai-faq";
 import markUrl from "@/assets/lamportpay-mark.png";
-
-const STORAGE_KEY = "lamportpay-ask-ai-v2";
-const SESSION_KEY = "lamportpay-ask-ai-session";
 
 type Msg = { id: string; role: "user" | "assistant"; text: string };
 
-function sessionId() {
-  let id = window.localStorage.getItem(SESSION_KEY);
-  if (!id) {
-    id = crypto.randomUUID();
-    window.localStorage.setItem(SESSION_KEY, id);
-  }
-  return id;
-}
+const EMAIL_RE = /[^@\s]+@[^@\s]+\.[^@\s]+/;
 
-function loadHistory(): Msg[] {
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "[]");
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+/** Only complaints (or messages with a contact email) are sent to the team. */
+function worthReporting(messages: Msg[]) {
+  return messages.some((m) => m.role === "user" && (COMPLAINT_RE.test(m.text) || EMAIL_RE.test(m.text)));
 }
 
 function Mark({ size = "size-7", inner = "size-5" }: { size?: string; inner?: string }) {
