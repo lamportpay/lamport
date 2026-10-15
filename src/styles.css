@@ -1740,3 +1740,42 @@ body.has-cookie-banner .site-footer-legal {
   .partner-card:hover .partner-logo,
   .partner-card:focus-visible .partner-logo { transform: none; }
 }
+
+/* Hero ribbon: Solana-style flowing gradient waves behind the hero content */
+.hero-ribbon {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-ribbon-svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160%;
+  min-width: 1200px;
+  height: 130%;
+  transform: translate(-50%, -50%);
+}
+.hero-ribbon-path {
+  animation: hero-ribbon-drift 14s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.hero-ribbon-path-2 { animation-duration: 18s; animation-delay: -6s; }
+.hero-ribbon-path-3 { animation-duration: 24s; animation-delay: -12s; }
+.hero-ribbon-shine {
+  animation: hero-ribbon-shine 9s linear infinite;
+}
+@keyframes hero-ribbon-drift {
+  from { transform: translate3d(-2.5%, -1.5%, 0) scale(1); }
+  to { transform: translate3d(2.5%, 2%, 0) scale(1.04); }
+}
+@keyframes hero-ribbon-shine {
+  from { stroke-dashoffset: 1720; }
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-ribbon-path,
+  .hero-ribbon-shine { animation: none; }
+}
