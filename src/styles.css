@@ -1711,19 +1711,61 @@ body.has-cookie-banner .site-footer-legal {
 }
 
 .home-cta-banner {
-  background: linear-gradient(135deg, oklch(0.45 0.22 265) 0%, oklch(0.5 0.24 290) 55%, oklch(0.55 0.22 310) 100%);
-  color: oklch(1 0 0);
-  box-shadow: 0 30px 60px -30px color-mix(in oklab, var(--home-brand) 60%, transparent);
+  background: oklch(1 0 0);
+  color: var(--home-ink);
+  box-shadow:
+    0 1px 2px oklch(0.24 0.055 270 / 5%),
+    0 26px 60px -34px color-mix(in oklab, var(--home-brand) 42%, transparent);
 }
+/* One brand-gradient hairline around the white card. */
+.home-cta-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--home-gradient);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+/* The brand ring, drawn thin: a 1.5px gradient annulus, no filled disc. */
 .home-cta-ring {
   position: absolute;
   z-index: -1;
   border-radius: 9999px;
-  border: 1px solid color-mix(in oklab, oklch(1 0 0) 25%, transparent);
   pointer-events: none;
+  background: conic-gradient(
+    from 210deg,
+    color-mix(in oklab, var(--home-brand) 60%, transparent),
+    color-mix(in oklab, oklch(0.5 0.24 300) 60%, transparent),
+    transparent 55%,
+    color-mix(in oklab, var(--home-brand) 50%, transparent)
+  );
+  -webkit-mask: radial-gradient(closest-side, #0000 calc(100% - 1.5px), #000 calc(100% - 1.5px));
+  mask: radial-gradient(closest-side, #0000 calc(100% - 1.5px), #000 calc(100% - 1.5px));
 }
 .home-cta-ring-a { width: 26rem; height: 26rem; top: -12rem; left: -8rem; }
 .home-cta-ring-b { width: 34rem; height: 34rem; bottom: -20rem; right: -10rem; }
+.home-cta-ring-c { width: 17rem; height: 17rem; top: -5rem; right: 16%; opacity: 0.7; }
+.home-cta-primary {
+  background: var(--home-gradient);
+  color: oklch(1 0 0);
+  box-shadow: 0 12px 26px -14px color-mix(in oklab, var(--home-brand) 70%, transparent);
+}
+.home-cta-primary:hover {
+  box-shadow: 0 16px 30px -12px color-mix(in oklab, var(--home-brand) 80%, transparent);
+}
+.dark .home-cta-banner {
+  background: var(--home-surface);
+  color: oklch(0.96 0.01 270);
+}
 .home-team-avatar {
   background: linear-gradient(135deg, oklch(0.5 0.22 265), oklch(0.58 0.24 300));
 }
