@@ -74,7 +74,7 @@ function Index() {
               </Button>
             </div>
             <p className="mx-auto mt-5 max-w-lg text-xs leading-relaxed text-home-ink">
-              Your keys stay yours. No real funds move on test network or in the demo.
+              Your keys stay yours. No real funds move in the demo build.
             </p>
           </div>
         </section>
