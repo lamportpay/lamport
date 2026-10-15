@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { select } from "d3-selection";
+import { zoom, zoomIdentity, type ZoomBehavior } from "d3-zoom";
+import "d3-transition";
 import { geoEquirectangular, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import type { Feature, FeatureCollection, Geometry } from "geojson";
@@ -6,6 +9,7 @@ import type { Topology, GeometryCollection } from "topojson-specification";
 import world from "world-atlas/countries-110m.json";
 import { Minus, Plus, RotateCcw } from "lucide-react";
 import { Flag } from "@/components/app/Flag";
+import { Button } from "@/components/ui/button";
 
 /**
  * Interactive payout-reach world map (Natural Earth 110m countries).
@@ -44,26 +48,56 @@ export function SupportedCorridors() {
 
   const [selected, setSelected] = useState<string | null>(null);
   const [view, setView] = useState({ k: 1, x: 0, y: 0 });
+  const mapRef = useRef<SVGSVGElement>(null);
+  const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
+
+  useEffect(() => {
+    const svg = mapRef.current;
+    if (!svg) return;
+    const behavior = zoom<SVGSVGElement, unknown>()
+      .extent([[0, 0], [W, H]])
+      .translateExtent([[-W * 0.4, -H * 0.4], [W * 1.4, H * 1.4]])
+      .scaleExtent([1, 8])
+      .touchable(() => true)
+      .clickDistance(6)
+      .on("zoom", (event) => {
+        const { k, x, y } = event.transform;
+        setView({ k, x, y });
+      });
+    zoomRef.current = behavior;
+    select(svg).call(behavior);
+    return () => {
+      select(svg).interrupt().on(".zoom", null);
+      zoomRef.current = null;
+    };
+  }, []);
+
+  const moveTo = (k: number, x: number, y: number) => {
+    const svg = mapRef.current;
+    const behavior = zoomRef.current;
+    if (!svg || !behavior) return;
+    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 350;
+    select(svg).interrupt().transition().duration(duration)
+      .call(behavior.transform, zoomIdentity.translate(x, y).scale(k));
+  };
 
   const zoomTo = (f: Country) => {
     const [[x0, y0], [x1, y1]] = path.bounds(f);
     const dx = Math.max(x1 - x0, 1);
     const dy = Math.max(y1 - y0, 1);
-    const k = Math.min(8, 0.6 / Math.max(dx / W, dy / H));
+    const k = Math.max(1, Math.min(8, 0.6 / Math.max(dx / W, dy / H)));
     const cx = (x0 + x1) / 2;
     const cy = (y0 + y1) / 2;
-    setView({ k, x: W / 2 - k * cx, y: H / 2 - k * cy });
+    moveTo(k, W / 2 - k * cx, H / 2 - k * cy);
     setSelected(f.properties.name);
   };
-  const reset = () => { setView({ k: 1, x: 0, y: 0 }); setSelected(null); };
-  const zoomBy = (factor: number) =>
-    setView((v) => {
-      const k = Math.min(8, Math.max(1, v.k * factor));
-      if (k === 1) return { k: 1, x: 0, y: 0 };
-      const cx = (W / 2 - v.x) / v.k;
-      const cy = (H / 2 - v.y) / v.k;
-      return { k, x: W / 2 - k * cx, y: H / 2 - k * cy };
-    });
+  const reset = () => { moveTo(1, 0, 0); setSelected(null); };
+  const zoomBy = (factor: number) => {
+    const svg = mapRef.current;
+    const behavior = zoomRef.current;
+    if (!svg || !behavior) return;
+    select(svg).interrupt().call(behavior.scaleBy, factor, [W / 2, H / 2]);
+  };
 
   const sel = selected ? BY_NAME.get(selected) : undefined;
   const s = 1 / view.k;
@@ -81,23 +115,31 @@ export function SupportedCorridors() {
         </div>
 
         <div className="corridor-map-frame relative mx-auto mt-10 max-w-4xl overflow-hidden rounded-2xl">
-          <svg viewBox={`0 0 ${W} ${H}`} className="corridor-map" role="img" aria-label="Interactive world map of LamportPay payout corridors">
+          <svg ref={mapRef} viewBox={`0 0 ${W} ${H}`} className="corridor-map" role="img" tabIndex={0} aria-label="Interactive world map of LamportPay payout corridors" onKeyDown={(event) => {
+            const svg = mapRef.current;
+            const behavior = zoomRef.current;
+            if (!svg || !behavior) return;
+            const direction: Record<string, [number, number]> = { ArrowLeft: [60, 0], ArrowRight: [-60, 0], ArrowUp: [0, 60], ArrowDown: [0, -60] };
+            if (direction[event.key]) {
+              event.preventDefault();
+              const [x, y] = direction[event.key];
+              select(svg).interrupt().call(behavior.translateBy, x / view.k, y / view.k);
+            } else if (["+", "=", "-", "0"].includes(event.key)) {
+              event.preventDefault();
+              if (event.key === "0") reset();
+              else zoomBy(event.key === "-" ? 1 / 1.4 : 1.4);
+            }
+          }}>
             <rect width={W} height={H} fill="transparent" onClick={reset} />
-            <g
-              style={{
-                transform: `translate(${view.x}px, ${view.y}px) scale(${view.k})`,
-                transformOrigin: "0 0",
-                transition: "transform 0.9s cubic-bezier(0.22, 1, 0.36, 1)",
-              }}
-            >
+            <g transform={`translate(${view.x}, ${view.y}) scale(${view.k})`}>
               {countries.map((f) => {
                 const c = BY_NAME.get(f.properties.name);
                 const isSel = selected === f.properties.name;
                 const fill = c?.status === "supported"
                   ? "var(--home-brand)"
                   : c?.status === "planned"
-                    ? "oklch(0.78 0.13 75)"
-                    : "oklch(0.82 0.05 275)";
+                    ? "var(--warning)"
+                    : "var(--corridor-neutral)";
                 return (
                   <path
                     key={f.properties.name + String(f.id)}
@@ -114,7 +156,9 @@ export function SupportedCorridors() {
                 );
               })}
               {CORRIDORS.map((m) => {
-                const [x, y] = projection([m.lon, m.lat])!;
+                const point = projection([m.lon, m.lat]);
+                if (!point) return null;
+                const [x, y] = point;
                 const planned = m.status === "planned";
                 return (
                   <g key={m.code} style={{ pointerEvents: "none" }} className={planned ? "corridor-marker-planned" : "corridor-marker"}>
@@ -136,14 +180,14 @@ export function SupportedCorridors() {
               { icon: Minus, label: "Zoom out", on: () => zoomBy(1 / 1.6) },
               { icon: RotateCcw, label: "Reset map", on: reset },
             ].map(({ icon: Icon, label, on }) => (
-              <button key={label} type="button" aria-label={label} onClick={on} className="grid size-8 place-items-center rounded-lg border border-border bg-background/90 shadow-sm backdrop-blur hover:bg-accent">
+              <Button key={label} type="button" variant="outline" size="icon" aria-label={label} title={label} onClick={on} className="size-11 bg-background/90 backdrop-blur">
                 <Icon className="size-4" />
-              </button>
+              </Button>
             ))}
           </div>
 
           {selected && (
-            <div className="absolute bottom-3 left-3 flex items-center gap-3 rounded-xl border border-border bg-background/95 px-4 py-2.5 shadow-md backdrop-blur">
+            <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex items-center gap-3 rounded-lg border border-border bg-background/95 px-4 py-2.5 shadow-md backdrop-blur sm:right-auto">
               {sel && <Flag code={sel.code} size={22} />}
               <div>
                 <p className="text-sm font-semibold">{display(selected)}</p>

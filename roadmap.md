@@ -1,3 +1,9 @@
+## Map gestures and integration timeline
+
+- [x] Enable bounded touch drag, pinch zoom, wheel zoom and consistent map controls
+- [x] Replay integration fade-up and connected snake timeline on viewport entry, with reduced-motion support
+- [x] Verify phone touch drag/pinch and desktop drag/wheel, zoom/reset, timeline entry/exit replay, no page overflow or browser errors
+
 ## Done: Mobile hero actions and capability row
 
 - [x] Hero's two action buttons stay on one swipeable row on phones instead of stacking
