@@ -15,6 +15,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ComplianceRouteImport } from './routes/compliance'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -103,6 +104,11 @@ const ComplianceRoute = ComplianceRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsRoute = DocsRouteImport.update({
@@ -439,6 +445,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/compliance': typeof ComplianceRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -506,6 +513,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/compliance': typeof ComplianceRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -574,6 +582,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/compliance': typeof ComplianceRoute
   '/contact': typeof ContactRoute
+  '/cookies': typeof CookiesRoute
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
@@ -643,6 +652,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/compliance'
     | '/contact'
+    | '/cookies'
     | '/docs'
     | '/how-it-works'
     | '/mcp'
@@ -710,6 +720,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/compliance'
     | '/contact'
+    | '/cookies'
     | '/docs'
     | '/how-it-works'
     | '/mcp'
@@ -777,6 +788,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/compliance'
     | '/contact'
+    | '/cookies'
     | '/docs'
     | '/how-it-works'
     | '/mcp'
@@ -846,6 +858,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ComplianceRoute: typeof ComplianceRoute
   ContactRoute: typeof ContactRoute
+  CookiesRoute: typeof CookiesRoute
   DocsRoute: typeof DocsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   McpRoute: typeof McpRoute
@@ -933,6 +946,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs': {
@@ -1418,6 +1438,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ComplianceRoute: ComplianceRoute,
   ContactRoute: ContactRoute,
+  CookiesRoute: CookiesRoute,
   DocsRoute: DocsRoute,
   HowItWorksRoute: HowItWorksRoute,
   McpRoute: McpRoute,

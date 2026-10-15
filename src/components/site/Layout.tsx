@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { LiveRatesTicker } from "@/components/site/LiveRatesTicker";
+import { CookieConsent, openCookieSettings } from "@/components/site/CookieConsent";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
@@ -21,22 +22,21 @@ export function BrandLogo({ className = "" }: { className?: string }) {
 }
 
 const nav = [
-  { to: "/about", label: "About us" },
   { to: "/how-it-works", label: "How it works" },
   { to: "/workflow", label: "Workflow" },
+  { to: "/docs", label: "Docs" },
   { to: "/whitepaper", label: "White paper" },
   { to: "/roadmap", label: "Roadmap" },
-  { to: "/compliance", label: "Compliance" },
-  { to: "/docs", label: "Docs" },
+  { to: "/about", label: "About us" },
   { to: "/blog", label: "Blog" },
+  { to: "/compliance", label: "Compliance" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
 const primaryNav = [
-  { to: "/pay", label: "Swap" },
   { to: "/how-it-works", label: "How it works" },
-  { to: "/roadmap", label: "Roadmap" },
   { to: "/docs", label: "Docs" },
+  { to: "/roadmap", label: "Roadmap" },
   { to: "/about", label: "About us" },
   { to: "/contact", label: "Contact" },
 ] as const;
@@ -125,6 +125,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <SiteFooter />
       <CryptoPriceTicker />
+      <CookieConsent />
       {/* spacer so the fixed bottom ticker never covers page content */}
       <div aria-hidden="true" className="h-8 print:hidden" />
     </div>
@@ -143,8 +144,8 @@ function SiteFooter() {
   return (
     <footer className="site-footer relative overflow-hidden mt-24 text-white print:hidden">
       <div aria-hidden className="site-footer-glow pointer-events-none absolute inset-0" />
-      <div className="relative max-w-7xl mx-auto px-5 py-12 grid gap-10 md:grid-cols-4">
-        <div className="md:col-span-2">
+      <div className="relative max-w-7xl mx-auto px-5 py-12 grid gap-10 grid-cols-2 md:grid-cols-5">
+        <div className="col-span-2">
           <BrandLogo className="mb-3 site-footer-logo" />
           <p className="text-sm text-white/80 max-w-sm">
             Crypto in. Local money out. Convert USDC from your own Solana wallet into local currency
@@ -203,11 +204,6 @@ function SiteFooter() {
                 Docs
               </Link>
             </li>
-            <li>
-              <Link to="/blog" className="hover:text-white">
-                Blog
-              </Link>
-            </li>
           </ul>
         </div>
         <div>
@@ -229,14 +225,34 @@ function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link to="/compliance" className="hover:text-white">
-                Compliance
+              <Link to="/blog" className="hover:text-white">
+                Blog
               </Link>
             </li>
             <li>
               <Link to="/contact" className="hover:text-white">
                 Contact
               </Link>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <div className="text-sm font-semibold mb-3 text-white">Legal</div>
+          <ul className="space-y-2 text-sm text-white/80">
+            <li>
+              <Link to="/compliance" className="hover:text-white">
+                Compliance
+              </Link>
+            </li>
+            <li>
+              <Link to="/cookies" className="hover:text-white">
+                Cookie policy
+              </Link>
+            </li>
+            <li>
+              <button type="button" onClick={openCookieSettings} className="hover:text-white">
+                Cookie settings
+              </button>
             </li>
           </ul>
         </div>
