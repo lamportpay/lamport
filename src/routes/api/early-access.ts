@@ -1,0 +1,47 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
+
+/** Public early-access signup. Validated, rate limited per IP, stored with the admin client. */
+const schema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(255),
+  mobile: z
+    .string()
+    .trim()
+    .regex(/^\+?[0-9 ()-]{6,25}$/),
+});
+
+export const Route = createFileRoute("/api/early-access")({
+  server: {
+    handlers: {
+      POST: async ({ request }) => {
+        let parsed;
+        try {
+          parsed = schema.safeParse(await request.json());
+        } catch {
+          return Response.json({ error: "Invalid request." }, { status: 400 });
+        }
+        if (!parsed.success)
+          return Response.json({ error: "Please check your name, email and mobile number." }, { status: 400 });
+
+        const { allowShared } = await import("@/lib/payments/rate-limit.server");
+        const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for") ?? "unknown";
+        if (!(await allowShared("early-access", ip.split(",")[0].trim(), 5, 3600)))
+          return Response.json({ error: "Too many attempts. Please try again later." }, { status: 429 });
+
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { error } = await supabaseAdmin.from("early_access_signups").insert({
+          name: parsed.data.name,
+          email: parsed.data.email.toLowerCase(),
+          mobile: parsed.data.mobile,
+        });
+        if (error) {
+          if (error.code === "23505") return Response.json({ ok: true, already: true });
+          console.error("early-access: insert failed", error.message);
+          return Response.json({ error: "Could not save. Please try again." }, { status: 500 });
+        }
+        return Response.json({ ok: true });
+      },
+    },
+  },
+});
