@@ -30,6 +30,7 @@ const nav = [
   { to: "/partners", label: "Partners" },
   { to: "/roadmap", label: "Roadmap" },
   { to: "/people", label: "Our people" },
+  { to: "/faq", label: "FAQs" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -39,6 +40,7 @@ const primaryNav = [
   { to: "/partners", label: "Partners" },
   { to: "/roadmap", label: "Roadmap" },
   { to: "/people", label: "Our people" },
+  { to: "/faq", label: "FAQs" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
