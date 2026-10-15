@@ -61,7 +61,6 @@ function SignupTable({
             <th className="py-2 pr-3">#</th>
             <th className="py-2 pr-3">Name</th>
             <th className="py-2 pr-3">Email</th>
-            <th className="py-2 pr-3">Mobile</th>
             <th className="py-2 pr-3">Wallet</th>
             <th className="py-2 pr-3">Fee</th>
             <th className="py-2">Joined</th>
@@ -75,7 +74,6 @@ function SignupTable({
                 <td className="py-2 pr-3 font-medium">{rank}</td>
                 <td className="py-2 pr-3">{r.name}</td>
                 <td className="py-2 pr-3">{r.email}</td>
-                <td className="py-2 pr-3">{r.mobile}</td>
                 <td className="py-2 pr-3 font-mono text-xs text-muted-foreground">
                   {r.wallet_address
                     ? `${r.wallet_address.slice(0, 4)}…${r.wallet_address.slice(-4)}`

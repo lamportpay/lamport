@@ -8,10 +8,6 @@ const SOLANA_ADDRESS = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const schema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(255),
-  mobile: z
-    .string()
-    .trim()
-    .regex(/^\+?[0-9 ()-]{6,25}$/),
   /**
    * The Solana wallet connected when joining. It decides the early-access fee
    * waiver (see lib/early-access.ts), so it is stored only as a candidate
@@ -34,7 +30,7 @@ export const Route = createFileRoute("/api/early-access")({
           return Response.json({ error: "Invalid request." }, { status: 400 });
         }
         if (!parsed.success)
-          return Response.json({ error: "Please check your name, email and mobile number." }, { status: 400 });
+          return Response.json({ error: "Please check your name and email address." }, { status: 400 });
 
         const { allowShared } = await import("@/lib/payments/rate-limit.server");
         const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for") ?? "unknown";
@@ -45,7 +41,6 @@ export const Route = createFileRoute("/api/early-access")({
         const { error } = await supabaseAdmin.from("early_access_signups").insert({
           name: parsed.data.name,
           email: parsed.data.email.toLowerCase(),
-          mobile: parsed.data.mobile,
           wallet_address: parsed.data.wallet || null,
         });
         if (error) {
