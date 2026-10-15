@@ -99,8 +99,9 @@ function People() {
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
               <Users className="size-3.5" /> Our people
             </div>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">
-              The people moving{" "}
+            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight md:text-6xl">
+              The people moving
+              <br />
               <span className="bg-gradient-to-r from-primary via-violet-500 to-blue-500 bg-clip-text text-transparent">
                 crypto into local money.
               </span>
@@ -174,7 +175,7 @@ function People() {
       </section>
 
       <Sheet open={!!active} onOpenChange={(o) => !o && setActive(null)}>
-        <SheetContent side="left" className="w-full overflow-y-auto p-0 sm:max-w-md">
+        <SheetContent side="right" className="w-full overflow-y-auto p-0 sm:max-w-md">
           {active && (
             <>
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-primary/15 to-violet-500/15">

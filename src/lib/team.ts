@@ -63,7 +63,7 @@ export const TEAM: TeamMember[] = [
       },
     ],
     socials: {},
-    photoClass: "scale-[1.3] origin-[50%_22%]",
+    photoClass: "scale-[1.18] origin-top",
   },
   {
     slug: "ghazanfar-abbas",

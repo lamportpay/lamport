@@ -1873,6 +1873,8 @@ body.has-cookie-banner .site-footer-legal {
   box-shadow: 0 18px 40px -18px color-mix(in oklab, var(--primary) 45%, transparent);
 }
 @media (min-width: 1024px) { .page-hero-icon { display: grid; } }
+.page-hero-icon-glyph { position: absolute; inset: 0; margin: auto; }
+.page-hero-icon-low { top: 210px; }
 .page-hero-icon-ring {
   position: absolute; inset: -6px; border-radius: 9999px;
   border: 2px solid transparent;
