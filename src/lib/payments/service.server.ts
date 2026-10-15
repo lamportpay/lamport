@@ -1053,12 +1053,15 @@ export async function recheckSettlement(
     ? (payment.source_currency as Preference)
     : (input.preferredCurrency ?? last?.preference ?? "auto");
   const amountMinor = BigInt(payment.source_amount_minor);
+  const recheckWallet = wallet ?? last?.wallet ?? null;
+  const waiver = await earlyAccessWaiver(user, recheckWallet);
   const plan = await planSettlement(config, {
     amountMinor,
     country: payment.destination_country,
     currency: payment.destination_currency,
-    wallet: wallet ?? last?.wallet ?? null,
+    wallet: recheckWallet,
     preference,
+    waiver,
   });
   const decision = plan.decision;
   if (decision.kind === "none_priced") {
