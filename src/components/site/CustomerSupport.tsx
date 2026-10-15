@@ -208,6 +208,11 @@ function ChatBody() {
 
 export function CustomerSupport() {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("lamportpay:open-ask-ai", onOpen);
+    return () => window.removeEventListener("lamportpay:open-ask-ai", onOpen);
+  }, []);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
