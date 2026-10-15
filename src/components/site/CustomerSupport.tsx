@@ -13,7 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import logoUrl from "@/assets/lamportpay-logo.png";
+const logoUrl = "/apple-touch-icon.png";
+const SESSION_KEY = "lamportpay-ask-ai-session";
+
+function sessionId() {
+  let id = window.localStorage.getItem(SESSION_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    window.localStorage.setItem(SESSION_KEY, id);
+  }
+  return id;
+}
 
 const STORAGE_KEY = "lamportpay-ask-ai-v1";
 
@@ -54,7 +64,7 @@ function ChatBody() {
   const { messages, sendMessage, setMessages, status, stop, error } = useChat({
     id: "ask-ai",
     messages: initial,
-    transport: new DefaultChatTransport({ api: "/api/ask-ai" }),
+    transport: new DefaultChatTransport({ api: "/api/ask-ai", body: () => ({ sessionId: sessionId() }) }),
   });
   const busy = status === "submitted" || status === "streaming";
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -87,6 +97,7 @@ function ChatBody() {
     stop();
     setMessages([]);
     window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(SESSION_KEY);
     inputRef.current?.focus();
   }
 
@@ -120,11 +131,18 @@ function ChatBody() {
               {textOf(m)}
             </p>
           ) : textOf(m) ? (
-            <div key={m.id} className="flex gap-3">
+            <div key={m.id} className="space-y-2">
+            {m.parts.some((p) => p.type === "tool-file_complaint") && (
+              <p className="ml-10 rounded-md border border-home-brand/30 bg-home-tint px-3 py-1.5 text-xs font-medium text-foreground">
+                ✓ Sent to the LamportPay team
+              </p>
+            )}
+            <div className="flex gap-3">
               <Avatar />
               <div className="prose prose-sm min-w-0 max-w-none text-sm leading-relaxed text-foreground prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0.5">
                 <ReactMarkdown>{textOf(m)}</ReactMarkdown>
               </div>
+            </div>
             </div>
           ) : null,
         )}
@@ -175,7 +193,7 @@ function ChatBody() {
         )}
       </form>
       <div className="flex items-center justify-between px-5 py-2">
-        <p className="text-[10px] text-muted-foreground">Do not share personal, bank or wallet secrets.</p>
+        <p className="text-[10px] text-muted-foreground">Chats are saved to help our team. Never share bank or wallet secrets.</p>
         {messages.length > 0 && (
           <button type="button" onClick={reset} className="flex items-center gap-1 text-[11px] font-medium text-home-brand hover:underline">
             <RotateCcw className="size-3" /> New chat
