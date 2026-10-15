@@ -2202,6 +2202,10 @@ body.has-cookie-banner .site-footer-legal {
   from { transform: translateX(0); }
   to { transform: translateX(var(--news-shift, 0)); }
 }
+/* No scrolling under reduced motion: keep the text inline so the ellipsis can show. */
+@media (prefers-reduced-motion: reduce) {
+  .news-split-run { display: inline; }
+}
 .launch-status-all { flex: none; font-size: 12px; font-weight: 600; color: inherit; opacity: .85; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 @keyframes news-split-in {
   0% { clip-path: inset(0 50% 0 50%); opacity: 0; letter-spacing: .08em; }
