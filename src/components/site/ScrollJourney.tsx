@@ -49,29 +49,29 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
   const progress = ((active + 1) / steps.length) * 100;
 
   return (
-    <div className="mt-10 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-16">
+    <div className="mt-10 grid gap-10 md:grid-cols-[260px_minmax(0,1fr)] md:gap-12 lg:grid-cols-[280px_minmax(0,1fr)]">
       <div className="hidden md:block">
         <div className="sticky top-32">
-          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm">
             <p className="relative text-xs font-semibold uppercase text-primary">
               Step {String(active + 1).padStart(2, "0")} of {steps.length}
             </p>
             <div
               key={active}
-              className="relative mt-6 animate-in fade-in zoom-in-95 duration-500 motion-reduce:animate-none"
+              className="relative mt-4 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-1 duration-500 motion-reduce:animate-none"
             >
-              <div className="flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg">
-                <ActiveIcon aria-hidden="true" className="size-9" />
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-md">
+                <ActiveIcon aria-hidden="true" className="size-5" />
               </div>
-              <h3 className="mt-6 text-2xl font-semibold">{steps[active]?.title}</h3>
+              <h3 className="text-base font-semibold leading-snug">{steps[active]?.title}</h3>
             </div>
-            <div className="relative mt-8 h-1.5 overflow-hidden rounded-full bg-secondary">
+            <div className="relative mt-5 h-1 overflow-hidden rounded-full bg-secondary">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-[width] duration-700 ease-out motion-reduce:transition-none"
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <ol className="relative mt-6 space-y-2">
+            <ol className="relative mt-4 space-y-0.5">
               {steps.map((s, i) => {
                 const Icon = icons[i] ?? CheckCircle2;
                 const done = i < active;
@@ -79,14 +79,14 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
                   <li
                     key={s.title}
                     className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-300",
-                      i === active && "bg-primary/10 font-semibold text-foreground ring-1 ring-primary/40 animate-pulse motion-reduce:animate-none",
+                      "flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-[13px] transition-colors duration-300",
+                      i === active && "bg-primary/10 font-semibold text-foreground",
                       i !== active && "text-muted-foreground",
                     )}
                   >
                     <span
                       className={cn(
-                        "flex size-7 items-center justify-center rounded-full border transition-colors",
+                        "flex size-6 items-center justify-center rounded-full border transition-colors",
                         done || i === active
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border bg-background",
@@ -122,13 +122,13 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
               ref={(el) => {
                 refs.current[i] = el;
               }}
-              className="relative grid grid-cols-[3rem_1fr] gap-5 py-10 md:min-h-[40vh] md:items-center md:py-0"
+              className="relative grid grid-cols-[3rem_1fr] gap-5 py-10 md:min-h-[32vh] md:items-center md:py-0"
             >
               <div
                 className={cn(
                   "relative z-10 flex size-12 items-center justify-center rounded-xl border transition-all duration-500",
                   on
-                    ? "scale-110 border-primary bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg"
+                    ? "border-primary bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg"
                     : "border-border bg-card text-primary",
                 )}
               >
@@ -138,7 +138,7 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
                 data-step-text
                 className={cn(
                   "transition-all duration-500 motion-reduce:transition-none",
-                  on ? "opacity-100" : "md:opacity-70",
+                  on ? "translate-x-0" : "md:[&_h3]:text-foreground/80",
                 )}
               >
                 <p className="text-xs font-semibold text-primary">
