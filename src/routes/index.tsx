@@ -12,6 +12,8 @@ import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
 import { EcosystemSection } from "@/components/site/VisionRoadmapEcosystem";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
+import { HomeTeam } from "@/components/site/HomeTeam";
+import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
 import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -85,52 +87,9 @@ function Index() {
         <ConnectedSystems />
         <EcosystemSection compact />
         <IntegrationStatus />
-        <section className="home-section border-t border-border">
-          <div className="home-container flex flex-wrap items-center justify-between gap-6">
-            <div>
-              <p className="home-eyebrow">Where we are headed</p>
-              <h2 className="home-heading">The LamportPay roadmap.</h2>
-              <p className="mt-3 text-sm text-muted-foreground">
-                What is live today, what is in progress, and what is planned next.
-              </p>
-            </div>
-            <Button
-              asChild
-              size="lg"
-              className="h-12 bg-home-brand text-primary-foreground hover:bg-home-brand/90"
-            >
-              <Link to="/roadmap">
-                View the full roadmap <ArrowRight />
-              </Link>
-            </Button>
-          </div>
-        </section>
         <SupportedCorridors />
-        <section className="home-section border-t border-border">
-          <div className="home-container flex flex-wrap items-center justify-between gap-6">
-            <div>
-              <p className="home-eyebrow">Build your next payment connection</p>
-              <h2 className="home-heading">Let’s talk business.</h2>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Explore business onboarding, payment use cases and our product roadmap.
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Button
-                asChild
-                size="lg"
-                className="h-12 bg-home-brand text-primary-foreground hover:bg-home-brand/90"
-              >
-                <Link to="/contact">
-                  Contact our team <ArrowRight />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="h-12">
-                <Link to="/whitepaper">White paper</Link>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <HomeTeam />
+        <HomeCtaBanner />
         <CustomerSupport />
       </SiteLayout>
     </div>

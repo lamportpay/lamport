@@ -1704,3 +1704,21 @@ body.has-cookie-banner .site-footer-legal {
     display: none;
   }
 }
+
+.home-cta-banner {
+  background: linear-gradient(135deg, oklch(0.45 0.22 265) 0%, oklch(0.5 0.24 290) 55%, oklch(0.55 0.22 310) 100%);
+  color: oklch(1 0 0);
+  box-shadow: 0 30px 60px -30px color-mix(in oklab, var(--home-brand) 60%, transparent);
+}
+.home-cta-ring {
+  position: absolute;
+  z-index: -1;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, oklch(1 0 0) 25%, transparent);
+  pointer-events: none;
+}
+.home-cta-ring-a { width: 26rem; height: 26rem; top: -12rem; left: -8rem; }
+.home-cta-ring-b { width: 34rem; height: 34rem; bottom: -20rem; right: -10rem; }
+.home-team-avatar {
+  background: linear-gradient(135deg, oklch(0.5 0.22 265), oklch(0.58 0.24 300));
+}
