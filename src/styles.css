@@ -1766,6 +1766,19 @@ body.has-cookie-banner .site-footer-legal {
   background: var(--home-surface);
   color: oklch(0.96 0.01 270);
 }
+/* Phones: the large rings would cross the text, so keep one small arc in the corner. */
+@media (max-width: 640px) {
+  .home-cta-ring-b,
+  .home-cta-ring-c {
+    display: none;
+  }
+  .home-cta-ring-a {
+    width: 9rem;
+    height: 9rem;
+    top: -4.5rem;
+    left: -4rem;
+  }
+}
 .home-team-avatar {
   background: linear-gradient(135deg, oklch(0.5 0.22 265), oklch(0.58 0.24 300));
 }
