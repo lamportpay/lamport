@@ -32,7 +32,7 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
     phase: 2,
     headline: "Harden security before real customers.",
     highlights: ["Security reviews", "Corridor validation", "Production safeguards"],
-    title: "Security and controlled launch",
+    title: "Security and mainnet launch",
     status: "proposed",
     summary:
       "Complete security reviews, confirm partner requirements, validate payout corridors and prepare production readiness.",
