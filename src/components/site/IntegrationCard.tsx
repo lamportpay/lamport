@@ -1,4 +1,24 @@
-import { ArrowUpRight, Check } from "lucide-react";
+import {
+  ArrowUpRight,
+  Check,
+  Landmark,
+  Layers,
+  Repeat,
+  TrendingUp,
+  CircleDollarSign,
+  BadgeDollarSign,
+  Puzzle,
+  type LucideIcon,
+} from "lucide-react";
+
+const ICONS: Record<string, LucideIcon> = {
+  Stables: Landmark,
+  Solana: Layers,
+  Jupiter: Repeat,
+  Hyperliquid: TrendingUp,
+  "Circle (USDC)": CircleDollarSign,
+  "Tether (USDT)": BadgeDollarSign,
+};
 import { cn } from "@/lib/utils";
 import type { IntegrationItem, IntegrationStatus } from "@/content/integrations";
 
@@ -20,16 +40,6 @@ export function StatusPill({ status }: { status: IntegrationStatus }) {
       {status}
     </span>
   );
-}
-
-/** Two-letter mark so every card has a visual anchor without using a brand's logo. */
-function monogram(name: string) {
-  const words = name
-    .replace(/[()]/g, "")
-    .split(/[\s/]+/)
-    .filter((w) => /^[a-zA-Z0-9]/.test(w));
-  if (words.length > 1) return (words[0][0] + words[1][0]).toUpperCase();
-  return (words[0]?.slice(0, 2) ?? name.slice(0, 2)).toUpperCase();
 }
 
 export function IntegrationCard({
@@ -54,11 +64,14 @@ export function IntegrationCard({
           <span
             aria-hidden
             className={cn(
-              "shrink-0 inline-flex items-center justify-center rounded-xl border border-primary/15 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 font-bold tracking-tight text-primary",
-              large ? "w-12 h-12 text-base" : "w-10 h-10 text-sm",
+              "shrink-0 inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 text-primary-foreground shadow-md shadow-primary/25",
+              large ? "w-14 h-14" : "w-12 h-12",
             )}
           >
-            {monogram(item.name)}
+            {(() => {
+              const Icon = ICONS[item.name] ?? Puzzle;
+              return <Icon className={large ? "w-7 h-7" : "w-6 h-6"} strokeWidth={1.8} />;
+            })()}
           </span>
           <div className="min-w-0">
             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">

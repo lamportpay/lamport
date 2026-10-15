@@ -25,19 +25,19 @@ export function BrandLogo({ className = "" }: { className?: string }) {
 }
 
 const nav = [
-  { to: "/how-it-works", label: "How it works" },
-  { to: "/docs", label: "Docs" },
-  { to: "/roadmap", label: "Roadmap" },
   { to: "/about", label: "About us" },
+  { to: "/how-it-works", label: "How it works" },
+  { to: "/partners", label: "Partners" },
+  { to: "/roadmap", label: "Roadmap" },
   { to: "/people", label: "Our people" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
 const primaryNav = [
-  { to: "/how-it-works", label: "How it works" },
-  { to: "/docs", label: "Docs" },
-  { to: "/roadmap", label: "Roadmap" },
   { to: "/about", label: "About us" },
+  { to: "/how-it-works", label: "How it works" },
+  { to: "/partners", label: "Partners" },
+  { to: "/roadmap", label: "Roadmap" },
   { to: "/people", label: "Our people" },
   { to: "/contact", label: "Contact" },
 ] as const;
