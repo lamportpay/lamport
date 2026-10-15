@@ -26,14 +26,18 @@ export function ScrollReveal() {
       { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
     );
 
-    // Headings "type" in each time they come into view.
+    // Headings "type" in each time they come into view. The clip-path that hides
+    // a heading also zeroes its intersection ratio, so the decision is made from
+    // the element's own box rather than the observer's ratio.
     const typer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          entry.target.classList.toggle("type-visible", entry.isIntersecting);
+          const box = entry.boundingClientRect;
+          const inView = box.top < window.innerHeight * 0.9 && box.bottom > window.innerHeight * 0.1;
+          entry.target.classList.toggle("type-visible", inView);
         }
       },
-      { threshold: 0.6 },
+      { threshold: 0 },
     );
 
     for (const el of sections) {
