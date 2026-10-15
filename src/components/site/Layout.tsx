@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { CookieConsent, openCookieSettings } from "@/components/site/CookieConsent";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
-import { ColosseumBanner } from "@/components/site/ColosseumBanner";
 import { LaunchStatus } from "@/components/site/LaunchStatus";
 import { LaunchPopup } from "@/components/site/LaunchPopup";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
@@ -55,11 +54,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
-    // Only the header's resting height (without the news banner that appears on scroll).
-    const measure = () => {
-      const banner = el.querySelector<HTMLElement>("[data-header-banner]");
-      setHeaderH(el.offsetHeight - (banner?.offsetHeight ?? 0));
-    };
+    const measure = () => setHeaderH(el.offsetHeight);
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
@@ -83,20 +78,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             : "border-transparent bg-transparent",
         )}
       >
-        <div
-          data-header-banner
-          className={cn(
-            "grid transition-all duration-300",
-            scrolled
-              ? "grid-rows-[1fr] opacity-100"
-              : "grid-rows-[0fr] opacity-0",
-          )}
-          aria-hidden={!scrolled}
-        >
-          <div className="min-h-0 overflow-hidden">
-            <ColosseumBanner />
-          </div>
-        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 lg:h-[72px] flex items-center justify-between gap-3">
           <Link
             to="/"

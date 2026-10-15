@@ -68,9 +68,9 @@ export const NEWS: NewsItem[] = [
     slug: "lamportpay-colosseum-arena",
     tag: "Colosseum",
     title: "LamportPay is submitted to Colosseum Arena",
-    headline: "LamportPay is submitted to Colosseum Arena — view our project page.",
+    headline: "LamportPay is submitted to Colosseum Arena — view the project page.",
     summary:
-      "We submitted LamportPay to the Colosseum Arena, the Solana hackathon and accelerator programme. Our project page is live; the decision is pending.",
+      "We submitted LamportPay to the Colosseum Arena, the Solana hackathon and accelerator programme. The project page is live; the decision is pending.",
     published: "2026-10-10",
     keywords: ["Colosseum Arena", "Solana hackathon", "LamportPay Colosseum", "Solana payments project"],
     body: [
@@ -81,7 +81,7 @@ export const NEWS: NewsItem[] = [
         ],
       },
       {
-        heading: "Review our project",
+        heading: "Review the project",
         paragraphs: [
           "Judges and visitors can see the project page on Colosseum, and explore the product, roadmap and technology on this website. The decision is pending.",
         ],
@@ -89,7 +89,7 @@ export const NEWS: NewsItem[] = [
     ],
     links: [
       { label: "LamportPay on Colosseum Arena", href: COLOSSEUM_URL, external: true },
-      { label: "Our roadmap", href: "/roadmap" },
+      { label: "Roadmap", href: "/roadmap" },
       { label: "Technology", href: "/technology" },
       { label: "About us", href: "/about" },
     ],
