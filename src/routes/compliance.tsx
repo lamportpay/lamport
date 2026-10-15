@@ -32,21 +32,21 @@ function Compliance() {
   const positives = [
     "Provides the software: quote, checkout, wallet signing request and payment tracking.",
     "Discloses one LamportPay fee, separate payout partner costs, and applicable swap, price-impact and network costs before approval.",
-    "Supports a bank-payout design for a verified sender's own account or a beneficiary's account. Current payouts are demo demonstrations only.",
+    "Supports a bank-payout design for a verified sender's own account or a beneficiary's account. Current payouts are sandbox demonstrations only.",
     "Follows the payout partner's transfer status. The partner's record is authoritative.",
     "Keeps an append-only audit log of admin actions.",
-    "Uses USDC on Solana as the enabled settlement currency; eligible SOL routing uses Jupiter quotes without mainnet execution in the demo build.",
+    "Uses USDC on Solana as the enabled settlement currency; eligible SOL routing uses Jupiter quotes without mainnet execution in the sandbox build.",
   ];
   const roles: { activity: string; who: string }[] = [
     {
       activity: "Wallet funds and authorization",
-      who: "You control your wallet. In the production design, you send USDC directly to the single-use deposit address Stables issues for the payment. LamportPay holds no funds. The demo build moves no payment funds.",
+      who: "You control your wallet. In the production design, you send USDC directly to the single-use deposit address Stables issues for the payment. LamportPay holds no funds. The sandbox build moves no payment funds.",
     },
     {
       activity: "Identity verification (KYC)",
       who: "Stables, on its hosted page. LamportPay collects the name and contact email needed for customer setup, keeps a verification link and status, and does not collect identity documents. Production KYC is DISABLED.",
     },
-    { activity: "AML and sanctions screening", who: "Stables' compliance process governs transfer acceptance and any holds. Demo responses do not establish production screening approval." },
+    { activity: "AML and sanctions screening", who: "Stables' compliance process governs transfer acceptance and any holds. Sandbox responses do not establish production screening approval." },
     {
       activity: "Travel Rule",
       who: "Stables determines requirements for the transfer. LamportPay records and surfaces required Travel Rule information as a payment requirement, not a separate payment status.",
@@ -57,13 +57,13 @@ function Compliance() {
     },
     {
       activity: "Crypto conversion route",
-      who: "Jupiter supplies eligible Solana-to-USDC routing. LIVE · read-only market quotes are available; mainnet swap execution is DISABLED in the demo build.",
+      who: "Jupiter supplies eligible Solana-to-USDC routing. LIVE · read-only market quotes are available; mainnet swap execution is DISABLED in the sandbox build.",
     },
     {
       activity: "Quote, fee disclosure, checkout and status tracking",
       who: "LamportPay.",
     },
-    { activity: "Approving the transaction", who: "You, in your own wallet. Sign-in uses a plain-text message; demo Pay Now uses a real test-network memo transaction that moves no funds." },
+    { activity: "Approving the transaction", who: "You, in your own wallet. Sign-in uses a plain-text message; sandbox Pay Now uses a real test-network memo transaction that moves no funds." },
   ];
   return (
     <SiteLayout>
@@ -157,7 +157,7 @@ function Compliance() {
               </div>
             ))}
           </dl>
-          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">Stables is authoritative for transfer status. Signed webhooks, live status reads and reconciliation update the record. Wallet approval alone is not evidence of a completed payout, and a demo receipt is not proof that real money reached a bank.</p>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">Stables is authoritative for transfer status. Signed webhooks, live status reads and reconciliation update the record. Wallet approval alone is not evidence of a completed payout, and a sandbox receipt is not proof that real money reached a bank.</p>
         </section>
 
         <section className="mt-10 border-t border-border pt-6">
@@ -168,7 +168,7 @@ function Compliance() {
             <li>Admin actions require server-side role checks and are audit logged. The payout queue only refreshes status; it does not create transfers or simulate deposits.</li>
             <li>Rate limits and emergency payment controls restrict payment actions. Refunds, compliance and manual reviews are operations cases, not invented payout statuses.</li>
           </ul>
-          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">These safeguards are not a guarantee against loss or a completed security certification. End-to-end demo testing, security review and operational readiness must be validated before production availability.</p>
+          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">These safeguards are not a guarantee against loss or a completed security certification. End-to-end sandbox testing, security review and operational readiness must be validated before production availability.</p>
         </section>
 
         <section className="mt-10 border-t border-border pt-6">
@@ -183,7 +183,7 @@ function Compliance() {
             >
               Stables
             </a>
-             , used here in demo mode. Its external listing in the{" "}
+             , used here in sandbox mode. Its external listing in the{" "}
             <a
               href="https://partners.circle.com/directory/stables-money"
               target="_blank"
@@ -254,7 +254,7 @@ function Compliance() {
                 Licenses / regulatory approvals
               </dt>
               <dd className="mt-1 text-muted-foreground">
-                None claimed by LamportPay. Demo access is not regulatory authorization.
+                None claimed by LamportPay. Sandbox access is not regulatory authorization.
               </dd>
             </div>
           </dl>
@@ -263,7 +263,7 @@ function Compliance() {
         <div className="mt-10 text-xs text-muted-foreground">
           LamportPay holds no customer funds or wallet keys. Own-account and beneficiary bank
           payouts are part of the verified-sender design. The current experience is
-          DEMO/SIMULATED; real bank payouts and production KYC are DISABLED.
+          SANDBOX/SIMULATED; real bank payouts and production KYC are DISABLED.
         </div>
       </section>
       <FurtherReading

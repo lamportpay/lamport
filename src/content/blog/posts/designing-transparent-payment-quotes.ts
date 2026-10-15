@@ -32,7 +32,7 @@ export const post: BlogPost = {
     ]},
     { type: "p", text: "Itemising invites comparison, which is the point. A user who can see each component and still proceeds has genuinely accepted the price." },
     { type: "h2", text: "Rule 3: name the rate and its source" },
-    { type: "p", text: "\"Rate: 1 USDC = X\" is incomplete. State whether it is indicative or executable, when it was retrieved, and how it relates to the mid-market rate. If the rate is indicative — which it is in any demo or pre-partner state — say so in the same visual element as the number, not in a footnote." },
+    { type: "p", text: "\"Rate: 1 USDC = X\" is incomplete. State whether it is indicative or executable, when it was retrieved, and how it relates to the mid-market rate. If the rate is indicative — which it is in any sandbox or pre-partner state — say so in the same visual element as the number, not in a footnote." },
     { type: "callout", title: "Indicative means indicative", text: "If a rate cannot currently be executed, label it at the point of display. Burying that in terms and conditions while showing a precise figure reads as a real quote, and users will hold you to it." },
     { type: "h2", text: "Rule 4: make expiry visible and honest" },
     { type: "p", text: "Crypto legs are priced against moving markets. A quote must therefore have a lifetime, and the interface must show it — a countdown, a refresh action, and a clear statement of what happens when it lapses. Two anti-patterns to avoid: a quote that silently updates while the user reads it, and one that never expires and is then not honoured. Both teach the user that the number is decorative." },
@@ -54,7 +54,7 @@ export const post: BlogPost = {
       "Capability labels wherever a step is simulated, disabled or planned.",
       "One-line statement of who holds the funds at each stage.",
     ]},
-    { type: "p", text: "LamportPay's transfer demo follows this structure. Rates shown are indicative and labelled, fees are itemised, and each step carries its capability status — the SOL-to-USDC conversion runs live against Solana under strict limits with output returning to the user's own wallet, while identity checks, fiat conversion and local payout are simulated pending a regulated payout infrastructure partner." },
+    { type: "p", text: "LamportPay's transfer sandbox follows this structure. Rates shown are indicative and labelled, fees are itemised, and each step carries its capability status — the SOL-to-USDC conversion runs live against Solana under strict limits with output returning to the user's own wallet, while identity checks, fiat conversion and local payout are simulated pending a regulated payout infrastructure partner." },
   ],
   productLinks: [
     { to: "/pay", label: "Send a payment", note: "See the itemised quote, indicative rate labels and receipt structure." },

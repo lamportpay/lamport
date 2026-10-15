@@ -23,7 +23,7 @@ function PartnersPage() {
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Partners & integrations</h1>
         <p className="mt-4 text-muted-foreground max-w-2xl">
           LamportPay is built on licensed and proven infrastructure. Every item shows its honest
-          status: live, demo / simulated, in progress or planned.
+          status: live, sandbox / simulated, in progress or planned.
         </p>
       </section>
 

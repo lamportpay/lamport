@@ -21,11 +21,11 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
   {
     phase: 1,
     headline: "Prove the full payment journey end to end.",
-    highlights: ["Wallet + swap flow", "USDC quote & receipt", "Payout demo"],
+    highlights: ["Wallet + swap flow", "USDC quote & receipt", "Payout sandbox"],
     title: "Core product validation",
     status: "current",
     summary:
-      "Validate the Solana wallet flow, Jupiter-powered swap, USDC quote, verification, payout demo, transaction tracking and receipt.",
+      "Validate the Solana wallet flow, Jupiter-powered swap, USDC quote, verification, payout sandbox, transaction tracking and receipt.",
     dependsOn: "End-to-end test results and a validated payment experience.",
   },
   {
@@ -71,12 +71,12 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
 ];
 
 export const ROADMAP_NOTE =
-  "A milestone-led roadmap. Solana / Jupiter is integrated and Hyperliquid integration is in progress; Phase 1 runs in the demo build on a Solana test network with the payout partner's test environment. Additional asset routes, provider APIs and Circle / Tether partnership opportunities are planned, not current capabilities or confirmed relationships. No delivery dates are committed.";
+  "A milestone-led roadmap. Solana / Jupiter is integrated and Hyperliquid integration is in progress; Phase 1 runs in the sandbox build on a Solana test network with the payout partner's test environment. Additional asset routes, provider APIs and Circle / Tether partnership opportunities are planned, not current capabilities or confirmed relationships. No delivery dates are committed.";
 
-/** What works today (demo build: Solana test network + partner test environment, no real funds). */
+/** What works today (sandbox build: Solana test network + partner test environment, no real funds). */
 export const CURRENT_FLOW = [
   { title: "Supported Solana assets", detail: "SOL, USDC and supported SPL tokens" },
-  { title: "Jupiter-powered swap", detail: "Only when needed; live quotes in the demo build" },
+  { title: "Jupiter-powered swap", detail: "Only when needed; live quotes in the sandbox build" },
   { title: "USDC", detail: "Payout-ready, in your own wallet" },
   { title: "Verified bank payout", detail: "Licensed partner, own or beneficiary account" },
 ] as const;

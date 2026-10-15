@@ -5,9 +5,9 @@ export const INTEGRATION_GROUPS = [
   {
     title: "Connected today", label: "Existing infrastructure",
     entries: [
-      { name: "Solana", status: "DEMO / SIMULATED", detail: "Wallet connection and test-network payment checks.", asset: "/tokens/sol.svg" },
-      { name: "Jupiter", status: "LIVE", detail: "Live market quotes only. Mainnet swap execution is disabled in the demo build.", asset: "/partners/jupiter.svg" },
-      { name: "Stables", status: "DEMO / SIMULATED", detail: "Hosted verification and demo bank payouts. Production KYC and fiat payouts are DISABLED.", asset: "/partners/stables.svg" },
+      { name: "Solana", status: "SANDBOX / SIMULATED", detail: "Wallet connection and test-network payment checks.", asset: "/tokens/sol.svg" },
+      { name: "Jupiter", status: "LIVE", detail: "Live market quotes only. Mainnet swap execution is disabled in the sandbox build.", asset: "/partners/jupiter.svg" },
+      { name: "Stables", status: "SANDBOX / SIMULATED", detail: "Hosted verification and sandbox bank payouts. Production KYC and fiat payouts are DISABLED.", asset: "/partners/stables.svg" },
     ],
   },
   {

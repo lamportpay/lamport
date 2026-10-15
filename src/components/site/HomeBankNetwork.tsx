@@ -64,7 +64,7 @@ export function HomeBankNetwork() {
             <p className="home-eyebrow">Bank destinations</p>
             <h2 className="home-heading">Familiar banks. Local currencies.</h2>
             <p className="mt-3 max-w-xl text-sm text-muted-foreground">
-              Explore examples in our demo destination picker. Final bank availability is
+              Explore examples in our sandbox destination picker. Final bank availability is
               checked by Stables.
             </p>
           </div>
@@ -74,7 +74,7 @@ export function HomeBankNetwork() {
           <div className="flow-spotlight p-6 sm:p-8">
             <FlowControls flow={flow} count={destinations.length} label="bank destinations" />
             <div key={country} className="flow-detail">
-              <p className="text-xs font-semibold text-home-brand">BANK DESTINATIONS · DEMO / SIMULATED</p>
+              <p className="text-xs font-semibold text-home-brand">BANK DESTINATIONS · SANDBOX / SIMULATED</p>
               <div className="mt-7 flex items-center gap-4"><Flag code={country} size={44} /><span className="text-4xl font-semibold text-home-ink">{destination.currency}</span></div>
               <h3 className="mt-4 text-2xl font-semibold text-home-ink">{destination.name}</h3>
               <p className="mt-3 text-sm text-muted-foreground">Local currency. Familiar bank accounts. Availability checked by Stables.</p>
@@ -95,7 +95,7 @@ export function HomeBankNetwork() {
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
           <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
             Illustrative bank listings, not direct bank partnerships or endorsements. Fiat payout is
-            DISABLED; demo support varies by country and currency.{" "}
+            DISABLED; sandbox support varies by country and currency.{" "}
             <Link to="/compliance" hash="bank-restrictions" className="font-medium text-home-brand underline-offset-4 hover:underline">
               Read official bank guidance
             </Link>

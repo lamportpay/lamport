@@ -71,12 +71,12 @@ function HowItWorks() {
           <p className="mt-4 text-xl font-medium">Crypto in. Local money out.</p>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
             A wallet-first payment journey: get a quote, check the destination, review the costs and
-            approve in your wallet. Explore the full experience today in demo mode.
+            approve in your wallet. Explore the full experience today in sandbox mode.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <Link to="/pay">
-                Open demo <ArrowRight aria-hidden="true" />
+                Open sandbox <ArrowRight aria-hidden="true" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">

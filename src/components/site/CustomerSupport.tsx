@@ -28,15 +28,15 @@ function answer(question: string) {
         .join(" ")
     );
   if (/bank|country|countries/.test(q))
-    return "The demo destination picker offers the United States, United Kingdom, India and Philippines. Bank options depend on the destination and currency; Stables checks final availability and bank details. Real bank payouts remain disabled.";
+    return "The sandbox destination picker offers the United States, United Kingdom, India and Philippines. Bank options depend on the destination and currency; Stables checks final availability and bank details. Real bank payouts remain disabled.";
   if (/safe|wallet|key|seed/.test(q))
     return (
       "You keep your funds and keys in your own wallet. Never share a seed phrase or private key. Sign-in uses a plain-text message, not a payment transaction. " +
       PAYMENT_SAFETY
     );
   if (/partner|backed|stables|jupiter/.test(q))
-    return "Jupiter provides Solana swap quotes. Stables provides demo verification and payout infrastructure. Our listed business partners are ready to adopt the service; onboarding is planned. This is not a claim of investment or bank endorsement.";
-  if (/payment|work|send|kyc|demo|test/.test(q))
+    return "Jupiter provides Solana swap quotes. Stables provides sandbox verification and payout infrastructure. Our listed business partners are ready to adopt the service; onboarding is planned. This is not a claim of investment or bank endorsement.";
+  if (/payment|work|send|kyc|sandbox|test/.test(q))
     return (
       "Connect your wallet, choose the amount and destination, view the quote, check bank details, complete any required verification, then review and approve. " +
       PAYMENT_SAFETY

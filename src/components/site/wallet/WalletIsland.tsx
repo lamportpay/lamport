@@ -206,7 +206,7 @@ export function WalletPanelIsland() {
   );
 }
 
-/** SOL → USDC Jupiter swap demo panel. */
+/** SOL → USDC Jupiter swap sandbox panel. */
 export function SwapPanelIsland({
   onExecuted,
 }: {
