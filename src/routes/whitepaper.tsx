@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
-import { FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
+import { TRACKER_PHASES, TRACKER_STATUS_LABEL } from "@/content/roadmap-tracker";
 import { PAYMENT_COSTS, PAYMENT_JOURNEY } from "@/content/payment-flow";
 import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
 
@@ -97,7 +97,19 @@ const sections: { title: string; body: React.ReactNode }[] = [
            v="Stables test customer records, hosted verification links, quote and bank-field validation, transfer references and signed status events."
         />
         <ArchRow
-          k="Database"
+          k="Runtime"
+           v="Node.js and TypeScript on the server side, with secrets kept server-only."
+        />
+        <ArchRow
+          k="Hosting"
+           v="Managed cloud hosting today, with a planned move to AWS as volume grows."
+        />
+        <ArchRow
+          k="Team and tools"
+           v="Built from scratch by our in-house engineering team. AI tools (ChatGPT, Claude, Lovable) assist with support, automation, marketing and coding; people design, review and own the code."
+        />
+        <ArchRow
+          k="Database (SQL / PostgreSQL)"
            v="Identity links, payments, quotes, verification status, provider references, transaction signatures, timeline events and audit records. The ledger is a record, not a stored-value balance."
         />
       </div>
@@ -227,19 +239,21 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "15. Roadmap",
     body: (
       <div className="space-y-3">
-        <List
-          items={ROADMAP_PHASES.map(
-            (p) =>
-              `Phase ${p.phase}: ${p.title} (${p.status === "current" ? "SANDBOX" : "PLANNED"}). ${p.summary} Milestone: ${p.dependsOn}`,
-          )}
-        />
-        <p className="text-sm">{ROADMAP_NOTE}</p>
-        <h3 className="pt-3 font-semibold text-foreground">PLANNED · Future exploration</h3>
+        <p>
+          The roadmap is tracked phase by phase. Phases 1–7 are complete; Phase 8 (security
+          review and go-live) is the current focus and the main use of new funding. Later phases
+          are goals, not confirmed partnerships or dates.
+        </p>
         <ul className="space-y-4">
-          {FUTURE_EXPLORATION.map((item) => (
-            <li key={item.title}>
-              <span className="font-semibold text-foreground">{item.title}. </span>
-              {item.detail}
+          {TRACKER_PHASES.map((p) => (
+            <li key={p.phase}>
+              <span className="font-semibold text-foreground">
+                Phase {p.phase}: {p.title} ({TRACKER_STATUS_LABEL[p.status]}).{" "}
+              </span>
+              {p.summary}
+              <span className="block text-sm">
+                {p.items.map((i) => `${i.done ? "✓" : "○"} ${i.label}`).join(" · ")}
+              </span>
             </li>
           ))}
         </ul>
@@ -265,8 +279,9 @@ const sections: { title: string; body: React.ReactNode }[] = [
         </div>
         <p>
           These controls do not guarantee a risk-free service or establish a completed security
-          certification. Production remains disabled pending validated end-to-end testing,
-          security review and operational readiness.
+          certification. Production remains disabled until the dedicated security phase (independent
+          audit, penetration testing and hardening), end-to-end validation and operational readiness
+          are complete.
         </p>
       </div>
     ),

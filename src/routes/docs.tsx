@@ -20,7 +20,10 @@ const stack = [
   { title: "Wallet & settlement asset", detail: "Solana wallet signatures and transaction verification. USDC is enabled; USDT payment support remains DISABLED. This build runs on a Solana test network." },
   { title: "Conversion · LIVE read-only", detail: "Jupiter supplies eligible Solana-to-USDC market quotes. The sandbox build blocks mainnet order and execution; USDC payments skip the swap." },
   { title: "Payout · SANDBOX/SIMULATED", detail: "Stables' test environment provides quotes, hosted verification, checked bank details and transfer status. Production payouts and KYC are DISABLED." },
-  { title: "Data & operations", detail: "Lovable Cloud / PostgreSQL stores payment records, identity links, verification status, timeline events and append-only admin audit records—not customer balances." },
+  { title: "Runtime & hosting", detail: "Node.js and TypeScript on the server. Managed cloud hosting today, with a planned move to AWS as volume grows." },
+  { title: "Engineering", detail: "Built from scratch by our in-house team. AI tools (ChatGPT, Claude, Lovable) assist with support, automation, marketing and coding; the team designs, reviews and owns the code." },
+  { title: "Security roadmap", detail: "Core controls are in place (access rules, signed webhooks, audit log, rate limits, scans). An independent audit, penetration testing and hardening form the next funded phase before go-live." },
+  { title: "Data & operations", detail: "SQL / PostgreSQL stores payment records, identity links, verification status, timeline events and append-only admin audit records—not customer balances." },
 ];
 
 const contents = [
@@ -39,7 +42,7 @@ function Docs() {
         <div className="text-xs font-semibold uppercase tracking-wider text-primary">Documentation</div>
         <h1 className="mt-3 text-4xl md:text-5xl font-semibold">LamportPay Docs</h1>
         <p className="mt-4 max-w-3xl text-lg text-muted-foreground">How LamportPay works under the hood: architecture, wallet identity, the payment sequence and our safeguards. LamportPay does not offer a public API; we build on partner APIs from Stables and Jupiter.</p>
-        <p className="mt-3 text-xs text-muted-foreground">Updated 12 October 2026</p>
+        <p className="mt-3 text-xs text-muted-foreground">Updated 15 October 2026</p>
         <PaymentFlowStatus />
 
         <div className="mt-12 grid gap-10 md:grid-cols-[200px_minmax(0,1fr)]">

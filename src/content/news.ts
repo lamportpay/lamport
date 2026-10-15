@@ -19,9 +19,9 @@ export const NEWS: NewsItem[] = [
     slug: "lamportpay-going-live",
     tag: "Launch",
     title: "LamportPay is getting ready to go live",
-    headline: "Security and testing are almost complete — LamportPay is going live soon.",
+    headline: "LamportPay is preparing to go live — join early access.",
     summary:
-      "The platform is built, the security work is largely done and final testing is under way. Here is what we have completed and what happens before launch.",
+      "The platform is built and core security controls are in place. Next comes our dedicated security phase — an independent audit and hardening — before a controlled launch.",
     published: "2026-10-15",
     keywords: ["LamportPay launch", "crypto to bank payout", "Solana stablecoin payout", "USDC to bank", "early access"],
     body: [
@@ -45,7 +45,8 @@ export const NEWS: NewsItem[] = [
       {
         heading: "What happens before launch",
         bullets: [
-          "Final testing and an independent security review",
+          "A dedicated security phase: independent external audit, penetration testing and hardening",
+          "Final end-to-end testing on production infrastructure",
           "Production approval from our payout partner",
           "Opening real payouts to the first users",
         ],
