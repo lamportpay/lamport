@@ -1,63 +1,60 @@
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Check } from "lucide-react";
 import { INTEGRATION_GROUPS } from "@/content/integration-status";
 
-const PER_ROW = 3;
-const initials = (n: string) => n.split(" ").map((w) => w[0]).join("").slice(0, 2);
+const initials = (name: string) => name.split(" ").map((word) => word[0]).join("").slice(0, 2);
+type Item = { name: string; status: string; detail: string; asset?: string; group: string };
+const all: Item[] = INTEGRATION_GROUPS.flatMap((group) => group.entries.map((entry) => ({ ...entry, group: group.title })));
+const cut = all.findIndex((entry) => entry.name === "Hyperliquid");
+const items = cut >= 0 ? all.slice(0, cut + 1) : all.filter((entry) => entry.group === "Connected today");
 
-function Logo({ entry }: { entry: { name: string; asset?: string; group: string } }) {
-  const done = entry.group === "Connected today";
-  const inProgress = entry.name === "Hyperliquid";
+function Logo({ entry }: { entry: Item }) {
   return (
-    <span className="relative z-10 flex size-12 items-center justify-center rounded-full border-2 border-home-brand bg-background shadow-sm">
-      {inProgress && (
-        <span
-          aria-hidden
-          className="absolute -inset-1.5 rounded-full motion-safe:animate-spin"
-          style={{
-            animationDuration: "4.5s",
-            animationTimingFunction: "linear",
-            background: "conic-gradient(from 0deg, transparent 0%, color-mix(in oklab, var(--home-brand, #6366f1) 40%, transparent) 20%, var(--home-brand, #6366f1) 45%, #a855f7 65%, transparent 85%)",
-            WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
-            mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px))",
-          }}
-        />
-      )}
+    <span className="integration-logo relative z-10 flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-home-brand bg-background shadow-sm">
+      {entry.name === "Hyperliquid" && <span aria-hidden="true" className="integration-progress-ring absolute -inset-1.5 rounded-full" />}
       {entry.asset ? <img src={entry.asset} alt="" width="28" height="28" className="size-7 object-contain" /> : <span className="text-xs font-bold text-home-brand">{initials(entry.name)}</span>}
-      {done && (
-        <span
-          className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full shadow ring-2 ring-background"
-          style={{ background: "linear-gradient(135deg, #34d399, #10b981 55%, #059669)" }}
-          aria-label="Completed"
-        >
-          <Check className="size-3 text-white" strokeWidth={3.5} />
-        </span>
-      )}
+      {entry.group === "Connected today" && <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-success text-primary-foreground shadow ring-2 ring-background" aria-label="Completed"><Check className="size-3" strokeWidth={3.5} /></span>}
     </span>
   );
 }
 
-function Card({ entry, i }: { entry: Item; i: number }) {
-  return (
-    <div className="rounded-2xl border border-border bg-background p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Step {i + 1} · {entry.group}</p>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <h3 className="text-sm font-semibold">{entry.name}</h3>
-        <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] font-semibold text-home-brand">{entry.status}</span>
-      </div>
-      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{entry.detail}</p>
-    </div>
-  );
-}
-
-type Item = { name: string; status: string; detail: string; asset?: string; group: string; label: string };
-
 export function IntegrationStatus() {
-  const all: Item[] = INTEGRATION_GROUPS.flatMap((g) => g.entries.map((e) => ({ ...e, group: g.title, label: g.label })));
-  // Show only what is connected or in progress (up to Hyperliquid); future plans live in the Roadmap.
-  const cut = all.findIndex((e) => e.name === "Hyperliquid");
-  const items = cut >= 0 ? all.slice(0, cut + 1) : all.filter((e) => e.group === "Connected today");
-  const rows: Item[][] = [];
-  for (let i = 0; i < items.length; i += PER_ROW) rows.push(items.slice(i, i + PER_ROW));
+  const listRef = useRef<HTMLOListElement>(null);
+  const [paths, setPaths] = useState<string[]>([]);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const nodes = Array.from(list.querySelectorAll<HTMLElement>(":scope > .integration-stop"));
+    const measure = () => {
+      const desktop = window.matchMedia("(min-width: 768px)").matches;
+      const points = nodes.map((node) => ({ x: node.offsetLeft + (desktop ? node.clientWidth / 2 : 24), y: node.offsetTop + 24 }));
+      setPaths(points.slice(1).map((point, index) => {
+        const previous = points[index];
+        if (desktop && Math.abs(point.y - previous.y) > 50) {
+          const edge = Math.min(list.clientWidth - 4, Math.max(point.x, previous.x) + nodes[index].clientWidth / 2 - 8);
+          const radius = Math.min(48, (point.y - previous.y) / 2);
+          return `M ${previous.x} ${previous.y} H ${edge - radius} Q ${edge} ${previous.y} ${edge} ${previous.y + radius} V ${point.y - radius} Q ${edge} ${point.y} ${edge - radius} ${point.y} H ${point.x}`;
+        }
+        return `M ${previous.x} ${previous.y} L ${point.x} ${point.y}`;
+      }));
+    };
+    measure();
+    const resize = new ResizeObserver(measure);
+    resize.observe(list);
+    window.addEventListener("resize", measure);
+    if (typeof IntersectionObserver === "undefined") return () => { resize.disconnect(); window.removeEventListener("resize", measure); };
+    list.dataset.motionReady = "true";
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        const index = nodes.indexOf(entry.target as HTMLElement);
+        entry.target.setAttribute("data-visible", String(entry.isIntersecting));
+        list.querySelector(`[data-segment="${index}"]`)?.setAttribute("data-visible", String(entry.isIntersecting));
+      }
+    }, { threshold: 0, rootMargin: "0px 0px -24px 0px" });
+    nodes.forEach((node) => observer.observe(node));
+    return () => { observer.disconnect(); resize.disconnect(); window.removeEventListener("resize", measure); };
+  }, []);
 
   return (
     <section id="integration-status" className="home-section border-t border-border bg-home-surface">
@@ -65,50 +62,26 @@ export function IntegrationStatus() {
         <p className="home-eyebrow">Integration outlook</p>
         <h2 className="home-heading">Building a multi-chain fiat settlement ecosystem.</h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">Bringing Solana’s speed and Hyperliquid’s liquidity (in progress) into one non-custodial route to local bank payouts. Each stop shows its real status.</p>
-
-        {/* Mobile: vertical tree */}
-        <ol aria-label="Integration timeline" className="relative mt-8 space-y-6 border-l-2 border-home-brand/40 pl-8 md:hidden">
-          {items.map((e, i) => (
-            <li key={e.name} className="relative">
-              <span className="absolute -left-[3.15rem] top-0"><Logo entry={e} /></span>
-              <Card entry={e} i={i} />
+        <ol ref={listRef} aria-label="Integration timeline" className="integration-timeline">
+          <li aria-hidden="true" className="integration-path-layer">
+            <svg width="100%" height="100%" aria-hidden="true">
+              {paths.map((d, index) => <g key={index} data-segment={index + 1} data-visible="false"><path d={d} className="integration-path-track" /><path d={d} pathLength="1" className="integration-path-draw" /></g>)}
+            </svg>
+          </li>
+          {items.map((entry, index) => (
+            <li key={entry.name} className="integration-stop" data-visible="false" style={{ "--integration-column": index < 3 ? index + 1 : 3 - (index % 3), "--integration-row": Math.floor(index / 3) + 1 } as CSSProperties}>
+              <Logo entry={entry} />
+              <div className="integration-card rounded-lg border border-border bg-background p-4">
+                <p className="text-[10px] font-semibold uppercase text-muted-foreground">{entry.group}</p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <h3 className="text-sm font-semibold">{entry.name}</h3>
+                  <span className="ml-auto rounded-full border border-border px-2 py-0.5 text-[10px] font-semibold text-home-brand">{entry.status}</span>
+                </div>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{entry.detail}</p>
+              </div>
             </li>
           ))}
         </ol>
-
-        {/* Desktop: serpentine U-turn road */}
-        <div className="relative mt-10 hidden px-14 md:block" aria-hidden="false">
-          {rows.map((row, r) => {
-            const reverse = r % 2 === 1;
-            const last = r === rows.length - 1;
-            return (
-              <div key={r} className="relative pb-16">
-                <span
-                  style={last ? { [reverse ? "left" : "right"]: `${((PER_ROW - row.length) / PER_ROW) * 100 + 16 / PER_ROW}%` } : undefined}
-                  className={`absolute top-6 h-1 rounded-full bg-gradient-to-r from-home-brand/50 via-home-brand to-home-brand/50 ${last ? (reverse ? "right-0" : "left-0") : "left-0 right-0"}`}
-                />
-                {!last && (
-                  <span className={`absolute top-6 h-full w-14 border-y-4 border-home-brand/70 ${reverse ? "-left-14 rounded-l-full border-l-4" : "-right-14 rounded-r-full border-r-4"}`} />
-                )}
-                <ol className={`relative grid grid-cols-3 gap-6 ${reverse ? "[direction:rtl]" : ""}`}>
-                  {row.map((e, k) => {
-                    const i = r * PER_ROW + k;
-                    return (
-                      <li key={e.name} className="flex flex-col items-center gap-3 [direction:ltr]">
-                        <Logo entry={e} />
-                        <span className="flex flex-col items-center gap-1 text-center">
-                          <span className="rounded-full bg-home-brand px-2 text-[10px] font-semibold text-primary-foreground">Step {i + 1}</span>
-                          <span className="text-sm font-semibold leading-snug">{e.name}</span>
-                        </span>
-                        <Card entry={e} i={i} />
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
-            );
-          })}
-        </div>
         <p className="mt-8 text-xs text-muted-foreground">Token symbols identify assets, not issuer partnerships. Technology connections are not financial backing.</p>
       </div>
     </section>
