@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Fingerprint,
   KeyRound,
   ShieldCheck,
