@@ -21,6 +21,7 @@ export function BrandLogo({ className = "" }: { className?: string }) {
 }
 
 const nav = [
+  { to: "/about", label: "About us" },
   { to: "/how-it-works", label: "How it works" },
   { to: "/workflow", label: "Workflow" },
   { to: "/whitepaper", label: "White paper" },
@@ -34,8 +35,10 @@ const nav = [
 const primaryNav = [
   { to: "/pay", label: "Swap" },
   { to: "/how-it-works", label: "How it works" },
+  { to: "/roadmap", label: "Roadmap" },
   { to: "/docs", label: "Docs" },
-  { to: "/contact", label: "Company" },
+  { to: "/about", label: "About us" },
+  { to: "/contact", label: "Contact" },
 ] as const;
 
 export function SiteLayout({ children }: { children: ReactNode }) {
@@ -197,7 +200,7 @@ function SiteFooter() {
             </li>
             <li>
               <Link to="/docs" className="hover:text-white">
-                Developer docs
+                Docs
               </Link>
             </li>
             <li>
@@ -210,6 +213,16 @@ function SiteFooter() {
         <div>
           <div className="text-sm font-semibold mb-3 text-white">Company</div>
           <ul className="space-y-2 text-sm text-white/80">
+            <li>
+              <Link to="/about" className="hover:text-white">
+                About us
+              </Link>
+            </li>
+            <li>
+              <Link to="/roadmap" className="hover:text-white">
+                Roadmap
+              </Link>
+            </li>
             <li>
               <Link to="/whitepaper" className="hover:text-white">
                 White paper
