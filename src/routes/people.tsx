@@ -64,7 +64,7 @@ function PersonCard({ m, onOpen }: { m: TeamMember; onOpen: () => void }) {
           src={m.photo}
           alt={`Portrait of ${m.name}`}
           loading="lazy"
-          className={`size-full object-cover object-top transition duration-500 ${m.photoClass ?? "group-hover:scale-105"}`}
+          className={`size-full object-cover object-top transition duration-500 group-hover:scale-105`}
         />
         <span className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-primary via-violet-500 to-blue-500" />
       </button>
@@ -184,11 +184,11 @@ function People() {
         <SheetContent side="right" className="w-full overflow-y-auto p-0 sm:max-w-md">
           {active && (
             <>
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-primary/15 to-violet-500/15">
+              <div className="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-primary/15 to-violet-500/15">
                 <img
                   src={active.photo}
                   alt={`Portrait of ${active.name}`}
-                  className={`size-full object-cover object-top ${active.sheetPhotoClass ?? active.photoClass ?? ""}`}
+                  className={`size-full object-cover object-[50%_15%]`}
                 />
                 <span className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-primary via-violet-500 to-blue-500" />
               </div>
