@@ -175,3 +175,4 @@
 - [x] Every waived payment records why and which place in line earned it; pricing stays frozen once quoted
 - [x] Joining from the launch popup records the connected wallet; admin shows wallet, place in line and whether each free place has been used
 - [x] Verify: typecheck clean, 508 unit tests pass, build OK, signed-in calculator still quotes 2% for a non-listed account with the new waiver field present
+- [x] Both fee lines browser-verified on /pay: a normal account shows "LamportPay fee 4.00 USDC" on 200 USDC; an account on the list shows "LamportPay fee Waived (early access)" with the full amount converted. The list entry used for that check was a temporary row, removed afterwards (list back to 0 signups, fee back to 2%)
