@@ -17,27 +17,27 @@ export const PAYMENT_JOURNEY = [
   {
     title: "Review",
     detail:
-      "Check bank details with Stables, complete any required verification on its hosted sandbox page, then review the recipient, amount and costs.",
+      "Check bank details with Stables, complete any required verification on its hosted verification page, then review the recipient, amount and costs.",
   },
   {
     title: "Sign",
     detail:
-      "Approve in your wallet. In the devnet / sandbox build, you sign a devnet memo transaction that moves no funds—not a mainnet deposit or swap.",
+      "Approve in your wallet. In the demo build, you sign a test-network memo transaction that moves no funds—not a mainnet deposit or swap.",
   },
   {
     title: "Processing",
     detail:
-      "The app simulates a sandbox deposit and follows the transfer status reported by Stables. Some sandbox destinations can remain processing.",
+      "The app simulates a demo deposit and follows the transfer status reported by Stables. Some demo destinations can remain processing.",
   },
   {
     title: "Complete",
     detail:
-      "When Stables reports completion, the timeline and receipt update. A sandbox receipt is a demo record, not evidence of a real bank payout.",
+      "When Stables reports completion, the timeline and receipt update. A demo receipt is a demonstration record, not evidence of a real bank payout.",
   },
 ];
 
 export const PAYMENT_SAFETY =
-  "DEVNET / SANDBOX: Solana devnet test assets and the Stables sandbox. Real bank payouts and production identity verification are DISABLED pending production approval.";
+  "DEMO / SIMULATED: test-network assets and the payout partner's test environment. Real bank payouts and production identity verification are DISABLED pending production approval.";
 
 /** Public identity explanation: ownership proof is not identity/KYC approval. */
 export const VERIFICATION_JOURNEY = [
@@ -60,14 +60,14 @@ export const VERIFICATION_JOURNEY = [
     label: "DEMO / SIMULATED · KYC",
     summary: "Stables handles identity checks on its hosted page.",
     detail:
-      "After a quote and bank-detail checks, any required identity verification takes place on Stables’ hosted sandbox page. LamportPay keeps the verification link and status, not identity documents. Wallet-only customers provide the email Stables requires.",
+      "After a quote and bank-detail checks, any required identity verification takes place on Stables’ hosted verification page. LamportPay keeps the verification link and status, not identity documents. Wallet-only customers provide the email Stables requires.",
   },
   {
     title: "Check eligibility before transfer",
     label: "PRODUCTION PAYOUT DISABLED",
     summary: "Verified sender, checked recipient, then wallet approval.",
     detail:
-      "The server requires an eligible verified Stables customer before preparing a transfer. Own-account holder details come from the verified record; beneficiary payouts require recipient details and purpose. Wallet ownership alone never authorizes a bank payout. In the devnet / sandbox build, approval is a devnet memo that moves no funds.",
+      "The server requires an eligible verified Stables customer before preparing a transfer. Own-account holder details come from the verified record; beneficiary payouts require recipient details and purpose. Wallet ownership alone never authorizes a bank payout. In the demo build, approval is a test-network memo that moves no funds.",
   },
 ] as const;
 
@@ -84,6 +84,6 @@ export const PAYMENT_COSTS = [
   {
     title: "Swap & network costs",
     detail:
-      "Any Jupiter swap costs, price impact and Solana network fees are separate. The devnet / sandbox build does not execute mainnet swaps or move payment funds.",
+      "Any Jupiter swap costs, price impact and Solana network fees are separate. The demo build does not execute mainnet swaps or move payment funds.",
   },
 ];
