@@ -83,7 +83,21 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             : "border-transparent bg-transparent",
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
+        <div
+          data-header-banner
+          className={cn(
+            "grid transition-all duration-300",
+            scrolled
+              ? "grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0",
+          )}
+          aria-hidden={!scrolled}
+        >
+          <div className="min-h-0 overflow-hidden">
+            <ColosseumBanner />
+          </div>
+        </div>
+              <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center group" aria-label="LamportPay home">
             <BrandLogo />
           </Link>
@@ -165,21 +179,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         >
           <CryptoPriceTicker inline />
         </div>
-        <div
-          data-header-banner
-          className={cn(
-            "grid transition-all duration-300",
-            scrolled
-              ? "grid-rows-[1fr] opacity-100"
-              : "grid-rows-[0fr] opacity-0",
-          )}
-          aria-hidden={!scrolled}
-        >
-          <div className="min-h-0 overflow-hidden">
-            <ColosseumBanner />
-          </div>
-        </div>
-      </header>
+</header>
       <main
         style={{ paddingTop: `${headerH}px` }}
         className={cn("flex-1", !isHome && "site-subpage relative isolate")}
