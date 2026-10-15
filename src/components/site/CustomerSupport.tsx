@@ -52,6 +52,7 @@ function ChatBody() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const timer = useRef<number | null>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => () => {
     if (timer.current) window.clearInterval(timer.current);
@@ -76,7 +77,9 @@ function ChatBody() {
 
   function ask(raw: string) {
     const q = raw.trim().slice(0, 1000);
-    if (!q || typing) return;
+    if (!q || typing || busy) return;
+    if (timer.current) window.clearInterval(timer.current);
+    setBusy(true);
     const user: Msg = { id: crypto.randomUUID(), role: "user", text: q };
     const base = [...messages, user];
     setMessages(base);
@@ -89,23 +92,28 @@ function ChatBody() {
       setTyping(false);
       const words = answer.split(/(\s+)/);
       let i = 0;
-      timer.current = window.setInterval(() => {
+      const handle = window.setInterval(() => {
         i += 3;
         const text = words.slice(0, i).join("");
         setMessages([...base, { id, role: "assistant", text }]);
         if (i >= words.length) {
-          if (timer.current) window.clearInterval(timer.current);
+          window.clearInterval(handle);
+          if (timer.current === handle) timer.current = null;
+          setBusy(false);
           const final = [...base, { id, role: "assistant" as const, text: answer }];
           setMessages(final);
           persist(final);
           inputRef.current?.focus();
         }
       }, 30);
+      timer.current = handle;
     }, 450);
   }
 
   function reset() {
     if (timer.current) window.clearInterval(timer.current);
+    timer.current = null;
+    setBusy(false);
     setTyping(false);
     setMessages([]);
     window.localStorage.removeItem(STORAGE_KEY);
@@ -145,7 +153,7 @@ function ChatBody() {
             <Loader2 className="size-4 animate-spin" /> Lammy is typing…
           </div>
         )}
-        {!typing && chips.length > 0 && (
+        {!typing && !busy && chips.length > 0 && (
           <div className={messages.length === 0 ? "grid gap-2" : "flex flex-wrap gap-1.5 pt-1"}>
             {chips.map((f) =>
               messages.length === 0 ? (
@@ -190,7 +198,7 @@ function ChatBody() {
             }
           }}
         />
-        <Button type="submit" size="icon" aria-label="Send question" disabled={!input.trim() || typing}>
+        <Button type="submit" size="icon" aria-label="Send question" disabled={!input.trim() || typing || busy}>
           <Send />
         </Button>
       </form>
