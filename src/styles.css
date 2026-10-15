@@ -2187,3 +2187,14 @@ body.has-cookie-banner .site-footer-legal {
   transition: transform .2s ease, box-shadow .2s ease;
 }
 .launch-popup-cta:hover { transform: translateY(-1px); box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--primary) 60%, transparent); }
+
+/* Top news bar: split transition between items */
+.launch-status .news-split { display: inline-flex; align-items: center; gap: .5rem; color: inherit; text-decoration: none; animation: news-split-in .7s cubic-bezier(.2,.8,.2,1) both; }
+.launch-status .news-split:hover { text-decoration: underline; text-underline-offset: 3px; }
+.news-split-tag { font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: .04em; opacity: .85; }
+.launch-status-all { font-size: 12px; font-weight: 600; color: inherit; opacity: .85; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+@keyframes news-split-in {
+  0% { clip-path: inset(0 50% 0 50%); opacity: 0; letter-spacing: .08em; }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; letter-spacing: normal; }
+}
+@media (prefers-reduced-motion: reduce) { .launch-status .news-split { animation: none; } }

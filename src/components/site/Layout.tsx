@@ -324,6 +324,11 @@ function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link to="/news" className="hover:text-white">
+                News
+              </Link>
+            </li>
+            <li>
               <Link to="/contact" className="hover:text-white">
                 Contact
               </Link>
