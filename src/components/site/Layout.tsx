@@ -9,6 +9,7 @@ import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/s
 import { CookieConsent, openCookieSettings } from "@/components/site/CookieConsent";
 import { ColosseumBanner } from "@/components/site/ColosseumBanner";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
+import { ScrollReveal } from "@/components/site/ScrollReveal";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
   return (
@@ -130,6 +131,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       </header>
       <main className={cn("flex-1", !isHome && "site-subpage relative isolate")}>
         {!isHome && <PageHeroDecor pathname={pathname} />}
+        <ScrollReveal />
         {children}
       </main>
       <SiteFooter />

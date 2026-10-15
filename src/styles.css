@@ -1827,3 +1827,24 @@ body.has-cookie-banner .site-footer-legal {
 @media (prefers-reduced-motion: reduce) {
   .brand-frame-line, .page-hero-icon-ring { animation: none; }
 }
+
+/* Scroll reveal: sections fade/slide in once when entering the viewport */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal-on-scroll.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

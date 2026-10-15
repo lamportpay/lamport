@@ -12,7 +12,6 @@ import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
-import { Preloader } from "@/components/site/Preloader";
 
 function NotFoundComponent() {
   return (
@@ -167,7 +166,6 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Preloader />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster />
