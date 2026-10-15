@@ -10,7 +10,7 @@ import { HomeCapabilities } from "@/components/site/HomeCapabilities";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
-import { EcosystemSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
+import { EcosystemSection } from "@/components/site/VisionRoadmapEcosystem";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { pageSeo } from "@/lib/seo";
 
