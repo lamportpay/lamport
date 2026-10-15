@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Flag } from "@/components/app/Flag";
 import { CURRENT_FLOW, FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
 import { publicEcosystem, type EcosystemCompany } from "@/content/ecosystem";
 
@@ -261,13 +260,6 @@ export function RoadmapSection() {
   );
 }
 
-const regionCodes = { USA: "US", UK: "GB", UAE: "AE", IN: "IN" };
-const regionNames = {
-  USA: "United States",
-  UK: "United Kingdom",
-  UAE: "United Arab Emirates",
-  IN: "India",
-};
 
 function CompanyLogo({ c }: { c: EcosystemCompany }) {
   const [broken, setBroken] = useState(false);
