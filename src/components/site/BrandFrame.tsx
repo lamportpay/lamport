@@ -1,7 +1,6 @@
 import {
   BookOpen, Building2, Cookie, Cpu, FileText, GitBranch, Handshake, Map,
-  Mail, Newspaper, ShieldCheck, Sparkles, Workflow, type LucideIcon,
-} from "lucide-react";
+  Mail, Newspaper, ShieldCheck, Sparkles, Workflow, type LucideIcon, Users } from "lucide-react";
 import { HeroRibbon } from "@/components/site/HeroRibbon";
 
 /** Brand wave lines running down both page edges (desktop only, decorative). */
@@ -30,7 +29,7 @@ export function BrandFrame() {
 
 const ICONS: Array<[string, LucideIcon]> = [
   ["/how-it-works", Sparkles], ["/workflow", Workflow], ["/docs", BookOpen],
-  ["/whitepaper", FileText], ["/roadmap", Map], ["/about", Building2],
+  ["/whitepaper", FileText], ["/roadmap", Map], ["/about", Building2], ["/people", Users],
   ["/partners", Handshake], ["/technology", Cpu], ["/blog", Newspaper],
   ["/compliance", ShieldCheck], ["/cookies", Cookie], ["/contact", Mail],
 ];
@@ -41,10 +40,10 @@ export function PageHeroDecor({ pathname }: { pathname: string }) {
   return (
     <div className="page-hero-decor" aria-hidden="true">
       <HeroRibbon variant="compact" />
-      <div className="page-hero-icon">
+      <div className={`page-hero-icon${pathname.startsWith("/people") ? " page-hero-icon-low" : ""}`}>
         <span className="page-hero-icon-ring" />
         <span className="page-hero-icon-ring page-hero-icon-ring-2" />
-        <Icon className="h-10 w-10" strokeWidth={1.6} />
+        <Icon className="page-hero-icon-glyph h-10 w-10" strokeWidth={1.6} />
       </div>
     </div>
   );
