@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createOpenAI } from "@ai-sdk/openai";
 import { convertToModelMessages, stepCountIs, streamText, tool, type UIMessage } from "ai";
 import { z } from "zod";
+import { askAiKnowledge } from "@/lib/ai/ask-ai-knowledge.server";
 import {
   createLovableAiGatewayRunIdFetch,
   getLovableAiGatewayRunId,
@@ -23,7 +24,8 @@ Facts you may use:
 - Roadmap: Solana, Jupiter and Stables integrated (sandbox); Hyperliquid in progress; more cryptocurrencies, more payout providers, new countries, Circle and Tether, production launch and a B2B payout API are planned. No public API is offered today. No partnership is confirmed beyond what is listed.
 - Contact: hello@lamportpay.com or the Contact page.
 If the visitor reports a problem, complaint, failed or stuck payment, or wants the team to contact them, call the file_complaint tool once with a short summary (ask for an email first if they want a reply, but never insist). After filing, tell them the team has received it.
-If you don't know something or it is account-specific, say so and point to the team. Do not invent numbers, partners or dates.`;
+If you don't know something or it is account-specific, say so and point to the team. Do not invent numbers, partners or dates.
+The official LamportPay knowledge below (from the website's own pages) is the source of truth; prefer it over general knowledge, and where it marks something Planned, In progress, Sandbox or unconfirmed, say so.`;
 
 function bad(status: number, error: string) {
   return Response.json({ error }, { status });
@@ -92,7 +94,7 @@ export const Route = createFileRoute("/api/ask-ai")({
         });
         const result = streamText({
           model: provider.responses(MODEL),
-          instructions: INSTRUCTIONS,
+          instructions: `${INSTRUCTIONS}\n\n# Official LamportPay knowledge\n${askAiKnowledge()}`,
           messages: await convertToModelMessages(messages),
           abortSignal: request.signal,
           stopWhen: stepCountIs(50),
