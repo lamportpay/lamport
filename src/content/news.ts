@@ -18,16 +18,17 @@ export const NEWS: NewsItem[] = [
   {
     slug: "lamportpay-going-live",
     tag: "Launch",
-    title: "LamportPay is live — mainnet launch follows the security phase",
-    headline: "LamportPay is live. Mainnet go-live follows as soon as our security phase is complete — join early access.",
+    title: "LamportPay prepares for mainnet: payment flow proven on devnet and sandbox",
+    headline: "LamportPay is preparing for mainnet — payment flow proven on Solana devnet and the Stables sandbox. Join early access.",
     summary:
-      "The LamportPay website is live. The payment flow is built and battle-tested on devnet with our payout partner's sandbox, and moves to Solana mainnet as soon as the Phase 8 security work is complete. The first 10 early-access users pay no LamportPay fee.",
+      "The LamportPay website is live. The full payment flow runs on Solana devnet, with bank payouts tested through the Stables sandbox. Once Phase 8 security work is complete, we move to Solana mainnet and production payouts. The first 10 early-access users pay no LamportPay fee.",
     published: "2026-10-15",
-    keywords: ["LamportPay launch", "crypto to bank payout", "Solana stablecoin payout", "USDC to bank", "early access"],
+    keywords: ["LamportPay mainnet", "crypto to bank payout", "Solana stablecoin payout", "USDC to bank", "early access"],
     body: [
       {
         paragraphs: [
-          "LamportPay turns USDC on Solana into a payout to a local bank account, through our licensed payout partner Stables. The website is live. The payment flow is built and battle-tested end to end on devnet with the partner sandbox; mainnet go-live follows as soon as our Phase 8 security work — independent audit, penetration testing and hardening — is complete.",
+          "LamportPay converts USDC on Solana into a payout to a local bank account, through our payout partner Stables. Today the on-chain side of every payment runs on Solana devnet, and the bank payout side is tested end to end through the Stables sandbox API — no real funds move.",
+          "The next milestone is mainnet. As soon as our Phase 8 security work — independent audit, penetration testing and hardening — is complete, LamportPay moves to Solana mainnet and switches payouts to Stables production, starting with a controlled launch.",
         ],
       },
       {
@@ -39,14 +40,14 @@ export const NEWS: NewsItem[] = [
           "Admin sign-in with password plus emailed code, tamper-proof audit log and fee ledger",
           "Rate limits, emergency payment controls and automatic payment status sync",
           "Automated secret and dependency scans, with security scans passing",
-          "End-to-end testing in the payout partner's sandbox",
+          "On-chain flow tested on Solana devnet; bank payouts tested end to end in the Stables sandbox",
         ],
       },
       {
         heading: "What happens next",
         bullets: [
           "A dedicated security phase: independent external audit, penetration testing and hardening",
-          "Mainnet go-live: switching on on-chain settlement on Solana mainnet, starting with a controlled launch",
+          "Mainnet launch: payments move to Solana mainnet and payouts switch to Stables production, starting with a controlled rollout",
           "More assets, partners and chains — see the roadmap",
         ],
       },

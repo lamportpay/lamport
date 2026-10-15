@@ -113,7 +113,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
       { label: "Independent external security audit", done: false },
       { label: "Penetration testing and hardening", done: false },
       { label: "Monitoring, alerting and incident response", done: false },
-      { label: "Partner production approval and mainnet go-live", done: false },
+      { label: "Solana mainnet launch and Stables production payouts", done: false },
     ],
   },
   {
