@@ -22,13 +22,50 @@ export function StatusPill({ status }: { status: IntegrationStatus }) {
   );
 }
 
-export function IntegrationCard({ item, large = false }: { item: IntegrationItem; large?: boolean }) {
+/** Two-letter mark so every card has a visual anchor without using a brand's logo. */
+function monogram(name: string) {
+  const words = name
+    .replace(/[()]/g, "")
+    .split(/[\s/]+/)
+    .filter((w) => /^[a-zA-Z0-9]/.test(w));
+  if (words.length > 1) return (words[0][0] + words[1][0]).toUpperCase();
+  return (words[0]?.slice(0, 2) ?? name.slice(0, 2)).toUpperCase();
+}
+
+export function IntegrationCard({
+  item,
+  large = false,
+  className,
+}: {
+  item: IntegrationItem;
+  large?: boolean;
+  className?: string;
+}) {
   return (
-    <article className={cn("rounded-2xl border border-border bg-card p-6 flex flex-col", large && "md:p-8")}>
+    <article
+      className={cn(
+        "rounded-2xl border border-border bg-card p-6 flex flex-col",
+        large && "md:p-8",
+        className,
+      )}
+    >
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">{item.role}</p>
-          <h3 className={cn("mt-1 font-semibold", large ? "text-2xl" : "text-lg")}>{item.name}</h3>
+        <div className="flex items-start gap-3 min-w-0">
+          <span
+            aria-hidden
+            className={cn(
+              "shrink-0 inline-flex items-center justify-center rounded-xl border border-primary/15 bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 font-bold tracking-tight text-primary",
+              large ? "w-12 h-12 text-base" : "w-10 h-10 text-sm",
+            )}
+          >
+            {monogram(item.name)}
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+              {item.role}
+            </p>
+            <h3 className={cn("mt-1 font-semibold", large ? "text-2xl" : "text-lg")}>{item.name}</h3>
+          </div>
         </div>
         <StatusPill status={item.status} />
       </div>

@@ -1665,3 +1665,9 @@
   .crypto-ticker-track { animation: none; }
   .crypto-ticker { overflow-x: auto; }
 }
+
+/* Cookie banner: reserve the banner's real height so the footer's legal line
+   never sits underneath it. The height is published by CookieConsent. */
+body.has-cookie-banner .site-footer-legal {
+  padding-bottom: calc(var(--cookie-banner-height, 13rem) + 3.5rem);
+}

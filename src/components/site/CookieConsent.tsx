@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Cookie, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const KEY = "lamportpay-cookie-consent";
@@ -14,6 +14,7 @@ export function openCookieSettings() {
 
 export function CookieConsent() {
   const [open, setOpen] = useState(false);
+  const bannerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     try {
@@ -25,6 +26,31 @@ export function CookieConsent() {
     window.addEventListener(OPEN_EVENT, show);
     return () => window.removeEventListener(OPEN_EVENT, show);
   }, []);
+
+  // Keep the footer's legal line clear of the banner while it is open: publish the
+  // banner's real height so the page can reserve exactly that much space.
+  useEffect(() => {
+    document.body.classList.toggle("has-cookie-banner", open);
+    if (!open) return;
+
+    const setHeight = () => {
+      const h = bannerRef.current?.offsetHeight ?? 0;
+      if (h) document.body.style.setProperty("--cookie-banner-height", `${h}px`);
+    };
+    setHeight();
+
+    const observer =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(setHeight) : undefined;
+    if (bannerRef.current && observer) observer.observe(bannerRef.current);
+    window.addEventListener("resize", setHeight);
+
+    return () => {
+      document.body.classList.remove("has-cookie-banner");
+      document.body.style.removeProperty("--cookie-banner-height");
+      observer?.disconnect();
+      window.removeEventListener("resize", setHeight);
+    };
+  }, [open]);
 
   const choose = (choice: CookieChoice) => {
     try {
@@ -42,6 +68,7 @@ export function CookieConsent() {
 
   return (
     <div
+      ref={bannerRef}
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-title"
