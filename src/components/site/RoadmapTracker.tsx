@@ -27,7 +27,8 @@ export function RoadmapTracker() {
   const total = TRACKER_PHASES.length;
   const done = TRACKER_PHASES.filter((p) => p.status === "done").length;
   const current = TRACKER_PHASES.find((p) => p.status === "current");
-  const pct = Math.round(((done + 0.5) / total) * 100);
+  const curFrac = current ? current.items.filter((i) => i.done).length / current.items.length : 0;
+  const pct = Math.round(((done + curFrac) / total) * 100);
   const shown = useMemo(
     () => TRACKER_PHASES.filter((p) => filter === "all" || p.status === filter),
     [filter],
