@@ -75,8 +75,8 @@ export function LaunchPopup() {
             Mainnet launch coming soon
           </DialogTitle>
           <DialogDescription className="text-sm leading-relaxed text-muted-foreground">
-            Our website is live and the payment flow is built and battle-tested on devnet.
-            Mainnet go-live follows as soon as our security phase is complete. Join early access to be first in line.
+            Our payment flow runs on Solana devnet, with bank payouts tested in the Stables sandbox.
+            Once our security phase is complete, we move to mainnet and production payouts. Join early access to be first in line.
           </DialogDescription>
           <div className="launch-popup-offer">
             <Gift className="h-5 w-5 shrink-0 text-primary" aria-hidden />
