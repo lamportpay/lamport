@@ -80,10 +80,17 @@ function About() {
               <h2 className="text-2xl font-semibold">What we stand for</h2>
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 {values.map(({ icon: Icon, title, detail }) => (
-                  <div key={title} className="rounded-xl border border-border bg-card p-5">
-                    <Icon className="h-5 w-5 text-primary" />
-                    <h3 className="mt-3 font-semibold">{title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{detail}</p>
+                  <div key={title} className="overflow-hidden rounded-xl border border-border bg-card">
+                    <div
+                      aria-hidden="true"
+                      className="flex h-28 items-center justify-center border-b border-border bg-gradient-to-br from-primary/10 via-transparent to-violet-500/10"
+                    >
+                      <Icon className="size-12 text-primary" strokeWidth={1.4} />
+                    </div>
+                    <div className="p-5">
+                      <h3 className="font-semibold">{title}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{detail}</p>
+                    </div>
                   </div>
                 ))}
               </div>
