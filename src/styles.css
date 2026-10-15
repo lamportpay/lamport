@@ -1665,3 +1665,9 @@
   .crypto-ticker-track { animation: none; }
   .crypto-ticker { overflow-x: auto; }
 }
+
+/* Cookie banner: keep the footer's legal line clear of the fixed banner. */
+body.has-cookie-banner .site-footer-legal { padding-bottom: 14rem; }
+@media (min-width: 1024px) {
+  body.has-cookie-banner .site-footer-legal { padding-bottom: 10rem; }
+}
