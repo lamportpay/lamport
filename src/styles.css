@@ -598,6 +598,36 @@
   background: oklch(1 0 0 / 95%);
   color: oklch(0.25 0.1 265);
 }
+/* Phones: the two hero actions stay in one row the visitor can swipe instead of
+   stacking into a column. The row centres itself while both still fit, and the
+   right edge fades so a partly off-screen button reads as "swipe", not "cut". */
+.home-hero-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: safe center;
+  gap: 12px;
+  margin-top: 32px;
+  padding: 0 22px 4px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, #000 88%, transparent 99%);
+}
+.home-hero-actions::-webkit-scrollbar {
+  display: none;
+}
+.home-hero-actions > * {
+  flex: 0 0 auto;
+}
+@media (min-width: 640px) {
+  .home-hero-actions {
+    overflow-x: visible;
+    mask-image: none;
+    padding: 0 0 4px;
+  }
+}
 .home-hero .text-home-brand {
   background-image: linear-gradient(110deg, oklch(0.35 0.14 262), oklch(0.55 0.17 280));
   background-clip: text;
@@ -688,16 +718,31 @@
 .home-cap-heading-ink {
   color: var(--home-ink);
 }
+/* Phones: one continuous row the visitor swipes through; the grid returns at
+   700px and wider. */
 .home-cap-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px 10px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 16px;
   margin: 16px 0 0;
-  padding: 0;
+  padding: 2px 44px 8px 0;
   list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, #000 92%, transparent);
+}
+.home-cap-grid::-webkit-scrollbar {
+  display: none;
 }
 .home-cap-item {
   display: flex;
+  flex: 0 0 auto;
+  width: 92px;
+  scroll-snap-align: center;
   flex-direction: column;
   align-items: center;
   gap: 6px;
@@ -766,7 +811,15 @@
 }
 @media (min-width: 700px) {
   .home-cap-grid {
+    display: grid;
+    overflow-x: visible;
+    mask-image: none;
+    padding: 0;
+    gap: 18px 10px;
     grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .home-cap-item {
+    width: auto;
   }
 }
 @media (min-width: 1024px) {

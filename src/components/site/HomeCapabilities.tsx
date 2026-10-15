@@ -178,7 +178,7 @@ export function HomeCapabilities() {
           </h2>
         </div>
 
-        <ul className="home-cap-grid" role="list">
+        <ul className="home-cap-grid" role="list" tabIndex={0} aria-label="What LamportPay does">
           {CAPABILITIES.map((item) => (
             <li key={item.key} className="home-cap-item" title={item.title}>
               <svg

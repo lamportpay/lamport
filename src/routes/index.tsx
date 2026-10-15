@@ -48,7 +48,7 @@ function Index() {
               A non-custodial route from your Solana wallet to local bank payouts, with Hyperliquid
               liquidity in progress. Your wallet. A clear quote. One journey.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <div className="home-hero-actions">
               <Button
                 asChild
                 size="lg"

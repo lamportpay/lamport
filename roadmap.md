@@ -1,3 +1,9 @@
+## Done: Mobile hero actions and capability row
+
+- [x] Hero's two action buttons stay on one swipeable row on phones instead of stacking
+- [x] "All in one" capability strip shows as one swipeable row on phones; the grid returns at 700px and wider
+- [x] Verified at 390px, 360px and 1280px: one row on phones, even grid on desktop, no page overflow, no page errors, build OK
+
 # Roadmap
 
 ## Mode wording: Devnet / Sandbox
