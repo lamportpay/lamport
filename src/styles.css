@@ -1877,3 +1877,17 @@ body.has-cookie-banner .site-footer-legal {
     transition: none;
   }
 }
+
+/* Typing headings: revealed left-to-right in steps with a brand caret */
+@media (prefers-reduced-motion: no-preference) {
+  .type-on-scroll {
+    clip-path: inset(-0.2em 100% -0.2em 0);
+  }
+  .type-on-scroll.type-visible {
+    animation: heading-type 1.1s steps(28, end) forwards;
+  }
+}
+@keyframes heading-type {
+  from { clip-path: inset(-0.2em 100% -0.2em 0); }
+  to { clip-path: inset(-0.2em -0.1em -0.2em 0); }
+}

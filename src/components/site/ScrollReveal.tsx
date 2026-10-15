@@ -13,27 +13,42 @@ export function ScrollReveal() {
     const sections = Array.from(
       document.querySelectorAll<HTMLElement>("main section, main [data-reveal]"),
     );
-    if (sections.length === 0) return;
+    const headings = Array.from(document.querySelectorAll<HTMLElement>("main h1, main h2"));
+    if (sections.length === 0 && headings.length === 0) return;
 
+    // Sections fade in when they enter and fade out again when they leave.
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("reveal-visible");
-            observer.unobserve(entry.target);
-          }
+          entry.target.classList.toggle("reveal-visible", entry.isIntersecting);
         }
       },
       { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
     );
 
+    // Headings "type" in each time they come into view.
+    const typer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          entry.target.classList.toggle("type-visible", entry.isIntersecting);
+        }
+      },
+      { threshold: 0.6 },
+    );
+
     for (const el of sections) {
-      if (el.classList.contains("reveal-visible")) continue;
       el.classList.add("reveal-on-scroll");
       observer.observe(el);
     }
+    for (const h of headings) {
+      h.classList.add("type-on-scroll");
+      typer.observe(h);
+    }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      typer.disconnect();
+    };
   }, [pathname]);
 
   return null;
