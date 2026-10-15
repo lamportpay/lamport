@@ -2100,3 +2100,59 @@ body.has-cookie-banner .site-footer-legal {
   .home-news-card { flex: none; }
 }
 @media (min-width: 1024px) { .home-news-row { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* Launch status banner — top of every marketing page */
+.launch-status {
+  position: relative;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  color: oklch(0.98 0.01 275);
+  background: linear-gradient(
+    90deg,
+    var(--home-brand),
+    oklch(0.55 0.24 300) 55%,
+    var(--home-brand)
+  );
+}
+.launch-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-success, #22c55e);
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-success, #22c55e) 60%, transparent);
+  animation: launch-status-pulse 2.2s ease-out infinite;
+}
+@keyframes launch-status-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-success, #22c55e) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .launch-status-dot { animation: none; }
+}
+.launch-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.15rem 0.65rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: oklch(1 0 0 / 0.16);
+  border: 1px solid oklch(1 0 0 / 0.28);
+  white-space: nowrap;
+}
+.launch-status-text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: oklch(1 0 0 / 0.92);
+  max-width: 62ch;
+}
