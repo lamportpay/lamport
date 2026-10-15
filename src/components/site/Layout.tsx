@@ -70,6 +70,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       style={{ ["--site-header-h" as string]: `${headerH}px` }}
     >
       <BrandFrame />
+      <LaunchStatus />
       <header
         ref={headerRef}
         style={{ marginBottom: `-${headerH}px` }}
