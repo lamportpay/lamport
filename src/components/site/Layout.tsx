@@ -270,7 +270,7 @@ function SiteFooter() {
         </div>
       </div>
       <div className="relative border-t border-white/20">
-        <div className="max-w-7xl mx-auto px-5 py-5 space-y-2 text-xs text-white/75">
+        <div className="site-footer-legal max-w-7xl mx-auto px-5 py-5 space-y-2 text-xs text-white/75">
           <div>
             <span className="font-medium text-white">Lamport Pay Ltd</span> — legal entity
             operating the <span className="font-medium text-white">LamportPay</span> platform.

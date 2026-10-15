@@ -26,6 +26,12 @@ export function CookieConsent() {
     return () => window.removeEventListener(OPEN_EVENT, show);
   }, []);
 
+  // Keep the footer's legal line clear of the banner while it is open.
+  useEffect(() => {
+    document.body.classList.toggle("has-cookie-banner", open);
+    return () => document.body.classList.remove("has-cookie-banner");
+  }, [open]);
+
   const choose = (choice: CookieChoice) => {
     try {
       window.localStorage.setItem(
