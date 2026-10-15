@@ -20,7 +20,11 @@ const MONEY_OUT = [
 
 export function HomeGlance() {
   return (
-    <div aria-label="Crypto in, local money out" className="home-currency-summary mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-3 sm:gap-5">
+    <div
+      aria-label="Crypto in, local money out"
+      tabIndex={0}
+      className="home-currency-summary mx-auto mt-5 flex max-w-xl items-center justify-center gap-3 sm:gap-5"
+    >
           <div className="flex items-center gap-3" aria-label="Crypto in">
             {CRYPTO_IN.map(({ symbol, label }) => (
               <span key={symbol} className="inline-flex items-center gap-1.5 text-sm font-semibold" title={label}>
