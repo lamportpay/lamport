@@ -1,13 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { MessageCircleQuestion, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
-import { FAQS } from "@/lib/ask-ai-faq";
+import { useState } from "react";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  MessageCircleQuestion,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  ChevronDown,
+} from "lucide-react";
+import { FAQS } from "@/lib/ask-ai-faq";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/faq")({
   head: () => ({
@@ -36,6 +38,7 @@ function openAskAi() {
 }
 
 function FaqPage() {
+  const [openId, setOpenId] = useState<string | null>(FAQS[0]?.id ?? null);
   return (
     <div className="relative">
       {/* Hero */}
@@ -70,35 +73,57 @@ function FaqPage() {
 
       {/* FAQ list */}
       <section className="max-w-3xl mx-auto px-4 sm:px-5 pb-16 sm:pb-20">
-        <Accordion type="single" collapsible className="space-y-3">
-          {FAQS.map((f, i) => (
-            <AccordionItem
-              key={f.id}
-              value={f.id}
-              className="rounded-2xl border border-border/70 bg-card px-5 shadow-sm data-[state=open]:shadow-md transition-shadow"
-            >
-              <AccordionTrigger className="text-left text-base font-semibold hover:no-underline py-5">
-                <span className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                    {i + 1}
-                  </span>
-                  {f.question}
-                </span>
-              </AccordionTrigger>
-              <AccordionContent className="pb-5 pl-9 text-muted-foreground leading-relaxed whitespace-pre-line">
-                {f.answer.replace(/\*\*/g, "")}
+        <div className="space-y-3">
+          {FAQS.map((f, i) => {
+            const open = openId === f.id;
+            return (
+              <div
+                key={f.id}
+                className={cn(
+                  "rounded-2xl border border-border/70 bg-card shadow-sm transition-shadow",
+                  open && "shadow-md",
+                )}
+              >
                 <button
                   type="button"
-                  onClick={openAskAi}
-                  className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                  aria-expanded={open}
+                  aria-controls={`faq-panel-${f.id}`}
+                  onClick={() => setOpenId(open ? null : f.id)}
+                  className="flex w-full items-center justify-between gap-3 px-5 py-5 text-left text-base font-semibold rounded-2xl focus-visible:outline-2 focus-visible:outline-ring"
                 >
-                  <Sparkles className="h-3.5 w-3.5" aria-hidden />
-                  Ask Lammy about this
+                  <span className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      {i + 1}
+                    </span>
+                    {f.question}
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200",
+                      open && "rotate-180",
+                    )}
+                    aria-hidden
+                  />
                 </button>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+                <div
+                  id={`faq-panel-${f.id}`}
+                  hidden={!open}
+                  className="px-5 pb-5 pl-[3.25rem] text-muted-foreground leading-relaxed whitespace-pre-line"
+                >
+                  {f.answer.replace(/\*\*/g, "")}
+                  <button
+                    type="button"
+                    onClick={openAskAi}
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                    Ask Lammy about this
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
         {/* Bottom CTA */}
         <div className="mt-10 rounded-3xl border border-border/70 bg-gradient-to-br from-primary/5 via-card to-violet-500/5 p-6 sm:p-8 text-center">
