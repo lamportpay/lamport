@@ -10,6 +10,7 @@ import { CookieConsent, openCookieSettings } from "@/components/site/CookieConse
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { ColosseumBanner } from "@/components/site/ColosseumBanner";
 import { LaunchStatus } from "@/components/site/LaunchStatus";
+import { LaunchPopup } from "@/components/site/LaunchPopup";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
 
@@ -71,6 +72,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     >
       <BrandFrame />
       <LaunchStatus />
+      <LaunchPopup />
       <header
         ref={headerRef}
         style={{ marginBottom: `-${headerH}px` }}
