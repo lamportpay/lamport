@@ -19,11 +19,13 @@ import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as PayRouteImport } from './routes/pay'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SwapRouteImport } from './routes/swap'
+import { Route as TechnologyRouteImport } from './routes/technology'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
@@ -126,6 +128,11 @@ const McpRoute = McpRouteImport.update({
   path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PayRoute = PayRouteImport.update({
   id: '/pay',
   path: '/pay',
@@ -149,6 +156,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SwapRoute = SwapRouteImport.update({
   id: '/swap',
   path: '/swap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TechnologyRoute = TechnologyRouteImport.update({
+  id: '/technology',
+  path: '/technology',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WhitepaperRoute = WhitepaperRouteImport.update({
@@ -449,11 +461,13 @@ export interface FileRoutesByFullPath {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
+  '/partners': typeof PartnersRoute
   '/pay': typeof PayRoute
   '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
+  '/technology': typeof TechnologyRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -517,11 +531,13 @@ export interface FileRoutesByTo {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
+  '/partners': typeof PartnersRoute
   '/pay': typeof PayRoute
   '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
+  '/technology': typeof TechnologyRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -586,11 +602,13 @@ export interface FileRoutesById {
   '/docs': typeof DocsRoute
   '/how-it-works': typeof HowItWorksRoute
   '/mcp': typeof McpRoute
+  '/partners': typeof PartnersRoute
   '/pay': typeof PayRoute
   '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
+  '/technology': typeof TechnologyRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -656,11 +674,13 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/mcp'
+    | '/partners'
     | '/pay'
     | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
+    | '/technology'
     | '/whitepaper'
     | '/workflow'
     | '/.mcp/list-tools'
@@ -724,11 +744,13 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/mcp'
+    | '/partners'
     | '/pay'
     | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
+    | '/technology'
     | '/whitepaper'
     | '/workflow'
     | '/.mcp/list-tools'
@@ -792,11 +814,13 @@ export interface FileRouteTypes {
     | '/docs'
     | '/how-it-works'
     | '/mcp'
+    | '/partners'
     | '/pay'
     | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
+    | '/technology'
     | '/whitepaper'
     | '/workflow'
     | '/.mcp/list-tools'
@@ -862,11 +886,13 @@ export interface RootRouteChildren {
   DocsRoute: typeof DocsRoute
   HowItWorksRoute: typeof HowItWorksRoute
   McpRoute: typeof McpRoute
+  PartnersRoute: typeof PartnersRoute
   PayRoute: typeof PayRoute
   RoadmapRoute: typeof RoadmapRoute
   SendRoute: typeof SendRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SwapRoute: typeof SwapRoute
+  TechnologyRoute: typeof TechnologyRoute
   WhitepaperRoute: typeof WhitepaperRoute
   WorkflowRoute: typeof WorkflowRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -976,6 +1002,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pay': {
       id: '/pay'
       path: '/pay'
@@ -1009,6 +1042,13 @@ declare module '@tanstack/react-router' {
       path: '/swap'
       fullPath: '/swap'
       preLoaderRoute: typeof SwapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/technology': {
+      id: '/technology'
+      path: '/technology'
+      fullPath: '/technology'
+      preLoaderRoute: typeof TechnologyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/whitepaper': {
@@ -1442,11 +1482,13 @@ const rootRouteChildren: RootRouteChildren = {
   DocsRoute: DocsRoute,
   HowItWorksRoute: HowItWorksRoute,
   McpRoute: McpRoute,
+  PartnersRoute: PartnersRoute,
   PayRoute: PayRoute,
   RoadmapRoute: RoadmapRoute,
   SendRoute: SendRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SwapRoute: SwapRoute,
+  TechnologyRoute: TechnologyRoute,
   WhitepaperRoute: WhitepaperRoute,
   WorkflowRoute: WorkflowRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
