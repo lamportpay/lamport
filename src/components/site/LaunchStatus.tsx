@@ -89,9 +89,9 @@ export function LaunchStatus() {
         </span>
         <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
       </Link>
-      <Link to="/news" className="launch-status-all hidden sm:inline">
-        All news
-      </Link>
+        <Link to="/news" className="launch-status-all">
+          All news
+        </Link>
     </div>
   );
 }
