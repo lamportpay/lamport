@@ -3,6 +3,7 @@
  * (JSON has no bigint); `amount` fields are major-unit strings for display.
  */
 import type { KycState } from "@/lib/identity/kyc-state";
+import { FEE_WAIVER_REASON } from "@/lib/early-access";
 import { toMajor } from "@/lib/money";
 import { PAYMENT_CURRENCY_MINTS, SOL_MINT } from "@/lib/tokens";
 import { isPaymentState, isTerminal, type PaymentState } from "./state";
@@ -49,6 +50,12 @@ export type PaymentView = {
      */
     settled: boolean | null;
   } | null;
+  /**
+   * Set when this payment's LamportPay fee was waived (early access: one of the
+   * first people who joined), with their place in line. Null when the fee was
+   * charged as configured.
+   */
+  feeWaiver: { rank: number } | null;
   /** What leaves the wallet in total: the Stables amount plus LamportPay's fee. */
   totalToPay: { amountMinor: string; amount: string; currency: string };
   quote: { id: string; expiresAt: string | null } | null;
@@ -272,6 +279,9 @@ type Row = {
   platform_fee_minor?: number | null;
   platform_fee_received_minor?: number | null;
   platform_fee_rule?: string | null;
+  /** Why this payment's fee is zero (early access), and the place in line. */
+  platform_fee_waiver?: string | null;
+  platform_fee_waiver_rank?: number | null;
   quote_id: string | null;
   quote_expires_at: string | null;
   transfer_id: string | null;
@@ -559,6 +569,10 @@ export function toPaymentView(
               ? BigInt(row.platform_fee_received_minor ?? 0) >= feeMinor
               : null,
           }
+        : null,
+    feeWaiver:
+      row.platform_fee_waiver === FEE_WAIVER_REASON
+        ? { rank: row.platform_fee_waiver_rank ?? 0 }
         : null,
     totalToPay: {
       amountMinor: payMinor.toString(),

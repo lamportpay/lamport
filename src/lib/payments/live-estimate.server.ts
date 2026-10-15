@@ -15,10 +15,13 @@
  */
 import {
   activeControls,
+  feeModelFor,
   feeModelOf,
   getBusinessSettings,
   limitsForCorridor,
 } from "@/lib/business-settings.server";
+import { FEE_WAIVER_REASON } from "@/lib/early-access";
+import type { FeeWaiver } from "@/lib/payments/fee-waiver.server";
 import { pauseRefusal } from "@/lib/payments/controls";
 import { getOrder, isJupiterConfigured, JupiterError } from "@/lib/jupiter/client.server";
 import { toMajor, toMinor } from "@/lib/money";
@@ -67,7 +70,13 @@ export type LiveEstimate = {
         partnerFees: Array<{ kind: string; amount: string; currency: string }>;
       }
     | { status: "refused"; reason: string };
-  lamportpayFee: { bps: number; amount: string; rule: string };
+  lamportpayFee: {
+    bps: number;
+    amount: string;
+    rule: string;
+    /** Set when this customer's fee is waived (early access); null when charged. */
+    waiver: { reason: string; rank: number } | null;
+  };
   /** Converted + LamportPay fee: equals `amount` (at most a rounding unit below). */
   totalFromWallet: string;
   /** The Jupiter side, when requested (or paying in SOL) and available. */
@@ -88,6 +97,8 @@ export async function liveEstimate(input: {
   coin: PaymentCurrency;
   withSol: boolean;
   payWith?: PaymentCurrency | "sol";
+  /** This customer's early-access waiver, when they hold one (fee-waiver.server.ts). */
+  waiver?: FeeWaiver | null;
 }): Promise<LiveEstimate> {
   const config = requireStables();
   let settings;
@@ -137,7 +148,9 @@ export async function liveEstimate(input: {
   const country = input.country.toUpperCase();
   const currency = input.currency.toLowerCase();
   // The fee comes out of what the user sends; the payout partner prices the rest.
-  const split = splitTotal(sendMinor, feeModelOf(settings));
+  // An early-access waiver zeroes LamportPay's fee for this estimate only.
+  const waived = input.waiver?.waived === true;
+  const split = splitTotal(sendMinor, feeModelFor(settings, waived));
   const amountMinor = split.netMinor;
   const fee = { minor: split.feeMinor, rule: split.rule };
   const totalMinor = amountMinor + fee.minor;
@@ -181,9 +194,11 @@ export async function liveEstimate(input: {
           }
         : { status: "refused", reason: c.reason },
     lamportpayFee: {
-      bps: settings.conversionFeeBps,
+      bps: waived ? 0 : settings.conversionFeeBps,
       amount: toMajor(fee.minor, input.coin),
       rule: fee.rule,
+      waiver:
+        waived && input.waiver?.rank ? { reason: FEE_WAIVER_REASON, rank: input.waiver.rank } : null,
     },
     totalFromWallet: toMajor(totalMinor, input.coin),
     sol: solCost,

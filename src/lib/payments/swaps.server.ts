@@ -39,6 +39,7 @@ import * as ledger from "./ledger.server";
 import type { PaymentRow, SwapRow } from "./ledger.server";
 import type { SwapInput } from "./settlement";
 import { planSettlement, settlementDetail, type SettlementPlan } from "./settlement.server";
+import { earlyAccessWaiver, NO_WAIVER, type FeeWaiver } from "./fee-waiver.server";
 import { latestSettlement, ownedPayment, requireStables, viewOf } from "./service.server";
 import { currentSwapReferral } from "@/lib/jupiter/referral.server";
 import { toSwapView, type PaymentView, type SwapView } from "./view";
@@ -111,13 +112,19 @@ async function recordPlan(payment: PaymentRow, plan: SettlementPlan) {
 }
 
 /** Re-price and re-read the wallet for a payment's current coin. */
-function replan(payment: PaymentRow, wallet: string, preference: "auto" | PaymentCurrency) {
+function replan(
+  payment: PaymentRow,
+  wallet: string,
+  preference: "auto" | PaymentCurrency,
+  waiver: FeeWaiver | null = null,
+) {
   return planSettlement(requireStables(), {
     amountMinor: BigInt(payment.source_amount_minor),
     country: payment.destination_country,
     currency: payment.destination_currency,
     wallet,
     preference,
+    waiver,
   });
 }
 
@@ -172,7 +179,7 @@ export async function orderSwap(
   const wallet = stored.wallet;
 
   // Fresh answers from Stables and the chain: the rule, not the client, decides.
-  const plan = await replan(payment, wallet, stored.preference);
+  const plan = await replan(payment, wallet, stored.preference, await earlyAccessWaiver(user, wallet));
   const decision = plan.decision;
   if (decision.kind === "funds_ready" && decision.coin === coin) {
     await recordPlan(payment, plan);
@@ -588,7 +595,12 @@ async function settleSwap(payment: PaymentRow, swap: SwapRow): Promise<SwapRow> 
   // Balances changed (or didn't): record where the payment now stands.
   try {
     const stored = await latestSettlement(payment.id);
-    await recordPlan(payment, await replan(payment, swap.taker, stored?.preference ?? "auto"));
+    // A payment already quoted with a waived fee keeps that waiver when the
+    // plan is re-read; otherwise the fee is the configured one.
+    const waiver: FeeWaiver = payment.platform_fee_waiver
+      ? { waived: true, rank: payment.platform_fee_waiver_rank }
+      : NO_WAIVER;
+    await recordPlan(payment, await replan(payment, swap.taker, stored?.preference ?? "auto", waiver));
   } catch (e) {
     console.error(`[swaps] settlement re-check after ${swap.id} failed`, e);
   }

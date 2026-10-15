@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
+/** A Solana address is base58, 32-44 characters. Compared exactly (case sensitive). */
+const SOLANA_ADDRESS = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
 /** Public early-access signup. Validated, rate limited per IP, stored with the admin client. */
 const schema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -9,6 +12,15 @@ const schema = z.object({
     .string()
     .trim()
     .regex(/^\+?[0-9 ()-]{6,25}$/),
+  /**
+   * The Solana wallet connected when joining. It decides the early-access fee
+   * waiver (see lib/early-access.ts), so it is stored only as a candidate
+   * address: the person who later pays from it still has to prove they hold it,
+   * by signing the payment itself.
+   */
+  wallet: z
+    .union([z.string().trim().regex(SOLANA_ADDRESS), z.literal(""), z.null()])
+    .optional(),
 });
 
 export const Route = createFileRoute("/api/early-access")({
@@ -34,6 +46,7 @@ export const Route = createFileRoute("/api/early-access")({
           name: parsed.data.name,
           email: parsed.data.email.toLowerCase(),
           mobile: parsed.data.mobile,
+          wallet_address: parsed.data.wallet || null,
         });
         if (error) {
           if (error.code === "23505") return Response.json({ ok: true, already: true });

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Rocket, ShieldCheck, Sparkles, Gift, ArrowRight } from "lucide-react";
+import { Rocket, ShieldCheck, Sparkles, Gift, ArrowRight, Wallet } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { requestWalletConnect, useAppWallet } from "@/lib/wallet-state";
 import markUrl from "@/assets/lamportpay-mark.png";
 
 const KEY = "lp-launch-popup-seen-v1";
@@ -13,6 +14,9 @@ export function LaunchPopup() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [form, setForm] = useState({ name: "", email: "", mobile: "" });
+  // The wallet connected in the header, if any: joining with it means the free
+  // fee is linked to that wallet, so the person can claim it without a password.
+  const wallet = useAppWallet();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +27,7 @@ export function LaunchPopup() {
     }
     setBusy(true);
     try {
-      const r = await fetch("/api/early-access", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+      const r = await fetch("/api/early-access", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, wallet: wallet.publicKey }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) setErr(j.error || "Could not save. Please try again.");
       else setStep("done");
@@ -112,6 +116,24 @@ export function LaunchPopup() {
               <Input aria-label="Full name" placeholder="Full name" maxLength={100} autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               <Input aria-label="Email" type="email" placeholder="Email address" maxLength={255} autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               <Input aria-label="Mobile number" type="tel" placeholder="Mobile number (e.g. +92 300 1234567)" maxLength={25} autoComplete="tel" value={form.mobile} onChange={(e) => setForm({ ...form, mobile: e.target.value })} />
+              {wallet.publicKey ? (
+                <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <Wallet className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+                  Your free spot will be linked to wallet {wallet.publicKey.slice(0, 4)}…{wallet.publicKey.slice(-4)}.
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    close(false);
+                    requestWalletConnect();
+                  }}
+                  className="flex items-center gap-1.5 text-[11px] text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                >
+                  <Wallet className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                  Connect a wallet to link your free spot to it
+                </button>
+              )}
               {err && <p className="text-xs text-destructive" role="alert">{err}</p>}
               <button type="submit" disabled={busy} className="launch-popup-cta inline-flex w-full items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold disabled:opacity-60">
                 {busy ? "Saving…" : "Reserve my spot"} <ArrowRight className="h-4 w-4" aria-hidden />

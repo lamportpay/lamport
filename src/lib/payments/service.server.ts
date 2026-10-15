@@ -103,6 +103,8 @@ import {
   getBusinessSettings,
   limitsForCorridor,
 } from "@/lib/business-settings.server";
+import { FEE_WAIVER_REASON } from "@/lib/early-access";
+import { earlyAccessWaiver, type FeeWaiver } from "./fee-waiver.server";
 import { pauseRefusal } from "@/lib/payments/controls";
 
 export { PaymentError, type FieldIssue };
@@ -829,7 +831,15 @@ export async function createPayment(
   // Stables decides what is supported: every coin within our limits gets a
   // preview quote (not persisted), and the wallet's real balances decide which
   // one to use, before anything is created.
-  const plan = await planSettlement(config, { amountMinor, country, currency, wallet, preference });
+  const waiver = await earlyAccessWaiver(user, wallet);
+  const plan = await planSettlement(config, {
+    amountMinor,
+    country,
+    currency,
+    wallet,
+    preference,
+    waiver,
+  });
   const decision = plan.decision;
   if (decision.kind === "none_priced") {
     throw unpricedError(plan, preferred, country, currency, amountMinor);
@@ -933,6 +943,8 @@ function feePatch(fee: PlatformFeeQuote) {
     platform_fee_min_minor: fee.minMinor === null ? null : Number(fee.minMinor),
     platform_fee_max_minor: fee.maxMinor === null ? null : Number(fee.maxMinor),
     platform_fee_rule: fee.rule,
+    platform_fee_waiver: fee.waiver?.reason ?? null,
+    platform_fee_waiver_rank: fee.waiver?.rank ?? null,
   };
 }
 
@@ -941,7 +953,11 @@ function feePatch(fee: PlatformFeeQuote) {
  * check that the payment's coin is still turned on. Settings that cannot be
  * read pause quoting rather than charging a guessed fee.
  */
-async function platformFeeFor(amountMinor: bigint, currency: PaymentCurrency) {
+async function platformFeeFor(
+  amountMinor: bigint,
+  currency: PaymentCurrency,
+  waiver: FeeWaiver | null = null,
+) {
   let settings;
   try {
     settings = await getBusinessSettings();
@@ -956,15 +972,22 @@ async function platformFeeFor(amountMinor: bigint, currency: PaymentCurrency) {
       "currency_disabled",
     );
   }
-  const model = feeModelOf(settings);
+  // Early access (the first 10 who joined) pays no LamportPay fee: the model is
+  // zeroed for this payment only, never in the shared settings.
+  const waived = waiver?.waived === true;
+  const model: FeeModel = waived
+    ? { bps: 0n, minMinor: null, maxMinor: null }
+    : feeModelOf(settings);
   const fee = computePlatformFee(amountMinor, model);
   return {
-    bps: settings.conversionFeeBps,
+    bps: waived ? 0 : settings.conversionFeeBps,
     minor: fee.minor,
     wallet: settings.revenueWallet,
     minMinor: model.minMinor,
     maxMinor: model.maxMinor,
     rule: fee.rule,
+    waiver:
+      waived && waiver?.rank ? { reason: FEE_WAIVER_REASON, rank: waiver.rank } : null,
   } satisfies PlatformFeeQuote;
 }
 
@@ -1030,12 +1053,15 @@ export async function recheckSettlement(
     ? (payment.source_currency as Preference)
     : (input.preferredCurrency ?? last?.preference ?? "auto");
   const amountMinor = BigInt(payment.source_amount_minor);
+  const recheckWallet = wallet ?? last?.wallet ?? null;
+  const waiver = await earlyAccessWaiver(user, recheckWallet);
   const plan = await planSettlement(config, {
     amountMinor,
     country: payment.destination_country,
     currency: payment.destination_currency,
-    wallet: wallet ?? last?.wallet ?? null,
+    wallet: recheckWallet,
     preference,
+    waiver,
   });
   const decision = plan.decision;
   if (decision.kind === "none_priced") {
@@ -1201,7 +1227,14 @@ export async function quotePayment(
       };
     }
     // The fee the user agrees to with this quote; fixed from here on.
-    const platformFee = await platformFeeFor(BigInt(payment.source_amount_minor), sourceCurrency);
+    // The fee the user agrees to with this quote; fixed from here on. Early
+    // access (the first 10 who joined) pays no LamportPay fee.
+    const waiver = await earlyAccessWaiver(user, payment.payer_wallet ?? null);
+    const platformFee = await platformFeeFor(
+      BigInt(payment.source_amount_minor),
+      sourceCurrency,
+      waiver,
+    );
     let quote: StablesQuote;
     try {
       quote = await stables.createQuote(

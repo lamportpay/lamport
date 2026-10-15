@@ -21,7 +21,9 @@ import { StablesError } from "@/lib/stables/client.server";
 import type { StablesConfig } from "@/lib/stables/config.server";
 import { PAYMENT_CURRENCIES, type PaymentCurrency } from "@/lib/tokens";
 import { PaymentError } from "./errors";
-import { feeModelOf, limitsForCorridor } from "@/lib/business-settings.server";
+import { FEE_WAIVER_REASON } from "@/lib/early-access";
+import type { FeeWaiver } from "./fee-waiver.server";
+import { feeModelFor, feeModelOf, limitsForCorridor } from "@/lib/business-settings.server";
 import { platformFee as computePlatformFee, type FeeRule } from "./fee-math";
 import { getPaymentLimits, limitsFromMajor, limitsMessage, outsideLimits } from "./limits.server";
 import {
@@ -44,6 +46,9 @@ export type PricedCandidates = {
   failures: Partial<Record<PaymentCurrency, PreviewFailure>>;
 };
 
+/** Why LamportPay charged no fee on a payment (recorded with the quote). */
+export type FeeWaiverInfo = { reason: string; rank: number };
+
 /** LamportPay's fee for one payment, with the model that produced it (audit). */
 export type PlatformFeeQuote = {
   bps: number;
@@ -52,6 +57,8 @@ export type PlatformFeeQuote = {
   minMinor: bigint | null;
   maxMinor: bigint | null;
   rule: FeeRule;
+  /** Set when this payment's fee was waived (early access); null when charged. */
+  waiver: FeeWaiverInfo | null;
 };
 
 export type SettlementPlan = {
@@ -205,6 +212,8 @@ export async function planSettlement(
     currency: string;
     wallet: string | null;
     preference: Preference;
+    /** This customer's early-access waiver, when they hold one (fee-waiver.server.ts). */
+    waiver?: FeeWaiver | null;
   },
 ): Promise<SettlementPlan> {
   const settings = await settingsForPlan();
@@ -216,7 +225,9 @@ export async function planSettlement(
       "currency_disabled",
     );
   }
-  const model = feeModelOf(settings);
+  // Waived (early access) or not: the model that decides this payment's fee.
+  const waived = input.waiver?.waived === true;
+  const model = feeModelFor(settings, waived);
   const fee = computePlatformFee(input.amountMinor, model);
   const feeMinor = fee.minor;
   const [{ candidates, failures }, holdings] = await Promise.all([
@@ -247,12 +258,16 @@ export async function planSettlement(
     holdings,
     reserveLamports,
     platformFee: {
-      bps: settings.conversionFeeBps,
+      bps: waived ? 0 : settings.conversionFeeBps,
       minor: feeMinor,
       wallet: feeMinor > 0n ? settings.revenueWallet : null,
       minMinor: model.minMinor,
       maxMinor: model.maxMinor,
       rule: fee.rule,
+      waiver:
+        waived && input.waiver?.rank
+          ? { reason: FEE_WAIVER_REASON, rank: input.waiver.rank }
+          : null,
     },
     enabledCurrencies: enabled,
     wallet: input.wallet,
@@ -324,6 +339,8 @@ export function settlementDetail(plan: SettlementPlan): Json {
     reserve_lamports: str(plan.reserveLamports),
     platform_fee_bps: plan.platformFee.bps,
     platform_fee_minor: plan.platformFee.minor.toString(),
+    platform_fee_waiver: plan.platformFee.waiver?.reason ?? null,
+    platform_fee_waiver_rank: plan.platformFee.waiver?.rank ?? null,
     checked_at: plan.checkedAt,
   } as Json;
 }

@@ -346,7 +346,13 @@ export function CostSummary({ payment: p }: { payment: PaymentView }) {
         />
         <Line
           label={lamportpayLabel}
-          value={p.platformFee ? money(p.platformFee.amountMinor, p.platformFee.currency) : "None"}
+          value={
+            p.feeWaiver
+              ? "Waived (early access)"
+              : p.platformFee
+                ? money(p.platformFee.amountMinor, p.platformFee.currency)
+                : "None"
+          }
         />
         <Line
           label="Payout partner fee"

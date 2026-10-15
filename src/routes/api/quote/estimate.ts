@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
+import { earlyAccessWaiver } from "@/lib/payments/fee-waiver.server";
 import { handlePublicRequest, json } from "@/lib/payments/http.server";
 import { liveEstimate } from "@/lib/payments/live-estimate.server";
 import { PAYMENT_CURRENCIES } from "@/lib/tokens";
@@ -37,8 +38,15 @@ export const Route = createFileRoute("/api/quote/estimate")({
   server: {
     handlers: {
       POST: ({ request }) =>
-        handlePublicRequest(request, EstimateInput, "estimate", 30, async (_user, body) =>
-          json(await liveEstimate({ ...body, withSol: body.withSol ?? false })),
+        handlePublicRequest(request, EstimateInput, "estimate", 30, async (user, body) =>
+          json(
+            await liveEstimate({
+              ...body,
+              withSol: body.withSol ?? false,
+              // An early-access member's calculator shows no LamportPay fee.
+              waiver: await earlyAccessWaiver(user, null),
+            }),
+          ),
         ),
     },
   },
