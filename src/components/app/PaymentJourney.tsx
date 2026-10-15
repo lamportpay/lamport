@@ -93,7 +93,7 @@ const PROCESSING = new Set([
 ]);
 
 /**
- * Where a payment sits in the seven steps, from its real (server) status only.
+ * Where a payment sits in the eight steps, from its real (server) status only.
  * Identity verification is part of "Quote": Stables quotes only verified users.
  */
 export function dappStepFor(p: PaymentView): number {

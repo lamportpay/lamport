@@ -36,7 +36,7 @@ const nodes = [
     title: "Stables",
     label: "SANDBOX",
     icon: ShieldCheck,
-    detail: PAYMENT_JOURNEY[4].detail,
+    detail: PAYMENT_JOURNEY[3].detail,
     note: "Hosted verification & payout infrastructure",
   },
   {
