@@ -34,11 +34,6 @@ function Index() {
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden">
           <HeroRibbon />
-          <div className="home-orbits home-orbits-left" aria-hidden="true">
-            <span className="home-orbit home-orbit-outer" />
-            <span className="home-orbit home-orbit-middle" />
-            <span className="home-orbit home-orbit-inner" />
-          </div>
           <div className="home-container relative py-12 text-center md:py-14">
             <p className="home-hero-badge">
               <span className="home-hero-badge-dot" aria-hidden="true" />
