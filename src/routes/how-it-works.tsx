@@ -11,6 +11,9 @@ import {
   LockKeyhole,
   Landmark,
   ShieldCheck,
+  Percent,
+  HandCoins,
+  Fuel,
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
