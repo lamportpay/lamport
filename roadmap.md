@@ -167,3 +167,11 @@
 - [x] Mobile app-style polish of /pay first screen
 - [x] Bank guidance moved from homepage to Compliance page
 - [x] Map scan beam no longer causes page overflow / scroll jumps
+
+## Early-access fee waiver enforced
+
+- [x] First 10 early-access signups pay no LamportPay fee: the waiver is decided server-side from the signup list (matched by the wallet that joined, or the account email)
+- [x] Quote, settlement plan, swap sizing, calculator and payment view all price a waived payment at zero LamportPay fee; payout partner and network costs unchanged
+- [x] Every waived payment records why and which place in line earned it; pricing stays frozen once quoted
+- [x] Joining from the launch popup records the connected wallet; admin shows wallet, place in line and whether each free place has been used
+- [x] Verify: typecheck clean, 508 unit tests pass, build OK, signed-in calculator still quotes 2% for a non-listed account with the new waiver field present
