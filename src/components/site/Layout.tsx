@@ -35,7 +35,9 @@ const nav = [
 const primaryNav = [
   { to: "/how-it-works", label: "How it works" },
   { to: "/docs", label: "Docs" },
+  { to: "/roadmap", label: "Roadmap" },
   { to: "/about", label: "About us" },
+  { to: "/people", label: "Our people" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
