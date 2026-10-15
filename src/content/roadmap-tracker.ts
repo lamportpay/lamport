@@ -120,6 +120,35 @@ export const TRACKER_PHASES: TrackerPhase[] = [
   },
   {
     phase: 9,
+    title: "Automation and operations",
+    status: "planned",
+    stage: "Launch",
+    summary: "Let the platform run itself safely: fewer manual steps, faster answers.",
+    items: [
+      { label: "Automatic payment status sync and reconciliation", done: true },
+      { label: "Free Ask AI assistant (Lammy) for customer questions", done: true },
+      { label: "Automatic email and in-app payment updates", done: false },
+      { label: "Complaints routed to the admin dashboard", done: true },
+      { label: "Daily reports and alerts for operations", done: false },
+    ],
+  },
+  {
+    phase: 10,
+    title: "Marketing and go-to-market",
+    status: "planned",
+    stage: "Launch",
+    summary: "Reach the first real users, then grow with content, community and partners.",
+    items: [
+      { label: "Website, blog and FAQs live", done: true },
+      { label: "Colosseum hackathon submission", done: true },
+      { label: "First users from our own network", done: false },
+      { label: "Community campaigns on X, Telegram, Discord", done: false },
+      { label: "Content, SEO and creator partnerships", done: false },
+      { label: "Referral rewards and targeted ads", done: false },
+    ],
+  },
+  {
+    phase: 11,
     title: "Liquidity and asset integrations",
     status: "planned",
     stage: "Growth",
@@ -131,7 +160,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
     ],
   },
   {
-    phase: 10,
+    phase: 12,
     title: "Partnerships and market expansion",
     status: "planned",
     stage: "Growth",
@@ -143,7 +172,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
     ],
   },
   {
-    phase: 11,
+    phase: 13,
     title: "Global payout ecosystem",
     status: "planned",
     stage: "Growth",
