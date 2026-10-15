@@ -18,16 +18,16 @@ export const NEWS: NewsItem[] = [
   {
     slug: "lamportpay-going-live",
     tag: "Launch",
-    title: "LamportPay is live — the payment flow is active",
-    headline: "LamportPay is live — the payment flow is active. Join early access.",
+    title: "LamportPay is live — real payouts open after the security phase",
+    headline: "LamportPay is live. Real payouts open as soon as our security phase is complete — join early access.",
     summary:
-      "The website and the app are live, and the payment flow is active: you can convert USDC on Solana into a payout to a local bank account today. The first 10 early-access users pay no LamportPay fee.",
+      "The LamportPay website is live. The payment flow is built and tested in our payout partner's sandbox, and goes live as soon as the Phase 8 security work is complete. The first 10 early-access users pay no LamportPay fee.",
     published: "2026-10-15",
     keywords: ["LamportPay launch", "crypto to bank payout", "Solana stablecoin payout", "USDC to bank", "early access"],
     body: [
       {
         paragraphs: [
-          "LamportPay turns USDC on Solana into a payout to a local bank account, through our licensed payout partner Stables. The website and the app are live, and the payment flow is active — you can start a conversion today.",
+          "LamportPay turns USDC on Solana into a payout to a local bank account, through our licensed payout partner Stables. The website is live. The payment flow is built and tested end to end in the partner sandbox; real payouts open as soon as our Phase 8 security work — independent audit, penetration testing and hardening — is complete.",
         ],
       },
       {
@@ -46,7 +46,7 @@ export const NEWS: NewsItem[] = [
         heading: "What happens next",
         bullets: [
           "A dedicated security phase: independent external audit, penetration testing and hardening",
-          "Opening real payouts to more users and more countries",
+          "Switching on the live payment flow for real payouts, starting with a controlled launch",
           "More assets, partners and chains — see the roadmap",
         ],
       },
