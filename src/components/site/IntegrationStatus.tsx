@@ -65,7 +65,7 @@ export function IntegrationStatus() {
         <ol ref={listRef} aria-label="Integration timeline" className="integration-timeline">
           <li aria-hidden="true" className="integration-path-layer">
             <svg width="100%" height="100%" aria-hidden="true">
-              {paths.map((d, index) => <g key={index} data-segment={index + 1} data-visible="false"><path d={d} className="integration-path-track" /><path d={d} pathLength="1" className="integration-path-draw" /></g>)}
+              {paths.map((d, index) => <g key={index} data-segment={index + 1} data-visible="false" style={{ "--integration-delay": `${index * 0.45}s` } as CSSProperties}><path d={d} className="integration-path-track" /><path d={d} pathLength="1" className="integration-path-draw" /></g>)}
             </svg>
           </li>
           {items.map((entry, index) => (

@@ -1647,6 +1647,9 @@
   .integration-timeline[data-motion-ready="true"] [data-visible="true"] > .integration-path-draw { stroke-dashoffset: 0; }
   .integration-stop[data-visible="true"] .integration-progress-ring { animation: spin 4.5s linear infinite; }
 }
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .integration-timeline[data-motion-ready="true"] [data-visible="true"] > .integration-path-draw { transition-delay: var(--integration-delay, 0s); }
+}
 .corridor-land {
   fill-opacity: 0.28;
   stroke: oklch(0.55 0.18 275 / 0.55);
