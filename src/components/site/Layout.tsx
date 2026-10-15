@@ -97,18 +97,31 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             <ColosseumBanner />
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
-          <Link to="/" className="flex items-center group" aria-label="LamportPay home">
-            <BrandLogo />
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 lg:h-[72px] flex items-center justify-between gap-3">
+          <Link
+            to="/"
+            className="flex items-center group rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+            aria-label="LamportPay home"
+          >
+            <BrandLogo className="transition-transform duration-300 group-hover:scale-[1.03]" />
           </Link>
-          <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-1">
+          <nav
+            aria-label="Primary navigation"
+            className={cn(
+              "hidden md:flex items-center gap-0.5 rounded-full border p-1 transition-all duration-300",
+              scrolled
+                ? "border-border/70 bg-muted/60"
+                : "border-border/50 bg-background/60 shadow-sm backdrop-blur-md",
+            )}
+          >
             {primaryNav.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
-                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-2 focus-visible:outline-ring transition-colors rounded-md"
+                className="relative rounded-full px-3 lg:px-4 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground hover:bg-background/80 focus-visible:outline-2 focus-visible:outline-ring"
                 activeProps={{
-                  className: "px-3 py-2 text-sm text-foreground font-medium rounded-md",
+                  className:
+                    "relative rounded-full px-3 lg:px-4 py-1.5 text-sm font-semibold text-primary bg-background shadow-sm ring-1 ring-border/60",
                 }}
               >
                 {n.label}
@@ -116,8 +129,11 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-0">
-          <Button asChild className="h-10 rounded-lg px-4">
-            <Link to="/pay">Open App</Link>
+          <Button asChild className="group h-10 rounded-full px-5 shadow-md shadow-primary/20">
+            <Link to="/pay">
+              Open App
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </Button>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
