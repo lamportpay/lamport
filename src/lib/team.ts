@@ -25,6 +25,8 @@ export type TeamMember = {
   history: { period: string; title: string; detail: string }[];
   /** Only filled in when the person has shared the profile URL. */
   socials: { linkedin?: string; twitter?: string; github?: string };
+  /** Extra framing so every face sits at the same size and height. */
+  photoClass?: string;
 };
 
 export const TEAM: TeamMember[] = [
@@ -44,6 +46,24 @@ export const TEAM: TeamMember[] = [
       },
     ],
     socials: {},
+  },
+  {
+    slug: "zaheer-muneer",
+    name: "Zaheer Muneer",
+    role: "Advisor",
+    category: "Advisors",
+    photo: zaheerMuneer.url,
+    summary: "Strategic guidance, growth scaling and institutional partnerships.",
+    focus: ["Strategic guidance", "Growth scaling", "Institutional partnerships"],
+    history: [
+      {
+        period: "LamportPay",
+        title: "Advisor",
+        detail: "Advises on strategy, scaling growth and institutional partnerships.",
+      },
+    ],
+    socials: {},
+    photoClass: "scale-[1.3] origin-[50%_22%]",
   },
   {
     slug: "ghazanfar-abbas",
@@ -76,23 +96,6 @@ export const TEAM: TeamMember[] = [
         period: "LamportPay",
         title: "Marketing & Community",
         detail: "Runs community growth, the ambassador programme and outreach across the ecosystem.",
-      },
-    ],
-    socials: {},
-  },
-  {
-    slug: "zaheer-muneer",
-    name: "Zaheer Muneer",
-    role: "Advisor",
-    category: "Advisors",
-    photo: zaheerMuneer.url,
-    summary: "Strategic guidance, growth scaling and institutional partnerships.",
-    focus: ["Strategic guidance", "Growth scaling", "Institutional partnerships"],
-    history: [
-      {
-        period: "LamportPay",
-        title: "Advisor",
-        detail: "Advises on strategy, scaling growth and institutional partnerships.",
       },
     ],
     socials: {},
