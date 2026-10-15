@@ -12,7 +12,7 @@ export function ColosseumBanner() {
       href={COLOSSEUM_URL}
       target="_blank"
       rel="noopener noreferrer"
-      className="colosseum-banner group relative block overflow-hidden border-b border-border/60 print:hidden"
+      className="colosseum-banner group relative block overflow-hidden border-t border-border/60 print:hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-5 py-2 flex items-center gap-3 text-[13px] leading-snug">
         <span className="colosseum-banner-badge inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide">

@@ -5,7 +5,6 @@ import logoUrl from "@/assets/lamportpay-logo.png";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { LiveRatesTicker } from "@/components/site/LiveRatesTicker";
 import { CookieConsent, openCookieSettings } from "@/components/site/CookieConsent";
 import { ColosseumBanner } from "@/components/site/ColosseumBanner";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
@@ -49,7 +48,6 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="sticky top-0 z-40 backdrop-blur-lg bg-background/75 border-b border-border/60 print:hidden">
-        <LiveRatesTicker />
         <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center group" aria-label="LamportPay home">
             <BrandLogo />
@@ -124,8 +122,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           </Sheet>
           </div>
         </div>
+        <ColosseumBanner />
       </header>
-      <ColosseumBanner />
       <main className="flex-1">{children}</main>
       <SiteFooter />
       <CryptoPriceTicker />
