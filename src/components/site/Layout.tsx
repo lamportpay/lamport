@@ -46,16 +46,36 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (st) => st.location.pathname });
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const [headerH, setHeaderH] = useState(0);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    // Only the header's resting height (without the news banner that appears on scroll).
+    const measure = () => {
+      const banner = el.querySelector<HTMLElement>("[data-header-banner]");
+      setHeaderH(el.offsetHeight - (banner?.offsetHeight ?? 0));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div
+      className="min-h-screen flex flex-col bg-background text-foreground"
+      style={{ ["--site-header-h" as string]: `${headerH}px` }}
+    >
       <BrandFrame />
       <header
+        ref={headerRef}
+        style={{ marginBottom: `-${headerH}px` }}
         className={cn(
           "sticky top-0 z-40 border-b transition-colors duration-300 print:hidden",
           scrolled

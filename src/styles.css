@@ -538,6 +538,9 @@
 }
 .home-hero {
   min-height: 560px;
+  /* Extend the hero behind the transparent header so its colours show through before scrolling. */
+  margin-top: calc(-1 * var(--site-header-h, 0px));
+  padding-top: var(--site-header-h, 0px);
   color: oklch(0.24 0.06 265);
   background:
     linear-gradient(to bottom, transparent 60%, var(--card) 98%),
