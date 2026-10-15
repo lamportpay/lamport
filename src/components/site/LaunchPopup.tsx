@@ -13,7 +13,7 @@ export function LaunchPopup() {
   const [step, setStep] = useState<"intro" | "form" | "done">("intro");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const [form, setForm] = useState({ name: "", email: "", mobile: "" });
+  const [form, setForm] = useState({ name: "", email: "" });
   // The wallet connected in the header, if any: joining with it means the free
   // fee is linked to that wallet, so the person can claim it without a password.
   const wallet = useAppWallet();
@@ -21,8 +21,8 @@ export function LaunchPopup() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr("");
-    if (!form.name.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim()) || !/^\+?[0-9 ()-]{6,25}$/.test(form.mobile.trim())) {
-      setErr("Please enter your name, a valid email and mobile number.");
+    if (!form.name.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim())) {
+      setErr("Please enter your name and a valid email address.");
       return;
     }
     setBusy(true);
@@ -115,7 +115,6 @@ export function LaunchPopup() {
             <form onSubmit={submit} className="space-y-2.5" noValidate>
               <Input aria-label="Full name" placeholder="Full name" maxLength={100} autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               <Input aria-label="Email" type="email" placeholder="Email address" maxLength={255} autoComplete="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-              <Input aria-label="Mobile number" type="tel" placeholder="Mobile number (e.g. +92 300 1234567)" maxLength={25} autoComplete="tel" value={form.mobile} onChange={(e) => setForm({ ...form, mobile: e.target.value })} />
               {wallet.publicKey ? (
                 <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                   <Wallet className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
