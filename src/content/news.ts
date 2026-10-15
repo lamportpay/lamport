@@ -27,7 +27,7 @@ export const NEWS: NewsItem[] = [
     body: [
       {
         paragraphs: [
-          "LamportPay turns USDC on Solana into a payout to a local bank account, through our licensed payout partner Stables. After months of building and testing, we are preparing to go live as soon as possible.",
+          "LamportPay turns USDC on Solana into a payout to a local bank account, through our licensed payout partner Stables. The website and the app are live, and the payment flow is active — you can start a conversion today.",
         ],
       },
       {
