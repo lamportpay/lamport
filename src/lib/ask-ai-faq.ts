@@ -11,6 +11,41 @@ export const COMPLAINT_RE =
 
 export const FAQS: Faq[] = [
   {
+    id: "phases",
+    question: "What is the development roadmap and current phase?",
+    keywords: /phase|roadmap|plan|progress|milestone|next|future|development/i,
+    answer:
+      "LamportPay follows a **12-phase plan**. Done: business & architecture (Phase 0), Web3 foundation (Phase 1), and the Stables sandbox flow with fees and audit trail (Phase 2). **Current: Phase 3** — the revenue engine (pricing, fee ledger, admin controls). Next: controlled production go-live (Phase 4), more tokens via Jupiter (Phase 5), compliance operations, a full admin dashboard, multi-provider fiat, external security audit, and public launch. Every phase passes testing, security review and approval before moving on.",
+  },
+  {
+    id: "identity",
+    question: "How does wallet sign-in and identity work?",
+    keywords: /sign ?in|login|log ?in|account|identity|connect wallet|session|email/i,
+    answer:
+      "Your **Solana wallet is your identity**. Connecting it and signing one plain-text message (never a transaction, never moving funds) signs you in — no password needed. The same wallet always returns to the same account, on any device. Email + password stays available as a fallback. Your wallet proves *who* you are; verification (KYC) is separate and confirmed only by our partner Stables.",
+  },
+  {
+    id: "tracking",
+    question: "How is my payment tracked and what happens if something fails?",
+    keywords: /track|status|pending|stuck|fail|refund|return|cancel|expire|recovery|support payment/i,
+    answer:
+      "Every payment moves **forward only** through clear states — from quote to wallet approval, then through the payout partner's transfer stages until **Completed**. Status reaches us three ways: instant webhooks, live checks while you watch the page, and a background reconciliation job every few minutes — so nothing gets stuck silently. If a payout fails or is returned, it becomes an **operations case** that the team handles manually (refund or return), never a silent loss. Final states like Completed or Failed can only be set by the payout partner's own report — not by anyone at LamportPay.",
+  },
+  {
+    id: "security",
+    question: "How is LamportPay secured and tested?",
+    keywords: /audit|test|checklist|vulnerab|protect|compliance|aml|travel rule/i,
+    answer:
+      "Security is built in layers: **non-custodial design** (we never hold funds), server-side enforcement of sandbox/live mode, rate limiting on money-moving routes, an append-only admin audit log, and signed webhooks only. Before launch, LamportPay passes a pre-live security checklist, a full test matrix and an external audit (Phase 10). Compliance features like the Travel Rule and compliance holds are part of the payment design itself.",
+  },
+  {
+    id: "wrongamount",
+    question: "What if I send the wrong amount?",
+    keywords: /wrong amount|too much|too little|overpay|underpay|extra|less than|mistake/i,
+    answer:
+      "Send **exactly the quoted amount** from your wallet. If a different amount arrives, the deposit doesn't match the transfer and is flagged for manual review by the operations team — it is not lost, but it needs the team to resolve it. Always double-check the amount in your wallet before approving.",
+  },
+  {
     id: "how",
     question: "How do payments work?",
     keywords: /how|work|step|process|send|start|use/i,
@@ -94,41 +129,6 @@ export const FAQS: Faq[] = [
     keywords: /team|founder|ceo|cto|who (are|is|made|built)|owner|people/i,
     answer:
       "LamportPay (Lamport Pay Ltd) is led by **Zoaib Ali** (Founder & CEO) and **Ghazanfar Abbas** (CTO & Lead Developer), with advisors and community team. Meet everyone on the Our people page.",
-  },
-  {
-    id: "phases",
-    question: "What is the development roadmap and current phase?",
-    keywords: /phase|roadmap|plan|progress|milestone|next|future|development/i,
-    answer:
-      "LamportPay follows a **12-phase plan**. Done: business & architecture (Phase 0), Web3 foundation (Phase 1), and the Stables sandbox flow with fees and audit trail (Phase 2). **Current: Phase 3** — the revenue engine (pricing, fee ledger, admin controls). Next: controlled production go-live (Phase 4), more tokens via Jupiter (Phase 5), compliance operations, a full admin dashboard, multi-provider fiat, external security audit, and public launch. Every phase passes testing, security review and approval before moving on.",
-  },
-  {
-    id: "identity",
-    question: "How does wallet sign-in and identity work?",
-    keywords: /sign ?in|login|log ?in|account|identity|connect wallet|session|email/i,
-    answer:
-      "Your **Solana wallet is your identity**. Connecting it and signing one plain-text message (never a transaction, never moving funds) signs you in — no password needed. The same wallet always returns to the same account, on any device. Email + password stays available as a fallback. Your wallet proves *who* you are; verification (KYC) is separate and confirmed only by our partner Stables.",
-  },
-  {
-    id: "tracking",
-    question: "How is my payment tracked and what happens if something fails?",
-    keywords: /track|status|pending|stuck|fail|refund|return|cancel|expire|recovery|support payment/i,
-    answer:
-      "Every payment moves **forward only** through clear states — from quote to wallet approval, then through the payout partner's transfer stages until **Completed**. Status reaches us three ways: instant webhooks, live checks while you watch the page, and a background reconciliation job every few minutes — so nothing gets stuck silently. If a payout fails or is returned, it becomes an **operations case** that the team handles manually (refund or return), never a silent loss. Final states like Completed or Failed can only be set by the payout partner's own report — not by anyone at LamportPay.",
-  },
-  {
-    id: "security",
-    question: "How is LamportPay secured and tested?",
-    keywords: /audit|test|checklist|vulnerab|protect|compliance|aml|travel rule/i,
-    answer:
-      "Security is built in layers: **non-custodial design** (we never hold funds), server-side enforcement of sandbox/live mode, rate limiting on money-moving routes, an append-only admin audit log, and signed webhooks only. Before launch, LamportPay passes a pre-live security checklist, a full test matrix and an external audit (Phase 10). Compliance features like the Travel Rule and compliance holds are part of the payment design itself.",
-  },
-  {
-    id: "wrongamount",
-    question: "What if I send the wrong amount?",
-    keywords: /wrong amount|too much|too little|overpay|underpay|extra|less than|mistake/i,
-    answer:
-      "Send **exactly the quoted amount** from your wallet. If a different amount arrives, the deposit doesn't match the transfer and is flagged for manual review by the operations team — it is not lost, but it needs the team to resolve it. Always double-check the amount in your wallet before approving.",
   },
 ];
 
