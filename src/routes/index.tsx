@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
       path: "/",
       title: "LamportPay — Crypto in. Local money out.",
       description:
-        "Explore LamportPay’s non-custodial payment journey: Solana wallets, Jupiter swap quotes, USDC settlement and Stables bank-payout sandbox. Meet our business ecosystem.",
+        "Explore LamportPay’s non-custodial payment journey: Solana wallets, Jupiter swap quotes, USDC settlement and Stables bank-payout demo. Meet our business ecosystem.",
     }),
   component: Index,
 });
@@ -74,7 +74,7 @@ function Index() {
               </Button>
             </div>
             <p className="mx-auto mt-5 max-w-lg text-xs leading-relaxed text-home-ink">
-              Your keys stay yours. No real funds move on devnet or in the sandbox.
+              Your keys stay yours. No real funds move in the demo build.
             </p>
           </div>
         </section>

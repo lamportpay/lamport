@@ -29,7 +29,7 @@ const nodes = [
     label: "LIVE QUOTES",
     icon: Coins,
     detail:
-      "Jupiter supplies Solana swap quotes when conversion is needed. USDC skips conversion. The devnet / sandbox build does not execute mainnet swaps.",
+      "Jupiter supplies Solana swap quotes when conversion is needed. USDC skips conversion. The demo build does not execute mainnet swaps.",
     note: "Stablecoin settlement · Solana network",
   },
   {

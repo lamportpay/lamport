@@ -43,7 +43,7 @@ export function FutureVisionSection() {
 
         <div className="mt-10 rounded-3xl border border-[color:var(--success)]/40 bg-card/80 p-6 md:p-8">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--success)]">
-            <CheckCircle2 className="w-4 h-4" /> Built · working end to end on devnet / sandbox
+            <CheckCircle2 className="w-4 h-4" /> Built · working end to end in the demo build
           </div>
           <ol className="mt-5 grid gap-3 md:grid-cols-4">
             {CURRENT_FLOW.map((s, i) => (
@@ -57,7 +57,7 @@ export function FutureVisionSection() {
             ))}
           </ol>
           <p className="mt-4 text-xs text-muted-foreground">
-            Devnet / sandbox runs on Solana devnet with the payout partner&apos;s sandbox: no real funds
+            The demo build runs on a Solana test network with the payout partner&apos;s test environment: no real funds
             move. Jupiter provides live quotes; real-funds swaps come at launch.
           </p>
         </div>
