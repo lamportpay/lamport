@@ -42,16 +42,6 @@ export function StatusPill({ status }: { status: IntegrationStatus }) {
   );
 }
 
-/** Two-letter mark (kept for fallback use) so every card has a visual anchor without using a brand's logo. */
-function monogram(name: string) {
-  const words = name
-    .replace(/[()]/g, "")
-    .split(/[\s/]+/)
-    .filter((w) => /^[a-zA-Z0-9]/.test(w));
-  if (words.length > 1) return (words[0][0] + words[1][0]).toUpperCase();
-  return (words[0]?.slice(0, 2) ?? name.slice(0, 2)).toUpperCase();
-}
-
 export function IntegrationCard({
   item,
   large = false,
@@ -74,7 +64,7 @@ export function IntegrationCard({
           <span
             aria-hidden
             className={cn(
-              "shrink-0 inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[hsl(var(--primary)/0.65)] text-primary-foreground shadow-md shadow-primary/25",
+              "shrink-0 inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/60 text-primary-foreground shadow-md shadow-primary/25",
               large ? "w-14 h-14" : "w-12 h-12",
             )}
           >
