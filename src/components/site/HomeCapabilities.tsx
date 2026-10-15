@@ -181,30 +181,36 @@ export function HomeCapabilities() {
 
         <ul className="home-cap-grid" role="list">
           {CAPABILITIES.map((item) => (
-            <li key={item.key} className="home-cap-item" title={item.title}>
-              <svg
-                aria-hidden="true"
-                focusable="false"
-                viewBox="0 0 64 72"
-                className="home-cap-hex"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon
-                  points="32,3 60,19 60,53 32,69 4,53 4,19"
-                  stroke={STROKE}
-                  strokeWidth="1.6"
-                  className="home-cap-hex-shape"
-                />
-                <g transform="translate(17.6 21.6) scale(1.2)" stroke={STROKE} strokeWidth="1.3">
-                  {item.icon}
-                </g>
-              </svg>
-              <span className="home-cap-label">{item.label}</span>
-              <span className={`home-cap-status home-cap-status--${item.status}`}>
-                {STATUS_TEXT[item.status]}
-              </span>
+            <li key={item.key} className="home-cap-item">
+              <div className="home-cap-art" aria-hidden="true">
+                <svg
+                  focusable="false"
+                  viewBox="0 0 64 72"
+                  className="home-cap-hex"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polygon
+                    points="32,3 60,19 60,53 32,69 4,53 4,19"
+                    stroke={STROKE}
+                    strokeWidth="1.6"
+                    className="home-cap-hex-shape"
+                  />
+                  <g transform="translate(17.6 21.6) scale(1.2)" stroke={STROKE} strokeWidth="1.3">
+                    {item.icon}
+                  </g>
+                </svg>
+              </div>
+              <div className="home-cap-body">
+                <div className="home-cap-row">
+                  <span className="home-cap-label">{item.label}</span>
+                  <span className={`home-cap-status home-cap-status--${item.status}`}>
+                    {STATUS_TEXT[item.status]}
+                  </span>
+                </div>
+                <p className="home-cap-desc">{item.title}</p>
+              </div>
             </li>
           ))}
         </ul>
