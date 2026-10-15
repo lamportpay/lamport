@@ -9,6 +9,7 @@ import { Sheet, SheetTrigger, SheetContent, SheetTitle } from "@/components/ui/s
 import { CookieConsent, openCookieSettings } from "@/components/site/CookieConsent";
 import { CustomerSupport } from "@/components/site/CustomerSupport";
 import { ColosseumBanner } from "@/components/site/ColosseumBanner";
+import { LaunchStatus } from "@/components/site/LaunchStatus";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
 
@@ -69,6 +70,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       style={{ ["--site-header-h" as string]: `${headerH}px` }}
     >
       <BrandFrame />
+      <LaunchStatus />
       <header
         ref={headerRef}
         style={{ marginBottom: `-${headerH}px` }}
