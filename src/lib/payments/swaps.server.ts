@@ -39,6 +39,7 @@ import * as ledger from "./ledger.server";
 import type { PaymentRow, SwapRow } from "./ledger.server";
 import type { SwapInput } from "./settlement";
 import { planSettlement, settlementDetail, type SettlementPlan } from "./settlement.server";
+import { earlyAccessWaiver, NO_WAIVER, type FeeWaiver } from "./fee-waiver.server";
 import { latestSettlement, ownedPayment, requireStables, viewOf } from "./service.server";
 import { currentSwapReferral } from "@/lib/jupiter/referral.server";
 import { toSwapView, type PaymentView, type SwapView } from "./view";
