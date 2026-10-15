@@ -149,11 +149,21 @@ function WorkflowPage() {
         <section className="mt-12" aria-label="Integration layers">
           <div className="grid gap-4 md:grid-cols-3">
             {layers.map(({ icon: Icon, title, status, detail }) => (
-              <article key={title} className="rounded-lg border border-border bg-card p-5">
-                <Icon aria-hidden="true" className="size-6 text-primary" />
-                <h2 className="mt-4 text-lg font-semibold">{title}</h2>
-                <p className="mt-2 text-xs font-semibold text-primary">{status}</p>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+              <article
+                key={title}
+                className="overflow-hidden rounded-xl border border-border bg-card"
+              >
+                <div
+                  aria-hidden="true"
+                  className="flex h-28 items-center justify-center border-b border-border bg-gradient-to-br from-primary/10 via-transparent to-violet-500/10"
+                >
+                  <Icon className="size-12 text-primary" strokeWidth={1.4} />
+                </div>
+                <div className="p-5">
+                  <h2 className="text-lg font-semibold">{title}</h2>
+                  <p className="mt-2 text-xs font-semibold text-primary">{status}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+                </div>
               </article>
             ))}
           </div>
