@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
-import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
 import { Button } from "@/components/ui/button";
 import { PAYMENT_JOURNEY } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
@@ -289,19 +288,6 @@ function WorkflowPage() {
           </div>
         </section>
 
-        <section className="mt-12 border-t border-border pt-10" aria-labelledby="preview-heading">
-          <div className="flex flex-wrap items-center gap-3">
-            <h2 id="preview-heading" className="text-2xl font-semibold">
-              Jupiter route preview
-            </h2>
-            <span className="text-xs font-semibold text-primary">LIVE · READ-ONLY</span>
-          </div>
-          <p className="mb-6 mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            A signed-in preview of SOL → USDC market routing. Nothing is signed or sent here. Its
-            preview range is not a bank-payment limit, and the sandbox build cannot execute a mainnet swap.
-          </p>
-          <SwapRoutePreviewCard />
-        </section>
       </main>
       <FurtherReading
         slugs={[
