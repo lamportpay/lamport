@@ -97,7 +97,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             <ColosseumBanner />
           </div>
         </div>
-              <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between gap-3">
           <Link to="/" className="flex items-center group" aria-label="LamportPay home">
             <BrandLogo />
           </Link>
