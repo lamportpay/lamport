@@ -141,10 +141,20 @@ function HowItWorks() {
           </h2>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             {protections.map(({ icon: Icon, title, detail }) => (
-              <article key={title} className="rounded-lg border border-border bg-card p-5">
-                <Icon aria-hidden="true" className="size-5 text-primary" />
-                <h3 className="mt-4 font-semibold">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+              <article
+                key={title}
+                className="overflow-hidden rounded-xl border border-border bg-card"
+              >
+                <div
+                  aria-hidden="true"
+                  className="flex h-28 items-center justify-center border-b border-border bg-gradient-to-br from-primary/10 via-transparent to-violet-500/10"
+                >
+                  <Icon className="size-12 text-primary" strokeWidth={1.4} />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-semibold">{title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+                </div>
               </article>
             ))}
           </div>
