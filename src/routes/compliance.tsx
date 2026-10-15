@@ -18,7 +18,7 @@ export const Route = createFileRoute("/compliance")({
   component: Compliance,
 });
 
-const LAST_UPDATED = "12 October 2026";
+const LAST_UPDATED = "15 October 2026";
 
 function Compliance() {
   const negatives = [
@@ -168,7 +168,7 @@ function Compliance() {
             <li>Admin actions require server-side role checks and are audit logged. The payout queue only refreshes status; it does not create transfers or simulate deposits.</li>
             <li>Rate limits and emergency payment controls restrict payment actions. Refunds, compliance and manual reviews are operations cases, not invented payout statuses.</li>
           </ul>
-          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">These safeguards are not a guarantee against loss or a completed security certification. End-to-end sandbox testing, security review and operational readiness must be validated before production availability.</p>
+          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">These safeguards are not a guarantee against loss or a completed security certification. Core security controls are in place. Our next roadmap phase is dedicated to security: an independent external audit, penetration testing, hardening, and monitoring with incident response. That phase, end-to-end validation and operational readiness must be completed before production availability.</p>
         </section>
 
         <section className="mt-10 border-t border-border pt-6">
