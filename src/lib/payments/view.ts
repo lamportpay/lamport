@@ -3,6 +3,7 @@
  * (JSON has no bigint); `amount` fields are major-unit strings for display.
  */
 import type { KycState } from "@/lib/identity/kyc-state";
+import { FEE_WAIVER_REASON } from "@/lib/early-access";
 import { toMajor } from "@/lib/money";
 import { PAYMENT_CURRENCY_MINTS, SOL_MINT } from "@/lib/tokens";
 import { isPaymentState, isTerminal, type PaymentState } from "./state";
