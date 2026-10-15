@@ -2212,3 +2212,8 @@ body.has-cookie-banner .site-footer-legal {
   100% { clip-path: inset(0 0 0 0); opacity: 1; letter-spacing: normal; }
 }
 @media (prefers-reduced-motion: reduce) { .launch-status .news-split { animation: none; } }
+@media (max-width: 640px) {
+  .launch-status { padding-inline: .7rem; gap: .5rem; }
+  .launch-status-all { font-size: 11px; gap: .2rem; padding-inline: .15rem; white-space: nowrap; }
+}
+.launch-status-all:hover { opacity: 1; }
