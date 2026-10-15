@@ -33,6 +33,7 @@ import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as ApiAskAiRouteImport } from './routes/api/ask-ai'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
 import { Route as ApiKycRouteImport } from './routes/api/kyc'
 import { Route as AuthResetRouteImport } from './routes/auth_.reset'
@@ -199,6 +200,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAskAiRoute = ApiAskAiRouteImport.update({
+  id: '/api/ask-ai',
+  path: '/api/ask-ai',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiIntegrationStatusRoute = ApiIntegrationStatusRouteImport.update({
@@ -481,6 +487,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/api/ask-ai': typeof ApiAskAiRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
   '/auth/reset': typeof AuthResetRoute
@@ -551,6 +558,7 @@ export interface FileRoutesByTo {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/login': typeof AdminLoginRoute
+  '/api/ask-ai': typeof ApiAskAiRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
   '/auth/reset': typeof AuthResetRoute
@@ -624,6 +632,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/api/ask-ai': typeof ApiAskAiRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
   '/auth_/reset': typeof AuthResetRoute
@@ -697,6 +706,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/admin/login'
+    | '/api/ask-ai'
     | '/api/integration-status'
     | '/api/kyc'
     | '/auth/reset'
@@ -767,6 +777,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin/login'
+    | '/api/ask-ai'
     | '/api/integration-status'
     | '/api/kyc'
     | '/auth/reset'
@@ -839,6 +850,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/admin/login'
+    | '/api/ask-ai'
     | '/api/integration-status'
     | '/api/kyc'
     | '/auth_/reset'
@@ -911,6 +923,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  ApiAskAiRoute: typeof ApiAskAiRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
   ApiKycRoute: typeof ApiKycRoute
   AuthResetRoute: typeof AuthResetRoute
@@ -1111,6 +1124,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ask-ai': {
+      id: '/api/ask-ai'
+      path: '/api/ask-ai'
+      fullPath: '/api/ask-ai'
+      preLoaderRoute: typeof ApiAskAiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/integration-status': {
@@ -1516,6 +1536,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
+  ApiAskAiRoute: ApiAskAiRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
   ApiKycRoute: ApiKycRoute,
   AuthResetRoute: AuthResetRoute,
