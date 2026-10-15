@@ -15,9 +15,14 @@ export const PAYMENT_JOURNEY = [
       "See the estimated local-currency amount, LamportPay fee and separate partner costs before identity verification. Quotes expire and may need refreshing.",
   },
   {
+    title: "Verify (KYC)",
+    detail:
+      "Complete identity verification (KYC) on Stables’ hosted page. LamportPay keeps only the verification link and status—never your identity documents. Verified once, your wallet skips this step on later payments.",
+  },
+  {
     title: "Review",
     detail:
-      "Check bank details with Stables, complete any required verification on its hosted verification page, then review the recipient, amount and costs.",
+      "Bank details are checked with Stables. Review the recipient, amount, LamportPay fee and partner costs before you approve.",
   },
   {
     title: "Sign",

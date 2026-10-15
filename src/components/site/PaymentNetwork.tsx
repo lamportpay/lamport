@@ -36,14 +36,14 @@ const nodes = [
     title: "Stables",
     label: "SANDBOX",
     icon: ShieldCheck,
-    detail: PAYMENT_JOURNEY[3].detail,
+    detail: PAYMENT_JOURNEY[4].detail,
     note: "Hosted verification & payout infrastructure",
   },
   {
     title: "Bank account",
     label: "PAYOUT DISABLED",
     icon: Landmark,
-    detail: PAYMENT_JOURNEY[6].detail,
+    detail: PAYMENT_JOURNEY[7].detail,
     note: "Your own account or a beneficiary’s",
   },
 ];

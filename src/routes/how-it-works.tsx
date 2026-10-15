@@ -33,6 +33,7 @@ const stepIcons = [
   Wallet,
   SlidersHorizontal,
   FileText,
+  ShieldCheck,
   ClipboardCheck,
   PenLine,
   Activity,

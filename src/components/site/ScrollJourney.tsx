@@ -14,16 +14,35 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
   const refs = useRef<(HTMLLIElement | null)[]>([]);
 
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.index));
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const mid = window.innerHeight / 2;
+      let best = 0;
+      let dist = Infinity;
+      refs.current.forEach((el, i) => {
+        const t = el?.querySelector<HTMLElement>("[data-step-text]");
+        if (!t) return;
+        const r = t.getBoundingClientRect();
+        const d = Math.abs(r.top + r.height / 2 - mid);
+        if (d < dist) {
+          dist = d;
+          best = i;
         }
-      },
-      { rootMargin: "-45% 0px -45% 0px" },
-    );
-    refs.current.forEach((el) => el && obs.observe(el));
-    return () => obs.disconnect();
+      });
+      setActive(best);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [steps.length]);
 
   const ActiveIcon = icons[active] ?? CheckCircle2;
@@ -61,7 +80,7 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
                     key={s.title}
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-300",
-                      i === active && "bg-primary/10 font-semibold text-foreground",
+                      i === active && "bg-primary/10 font-semibold text-foreground ring-1 ring-primary/40 animate-pulse motion-reduce:animate-none",
                       i !== active && "text-muted-foreground",
                     )}
                   >
@@ -103,7 +122,7 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
               ref={(el) => {
                 refs.current[i] = el;
               }}
-              className="relative grid grid-cols-[3rem_1fr] gap-5 py-10 md:min-h-[45vh] md:items-center md:py-0"
+              className="relative grid grid-cols-[3rem_1fr] gap-5 py-10 md:min-h-[40vh] md:items-center md:py-0"
             >
               <div
                 className={cn(
@@ -116,6 +135,7 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
                 <Icon aria-hidden="true" className="size-5" />
               </div>
               <div
+                data-step-text
                 className={cn(
                   "transition-all duration-500 motion-reduce:transition-none",
                   on ? "opacity-100" : "md:opacity-70",
