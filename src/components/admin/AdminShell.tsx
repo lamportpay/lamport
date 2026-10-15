@@ -23,6 +23,7 @@ import {
   ArrowUpRight,
   ShieldCheck,
   Search,
+  MessageSquareWarning,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
@@ -59,6 +60,7 @@ const ADMIN_NAV: { section: string; items: NavItem[] }[] = [
   {
     section: "Customers & access",
     items: [
+      { to: "/admin/complaints", label: "Complaints & chats", icon: MessageSquareWarning },
       { to: "/admin/verified-customers", label: "Verified customers", icon: BadgeCheck },
       { to: "/admin/users", label: "Users & roles", icon: Users },
     ],
