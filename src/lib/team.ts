@@ -25,8 +25,10 @@ export type TeamMember = {
   history: { period: string; title: string; detail: string }[];
   /** Only filled in when the person has shared the profile URL. */
   socials: { linkedin?: string; twitter?: string; github?: string };
-  /** Extra framing so every face sits at the same size and height. */
+  /** Extra framing so every face sits at the same size and height (card crops). */
   photoClass?: string;
+  /** Framing for the wider portrait in the open profile panel. */
+  sheetPhotoClass?: string;
 };
 
 export const TEAM: TeamMember[] = [
@@ -42,7 +44,8 @@ export const TEAM: TeamMember[] = [
       {
         period: "LamportPay",
         title: "Founder & CEO",
-        detail: "Founded Lamport Pay Ltd and leads strategy, partner relationships and the funding round.",
+        detail:
+          "Founded Lamport Pay Ltd and leads strategy, partner relationships and the funding round.",
       },
     ],
     socials: {},
@@ -63,7 +66,8 @@ export const TEAM: TeamMember[] = [
       },
     ],
     socials: {},
-    photoClass: "scale-[1.18] origin-top",
+    photoClass: "scale-[1.43] origin-top",
+    sheetPhotoClass: "scale-[1.11] origin-top",
   },
   {
     slug: "ghazanfar-abbas",
@@ -78,7 +82,8 @@ export const TEAM: TeamMember[] = [
       {
         period: "LamportPay",
         title: "CTO & Lead Developer",
-        detail: "Built the LamportPay payment engine, wallet sign-in and the partner payout integration.",
+        detail:
+          "Built the LamportPay payment engine, wallet sign-in and the partner payout integration.",
       },
     ],
     socials: {},
@@ -95,7 +100,8 @@ export const TEAM: TeamMember[] = [
       {
         period: "LamportPay",
         title: "Marketing & Community",
-        detail: "Runs community growth, the ambassador programme and outreach across the ecosystem.",
+        detail:
+          "Runs community growth, the ambassador programme and outreach across the ecosystem.",
       },
     ],
     socials: {},
