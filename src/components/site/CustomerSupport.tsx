@@ -33,7 +33,7 @@ function Mark({ size = "size-7", inner = "size-5" }: { size?: string; inner?: st
 
 function ChatBody() {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<Msg[]>(() => loadHistory());
+  const [messages, setMessages] = useState<Msg[]>([]);
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -49,15 +49,11 @@ function ChatBody() {
   }, [messages, typing]);
 
   function persist(next: Msg[]) {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next.slice(-60)));
-    } catch {
-      /* storage disabled */
-    }
+    if (!worthReporting(next)) return;
     fetch("/api/ask-ai", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ sessionId: sessionId(), messages: next.map(({ role, text }) => ({ role, text })) }),
+      body: JSON.stringify({ sessionId: crypto.randomUUID(), messages: next.map(({ role, text }) => ({ role, text })) }),
     }).catch(() => {});
   }
 
@@ -102,8 +98,6 @@ function ChatBody() {
     setBusy(false);
     setTyping(false);
     setMessages([]);
-    window.localStorage.removeItem(STORAGE_KEY);
-    window.localStorage.removeItem(SESSION_KEY);
     inputRef.current?.focus();
   }
 
@@ -189,7 +183,7 @@ function ChatBody() {
         </Button>
       </form>
       <div className="flex items-center justify-between px-5 py-2">
-        <p className="text-[10px] text-muted-foreground">Chats are saved to help our team. Never share bank or wallet secrets.</p>
+        <p className="text-[10px] text-muted-foreground">Chats stay on your device — only complaints reach our team. Never share bank or wallet secrets.</p>
         {messages.length > 0 && (
           <button type="button" onClick={reset} className="flex shrink-0 items-center gap-1 text-[11px] font-medium text-home-brand hover:underline">
             <RotateCcw className="size-3" /> New chat
