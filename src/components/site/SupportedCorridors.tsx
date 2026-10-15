@@ -203,6 +203,12 @@ export function SupportedCorridors() {
             ))}
           </div>
 
+          {!active && (
+            <div className="corridor-map-hint pointer-events-none absolute left-1/2 top-3 -translate-x-1/2 rounded-full border border-border bg-background/90 px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur">
+              Tap a country to explore the map
+            </div>
+          )}
+
           {selected && (
             <div className="pointer-events-none absolute bottom-3 left-3 right-3 flex items-center gap-3 rounded-lg border border-border bg-background/95 px-4 py-2.5 shadow-md backdrop-blur sm:right-auto">
               {sel && <Flag code={sel.code} size={22} />}

@@ -9,6 +9,7 @@ import { HomeGlance } from "@/components/site/HomeGlance";
 import { HomeCapabilities } from "@/components/site/HomeCapabilities";
 import { IntegrationStatus } from "@/components/site/IntegrationStatus";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
+import { HomeLatestNews } from "@/components/site/HomeLatestNews";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { HeroRibbon } from "@/components/site/HeroRibbon";
 import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
@@ -81,6 +82,7 @@ function Index() {
         <ConnectedSystems />
         <IntegrationStatus />
         <SupportedCorridors />
+        <HomeLatestNews />
         <HomeCtaBanner />
       </SiteLayout>
     </div>
