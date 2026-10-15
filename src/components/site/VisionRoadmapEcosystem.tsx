@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Flag } from "@/components/app/Flag";
 import { CURRENT_FLOW, FUTURE_EXPLORATION, ROADMAP_NOTE, ROADMAP_PHASES } from "@/content/roadmap";
 import { publicEcosystem, type EcosystemCompany } from "@/content/ecosystem";
 
@@ -261,30 +260,18 @@ export function RoadmapSection() {
   );
 }
 
-const regionCodes = { USA: "US", UK: "GB", UAE: "AE", IN: "IN" };
-const regionNames = {
-  USA: "United States",
-  UK: "United Kingdom",
-  UAE: "United Arab Emirates",
-  IN: "India",
-};
 
 function CompanyLogo({ c }: { c: EcosystemCompany }) {
   const [broken, setBroken] = useState(false);
+  if (!c.logo || broken) return null;
   return (
-    <div className="flex h-28 items-center justify-center px-3">
-      {c.logo && !broken ? (
-        <img
-          src={c.logo}
-          alt={`${c.name} logo`}
-          loading="lazy"
-          onError={() => setBroken(true)}
-          className="max-h-20 max-w-full object-contain"
-        />
-      ) : (
-        <span className="text-center text-lg font-semibold text-foreground">{c.name}</span>
-      )}
-    </div>
+    <img
+      src={c.logo}
+      alt={`${c.name} logo`}
+      loading="lazy"
+      onError={() => setBroken(true)}
+      className="partner-logo max-h-14 max-w-full object-contain"
+    />
   );
 }
 
@@ -308,45 +295,19 @@ export function EcosystemSection({ compact = false }: { compact?: boolean } = {}
         </div>
         <ul
           aria-label="Business partner logos"
-          className="partner-slider mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto border-y border-border py-5"
+          className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6"
         >
           {companies.map((c) => (
-            <li key={c.name} className="w-[240px] shrink-0 snap-start sm:w-[260px]">
+            <li key={c.name}>
               <a
-                href={c.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-lg bg-card px-5 py-4 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                href="/partners"
+                aria-label={`${c.name} — partner details`}
+                className="partner-card flex h-full flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card px-4 py-6 text-center transition-all hover:border-home-brand/40 hover:bg-home-tint hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <CompanyLogo c={c} />
-                <h3 className="mt-3 flex min-h-10 items-center justify-center text-center text-sm font-semibold leading-snug">
-                  {c.name}
-                </h3>
-                <p className="mt-1 text-center text-[11px] font-semibold uppercase tracking-wide text-home-brand">
-                  {c.sector}
-                </p>
-                <p className="mt-2 line-clamp-3 min-h-[3.75rem] text-center text-xs leading-relaxed text-muted-foreground">
-                  {c.description}
-                </p>
-                <div className="mt-3 flex items-center justify-center gap-2 text-[11px] text-muted-foreground">
-                  {c.region === "UAE" ? (
-                    <svg
-                      viewBox="0 0 24 16"
-                      width="20"
-                      height="14"
-                      aria-hidden="true"
-                      className="shrink-0 rounded-sm"
-                    >
-                      <rect width="24" height="16" fill="#fff" />
-                      <rect width="24" height="5.33" fill="#00843D" />
-                      <rect y="10.67" width="24" height="5.33" fill="#000" />
-                      <rect width="7" height="16" fill="#C8102E" />
-                    </svg>
-                  ) : (
-                    <Flag code={regionCodes[c.region]} size={20} />
-                  )}
-                  {regionNames[c.region]}
-                </div>
+                <span className="flex h-16 items-center justify-center">
+                  <CompanyLogo c={c} />
+                </span>
+                <span className="text-sm font-semibold leading-snug">{c.name}</span>
               </a>
             </li>
           ))}
