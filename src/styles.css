@@ -1155,28 +1155,36 @@
     gap: 8px;
   }
   .commercial-home .bank-flow-item {
-    min-height: 76px;
-    padding: 12px;
+    min-height: 104px;
+    padding: 16px;
+    gap: 14px;
   }
-  /* Mobile: bank cards become a swipeable flex row — 2 full cards + a half
-     visible third as the scroll hint, no scrollbar shown. */
+  .commercial-home .bank-flow-item p:first-child {
+    font-size: 15px;
+  }
+  .commercial-home .bank-flow-item p:last-child {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  /* Mobile: bank cards become a swipeable flex row — one full card plus a
+     generous peek of the next as the scroll hint, no scrollbar shown. */
   .commercial-home .bank-flow-list {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
     scroll-snap-type: x proximity;
-    padding: 2px 16px 8px;
+    padding: 4px 16px 10px;
     margin-inline: -16px;
     scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 84%, transparent 97%);
-    mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 84%, transparent 97%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 88%, transparent 99%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 88%, transparent 99%);
   }
   .commercial-home .bank-flow-list::-webkit-scrollbar {
     display: none;
   }
   .commercial-home .bank-flow-list > .bank-flow-item {
-    flex: 0 0 calc((100% - 20px) / 2.5);
+    flex: 0 0 calc((100% - 12px) / 1.35);
     scroll-snap-align: start;
   }
   .commercial-home .bank-flow-trunk {
