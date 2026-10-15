@@ -1660,7 +1660,7 @@
 
 /* Fixed bottom crypto price ticker */
 .crypto-ticker-track {
-  animation: crypto-ticker-scroll 60s linear infinite;
+  animation: crypto-ticker-scroll 120s linear infinite;
 }
 .crypto-ticker:hover .crypto-ticker-track {
   animation-play-state: paused;
