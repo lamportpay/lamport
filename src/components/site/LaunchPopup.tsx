@@ -67,16 +67,16 @@ export function LaunchPopup() {
             <img src={markUrl} alt="" width={44} height={44} />
           </div>
           <span className="launch-popup-pill">
-            <Rocket className="h-3.5 w-3.5" aria-hidden /> Launching soon
+            <Rocket className="h-3.5 w-3.5" aria-hidden /> Live now
           </span>
         </div>
         <div className="space-y-4 px-6 pb-6 pt-5">
           <DialogTitle className="text-2xl font-semibold leading-tight">
-            LamportPay is going live
+            LamportPay is live
           </DialogTitle>
           <DialogDescription className="text-sm leading-relaxed text-muted-foreground">
-            The platform is built and core security controls are in place. Our dedicated security
-            phase comes next, followed by a controlled launch — be part of it from day one.
+            The website and the app are live, and the payment flow is active — you can convert
+            crypto to a bank payout today. Join early access to be part of it from day one.
           </DialogDescription>
           <div className="launch-popup-offer">
             <Gift className="h-5 w-5 shrink-0 text-primary" aria-hidden />

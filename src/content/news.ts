@@ -18,10 +18,10 @@ export const NEWS: NewsItem[] = [
   {
     slug: "lamportpay-going-live",
     tag: "Launch",
-    title: "LamportPay is getting ready to go live",
-    headline: "LamportPay is preparing to go live — join early access.",
+    title: "LamportPay is live — the payment flow is active",
+    headline: "LamportPay is live — the payment flow is active. Join early access.",
     summary:
-      "The platform is built and core security controls are in place. Next comes our dedicated security phase — an independent audit and hardening — before a controlled launch.",
+      "The website and the app are live, and the payment flow is active: you can convert USDC on Solana into a payout to a local bank account today. The first 10 early-access users pay no LamportPay fee.",
     published: "2026-10-15",
     keywords: ["LamportPay launch", "crypto to bank payout", "Solana stablecoin payout", "USDC to bank", "early access"],
     body: [
