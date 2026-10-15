@@ -13,11 +13,9 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
-import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
 import { Button } from "@/components/ui/button";
 import { PAYMENT_JOURNEY, PAYMENT_COSTS } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
-import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { ScrollJourney } from "@/components/site/ScrollJourney";
 
 export const Route = createFileRoute("/how-it-works")({
@@ -87,7 +85,6 @@ function HowItWorks() {
               </Link>
             </Button>
           </div>
-          <PaymentFlowStatus />
         </header>
 
         <section className="mt-14" aria-labelledby="journey-heading">
@@ -136,13 +133,6 @@ function HowItWorks() {
           </p>
         </section>
       </main>
-      <FurtherReading
-        slugs={[
-          "crypto-to-fiat-payments-explained",
-          "designing-transparent-payment-quotes",
-          "web3-payment-rails-architecture",
-        ]}
-      />
     </SiteLayout>
   );
 }

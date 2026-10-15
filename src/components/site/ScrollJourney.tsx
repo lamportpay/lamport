@@ -33,15 +33,7 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
     <div className="mt-10 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-16">
       <div className="hidden md:block">
         <div className="sticky top-32">
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 shadow-sm">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-primary/15 blur-3xl"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -bottom-24 -left-16 size-64 rounded-full bg-accent/20 blur-3xl"
-            />
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8">
             <p className="relative text-xs font-semibold uppercase text-primary">
               Step {String(active + 1).padStart(2, "0")} of {steps.length}
             </p>
@@ -111,7 +103,7 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
               ref={(el) => {
                 refs.current[i] = el;
               }}
-              className="relative grid grid-cols-[3rem_1fr] gap-5 py-10 md:min-h-[60vh] md:items-center md:py-0"
+              className="relative grid grid-cols-[3rem_1fr] gap-5 py-10 md:min-h-[45vh] md:items-center md:py-0"
             >
               <div
                 className={cn(
@@ -126,7 +118,7 @@ export function ScrollJourney({ steps, icons }: { steps: readonly Step[]; icons:
               <div
                 className={cn(
                   "transition-all duration-500 motion-reduce:transition-none",
-                  on ? "opacity-100 md:translate-x-0" : "opacity-100 md:translate-x-2 md:opacity-40",
+                  on ? "opacity-100" : "md:opacity-70",
                 )}
               >
                 <p className="text-xs font-semibold text-primary">
