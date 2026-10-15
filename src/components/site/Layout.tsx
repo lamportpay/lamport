@@ -137,8 +137,27 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           </Sheet>
           </div>
         </div>
-        <CryptoPriceTicker inline />
-        <ColosseumBanner />
+        <div
+          className={cn(
+            "transition-colors duration-300",
+            scrolled ? "bg-background" : "bg-transparent",
+          )}
+        >
+          <CryptoPriceTicker inline />
+        </div>
+        <div
+          className={cn(
+            "grid transition-all duration-300",
+            scrolled
+              ? "grid-rows-[1fr] opacity-100"
+              : "grid-rows-[0fr] opacity-0",
+          )}
+          aria-hidden={!scrolled}
+        >
+          <div className="overflow-hidden">
+            <ColosseumBanner />
+          </div>
+        </div>
       </header>
       <main className={cn("flex-1", !isHome && "site-subpage relative isolate")}>
         {!isHome && <PageHeroDecor pathname={pathname} />}
