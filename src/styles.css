@@ -688,15 +688,21 @@
   color: var(--home-ink);
 }
 .home-cap-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 6px;
   margin: 34px 0 0;
   padding: 0;
   list-style: none;
 }
 .home-cap-item {
   display: flex;
+  flex: 1 0 132px;
+  min-width: 0;
+  scroll-snap-align: start;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid oklch(0.55 0.1 265 / 16%);
@@ -707,7 +713,7 @@
 .home-cap-art {
   display: grid;
   place-items: center;
-  height: 150px;
+  height: 104px;
   background:
     radial-gradient(circle at 30% 20%, oklch(0.88 0.08 250 / 70%), transparent 60%),
     radial-gradient(circle at 75% 85%, oklch(0.86 0.1 295 / 70%), transparent 60%),
@@ -715,8 +721,8 @@
   border-bottom: 1px solid oklch(0.55 0.1 265 / 12%);
 }
 .home-cap-hex {
-  width: 92px;
-  height: 104px;
+  width: 64px;
+  height: 72px;
   overflow: visible;
   filter: drop-shadow(0 10px 18px oklch(0.45 0.2 275 / 28%));
 }
@@ -726,14 +732,16 @@
 .home-cap-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 16px 18px 18px;
-  text-align: left;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 10px 14px;
+  text-align: center;
 }
 .home-cap-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 8px;
 }
 .home-cap-label {
@@ -743,6 +751,7 @@
   color: var(--home-ink);
 }
 .home-cap-desc {
+  display: none;
   margin: 0;
   font-size: 13px;
   line-height: 1.5;
@@ -792,15 +801,13 @@
     text-align: left;
   }
 }
-@media (min-width: 640px) {
-  .home-cap-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (min-width: 1024px) {
   .home-cap-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
+    overflow: visible;
+    gap: 10px;
+  }
+  .home-cap-item {
+    flex: 1 1 0;
   }
 }
 @media (prefers-reduced-motion: no-preference) {

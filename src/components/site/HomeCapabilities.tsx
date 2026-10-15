@@ -181,7 +181,7 @@ export function HomeCapabilities() {
 
         <ul className="home-cap-grid" role="list">
           {CAPABILITIES.map((item) => (
-            <li key={item.key} className="home-cap-item">
+            <li key={item.key} className="home-cap-item" title={item.title}>
               <div className="home-cap-art" aria-hidden="true">
                 <svg
                   focusable="false"
@@ -204,7 +204,7 @@ export function HomeCapabilities() {
               </div>
               <div className="home-cap-body">
                 <div className="home-cap-row">
-                  <span className="home-cap-label">{item.label}</span>
+                  <span className="home-cap-label text-[13px]">{item.label}</span>
                   <span className={`home-cap-status home-cap-status--${item.status}`}>
                     {STATUS_TEXT[item.status]}
                   </span>
