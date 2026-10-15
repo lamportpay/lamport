@@ -2090,3 +2090,13 @@ body.has-cookie-banner .site-footer-legal {
   .partner-marquee-track { animation: none; flex-wrap: wrap; justify-content: center; width: auto; }
   .partner-marquee-dup { display: none; }
 }
+
+/* Latest news: swipeable row on phones, grid from tablet up */
+.home-news-row { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px 2px 12px; margin-inline: -2px; }
+.home-news-row::-webkit-scrollbar { display: none; }
+.home-news-card { flex: 0 0 78%; scroll-snap-align: start; }
+@media (min-width: 640px) {
+  .home-news-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; overflow: visible; }
+  .home-news-card { flex: none; }
+}
+@media (min-width: 1024px) { .home-news-row { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

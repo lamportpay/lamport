@@ -18,14 +18,14 @@ const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
   { path: "/technology", priority: "0.6", changefreq: "monthly" },
   { path: "/people", priority: "0.6", changefreq: "monthly" },
   { path: "/contact", priority: "0.6", changefreq: "monthly" },
+  { path: "/faq", priority: "0.7", changefreq: "monthly" },
 ];
 
 function buildSitemap() {
-  const today = new Date().toISOString().slice(0, 10);
   const entries = [
     ...STATIC_PAGES.map((p) => ({
       loc: canonical(p.path),
-      lastmod: today,
+      lastmod: undefined as string | undefined,
       changefreq: p.changefreq,
       priority: p.priority,
     })),
@@ -42,7 +42,7 @@ function buildSitemap() {
 ${entries
   .map(
     (e) =>
-      `  <url>\n    <loc>${e.loc}</loc>\n    <lastmod>${e.lastmod}</lastmod>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`,
+      `  <url>\n    <loc>${e.loc}</loc>${e.lastmod ? `\n    <lastmod>${e.lastmod}</lastmod>` : ""}\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`,
   )
   .join("\n")}
 </urlset>
