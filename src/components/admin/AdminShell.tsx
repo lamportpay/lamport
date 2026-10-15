@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   Search,
   MessageSquareWarning,
+  Rocket,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
