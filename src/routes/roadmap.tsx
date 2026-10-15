@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
-import { FutureVisionSection, RoadmapSection } from "@/components/site/VisionRoadmapEcosystem";
+import { RoadmapTracker } from "@/components/site/RoadmapTracker";
 import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/roadmap")({
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/roadmap")({
       path: "/roadmap",
       title: "Roadmap — LamportPay",
       description:
-        "LamportPay’s public roadmap: what is live today on Solana, what is in progress with Hyperliquid liquidity, and the planned phases for bank payouts, new corridors and partnerships.",
+        "LamportPay’s phase-by-phase roadmap tracker: seven phases done, security review and go-live in progress, then liquidity, partnerships and a global payout ecosystem.",
     }),
   component: RoadmapPage,
 });
@@ -27,13 +27,12 @@ function RoadmapPage() {
               The LamportPay roadmap.
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-home-ink md:text-lg">
-              A public view of what is live today, what is in progress, and what is planned next —
-              so partners, judges and integrators can see exactly where LamportPay stands.
+              Eleven phases, tracked one by one: seven are done, we are in phase eight (security review
+              and go-live), and three growth phases come next.
             </p>
           </div>
         </section>
-        <RoadmapSection />
-        <FutureVisionSection />
+        <RoadmapTracker />
         <section className="home-section border-t border-border">
           <div className="home-container flex flex-wrap items-center justify-between gap-6">
             <div>
