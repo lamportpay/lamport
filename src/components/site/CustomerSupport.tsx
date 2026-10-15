@@ -223,8 +223,8 @@ export function CustomerSupport() {
           aria-label="Ask AI — open LamportPay assistant"
           title="Ask AI"
         >
-          <span className="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-sm">
-            <Mark size="size-9" inner="size-5" className="!bg-transparent !ring-0" />
+          <span className="relative">
+            <Mark size="size-9" inner="size-5" />
             <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-emerald-400 ring-2 ring-white motion-safe:animate-pulse" />
           </span>
           <span className="flex flex-col items-start leading-none">
