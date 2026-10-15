@@ -1,8 +1,8 @@
-import zoaibAli from "@/assets/team/team-zoaib-ali.jpg.asset.json";
-import zaheerMuneer from "@/assets/team/team-zaheer-muneer.jpg.asset.json";
-import ghazanfarAbbas from "@/assets/team/team-ghazanfar-abbas.jpg.asset.json";
-import izzat from "@/assets/team/team-izzat.jpg.asset.json";
-import safiUllahAdam from "@/assets/team/team-safi-ullah-adam.jpg.asset.json";
+import zoaibAli from "@/assets/team/framed-zoaib.jpg";
+import zaheerMuneer from "@/assets/team/framed-zaheer.jpg";
+import ghazanfarAbbas from "@/assets/team/framed-ghazanfar.jpg";
+import izzat from "@/assets/team/framed-izzat.jpg";
+import safiUllahAdam from "@/assets/team/framed-safi.jpg";
 
 export type TeamCategory = "Leadership" | "Engineering" | "Growth & Community" | "Advisors";
 
@@ -37,7 +37,7 @@ export const TEAM: TeamMember[] = [
     name: "Zoaib Ali",
     role: "Founder & CEO",
     category: "Leadership",
-    photo: zoaibAli.url,
+    photo: zoaibAli,
     summary: "Leads strategy, partnerships and the funding round.",
     focus: ["Company strategy", "Partnerships", "Fundraising"],
     history: [
@@ -55,7 +55,7 @@ export const TEAM: TeamMember[] = [
     name: "Zaheer Muneer",
     role: "Advisor",
     category: "Advisors",
-    photo: zaheerMuneer.url,
+    photo: zaheerMuneer,
     summary: "Strategic guidance, growth scaling and institutional partnerships.",
     focus: ["Strategic guidance", "Growth scaling", "Institutional partnerships"],
     history: [
@@ -66,15 +66,13 @@ export const TEAM: TeamMember[] = [
       },
     ],
     socials: {},
-    photoClass: "scale-[1.43] origin-top",
-    sheetPhotoClass: "scale-[1.11] origin-top",
   },
   {
     slug: "ghazanfar-abbas",
     name: "Ghazanfar Abbas",
     role: "CTO & Lead Developer",
     category: "Engineering",
-    photo: ghazanfarAbbas.url,
+    photo: ghazanfarAbbas,
     summary:
       "Product engineering · Web3 · Solana · full-stack development. Built the LamportPay payment engine.",
     focus: ["Solana & Web3", "Payment engine", "Full-stack development"],
@@ -93,7 +91,7 @@ export const TEAM: TeamMember[] = [
     name: "Izzat",
     role: "Marketing & Community",
     category: "Growth & Community",
-    photo: izzat.url,
+    photo: izzat,
     summary: "Community growth, ambassador programme and ecosystem outreach.",
     focus: ["Community growth", "Ambassador programme", "Ecosystem outreach"],
     history: [
@@ -111,7 +109,7 @@ export const TEAM: TeamMember[] = [
     name: "Safi Ullah Adam",
     role: "Advisor — Technology & AI",
     category: "Advisors",
-    photo: safiUllahAdam.url,
+    photo: safiUllahAdam,
     summary: "AI architecture, technical strategy and platform infrastructure advisory.",
     focus: ["AI architecture", "Technical strategy", "Platform infrastructure"],
     history: [
