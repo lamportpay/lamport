@@ -668,18 +668,16 @@
 /* Capability strip under the hero: outlined hexagons, uppercase labels, status pills. */
 .home-capabilities {
   position: relative;
-  border-top: 1px solid oklch(0.55 0.1 265 / 14%);
+  padding-block: 26px 30px;
   border-bottom: 1px solid oklch(0.55 0.1 265 / 14%);
-  background:
-    radial-gradient(ellipse 45% 70% at 10% 0%, oklch(0.9 0.05 250 / 55%), transparent 70%),
-    radial-gradient(ellipse 45% 70% at 90% 100%, oklch(0.9 0.05 290 / 55%), transparent 70%),
-    var(--home-surface);
+  background: var(--card);
 }
 .home-cap-heading {
-  font-size: 26px;
+  margin-top: 0;
+  font-size: 18px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 .home-cap-heading-dash {
   color: var(--home-connector);
@@ -690,8 +688,8 @@
 .home-cap-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 26px 12px;
-  margin: 34px 0 0;
+  gap: 18px 10px;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -699,22 +697,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   text-align: center;
 }
 .home-cap-hex {
-  width: 60px;
-  height: 68px;
+  width: 48px;
+  height: 55px;
   overflow: visible;
 }
 .home-cap-hex-shape {
   fill: oklch(1 0 0 / 78%);
 }
 .home-cap-label {
-  min-height: 2.6em;
-  font-size: 11px;
+  min-height: 2.4em;
+  font-size: 10px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
   letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--home-ink);
@@ -746,9 +744,9 @@
 }
 .home-cap-note {
   max-width: 640px;
-  margin: 28px auto 0;
-  font-size: 11px;
-  line-height: 1.6;
+  margin: 16px auto 0;
+  font-size: 10px;
+  line-height: 1.55;
   text-align: center;
   color: var(--home-connector);
 }
@@ -771,14 +769,14 @@
 @media (min-width: 1024px) {
   .home-cap-grid {
     grid-template-columns: repeat(9, minmax(0, 1fr));
-    gap: 14px 8px;
+    gap: 12px 6px;
   }
   .home-cap-hex {
-    width: 54px;
-    height: 61px;
+    width: 44px;
+    height: 50px;
   }
   .home-cap-label {
-    font-size: 10px;
+    font-size: 9px;
   }
 }
 @media (prefers-reduced-motion: no-preference) {

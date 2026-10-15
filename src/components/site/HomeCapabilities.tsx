@@ -171,7 +171,6 @@ export function HomeCapabilities() {
 
       <div className="home-container">
         <div className="text-center">
-          <p className="home-eyebrow">What is wired up today</p>
           <h2 id="home-capabilities-heading" className="home-heading home-cap-heading">
             <span className="home-brand-text">All in one</span>
             <span className="home-cap-heading-dash"> — </span>
