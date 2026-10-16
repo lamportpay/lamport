@@ -35,7 +35,7 @@ const PARTNERS: Partner[] = [
 
 const TONE: Record<Status, string> = {
   LIVE: "bg-success/15 text-success",
-  SANDBOX: "bg-warning/15 text-warning-foreground",
+  SANDBOX: "bg-warning/20 text-foreground",
   "IN DEVELOPMENT": "bg-home-brand/12 text-home-brand",
   PLANNED: "bg-muted text-muted-foreground",
 };
