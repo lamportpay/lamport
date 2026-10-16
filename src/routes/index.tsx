@@ -11,6 +11,7 @@ import { HomeLatestNews } from "@/components/site/HomeLatestNews";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { HeroRibbon } from "@/components/site/HeroRibbon";
 import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
+import { InfrastructureFlowImage } from "@/components/site/InfrastructureFlowImage";
 import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -75,6 +76,7 @@ function Index() {
         </section>
         <HomeCapabilities />
         <HomeBankNetwork />
+        <InfrastructureFlowImage />
         <FeeCalculator />
         <IntegrationStatus />
         <SupportedCorridors />
