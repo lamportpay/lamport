@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { pageSeo } from "@/lib/seo";
+import { WORLD_MAP_PATHS, WORLD_MAP_VIEWBOX } from "@/lib/world-map";
 import markUrl from "@/assets/lamportpay-mark.png";
 
 export const Route = createFileRoute("/contact")({
@@ -61,50 +62,19 @@ const FACTS = [
   { icon: Globe2, label: "Coverage", value: "Global product, remote-first team" },
 ];
 
-/** Compact stylised payout map: supported corridors now, planned next. */
+/**
+ * Payout map markers on the real world map (src/lib/world-map.ts).
+ * Positions are true equirectangular coordinates:
+ * x% = (lon + 180) / 360, y% = (84 - lat) / 144.
+ */
 const MAP_MARKERS = [
-  { code: "US", name: "United States", x: 20, y: 38, live: true },
-  { code: "GB", name: "United Kingdom", x: 45, y: 26, live: true },
-  { code: "IN", name: "India", x: 66, y: 46, live: true },
-  { code: "PH", name: "Philippines", x: 79, y: 52, live: true },
-  { code: "NG", name: "Nigeria", x: 47, y: 56, live: false },
-  { code: "PK", name: "Pakistan", x: 63, y: 40, live: false },
+  { code: "US", name: "United States", x: 77.2, y: 31.3, live: true },
+  { code: "GB", name: "United Kingdom", x: 49.4, y: 20.8, live: true },
+  { code: "IN", name: "India", x: 71.7, y: 43.1, live: true },
+  { code: "PH", name: "Philippines", x: 83.9, y: 49.3, live: true },
+  { code: "NG", name: "Nigeria", x: 52.2, y: 51.4, live: false },
+  { code: "PK", name: "Pakistan", x: 69.2, y: 37.5, live: false },
 ];
-
-/** Subtle dotted world-map silhouette (equirectangular grid, # = land). */
-const WORLD_MAP_ROWS = [
-  "        ####              #####  ########   ##                    ",
-  "      #########          #############################  ##        ",
-  "     ###########        ############################### ####      ",
-  "      ##########       #####################################      ",
-  "       #########      #####################################       ",
-  "        ########       ##################################         ",
-  "         ######        ########  ###################  ##          ",
-  "          #####         ######   #################               ",
-  "           ####          ####    ################                ",
-  "           ###           ###     ###############                 ",
-  "            ##           ##      ##############    #             ",
-  "            ##            #      #############    ###            ",
-  "            ###                  ############    #####           ",
-  "             ####                 ##########      ###            ",
-  "              ######               ########       ##             ",
-  "               ########            ######                        ",
-  "                ##########          ####                         ",
-  "                 #########           ##                          ",
-];
-
-const MAP_COLS = Math.max(...WORLD_MAP_ROWS.map((r) => r.length));
-const MAP_DOTS: { cx: number; cy: number }[] = [];
-WORLD_MAP_ROWS.forEach((row, y) => {
-  for (let x = 0; x < row.length; x++) {
-    if (row[x] === "#") {
-      MAP_DOTS.push({
-        cx: ((x + 0.5) / MAP_COLS) * 100,
-        cy: ((y + 0.5) / WORLD_MAP_ROWS.length) * 100,
-      });
-    }
-  }
-});
 
 function PayoutMap() {
   return (
@@ -121,22 +91,18 @@ function PayoutMap() {
           global markets.
         </p>
 
-        <div className="relative mt-6 aspect-[2/1] w-full overflow-hidden rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
+        <div className="relative mt-6 aspect-[180/72] w-full overflow-hidden rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
           <svg
-            viewBox="0 0 100 50"
+            viewBox={WORLD_MAP_VIEWBOX}
             preserveAspectRatio="xMidYMid meet"
             className="absolute inset-0 h-full w-full"
             aria-hidden="true"
           >
-            {MAP_DOTS.map((d, i) => (
-              <circle
-                key={i}
-                cx={d.cx}
-                cy={d.cy}
-                r={0.55}
-                fill="rgba(255,255,255,0.35)"
-              />
-            ))}
+            <g fill="rgba(255,255,255,0.28)" stroke="rgba(255,255,255,0.18)" strokeWidth={0.15}>
+              {WORLD_MAP_PATHS.map((d, i) => (
+                <path key={i} d={d} />
+              ))}
+            </g>
           </svg>
           {MAP_MARKERS.map((m) => (
             <div
