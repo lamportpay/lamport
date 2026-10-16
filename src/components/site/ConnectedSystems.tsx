@@ -1,112 +1,121 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowRight, Check, CircleDollarSign, Globe2, Landmark, Layers3, Network, Pause, Play, ScanLine, ShieldCheck, SlidersHorizontal, Undo2, Wallet, Zap } from "lucide-react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Check, CircleDollarSign, Globe2, Landmark, Layers3, Maximize2, Minimize2, Network, Pause, Play, ShieldCheck, SlidersHorizontal, Undo2, Wallet, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFlowPlayback } from "@/hooks/use-flow-playback";
 
 const assets = [
-  { id: "btc", name: "Bitcoin", symbol: "BTC", status: "PLANNED" },
-  { id: "eth", name: "Ethereum", symbol: "ETH", status: "PLANNED" },
-  { id: "usdt", name: "Stablecoins", symbol: "USDT / USDC", status: "PLANNED" },
-  { id: "sol", name: "Solana assets", symbol: "SOL / SPL", status: "LIVE QUOTES" },
-  { id: "other", name: "Other major assets", symbol: "& networks", status: "PLANNED" },
+  { id: "btc", name: "Bitcoin (BTC)", status: "PLANNED" },
+  { id: "eth", name: "Ethereum (ETH)", status: "PLANNED" },
+  { id: "usdt", name: "USDT", status: "PLANNED" },
+  { id: "usdc", name: "USDC", status: "SANDBOX" },
+  { id: "sol", name: "Solana (SOL / SPL)", status: "LIVE QUOTES" },
+  { id: "bnb", name: "BNB Chain (BNB)", status: "PLANNED" },
+  { id: "other", name: "Other major assets and networks", status: "PLANNED" },
 ];
-const criteria = ["Best available FX rate", "Deepest available liquidity", "Lowest total cost", "Fastest settlement", "Supported network", "Payout availability"];
+const venues = [
+  { id: "jupiter", name: "Solana / SPL", status: "LIVE QUOTES", symbol: "sol", names: ["Jupiter", "Raydium", "Orca", "Meteora"], note: "Jupiter live quotes; other venues via aggregator routes, not direct integrations." },
+  { id: "ethereum", name: "Ethereum & L2", status: "PLANNED", symbol: "eth", names: ["Uniswap", "1inch", "Curve", "Balancer"], note: "Candidate venues · Not integrated" },
+  { id: "bnb-route", name: "BNB Chain", status: "PLANNED", symbol: "bnb", names: ["PancakeSwap", "Biswap", "Thena", "ApeSwap"], note: "Candidate venues · Not integrated" },
+  { id: "other-route", name: "Other chains", status: "PLANNED", symbol: "other", names: ["Polygon", "Arbitrum", "Optimism", "Base", "and more"], note: "Future network coverage" },
+];
 type Connection = { from: string; to: string; planned?: boolean; failed?: boolean; token?: string };
 const connections: Connection[] = [
-  ...assets.map(asset => ({ from: asset.id, to: "detection", planned: asset.id !== "sol", token: asset.id === "sol" ? "sol" : undefined })),
-  { from: "detection", to: "kyc", token: "sol" }, { from: "kyc", to: "routing", token: "sol" },
-  { from: "routing", to: "jupiter", token: "sol" }, { from: "routing", to: "hyperliquid", planned: true }, { from: "routing", to: "additional", planned: true },
-  { from: "jupiter", to: "settlement", token: "usdc" }, { from: "hyperliquid", to: "settlement", planned: true }, { from: "additional", to: "settlement", planned: true },
-  { from: "settlement", to: "fx", token: "usdc" }, { from: "fx", to: "partner", token: "usdc" }, { from: "partner", to: "recipient", token: "usdc" },
+  ...assets.map(asset => ({ from: asset.id, to: "kyc", planned: !["sol", "usdc"].includes(asset.id), token: ["sol", "usdc"].includes(asset.id) ? asset.id : undefined })),
+  { from: "kyc", to: "routing", token: "sol" },
+  ...venues.map(venue => ({ from: "routing", to: venue.id, planned: venue.id !== "jupiter", token: venue.id === "jupiter" ? "sol" : undefined })),
+  { from: "routing", to: "hyperliquid", planned: true },
+  ...venues.map(venue => ({ from: venue.id, to: "settlement", planned: venue.id !== "jupiter", token: venue.id === "jupiter" ? "usdc" : undefined })),
+  { from: "hyperliquid", to: "settlement", planned: true },
+  { from: "settlement", to: "partner", token: "usdc" }, { from: "partner", to: "fx", token: "usdc" }, { from: "fx", to: "recipient", token: "usdc" },
   { from: "kyc", to: "failed", failed: true }, { from: "failed", to: "assets", failed: true, planned: true },
 ];
 type Wire = Connection & { id: string; path: string };
-function Status({ children, live = false, sandbox = false }: { children: ReactNode; live?: boolean; sandbox?: boolean }) {
-  return <span className={`eco-status ${live ? "eco-status-live" : sandbox ? "eco-status-sandbox" : ""}`}>{children}</span>;
+function Status({ children }: { children: string }) {
+  return <span className={`eco-status ${children.includes("LIVE") ? "eco-status-live" : children.includes("SANDBOX") ? "eco-status-sandbox" : ""}`}>{children}</span>;
+}
+function Token({ symbol }: { symbol: string }) {
+  return ["sol", "usdc", "usdt", "btc", "eth"].includes(symbol) ? <img src={`/tokens/${symbol}.svg`} alt="" width="26" height="26" className="rounded-full shrink-0" /> : <span className="eco-symbol">{symbol === "bnb" ? "BNB" : <Layers3 className="size-5" />}</span>;
 }
 function Stage({ id, step, title, children }: { id: string; step: string; title: string; children: ReactNode }) {
   return <div data-eco-node={id} className="eco-stage"><h3 className="eco-stage-heading"><span>{step}</span>{title}</h3>{children}</div>;
 }
+function Checks({ items }: { items: string[] }) {
+  return <ul className="eco-criteria">{items.map(item => <li key={item}><Check className="size-3 shrink-0" />{item}</li>)}</ul>;
+}
 
-/** Visual-only geometry; endpoints follow the responsive DOM, never payment state. */
+/** Reference-proportioned overview with independent decorative motion and a readable expanded view. */
 export function ConnectedSystems() {
   const flow = useFlowPlayback(1);
+  const frame = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLDivElement>(null);
   const [wires, setWires] = useState<Wire[]>([]);
-  const [dimensions, setDimensions] = useState({ width: 1, height: 1 });
+  const [scale, setScale] = useState(1);
+  const [offset, setOffset] = useState(0);
+  const [height, setHeight] = useState(550);
   const [paused, setPaused] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const running = flow.inView && !flow.reduced && !paused;
   useEffect(() => {
-    const root = canvas.current;
-    if (!root) return;
+    const viewport = frame.current, root = canvas.current;
+    if (!viewport || !root) return;
     const measure = () => {
+      const availableHeight = Math.max(260, window.innerHeight - 370);
+      const zoom = expanded ? 1 : Math.min(viewport.clientWidth / 1440, viewport.clientWidth >= 700 ? availableHeight / root.offsetHeight : 1, 1);
+      setScale(zoom);
+      setOffset(expanded ? 0 : Math.max(0, (viewport.clientWidth - 1440 * zoom) / 2));
+      setHeight(root.offsetHeight);
       const box = root.getBoundingClientRect();
-      setDimensions({ width: box.width, height: box.height });
+      const renderedScale = box.width / 1440;
       setWires(connections.flatMap(connection => {
-        const from = root.querySelector<HTMLElement>(`[data-eco-node="${connection.from}"]`);
-        const to = root.querySelector<HTMLElement>(`[data-eco-node="${connection.to}"]`);
+        const from = root.querySelector<HTMLElement>(`[data-eco-node="${connection.from}"]`), to = root.querySelector<HTMLElement>(`[data-eco-node="${connection.to}"]`);
         if (!from || !to) return [];
         const a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
-        const horizontal = b.left >= a.right - 2;
-        const reverse = b.right < a.left;
-        const x1 = (horizontal ? a.right : reverse ? a.left : a.left + a.width / 2) - box.left;
-        const y1 = (horizontal || reverse ? a.top + a.height / 2 : a.bottom) - box.top;
-        const x2 = (horizontal ? b.left : reverse ? b.right : b.left + b.width / 2) - box.left;
-        const y2 = (horizontal || reverse ? b.top + b.height / 2 : b.top) - box.top;
-        const mid = horizontal || reverse ? (x1 + x2) / 2 : (y1 + y2) / 2;
-        let path = horizontal || reverse ? `M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2},${y2}` : `M${x1},${y1} C${x1},${mid} ${x2},${mid} ${x2},${y2}`;
-        if (connection.from === "failed" && connection.to === "assets") {
-          const rail = 4;
-          path = `M${a.left - box.left},${a.top + a.height / 2 - box.top} H${rail} V${b.top - box.top - 12} H${b.left + b.width / 2 - box.left} V${b.top - box.top}`;
+        const x1 = (a.right - box.left) / renderedScale, y1 = (a.top + a.height / 2 - box.top) / renderedScale;
+        const x2 = (b.left - box.left) / renderedScale, y2 = (b.top + b.height / 2 - box.top) / renderedScale;
+        const mid = (x1 + x2) / 2;
+        let path = `M${x1},${y1} C${mid},${y1} ${mid},${y2} ${x2},${y2}`;
+        if (connection.to === "failed") {
+          const x = (a.left + a.width / 2 - box.left) / renderedScale;
+          path = `M${x},${(a.bottom - box.top) / renderedScale} V${(b.top - box.top) / renderedScale}`;
         }
+        if (connection.from === "failed") path = `M${(a.left - box.left) / renderedScale},${y1} H${(a.left - box.left) / renderedScale - 10} V8 H${(b.left + b.width / 2 - box.left) / renderedScale} V${(b.top - box.top) / renderedScale}`;
         return [{ ...connection, id: `${connection.from}-${connection.to}`, path }];
       }));
     };
     const observer = new ResizeObserver(measure);
-    observer.observe(root);
+    observer.observe(viewport); observer.observe(root);
     root.querySelectorAll<HTMLElement>("[data-eco-node]").forEach(node => observer.observe(node));
     measure();
-    return () => observer.disconnect();
-  }, []);
+    window.addEventListener("resize", measure);
+    return () => { observer.disconnect(); window.removeEventListener("resize", measure); };
+  }, [expanded]);
   return <section id="infrastructure" className="eco-section home-section border-b border-border">
-    <div className="home-container">
-      <p className="home-eyebrow">The infrastructure behind the journey</p>
-      <h2 className="home-heading">Multi-asset in. Best route. Local currency out.</h2>
-      <p className="eco-intro">LamportPay connects digital assets to available liquidity, conversion and payout routes. Our multi-asset vision compares routes for competitive FX and fast settlement.</p>
+    <div className="eco-container">
+      <div className="eco-heading-row"><div><p className="home-eyebrow">The infrastructure behind the journey</p><h2 className="home-heading">Multi-asset in. Best route. Local currency out.</h2></div><div className="eco-top-benefits"><span><ShieldCheck />Non-custodial<br />by design</span><span><Zap />Live reference<br />rates</span><span><Globe2 />Payout partner<br />ecosystem</span></div></div>
+      <p className="eco-intro">LamportPay’s multi-asset vision connects digital assets to the best available liquidity, conversion and payout route, comparing rates across chains and leading DEXs for local currency delivery.</p>
       <div ref={flow.ref} className="eco-model" data-running={running}>
-        <div className="eco-model-caption"><span><Network className="size-4" /> Many assets <ArrowRight className="size-3" /> Multiple routes <ArrowRight className="size-3" /> One settlement</span><div className="flex items-center gap-2"><span className="text-xs text-muted-foreground">Illustrative ecosystem</span><Button variant="ghost" size="icon" disabled={flow.reduced} aria-label={paused ? "Resume ecosystem motion" : "Pause ecosystem motion"} title={paused ? "Resume ecosystem motion" : "Pause ecosystem motion"} onClick={() => setPaused(value => !value)}>{paused ? <Play className="size-4" /> : <Pause className="size-4" />}</Button></div></div>
-        <div ref={canvas} className="eco-canvas">
-          <svg className="eco-wires" width={dimensions.width} height={dimensions.height} aria-hidden="true">
-            <defs><marker id="eco-return-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" className="eco-return-arrow" /></marker></defs>
-            {wires.map((wire, index) => <g key={wire.id}><path d={wire.path} markerEnd={wire.failed ? "url(#eco-return-arrow)" : undefined} className={`eco-wire ${wire.planned ? "eco-wire-planned" : ""} ${wire.failed ? "eco-wire-failed" : ""}`} />{wire.token && <g className="eco-moving-token"><circle r="11" className="eco-token-background" /><image href={`/tokens/${wire.token}.svg`} x="-8" y="-8" width="16" height="16" />{running && <animateMotion path={wire.path} dur="4s" begin={`${-(index % 4)}s`} repeatCount="indefinite" />}</g>}</g>)}
-          </svg>
-          <div className="eco-assets"><h3 className="eco-column-heading"><Wallet className="size-4" /> Digital assets</h3><div data-eco-node="assets" className="eco-asset-list">{assets.map(asset => <div key={asset.id} data-eco-node={asset.id} className="eco-asset"><div className="flex items-center gap-2">{asset.id === "other" ? <Layers3 className="size-7 shrink-0 text-home-brand" /> : <img src={`/tokens/${asset.id}.svg`} alt="" width="28" height="28" className="rounded-full" />}<div><strong>{asset.name}</strong><span className="eco-copy">{asset.symbol}</span></div></div><Status live={asset.id === "sol"}>{asset.status}</Status></div>)}</div><p className="eco-footnote">Availability is route-specific. Additional assets are not enabled for deposits.</p></div>
-          <div className="eco-gates">
-            <Stage id="detection" step="01" title="Asset & network"><ScanLine className="eco-icon" /><p className="eco-copy">Identify asset → network → available route</p></Stage>
-            <Stage id="kyc" step="02" title="Identity check / KYC"><ShieldCheck className="eco-icon" /><p className="eco-copy">Verify sender and recipient where required</p><Status sandbox>SANDBOX</Status><p className="eco-pass"><Check className="size-3" /> Passed → routing</p></Stage>
-            <div data-eco-node="failed" className="eco-failed"><Undo2 className="size-4 shrink-0" /><div><strong>KYC failed</strong><p>Payment does not proceed.</p><span>Return to original wallet · PLANNED</span></div></div>
-          </div>
-          <div className="eco-routing"><Stage id="routing" step="03" title="Smart routing"><SlidersHorizontal className="eco-icon" /><p className="eco-lead">Choose the best available route</p><Status>PLANNED · ROUTE COMPARISON</Status><ul className="eco-criteria">{criteria.map(item => <li key={item}><Check className="size-3 shrink-0" />{item}</li>)}</ul></Stage></div>
-          <div className="eco-liquidity"><h3 className="eco-column-heading"><Layers3 className="size-4" /> Liquidity & conversion</h3>
-            <div data-eco-node="jupiter" className="eco-provider eco-provider-current"><div className="eco-provider-name"><img src="/tokens/sol.svg" width="28" height="28" alt="" className="rounded-full" /><strong>Jupiter</strong></div><Status live>LIVE QUOTES</Status><p className="eco-copy">Solana / SPL assets → Jupiter → USDC</p><span className="eco-footnote">Current route · Mainnet swaps disabled in this build</span></div>
-            <div data-eco-node="hyperliquid" className="eco-provider eco-provider-planned"><div className="eco-provider-name"><Layers3 className="size-6 text-home-brand" /><strong>Hyperliquid</strong></div><Status>PLANNED · IN DEVELOPMENT</Status><p className="eco-copy">Broader asset and liquidity integration</p><span className="eco-footnote">Trading & transfers DISABLED</span></div>
-            <div data-eco-node="additional" className="eco-provider eco-provider-planned"><div className="eco-provider-name"><Network className="size-6 text-home-brand" /><strong>Additional DEX routes</strong></div><Status>PLANNED</Status><p className="eco-copy">More chains and leading decentralised exchanges under evaluation</p></div>
-          </div>
-          <div className="eco-settlement"><Stage id="settlement" step="04" title="USDC settlement"><img src="/tokens/usdc.svg" width="48" height="48" alt="" className="eco-settlement-logo rounded-full" /><p className="eco-lead">One common settlement asset</p><p className="eco-copy">Available conversion routes converge into USDC.</p><div className="eco-settlement-note"><ShieldCheck className="size-4" /><span>Single-use deposit<br />Non-custodial by design</span></div></Stage></div>
-          <div className="eco-payout">
-            <Stage id="fx" step="05" title="Local currency"><CircleDollarSign className="eco-icon" /><p className="eco-copy">USDC → recipient’s local currency</p><p className="eco-footnote">Live reference FX · Transparent total cost</p></Stage>
-            <Stage id="partner" step="06" title="Payout infrastructure"><div className="eco-provider-name"><ShieldCheck className="size-5 text-home-brand" /><strong>Stables</strong></div><Status sandbox>SANDBOX · CURRENT INTEGRATION</Status><p className="eco-copy">Additional licensed and regional partners · PLANNED</p></Stage>
-            <Stage id="recipient" step="07" title="Recipient"><Landmark className="eco-icon" /><p className="eco-lead">Local bank account</p><p className="eco-copy">Local currency delivered through the payout partner.</p><Status>FIAT PAYOUT DISABLED</Status><span className="eco-footnote">Other local payment rails · PLANNED</span></Stage>
+        <div className="eco-model-caption"><span>Many assets → Routing options → One settlement → Local payout</span><div className="flex items-center gap-1"><span className="text-xs text-muted-foreground">Current + planned ecosystem</span><Button variant="ghost" size="icon" onClick={() => setExpanded(value => !value)} aria-label={expanded ? "Fit ecosystem to screen" : "Enlarge ecosystem"} title={expanded ? "Fit ecosystem to screen" : "Enlarge ecosystem"}>{expanded ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}</Button><Button variant="ghost" size="icon" disabled={flow.reduced} aria-label={paused ? "Resume ecosystem motion" : "Pause ecosystem motion"} title={paused ? "Resume ecosystem motion" : "Pause ecosystem motion"} onClick={() => setPaused(value => !value)}>{paused ? <Play className="size-4" /> : <Pause className="size-4" />}</Button></div></div>
+        <div ref={frame} className="eco-frame" data-expanded={expanded} style={{ height: height * scale + 4 } as CSSProperties}>
+          <div ref={canvas} className="eco-canvas" style={{ transform: `scale(${scale})`, left: offset }}>
+            <svg className="eco-wires" width="1440" height={height} aria-hidden="true"><defs><marker id="eco-return-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" className="eco-return-arrow" /></marker></defs>{wires.map((wire, index) => <g key={wire.id}><path d={wire.path} markerEnd={wire.failed ? "url(#eco-return-arrow)" : undefined} className={`eco-wire ${wire.planned ? "eco-wire-planned" : ""} ${wire.failed ? "eco-wire-failed" : ""}`} />{wire.token && <g className="eco-moving-token"><circle r="10" className="eco-token-background" /><image href={`/tokens/${wire.token}.svg`} x="-8" y="-8" width="16" height="16" />{running && <animateMotion path={wire.path} dur="4s" begin={`${-(index % 4)}s`} repeatCount="indefinite" />}</g>}</g>)}</svg>
+            <div className="eco-assets"><Stage id="assets" step="1" title="Supported digital assets (multi-chain)"><div className="eco-asset-list">{assets.map(asset => <div key={asset.id} data-eco-node={asset.id} className="eco-asset"><Token symbol={asset.id} /><strong>{asset.name}</strong><Status>{asset.status}</Status></div>)}</div><p className="eco-footnote">Asset → network → available route. More chains and assets planned.</p></Stage></div>
+            <div className="eco-gates"><Stage id="kyc" step="2" title="Identity check (KYC)"><ShieldCheck className="eco-icon" /><p className="eco-copy">Verify sender and recipient where required.</p><Status>SANDBOX</Status><p className="eco-pass"><Check className="size-3" /> KYC passed → routing</p></Stage><div data-eco-node="failed" className="eco-failed"><Undo2 className="size-5 shrink-0" /><div><strong>KYC failed</strong><p>Payment does not proceed.</p><span>Original-wallet return at applicable rate · PLANNED*</span></div></div></div>
+            <div className="eco-routing"><Stage id="routing" step="3" title="Smart routing"><Network className="eco-icon" /><p className="eco-lead">Choose the best available route</p><p className="eco-copy">For your asset, network and live FX rate.</p><Status>PLANNED · ROUTE COMPARISON</Status><Checks items={["Real-time price comparison", "Best liquidity across DEXs", "Lowest total cost", "Fastest settlement", "Multi-chain routing", "Supported payout route"]} /></Stage></div>
+            <div className="eco-liquidity"><div className="eco-stage"><h3 className="eco-stage-heading"><span>4</span>Liquidity & conversion (multi-chain DEXs)</h3>{venues.map(venue => <div key={venue.id} data-eco-node={venue.id} className={`eco-venue ${venue.status === "PLANNED" ? "eco-provider-planned" : "eco-provider-current"}`}><div className="eco-venue-heading"><Token symbol={venue.symbol} /><strong>{venue.name}</strong><Status>{venue.status}</Status></div><div className="eco-venue-list">{venue.names.map(name => <div key={name}><span className="eco-venue-mark">{name === "Jupiter" ? <img src="/partners/jupiter.svg" alt="" width="24" height="24" /> : name.slice(0, 2)}</span><span>{name}</span></div>)}</div><p className="eco-footnote">{venue.note}</p></div>)}<div data-eco-node="hyperliquid" className="eco-venue eco-provider-planned"><strong>Hyperliquid · Multi-asset liquidity</strong><Status>PLANNED · IN DEVELOPMENT</Status><p className="eco-footnote">Trading & transfers DISABLED</p></div></div></div>
+            <div className="eco-settlement"><Stage id="settlement" step="5" title="USDC settlement"><Token symbol="usdc" /><p className="eco-lead">Converted value</p><p className="eco-copy">Settled in USDC on a fast blockchain (e.g. Solana) for payout processing.</p><Checks items={["Fast settlement", "Low network fees", "Multi-chain support · planned", "Secure and transparent"]} /></Stage></div>
+            <div className="eco-partner"><Stage id="partner" step="6" title="Licensed payout partners"><div className="eco-partner-item"><ShieldCheck className="eco-icon" /><strong>Stables</strong><Status>SANDBOX</Status><p className="eco-footnote">Current integration</p></div><div className="eco-partner-item"><Layers3 className="eco-icon" /><strong>Additional partners</strong><Status>PLANNED · COMING SOON</Status><p className="eco-copy">More licensed payout partners under evaluation.</p></div><div className="eco-partner-item"><Globe2 className="eco-icon" /><strong>Global coverage</strong><p className="eco-copy">Expanding currencies and countries · PLANNED</p></div></Stage></div>
+            <div className="eco-fx"><Stage id="fx" step="7" title="Local currency conversion"><CircleDollarSign className="eco-icon" /><p className="eco-copy">USDC converted through partner infrastructure to local currency.</p><Checks items={["Competitive FX rates", "Transparent total fees", "Network availability 24/7*", "Expanding currencies · planned"]} /><Status>FIAT CONVERSION · SANDBOX</Status></Stage></div>
+            <div className="eco-recipient"><Stage id="recipient" step="8" title="Recipient bank account"><Landmark className="eco-icon" /><p className="eco-copy">Local fiat payout to a bank account. Other local payment rails · PLANNED.</p><Checks items={["Fast delivery objective", "Verification before payout", "Growing country coverage"]} /><Status>FIAT PAYOUT DISABLED</Status></Stage></div>
           </div>
         </div>
       </div>
       <div className="eco-benefits">{[
-        { icon: SlidersHorizontal, title: "Best FX rate", detail: "Compare available routes and liquidity" },
-        { icon: Zap, title: "Faster settlement", detail: "The fastest suitable network and liquidity route" },
-        { icon: ShieldCheck, title: "Non-custodial", detail: "Your wallet. Your keys. No LamportPay balances." },
-        { icon: Globe2, title: "Global expansion", detail: "More chains, assets, currencies and payout partners" },
+        { icon: SlidersHorizontal, title: "Best FX rate", detail: "Multi-DEX and multi-chain route comparison for the lowest suitable total cost." },
+        { icon: Zap, title: "Faster settlement", detail: "Fast blockchains and deep liquidity for quick conversion." },
+        { icon: ShieldCheck, title: "Safe and compliant", detail: "Non-custodial design, hosted KYC and licensed payout infrastructure." },
+        { icon: Globe2, title: "Global reach", detail: "More assets, partners, currencies and countries planned." },
       ].map(({ icon: Icon, title, detail }) => <div key={title}><Icon className="size-6 shrink-0 text-home-brand" /><div><strong>{title}</strong><p>{detail}</p></div></div>)}</div>
-      <p className="eco-disclaimer">Solana / SPL live Jupiter quotes are the current example; additional chains, liquidity venues and payout partners are planned. Hyperliquid trading and transfers remain disabled while integration is in development. Moving tokens illustrate the intended journey, not real transfers. Production KYC and fiat payouts remain disabled. Verification happens before funding; automatic returns at a live rate are not an enabled feature and any future return is subject to provider terms and applicable rates.</p>
+      <p className="eco-disclaimer">Solana / SPL live Jupiter quotes are the current route; mainnet swaps are disabled in this build. USDC settlement and Stables verification/payouts are SANDBOX. USDT, additional chains, named DEX candidates and payout partners are PLANNED, not enabled integrations. Hyperliquid trading and transfers remain disabled. Motion illustrates the intended ecosystem, not real funds. *Verification precedes funding; automatic returns are not enabled and future returns depend on provider terms and applicable rates. Blockchain availability does not guarantee bank settlement on holidays. Production KYC and fiat payouts remain DISABLED.</p>
     </div>
   </section>;
 }
