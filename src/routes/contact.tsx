@@ -68,13 +68,13 @@ const FACTS = [
  * x% = (lon + 180) / 360, y% = (84 - lat) / 144.
  */
 const MAP_MARKERS = [
-  { code: "US", name: "United States", x: 77.2, y: 31.3, live: true },
-  { code: "GB", name: "United Kingdom", x: 49.4, y: 20.8, live: true },
-  { code: "IN", name: "India", x: 71.7, y: 43.1, live: true },
-  { code: "PH", name: "Philippines", x: 83.9, y: 49.3, live: true },
-  { code: "NG", name: "Nigeria", x: 52.2, y: 51.4, live: false },
-  { code: "PK", name: "Pakistan", x: 69.2, y: 37.5, live: false },
-];
+  { code: "US", name: "United States", x: 22.8, y: 31.3, live: true, side: "below" },
+  { code: "GB", name: "United Kingdom", x: 49.4, y: 20.8, live: true, side: "right" },
+  { code: "IN", name: "India", x: 71.7, y: 43.1, live: true, side: "above" },
+  { code: "PH", name: "Philippines", x: 83.9, y: 49.3, live: true, side: "below" },
+  { code: "NG", name: "Nigeria", x: 52.2, y: 51.4, live: false, side: "right" },
+  { code: "PK", name: "Pakistan", x: 69.2, y: 37.5, live: false, side: "left" },
+] as const;
 
 function PayoutMap() {
   return (
@@ -121,6 +121,17 @@ function PayoutMap() {
                   m.live ? "bg-emerald-300" : "bg-amber-300"
                 }`}
               />
+              {(() => {
+                const cls =
+                  "pointer-events-none absolute z-10 whitespace-nowrap text-[10px] font-medium tracking-wide text-white/95 [text-shadow:0_1px_2px_rgba(0,0,0,0.55)]";
+                if (m.side === "right")
+                  return <span className={`${cls} left-full top-1/2 ml-1.5 -translate-y-1/2`}>{m.name}</span>;
+                if (m.side === "left")
+                  return <span className={`${cls} right-full top-1/2 mr-1.5 -translate-y-1/2`}>{m.name}</span>;
+                if (m.side === "above")
+                  return <span className={`${cls} bottom-full left-1/2 mb-1 -translate-x-1/2`}>{m.name}</span>;
+                return <span className={`${cls} left-1/2 top-full mt-1 -translate-x-1/2`}>{m.name}</span>;
+              })()}
               <span className="pointer-events-none absolute left-1/2 top-full z-10 mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium opacity-0 transition group-hover:opacity-100">
                 {m.name} · {m.live ? "Supported" : "Planned"}
               </span>
