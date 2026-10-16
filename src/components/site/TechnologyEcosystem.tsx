@@ -12,25 +12,29 @@ import {
   Hexagon,
   type LucideIcon,
 } from "lucide-react";
-import bitcoin from "@/assets/tokens/bitcoin.png.asset.json";
 import { cn } from "@/lib/utils";
 
 type Status = "LIVE" | "SANDBOX" | "IN DEVELOPMENT" | "PLANNED";
 type Partner = { name: string; status: Status; role: string; logo?: string; icon?: LucideIcon };
 
+const LOGO_FILES = import.meta.glob<{ url: string }>("@/assets/logos/*.asset.json", { eager: true, import: "default" });
+const L = (file: string) => Object.entries(LOGO_FILES).find(([k]) => k.endsWith(`/${file}.asset.json`))?.[1].url;
+
 const PARTNERS: Partner[] = [
-  { name: "Solana", status: "LIVE", role: "Network support (SOL / SPL)", logo: "/tokens/sol.svg" },
-  { name: "Jupiter", status: "LIVE", role: "Liquidity & swap quotes", logo: "/partners/jupiter.svg" },
+  { name: "Solana", status: "LIVE", role: "Network support (SOL / SPL)", logo: L("solana.png") },
+  { name: "Jupiter", status: "LIVE", role: "Liquidity & swap quotes", logo: L("jupiter-exchange-solana.png") },
   { name: "Stables", status: "SANDBOX", role: "Payout infrastructure", logo: "/partners/stables.svg" },
-  { name: "Hyperliquid", status: "IN DEVELOPMENT", role: "Multi-asset liquidity", logo: "/partners/hyperliquid.svg" },
-  { name: "Circle", status: "PLANNED", role: "USDC infrastructure", logo: "/tokens/usdc.svg" },
-  { name: "Ethereum", status: "PLANNED", role: "Network support (ETH / ERC-20)", logo: "/tokens/eth.svg" },
-  { name: "Bitcoin", status: "PLANNED", role: "Network support (BTC)", logo: bitcoin.url },
-  { name: "USDT", status: "PLANNED", role: "Stablecoin support", logo: "/tokens/usdt.svg" },
-  { name: "BNB Chain", status: "PLANNED", role: "Network support (BEP-20)", icon: Hexagon },
-  { name: "Uniswap", status: "PLANNED", role: "DEX integration", icon: Repeat },
-  { name: "1inch", status: "PLANNED", role: "DEX aggregation", icon: Network },
-  { name: "Other chains & DEXs", status: "PLANNED", role: "Additional routes coming", icon: Layers },
+  { name: "Hyperliquid", status: "IN DEVELOPMENT", role: "Multi-asset liquidity", logo: L("hyperliquid.jpg") },
+  { name: "Chainalysis", status: "PLANNED", role: "Compliance & risk monitoring", logo: L("chainalysis.png") },
+  { name: "Fireblocks", status: "PLANNED", role: "Institutional wallet infrastructure", logo: L("fireblocks.png") },
+  { name: "Circle", status: "PLANNED", role: "USDC infrastructure", logo: L("usd-coin.png") },
+  { name: "Ethereum", status: "PLANNED", role: "Network support (ETH / ERC-20)", logo: L("ethereum.png") },
+  { name: "USDT", status: "PLANNED", role: "Network support (USDT)", logo: L("tether.png") },
+  { name: "BNB Chain", status: "PLANNED", role: "Network support (BNB / BEP-20)", logo: L("binancecoin.png") },
+  { name: "Uniswap", status: "PLANNED", role: "DEX integration", logo: L("uniswap.png") },
+  { name: "1inch", status: "PLANNED", role: "DEX aggregation", logo: L("1inch.jpg") },
+  { name: "Arbitrum", status: "PLANNED", role: "Network support (ARB)", logo: L("arbitrum.jpg") },
+  { name: "Polygon", status: "PLANNED", role: "Network support (POL)", logo: L("polygon-ecosystem-token.png") },
 ];
 
 const TONE: Record<Status, string> = {
@@ -48,24 +52,29 @@ const CAPABILITIES: { icon: LucideIcon; title: string; text: string }[] = [
 ];
 
 const NETWORKS = [
-  { name: "Solana", logo: "/tokens/sol.svg" },
-  { name: "Ethereum", logo: "/tokens/eth.svg" },
-  { name: "BNB Chain" }, { name: "Polygon" }, { name: "Arbitrum" }, { name: "Base" }, { name: "Avalanche" },
+  { name: "Solana", logo: L("solana.png") },
+  { name: "Ethereum", logo: L("ethereum.png") },
+  { name: "BNB Chain", logo: L("binancecoin.png") },
+  { name: "Polygon", logo: L("polygon-ecosystem-token.png") },
+  { name: "Arbitrum", logo: L("arbitrum.jpg") },
+  { name: "Base", logo: L("base.svg") },
+  { name: "Avalanche", logo: L("avalanche-2.png") },
 ];
 const DEXS = [
-  { name: "Jupiter", logo: "/partners/jupiter.svg" },
-  { name: "Raydium" }, { name: "Orca" }, { name: "Uniswap" }, { name: "1inch" }, { name: "Curve" }, { name: "Balancer" },
+  { name: "Jupiter", logo: L("jupiter-exchange-solana.png") },
+  { name: "Raydium", logo: L("raydium.jpg") },
+  { name: "Orca", logo: L("orca.png") },
+  { name: "Uniswap", logo: L("uniswap.png") },
+  { name: "1inch", logo: L("1inch.jpg") },
+  { name: "Curve", logo: L("curve-dao-token.png") },
+  { name: "Balancer", logo: L("balancer.png") },
 ];
 
 function LogoRow({ title, items, reverse }: { title: string; items: { name: string; logo?: string }[]; reverse?: boolean }) {
   const row = (dup: boolean) =>
     items.map((i) => (
       <li key={(dup ? "d-" : "") + i.name} aria-hidden={dup || undefined} className="tech-eco-pill">
-        {i.logo ? (
-          <img src={i.logo} alt="" width="22" height="22" loading="lazy" className="size-5 object-contain" />
-        ) : (
-          <span className="flex size-5 items-center justify-center rounded-full bg-home-brand/12 text-[9px] font-bold text-home-brand">{i.name.slice(0, 2).toUpperCase()}</span>
-        )}
+        <img src={i.logo} alt="" width="44" height="44" loading="lazy" className="size-11 rounded-full object-contain" />
         <span>{i.name}</span>
       </li>
     ));
@@ -87,9 +96,9 @@ function Card({ p, hidden }: { p: Partner; hidden?: boolean }) {
   return (
     <li aria-hidden={hidden || undefined} className="tech-eco-card">
       <div className="flex items-center gap-3">
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-home-surface">
+        <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-home-surface">
           {p.logo ? (
-            <img src={p.logo} alt="" width="32" height="32" loading="lazy" className="size-8 object-contain" />
+            <img src={p.logo} alt="" width="48" height="48" loading="lazy" className="size-12 rounded-full object-contain" />
           ) : Icon ? (
             <Icon className="size-6 text-home-brand" strokeWidth={1.8} />
           ) : null}
