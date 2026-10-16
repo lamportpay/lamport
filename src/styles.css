@@ -2196,7 +2196,9 @@ body.has-cookie-banner .site-footer-legal {
 /* Multi-asset flow infographic: one artwork shown at its own resolution, never upscaled. */
 .flow-image-section { background: var(--card); padding-block: 40px; }
 .flow-image-container { max-width: 1774px; margin-inline: auto; padding-inline: 24px; }
+.flow-image-scroll { overflow-x: auto; }
 .flow-image { display: block; width: 100%; height: auto; border-radius: 12px; }
+.flow-image-hint { display: none; }
 .flow-image-open {
   display: inline-flex;
   align-items: center;
@@ -2212,5 +2214,9 @@ body.has-cookie-banner .site-footer-legal {
 @media (max-width: 900px) {
   .flow-image-section { padding-block: 28px; }
   .flow-image-container { padding-inline: 12px; }
+  /* The artwork is wide, so phones pan across it at a size the text can be read at. */
+  .flow-image-scroll { -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
+  .flow-image { width: 1400px; max-width: none; }
+  .flow-image-hint { display: block; margin-top: 8px; font-size: 11px; color: var(--muted-foreground); }
 }
 
