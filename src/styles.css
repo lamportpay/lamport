@@ -2194,34 +2194,6 @@ body.has-cookie-banner .site-footer-legal {
 }
 .launch-status-all:hover { opacity: 1; }
 
-/* Multi-asset flow infographic: one artwork shown at its own resolution, never upscaled. */
-.flow-image-section { background: var(--card); padding-block: 40px; }
-.flow-image-container { max-width: 1774px; margin-inline: auto; padding-inline: 24px; }
-.flow-image-scroll { overflow-x: auto; }
-.flow-image { display: block; width: 100%; height: auto; border-radius: 12px; }
-.flow-image-hint { display: none; }
-.flow-image-open {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
-  float: right;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--home-brand);
-  text-decoration: none;
-}
-.flow-image-open:hover { text-decoration: underline; }
-@media (max-width: 900px) {
-  .flow-image-section { padding-block: 28px; }
-  .flow-image-container { padding-inline: 12px; }
-  /* The artwork is wide, so phones pan across it at a size the text can be read at. */
-  .flow-image-scroll { -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity; }
-  .flow-image { width: 1400px; max-width: none; }
-  .flow-image-hint { display: block; margin-top: 8px; font-size: 11px; color: var(--muted-foreground); }
-}
-
-
 /* Technology ecosystem carousel */
 .tech-eco-scroller { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
 .tech-eco-scroller::-webkit-scrollbar { display: none; }
