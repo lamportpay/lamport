@@ -71,17 +71,44 @@ const MAP_MARKERS = [
   { code: "PK", name: "Pakistan", x: 63, y: 40, live: false },
 ];
 
+/** Subtle dotted world-map silhouette (equirectangular grid, # = land). */
+const WORLD_MAP_ROWS = [
+  "        ####              #####  ########   ##                    ",
+  "      #########          #############################  ##        ",
+  "     ###########        ############################### ####      ",
+  "      ##########       #####################################      ",
+  "       #########      #####################################       ",
+  "        ########       ##################################         ",
+  "         ######        ########  ###################  ##          ",
+  "          #####         ######   #################               ",
+  "           ####          ####    ################                ",
+  "           ###           ###     ###############                 ",
+  "            ##           ##      ##############    #             ",
+  "            ##            #      #############    ###            ",
+  "            ###                  ############    #####           ",
+  "             ####                 ##########      ###            ",
+  "              ######               ########       ##             ",
+  "               ########            ######                        ",
+  "                ##########          ####                         ",
+  "                 #########           ##                          ",
+];
+
+const MAP_COLS = Math.max(...WORLD_MAP_ROWS.map((r) => r.length));
+const MAP_DOTS: { cx: number; cy: number }[] = [];
+WORLD_MAP_ROWS.forEach((row, y) => {
+  for (let x = 0; x < row.length; x++) {
+    if (row[x] === "#") {
+      MAP_DOTS.push({
+        cx: ((x + 0.5) / MAP_COLS) * 100,
+        cy: ((y + 0.5) / WORLD_MAP_ROWS.length) * 100,
+      });
+    }
+  }
+});
+
 function PayoutMap() {
   return (
     <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-[image:var(--gradient-hero)] p-6 md:p-8 text-white shadow-[var(--shadow-soft)]">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-25"
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)",
-          backgroundSize: "18px 18px",
-        }}
-      />
       <div className="relative">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/80">
           <MapPin className="size-4" /> Where payouts reach
@@ -90,11 +117,27 @@ function PayoutMap() {
           One product, many destinations.
         </h2>
         <p className="mt-2 max-w-xl text-sm text-white/80">
-          Bank payouts today reach the United States, United Kingdom, India and
-          the Philippines in the sandbox, with Nigeria and Pakistan planned next.
+          Connecting digital assets to local currency payouts across growing
+          global markets.
         </p>
 
-        <div className="relative mt-6 aspect-[2/1] w-full rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
+        <div className="relative mt-6 aspect-[2/1] w-full overflow-hidden rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
+          <svg
+            viewBox="0 0 100 50"
+            preserveAspectRatio="xMidYMid meet"
+            className="absolute inset-0 h-full w-full"
+            aria-hidden="true"
+          >
+            {MAP_DOTS.map((d, i) => (
+              <circle
+                key={i}
+                cx={d.cx}
+                cy={d.cy}
+                r={0.55}
+                fill="rgba(255,255,255,0.35)"
+              />
+            ))}
+          </svg>
           {MAP_MARKERS.map((m) => (
             <div
               key={m.code}
