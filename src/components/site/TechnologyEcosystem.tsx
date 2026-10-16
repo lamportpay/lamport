@@ -17,8 +17,7 @@ import { cn } from "@/lib/utils";
 type Status = "LIVE" | "SANDBOX" | "IN DEVELOPMENT" | "PLANNED";
 type Partner = { name: string; status: Status; role: string; logo?: string; icon?: LucideIcon };
 
-const LOGO_FILES = import.meta.glob<{ url: string }>("@/assets/logos/*.asset.json", { eager: true, import: "default" });
-const L = (file: string) => Object.entries(LOGO_FILES).find(([k]) => k.endsWith(`/${file}.asset.json`))?.[1].url;
+const L = (file: string) => `/logos/${file}`;
 
 const PARTNERS: Partner[] = [
   { name: "Solana", status: "LIVE", role: "Network support (SOL / SPL)", logo: L("solana.png") },
