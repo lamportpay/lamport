@@ -91,7 +91,7 @@ function PayoutMap() {
           global markets.
         </p>
 
-        <div className="relative mt-6 aspect-[2/1] w-full overflow-hidden rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
+        <div className="relative mt-6 aspect-[180/72] w-full overflow-hidden rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
           <svg
             viewBox={WORLD_MAP_VIEWBOX}
             preserveAspectRatio="xMidYMid meet"
