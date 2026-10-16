@@ -55,10 +55,10 @@ export const integrationPartners: IntegrationItem[] = [
   {
     name: "Circle (USDC)",
     role: "Stablecoin",
-    status: "Live",
+    status: "Planned",
     href: "https://www.circle.com",
     detail:
-      "LamportPay accepts USDC on Solana today. A direct partnership with Circle is planned and not yet confirmed.",
+      "USDC is supported through the current settlement infrastructure. A direct partnership with Circle is planned and not yet confirmed.",
   },
   {
     name: "Tether (USDT)",
