@@ -1,3 +1,8 @@
+## Compact payment-flow replacement
+
+- [x] Replace rejected tree with assets → settlement → currencies overview and manual eight-step details; preserve other sections and financial behavior
+- [x] Verified manual step selection at 1280px, 871px and 390px; all logos load, no horizontal overflow or browser errors, preview build OK
+
 ## Infrastructure ecosystem replacement
 
 - [x] Match eight reference columns with separate USDT/USDC/BNB rows, candidate DEX/network groups, payout/FX/recipient checklists and benefits; retain accurate planned/sandbox qualifications

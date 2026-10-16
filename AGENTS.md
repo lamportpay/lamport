@@ -29,7 +29,7 @@
 - Bank selectors use shared Picker fields. SiteLayout owns the sticky mode notice and desktop links/mobile Sheet; preserve keyboard focus and keep financial mode enforcement server-side.
 - Admin overview presentation uses a browser-safe data model and separate content component; all metrics come from the existing protected dashboard function, so UI organization cannot change financial actions or access controls.
 - Homepage/workflow shares browser-safe verification content; distinguish wallet proof from hosted KYC without changing financial checks.
-- Ecosystem branding stays shared. Preserve logo fallbacks. Infrastructure uses measured wires in a fixed-ratio screen-fit/expandable canvas; viewport/reduced-motion gated tokens never drive financial state.
+- Ecosystem branding and logo fallbacks stay shared. Homepage MultiAssetFlow uses a browser-safe overview and manual step selection; presentation never drives financial state.
 - Journey content is manual-only, above selectors, with previous/next controls, so reading stays uninterrupted. Decorative motion is viewport-gated and reduced-motion-aware, never financial state. Scope phone styling to `.commercial-home`. Public deposit warnings are not payout blacklists; pending submissions imply no backing.
 - Heading reveals read the heading's own box on scroll/resize, never an IntersectionObserver on the heading: its own clip-path zeroes the observer's ratio, so the text would stay permanently hidden.
 - Subdirectories may have their own AGENTS.md (e.g. src/routes/api); read it before changing files there.

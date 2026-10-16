@@ -2259,3 +2259,6 @@ body.has-cookie-banner .site-footer-legal {
 @keyframes maf-spine { from { top: 0; } to { top: calc(100% - 10px); } }
 @keyframes maf-spin { to { transform: rotate(-360deg); } }
 @media (prefers-reduced-motion: reduce) { .maf-spine-dot, .maf-return-arrow { animation: none; } }
+
+/* Compact homepage settlement hub */
+.maf-hub { border-block: 1px solid var(--border); background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 8%, var(--background)), var(--background)); }
