@@ -1,7 +1,7 @@
 ## Compact payment-flow replacement
 
 - [x] Replace rejected tree with assets → settlement → currencies overview and manual eight-step details; preserve other sections and financial behavior
-- [ ] Verify selection, logos and desktop/preview-width/phone layouts
+- [x] Verified manual step selection at 1280px, 871px and 390px; all logos load, no horizontal overflow or browser errors, preview build OK
 
 ## Infrastructure ecosystem replacement
 
