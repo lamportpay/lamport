@@ -2225,7 +2225,7 @@ body.has-cookie-banner .site-footer-legal {
 /* Technology ecosystem carousel */
 .tech-eco-scroller { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
 .tech-eco-scroller::-webkit-scrollbar { display: none; }
-.tech-eco-card { width: 220px; flex-shrink: 0; border-radius: 16px; border: 1px solid var(--border); background: var(--background); padding: 16px; box-shadow: 0 6px 20px -14px color-mix(in oklab, var(--home-brand) 45%, transparent); transition: transform .3s ease, box-shadow .3s ease; }
+.tech-eco-card { width: 250px; padding: 20px !important; flex-shrink: 0; border-radius: 16px; border: 1px solid var(--border); background: var(--background); padding: 16px; box-shadow: 0 6px 20px -14px color-mix(in oklab, var(--home-brand) 45%, transparent); transition: transform .3s ease, box-shadow .3s ease; }
 .tech-eco-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -16px color-mix(in oklab, var(--home-brand) 55%, transparent); }
 .tech-eco-nav { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid var(--border); background: var(--background); color: var(--home-brand); transition: transform .2s ease; }
 .tech-eco-nav:hover { transform: scale(1.06); }
@@ -2236,11 +2236,11 @@ body.has-cookie-banner .site-footer-legal {
 .tech-eco-lines path { fill: none; stroke: var(--home-brand); stroke-width: 1; opacity: .35; }
 .tech-eco-lines circle { fill: var(--home-brand); }
 @media (prefers-reduced-motion: reduce) { .tech-eco-lines circle { display: none; } .tech-eco-card { transition: none; } }
-.tech-eco-marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-.tech-eco-marquee-track { display: flex; width: max-content; gap: 12px; padding-block: 4px; animation: tech-eco-marquee 45s linear infinite; }
+.tech-eco-marquee { overflow-x: auto; scrollbar-width: none; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.tech-eco-marquee-track { display: flex; width: max-content; gap: 16px; padding-block: 6px; animation: tech-eco-marquee 60s linear infinite; }
 .tech-eco-marquee-reverse { animation-direction: reverse; }
 .tech-eco-marquee:hover .tech-eco-marquee-track { animation-play-state: paused; }
-.tech-eco-pill { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; border-radius: 999px; border: 1px solid var(--border); background: var(--background); padding: 8px 16px 8px 10px; font-size: 13px; font-weight: 600; color: var(--muted-foreground); filter: grayscale(1); opacity: .85; transition: filter .3s, opacity .3s, color .3s; }
-.tech-eco-pill:hover { filter: none; opacity: 1; color: var(--home-brand); }
-@keyframes tech-eco-marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 6px)); } }
+.tech-eco-pill { display: inline-flex; align-items: center; gap: 14px; flex-shrink: 0; min-width: 190px; border-radius: 16px; border: 1px solid var(--border); background: var(--background); padding: 14px 22px 14px 14px; font-size: 15px; font-weight: 600; color: var(--foreground); box-shadow: 0 6px 20px -14px color-mix(in oklab, var(--home-brand) 45%, transparent); transition: filter .3s, opacity .3s, color .3s; }
+.tech-eco-pill:hover { color: var(--home-brand); }
+@keyframes tech-eco-marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 8px)); } }
 @media (prefers-reduced-motion: reduce) { .tech-eco-marquee-track { animation: none; } }
