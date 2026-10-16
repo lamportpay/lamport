@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { pageSeo } from "@/lib/seo";
+import { WORLD_MAP_PATHS, WORLD_MAP_VIEWBOX } from "@/lib/world-map";
 import markUrl from "@/assets/lamportpay-mark.png";
 
 export const Route = createFileRoute("/contact")({
