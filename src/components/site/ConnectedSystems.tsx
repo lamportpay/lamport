@@ -59,8 +59,7 @@ export function ConnectedSystems() {
     const viewport = frame.current, root = canvas.current;
     if (!viewport || !root) return;
     const measure = () => {
-      const availableHeight = Math.max(260, window.innerHeight - 370);
-      const zoom = expanded ? 1 : Math.min(viewport.clientWidth / 1440, viewport.clientWidth >= 700 ? availableHeight / root.offsetHeight : 1, 1);
+      const zoom = expanded ? 1 : Math.min(viewport.clientWidth / 1440, 1.12);
       setScale(zoom);
       setOffset(expanded ? 0 : Math.max(0, (viewport.clientWidth - 1440 * zoom) / 2));
       setHeight(root.offsetHeight);
