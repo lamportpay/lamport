@@ -50,6 +50,7 @@ export function ConnectedSystems() {
   const canvas = useRef<HTMLDivElement>(null);
   const [wires, setWires] = useState<Wire[]>([]);
   const [scale, setScale] = useState(1);
+  const [offset, setOffset] = useState(0);
   const [height, setHeight] = useState(550);
   const [paused, setPaused] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -58,8 +59,10 @@ export function ConnectedSystems() {
     const viewport = frame.current, root = canvas.current;
     if (!viewport || !root) return;
     const measure = () => {
-      const zoom = expanded ? 1 : Math.min(viewport.clientWidth / 1440, 1);
+      const availableHeight = Math.max(260, window.innerHeight - 370);
+      const zoom = expanded ? 1 : Math.min(viewport.clientWidth / 1440, viewport.clientWidth >= 700 ? availableHeight / root.offsetHeight : 1, 1);
       setScale(zoom);
+      setOffset(expanded ? 0 : Math.max(0, (viewport.clientWidth - 1440 * zoom) / 2));
       setHeight(root.offsetHeight);
       const box = root.getBoundingClientRect();
       const renderedScale = box.width / 1440;
@@ -83,7 +86,8 @@ export function ConnectedSystems() {
     observer.observe(viewport); observer.observe(root);
     root.querySelectorAll<HTMLElement>("[data-eco-node]").forEach(node => observer.observe(node));
     measure();
-    return () => observer.disconnect();
+    window.addEventListener("resize", measure);
+    return () => { observer.disconnect(); window.removeEventListener("resize", measure); };
   }, [expanded]);
   return <section id="infrastructure" className="eco-section home-section border-b border-border">
     <div className="eco-container">
@@ -92,7 +96,7 @@ export function ConnectedSystems() {
       <div ref={flow.ref} className="eco-model" data-running={running}>
         <div className="eco-model-caption"><span>Many assets → Routing options → One settlement → Local payout</span><div className="flex items-center gap-1"><span className="text-xs text-muted-foreground">Current + planned ecosystem</span><Button variant="ghost" size="icon" onClick={() => setExpanded(value => !value)} aria-label={expanded ? "Fit ecosystem to screen" : "Enlarge ecosystem"} title={expanded ? "Fit ecosystem to screen" : "Enlarge ecosystem"}>{expanded ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}</Button><Button variant="ghost" size="icon" disabled={flow.reduced} aria-label={paused ? "Resume ecosystem motion" : "Pause ecosystem motion"} title={paused ? "Resume ecosystem motion" : "Pause ecosystem motion"} onClick={() => setPaused(value => !value)}>{paused ? <Play className="size-4" /> : <Pause className="size-4" />}</Button></div></div>
         <div ref={frame} className="eco-frame" data-expanded={expanded} style={{ height: height * scale + 4 } as CSSProperties}>
-          <div ref={canvas} className="eco-canvas" style={{ transform: `scale(${scale})` }}>
+          <div ref={canvas} className="eco-canvas" style={{ transform: `scale(${scale})`, left: offset }}>
             <svg className="eco-wires" width="1440" height={height} aria-hidden="true"><defs><marker id="eco-return-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" className="eco-return-arrow" /></marker></defs>{wires.map((wire, index) => <g key={wire.id}><path d={wire.path} markerEnd={wire.failed ? "url(#eco-return-arrow)" : undefined} className={`eco-wire ${wire.planned ? "eco-wire-planned" : ""} ${wire.failed ? "eco-wire-failed" : ""}`} />{wire.token && <g className="eco-moving-token"><circle r="10" className="eco-token-background" /><image href={`/tokens/${wire.token}.svg`} x="-8" y="-8" width="16" height="16" />{running && <animateMotion path={wire.path} dur="4s" begin={`${-(index % 4)}s`} repeatCount="indefinite" />}</g>}</g>)}</svg>
             <div className="eco-assets"><Stage id="assets" step="1" title="Supported digital assets (multi-chain)"><div className="eco-asset-list">{assets.map(asset => <div key={asset.id} data-eco-node={asset.id} className="eco-asset"><Token symbol={asset.id} /><strong>{asset.name}</strong><Status>{asset.status}</Status></div>)}</div><p className="eco-footnote">Asset → network → available route. More chains and assets planned.</p></Stage></div>
             <div className="eco-gates"><Stage id="kyc" step="2" title="Identity check (KYC)"><ShieldCheck className="eco-icon" /><p className="eco-copy">Verify sender and recipient where required.</p><Status>SANDBOX</Status><p className="eco-pass"><Check className="size-3" /> KYC passed → routing</p></Stage><div data-eco-node="failed" className="eco-failed"><Undo2 className="size-5 shrink-0" /><div><strong>KYC failed</strong><p>Payment does not proceed.</p><span>Original-wallet return at applicable rate · PLANNED*</span></div></div></div>
