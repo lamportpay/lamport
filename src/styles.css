@@ -2207,7 +2207,8 @@ body.has-cookie-banner .site-footer-legal {
 .eco-model-caption > span { color: var(--home-brand); font-size: 11px; font-weight: 600; }
 .eco-frame { position: relative; width: 100%; overflow: hidden; }
 .eco-frame[data-expanded="true"] { overflow-x: auto; }
-.eco-canvas { position: relative; width: 1440px; display: grid; grid-template-columns: 210px 150px 240px 170px 135px 155px 135px 133px; gap: 14px; align-items: center; padding: 18px 6px 46px; transform-origin: top left; }
+.eco-canvas { position: relative; width: 1440px; display: grid; grid-template-columns: 210px 150px 240px 170px 135px 155px 135px 133px; gap: 14px; align-items: center; padding: 44px 6px 24px; transform-origin: top left; }
+.eco-venue-tag { margin-top: 6px; padding: 3px 6px; border-radius: 999px; font-size: 9px; font-weight: 600; text-align: center; color: var(--success); background: color-mix(in oklab, var(--success) 10%, transparent); }
 .eco-wires { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
 .eco-wire { fill: none; stroke: var(--home-brand); stroke-width: 1.7; opacity: .65; }
 .eco-wire-planned { stroke-dasharray: 4 5; opacity: .35; }
