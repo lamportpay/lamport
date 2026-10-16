@@ -2262,3 +2262,29 @@ body.has-cookie-banner .site-footer-legal {
 
 /* Compact homepage settlement hub */
 .maf-hub { border-block: 1px solid var(--border); background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 8%, var(--background)), var(--background)); }
+
+/* Logo-led, measured serpentine infrastructure journey */
+.maf-motion-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 2.5rem; padding: 0 1.5rem; }
+.maf-station { min-height: 205px; }
+.maf-station-5 { grid-area: 2 / 4; }
+.maf-station-6 { grid-area: 2 / 3; }
+.maf-station-7 { grid-area: 2 / 2; }
+.maf-station-8 { grid-area: 2 / 1; }
+.maf-logo { box-shadow: var(--shadow-soft); }
+.maf-wire { stroke: color-mix(in oklab, var(--primary) 25%, var(--border)); stroke-width: 1.5; }
+.maf-wire-travel { stroke: var(--primary); stroke-width: 1.5; stroke-dasharray: 4 12; opacity: 0.4; }
+.maf-motion-canvas[data-moving="true"] .maf-wire-travel { animation: maf-wire-run 3s linear infinite; }
+.maf-motion-canvas[data-moving="true"] .maf-logo { animation: maf-logo-breathe 4s ease-in-out infinite; }
+@keyframes maf-wire-run { to { stroke-dashoffset: -48; } }
+@keyframes maf-logo-breathe { 50% { box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary) 5%, transparent), var(--shadow-soft); } }
+@media (max-width: 599px) {
+ .maf-motion-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0 1rem; row-gap: 1.5rem; column-gap: 1rem; }
+ .maf-station { min-height: 190px; }
+ .maf-station-3 { grid-area: 2 / 2; }
+ .maf-station-4 { grid-area: 2 / 1; }
+ .maf-station-5 { grid-area: 3 / 1; }
+ .maf-station-6 { grid-area: 3 / 2; }
+ .maf-station-7 { grid-area: 4 / 2; }
+ .maf-station-8 { grid-area: 4 / 1; }
+}
+@media (prefers-reduced-motion: reduce) { .maf-motion-canvas .maf-logo, .maf-motion-canvas .maf-wire-travel { animation: none !important; } }
