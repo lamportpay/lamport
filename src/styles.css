@@ -2263,28 +2263,89 @@ body.has-cookie-banner .site-footer-legal {
 /* Compact homepage settlement hub */
 .maf-hub { border-block: 1px solid var(--border); background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 8%, var(--background)), var(--background)); }
 
-/* Logo-led, measured serpentine infrastructure journey */
-.maf-motion-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 2.5rem; padding: 0 1.5rem; }
-.maf-station { min-height: 205px; }
-.maf-station-5 { grid-area: 2 / 4; }
-.maf-station-6 { grid-area: 2 / 3; }
-.maf-station-7 { grid-area: 2 / 2; }
-.maf-station-8 { grid-area: 2 / 1; }
-.maf-logo { box-shadow: var(--shadow-soft); }
-.maf-wire { stroke: color-mix(in oklab, var(--primary) 25%, var(--border)); stroke-width: 1.5; }
-.maf-wire-travel { stroke: var(--primary); stroke-width: 1.5; stroke-dasharray: 4 12; opacity: 0.4; }
-.maf-motion-canvas[data-moving="true"] .maf-wire-travel { animation: maf-wire-run 3s linear infinite; }
-.maf-motion-canvas[data-moving="true"] .maf-logo { animation: maf-logo-breathe 4s ease-in-out infinite; }
-@keyframes maf-wire-run { to { stroke-dashoffset: -48; } }
-@keyframes maf-logo-breathe { 50% { box-shadow: 0 0 0 6px color-mix(in oklab, var(--primary) 5%, transparent), var(--shadow-soft); } }
-@media (max-width: 599px) {
- .maf-motion-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0 1rem; row-gap: 1.5rem; column-gap: 1rem; }
- .maf-station { min-height: 190px; }
- .maf-station-3 { grid-area: 2 / 2; }
- .maf-station-4 { grid-area: 2 / 1; }
- .maf-station-5 { grid-area: 3 / 1; }
- .maf-station-6 { grid-area: 3 / 2; }
- .maf-station-7 { grid-area: 4 / 2; }
- .maf-station-8 { grid-area: 4 / 1; }
+/* Connected reference infographic: measured edges never drive payment state. */
+.maf-infographic { background: var(--background); border-block: 1px solid var(--border); }
+.maf-container { max-width: 1600px; margin-inline: auto; padding-inline: 2rem; }
+.maf-diagram { position: relative; margin-top: 1.5rem; padding-top: 60px; }
+.maf-connections { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.maf-reference-grid { position: relative; display: grid; grid-template-columns: 1.65fr 1.15fr 1.65fr .85fr .85fr .9fr .95fr; grid-template-rows: auto auto; gap: 44px 26px; align-items: center; }
+.maf-card, .maf-liquidity { min-width: 0; padding: 14px 12px; border: 1px solid color-mix(in oklab, var(--primary) 18%, var(--border)); border-radius: 8px; background: var(--card); box-shadow: var(--shadow-soft); }
+.maf-card p, .maf-liquidity p { font-size: 12px; line-height: 1.5; color: var(--muted-foreground); }
+.maf-card-heading { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; font-weight: 700; line-height: 1.4; margin-bottom: 14px; }
+.maf-number { display: grid; place-items: center; width: 24px; height: 24px; flex: none; border-radius: 50%; font-size: 12px; background: var(--primary); color: var(--primary-foreground); }
+.maf-assets { grid-area: 1 / 1 / 3 / 2; }
+.maf-detection { grid-area: 1 / 2 / 3 / 3; text-align: center; background: var(--accent); }
+.maf-detection p + p { margin-top: 8px; }
+.maf-liquidity { grid-area: 1 / 3 / 3 / 4; }
+.maf-kyc { grid-area: 1 / 4 / 2 / 6; }
+.maf-failed { grid-area: 1 / 6 / 2 / 8; border-color: color-mix(in oklab, var(--destructive) 40%, var(--border)); background: color-mix(in oklab, var(--destructive) 3%, var(--card)); }
+.maf-settlement { grid-area: 2 / 4; }
+.maf-currency { grid-area: 2 / 5; }
+.maf-partner { grid-area: 2 / 6; }
+.maf-bank { grid-area: 2 / 7; }
+.maf-asset-list { display: grid; gap: 8px; }
+.maf-asset-row { display: flex; align-items: center; gap: 8px; padding: 9px 7px; border-bottom: 1px solid var(--border); }
+.maf-asset-row:last-child { border-bottom: 0; }
+.maf-asset-row strong { font-size: 11px; display: block; }
+.maf-asset-row p { font-size: 10px; }
+.maf-asset-row .maf-badge { margin-left: auto; }
+.maf-asset-logo { width: 30px; height: 30px; flex: none; display: grid; place-items: center; color: var(--primary); }
+.maf-asset-logo img, .maf-asset-logo svg { width: 28px; height: 28px; object-fit: contain; }
+.maf-badge { display: inline-flex; align-items: center; border: 1px solid var(--border); border-radius: 99px; padding: 3px 7px; font-size: 9px; font-weight: 700; line-height: 1.3; color: var(--muted-foreground); background: var(--muted); white-space: nowrap; }
+.maf-badge-live { color: var(--success); background: color-mix(in oklab, var(--success) 8%, var(--card)); border-color: color-mix(in oklab, var(--success) 40%, var(--border)); }
+.maf-badge-sandbox { color: var(--warning); background: color-mix(in oklab, var(--warning) 8%, var(--card)); border-color: color-mix(in oklab, var(--warning) 45%, var(--border)); }
+.maf-provider { display: flex; align-items: flex-start; gap: 9px; padding-block: 13px; border-top: 1px solid var(--border); }
+.maf-provider > img { width: 32px; height: 32px; object-fit: contain; border-radius: 4px; flex: none; }
+.maf-provider > div { min-width: 0; }
+.maf-provider strong { font-size: 13px; }
+.maf-provider-title { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-bottom: 5px; }
+.maf-provider-tag { margin-top: 7px; color: var(--primary) !important; font-size: 10px !important; }
+.maf-output { align-self: stretch; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; padding-inline: 8px; }
+.maf-output .maf-card-heading { flex-direction: column; align-items: center; min-height: 64px; margin-bottom: 0; }
+.maf-output-logo { width: 38px; height: 38px; object-fit: contain; }
+.maf-output .maf-badge { margin-top: auto; }
+.maf-kyc-pass { display: inline-flex; align-items: center; gap: 4px; color: var(--success); font-size: 11px; border-radius: 4px; padding: 3px 6px; background: color-mix(in oklab, var(--success) 8%, var(--card)); }
+.maf-wire-route, .maf-wire-failed { fill: none; stroke-width: 1.5; stroke-dasharray: 5 6; }
+.maf-wire-route { stroke: var(--primary); }
+.maf-wire-failed { stroke: var(--destructive); opacity: .7; }
+.maf-return-label { position: absolute; top: 5px; left: 27%; font-size: 11px; color: var(--destructive); background: var(--background); padding-inline: 8px; z-index: 1; }
+.maf-diagram[data-moving="true"] .maf-wire-route { animation: maf-wire-run 4s linear infinite; }
+.maf-diagram[data-moving="true"] .maf-kyc-pass { animation: maf-pulse 3s ease-in-out infinite; }
+.maf-disclosure { display: flex; align-items: flex-start; gap: 12px; margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 12px; line-height: 1.7; color: var(--muted-foreground); }
+@keyframes maf-wire-run { to { stroke-dashoffset: -44; } }
+@media (max-width: 1199px) {
+ .maf-container { padding-inline: 1.5rem; }
+ .maf-reference-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto auto auto; gap: 38px 24px; }
+ .maf-assets { grid-area: 1 / 1 / 3 / 2; }
+ .maf-detection { grid-area: 1 / 2 / 3 / 3; }
+ .maf-liquidity { grid-area: 1 / 3 / 3 / 4; }
+ .maf-kyc { grid-area: 1 / 4; }
+ .maf-failed { grid-area: 2 / 4; }
+ .maf-settlement { grid-area: 3 / 1; }
+ .maf-currency { grid-area: 3 / 2; }
+ .maf-partner { grid-area: 3 / 3; }
+ .maf-bank { grid-area: 3 / 4; }
+ .maf-asset-row { flex-wrap: wrap; }
+ .maf-asset-row .maf-badge { margin-left: 38px; }
+ .maf-return-label { left: 8%; font-size: 10px; }
 }
-@media (prefers-reduced-motion: reduce) { .maf-motion-canvas .maf-logo, .maf-motion-canvas .maf-wire-travel { animation: none !important; } }
+@media (max-width: 699px) {
+ .maf-container { padding-inline: 1rem; }
+ .maf-reference-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; gap: 32px 20px; }
+ .maf-assets { grid-area: 1 / 1 / 2 / 3; }
+ .maf-detection { grid-area: 2 / 1; }
+ .maf-liquidity { grid-area: 2 / 2; }
+ .maf-kyc { grid-area: 3 / 2; }
+ .maf-failed { grid-area: 3 / 1; }
+ .maf-settlement { grid-area: 4 / 1; }
+ .maf-currency { grid-area: 4 / 2; }
+ .maf-partner { grid-area: 5 / 2; }
+ .maf-bank { grid-area: 5 / 1; }
+ .maf-asset-row { flex-wrap: nowrap; }
+ .maf-asset-row .maf-badge { margin-left: auto; }
+ .maf-return-label { left: 0; max-width: 100%; font-size: 9px; }
+ .maf-provider { flex-direction: column; }
+ .maf-kyc .flex { flex-wrap: wrap; }
+ .maf-failed .flex { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) { .maf-diagram .maf-wire-route, .maf-diagram .maf-kyc-pass { animation: none !important; } }
