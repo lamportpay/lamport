@@ -1,3 +1,8 @@
+## Reference-style connected infographic
+
+- [ ] Replace the logo stations with grouped asset cards, routing, liquidity, raised KYC branch and connected settlement/payout stages
+- [ ] Verify fitting layouts, connectors, playback, reduced motion and accurate disabled-refund disclosure
+
 ## Logo-led motion flow
 
 - [x] Replace static hub and selectors with a screen-fitting connected logo journey and viewport-gated motion
