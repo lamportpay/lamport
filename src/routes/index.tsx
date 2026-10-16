@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
-import { ConnectedSystems } from "@/components/site/ConnectedSystems";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { HomeGlance } from "@/components/site/HomeGlance";
 import { HomeCapabilities } from "@/components/site/HomeCapabilities";
@@ -77,7 +76,6 @@ function Index() {
         <HomeCapabilities />
         <HomeBankNetwork />
         <FeeCalculator />
-        <ConnectedSystems />
         <IntegrationStatus />
         <SupportedCorridors />
         <HomeLatestNews />
