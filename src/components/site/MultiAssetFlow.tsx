@@ -1,4 +1,4 @@
-import { ArrowRight, Bitcoin, Layers, ScanSearch, ShieldCheck, Coins, Landmark, Banknote, Building2, Check, X, Info, Network } from "lucide-react";
+import { Bitcoin, Layers, ScanSearch, ShieldCheck, Coins, Landmark, Banknote, Building2, Check, X, Info, Network } from "lucide-react";
 import type { ReactNode } from "react";
 
 type Status = "LIVE" | "PLANNED" | "IN DEVELOPMENT" | "SANDBOX";
@@ -195,44 +195,31 @@ export function MultiAssetFlow() {
           additional routes being integrated.
         </p>
 
-        <div className="relative mt-10 xl:pt-12">
-          {/* Red return path: KYC failed (04) → back to 01 */}
-          <div className="hidden xl:block" aria-hidden="true">
-            <div className="maf-return-path" />
-            <span className="absolute left-[25%] top-0 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-background px-2 text-[11px] font-medium text-destructive">
-              ← Funds returned to original wallet (live rate)
-            </span>
-          </div>
-
-          <ol className="grid list-none grid-cols-1 p-0 xl:grid-cols-[1.25fr_1fr_1.3fr_1.1fr_0.9fr_1fr_0.9fr_0.95fr] xl:gap-7">
-            {STEPS.map((s, i) => (
-              <li key={s.n} className="relative min-w-0">
-                <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-3.5 shadow-sm">
-                  <div className="mb-2 flex items-center gap-2">
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                      {s.n}
-                    </span>
-                    <span className="text-primary">{s.icon}</span>
+        <div className="maf-tree relative mx-auto mt-12 max-w-5xl">
+          <span className="maf-spine" aria-hidden="true"><span className="maf-spine-dot" /></span>
+          <ol className="relative list-none space-y-6 p-0">
+            {STEPS.map((s, i) => {
+              const right = i % 2 === 1;
+              return (
+                <li key={s.n} className={`relative pl-14 lg:w-1/2 lg:pl-0 ${right ? "lg:ml-auto lg:pl-12" : "lg:pr-12"}`}>
+                  <span className={`maf-node ${right ? "lg:maf-node-r" : ""}`} data-side={right ? "r" : "l"} aria-hidden="true">{s.n}</span>
+                  <span className="maf-branch" data-side={right ? "r" : "l"} aria-hidden="true" />
+                  <div className={`rounded-2xl border bg-card p-4 shadow-sm ${s.n === "04" ? "border-destructive/30" : "border-border"}`}>
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="text-primary">{s.icon}</span>
+                      <h3 className="text-sm font-semibold leading-snug text-card-foreground">{s.title}</h3>
+                    </div>
+                    <div className="text-xs leading-snug text-muted-foreground">{s.body}</div>
+                    {s.n === "04" && (
+                      <p className="mt-3 flex items-center gap-1.5 rounded-lg border border-dashed border-destructive/60 bg-destructive/5 p-2 text-[11px] font-medium text-destructive">
+                        <span className="maf-return-arrow" aria-hidden="true">↺</span> Funds returned to original wallet (live rate) — back to 01
+                      </p>
+                    )}
                   </div>
-                  <h3 className="mb-2 text-sm font-semibold leading-snug text-card-foreground">{s.title}</h3>
-                  <div className="flex-1 text-xs leading-snug text-muted-foreground">{s.body}</div>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <span className="maf-link" aria-hidden="true">
-                    <span className="maf-link-dot" />
-                    <span className="maf-link-arrow">
-                      <ArrowRight className="h-3 w-3 rotate-90 xl:rotate-0" />
-                    </span>
-                  </span>
-                )}
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ol>
-
-          {/* Mobile/tablet: return path described as text */}
-          <p className="mt-4 rounded-lg border border-dashed border-destructive/60 bg-destructive/5 p-3 text-xs font-medium text-destructive xl:hidden">
-            ↺ KYC failed at 04 → Funds returned to original wallet (live rate), back to 01
-          </p>
         </div>
 
         <div className="mt-8 flex gap-3 rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
