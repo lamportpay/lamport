@@ -2216,3 +2216,36 @@ body.has-cookie-banner .site-footer-legal {
 .tech-eco-pill:hover { color: var(--home-brand); }
 @keyframes tech-eco-marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 8px)); } }
 @media (prefers-reduced-motion: reduce) { .tech-eco-marquee-track { animation: none; } }
+
+/* Multi-asset flow: subtle travelling dot on each step + red return line */
+.maf-step::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 9999px;
+  background: var(--primary);
+  opacity: 0.7;
+  animation: maf-dot 4s linear infinite;
+}
+.maf-return-line::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--destructive);
+  animation: maf-return 5s linear infinite;
+}
+.maf-pass { animation: maf-pulse 3s ease-in-out infinite; }
+@keyframes maf-dot { from { left: 1.25rem; } to { left: calc(100% - 1.5rem); } }
+@keyframes maf-return { from { right: 0; opacity: 1; } to { right: 100%; opacity: 0.2; } }
+@keyframes maf-pulse { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 0 4px color-mix(in oklab, var(--success) 18%, transparent); } }
+@media (prefers-reduced-motion: reduce) {
+  .maf-step::after, .maf-return-line::after, .maf-pass { animation: none; }
+}

@@ -6,6 +6,7 @@ import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { HomeGlance } from "@/components/site/HomeGlance";
 import { HomeCapabilities } from "@/components/site/HomeCapabilities";
 import { TechnologyEcosystem } from "@/components/site/TechnologyEcosystem";
+import { MultiAssetFlow } from "@/components/site/MultiAssetFlow";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
 import { HomeLatestNews } from "@/components/site/HomeLatestNews";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
@@ -76,6 +77,7 @@ function Index() {
         <HomeCapabilities />
         <HomeBankNetwork />
         <FeeCalculator />
+        <MultiAssetFlow />
         <TechnologyEcosystem />
         <SupportedCorridors />
         <HomeLatestNews />
