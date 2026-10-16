@@ -68,7 +68,7 @@ const FACTS = [
  * x% = (lon + 180) / 360, y% = (84 - lat) / 144.
  */
 const MAP_MARKERS = [
-  { code: "US", name: "United States", x: 77.2, y: 31.3, live: true, side: "below" },
+  { code: "US", name: "United States", x: 22.8, y: 31.3, live: true, side: "below" },
   { code: "GB", name: "United Kingdom", x: 49.4, y: 20.8, live: true, side: "right" },
   { code: "IN", name: "India", x: 71.7, y: 43.1, live: true, side: "above" },
   { code: "PH", name: "Philippines", x: 83.9, y: 49.3, live: true, side: "below" },
