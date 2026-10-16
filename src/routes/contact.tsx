@@ -92,20 +92,16 @@ function PayoutMap() {
 
         <div className="relative mt-6 aspect-[2/1] w-full overflow-hidden rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur-sm">
           <svg
-            viewBox="0 0 100 50"
+            viewBox={WORLD_MAP_VIEWBOX}
             preserveAspectRatio="xMidYMid meet"
             className="absolute inset-0 h-full w-full"
             aria-hidden="true"
           >
-            {MAP_DOTS.map((d, i) => (
-              <circle
-                key={i}
-                cx={d.cx}
-                cy={d.cy}
-                r={0.55}
-                fill="rgba(255,255,255,0.35)"
-              />
-            ))}
+            <g fill="rgba(255,255,255,0.28)" stroke="rgba(255,255,255,0.18)" strokeWidth={0.15}>
+              {WORLD_MAP_PATHS.map((d, i) => (
+                <path key={i} d={d} />
+              ))}
+            </g>
           </svg>
           {MAP_MARKERS.map((m) => (
             <div
