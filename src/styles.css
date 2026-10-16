@@ -2194,7 +2194,7 @@ body.has-cookie-banner .site-footer-legal {
 .launch-status-all:hover { opacity: 1; }
 
 /* Reference-proportioned ecosystem overview, fit to screen without rearranging columns. */
-.eco-section { background: var(--card); }
+.eco-section { background: var(--card); padding-block: 32px; }
 .eco-container { max-width: 1600px; margin-inline: auto; padding-inline: 24px; }
 .eco-heading-row { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
 .eco-heading-row .home-heading { font-size: 30px; }
@@ -2207,7 +2207,7 @@ body.has-cookie-banner .site-footer-legal {
 .eco-model-caption > span { color: var(--home-brand); font-size: 11px; font-weight: 600; }
 .eco-frame { position: relative; width: 100%; overflow: hidden; }
 .eco-frame[data-expanded="true"] { overflow-x: auto; }
-.eco-canvas { position: relative; width: 1440px; display: grid; grid-template-columns: 210px 170px 150px 240px 135px 155px 135px 133px; gap: 14px; align-items: center; padding: 28px 6px 16px; transform-origin: top left; }
+.eco-canvas { position: relative; width: 1440px; display: grid; grid-template-columns: 210px 170px 150px 240px 135px 155px 135px 133px; gap: 14px; align-items: center; padding: 18px 6px 12px; transform-origin: top left; }
 .eco-wires { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
 .eco-wire { fill: none; stroke: var(--home-brand); stroke-width: 1.7; opacity: .65; }
 .eco-wire-planned { stroke-dasharray: 4 5; opacity: .35; }
@@ -2236,26 +2236,27 @@ body.has-cookie-banner .site-footer-legal {
 .eco-gates { display: grid; gap: 40px; }
 .eco-failed { display: flex; align-items: flex-start; gap: 6px; padding: 10px; border: 1px dashed var(--destructive); border-radius: 8px; color: var(--destructive); background: var(--card); font-size: 10px; line-height: 1.6; }
 .eco-failed span { font-size: 8px; }
-.eco-criteria { display: grid; gap: 7px; list-style: none; margin-top: 18px; padding: 0; }
+.eco-criteria { display: grid; gap: 5px; list-style: none; margin-top: 12px; padding: 0; }
 .eco-criteria li { display: flex; align-items: flex-start; gap: 5px; padding: 6px 4px; border: 1px solid var(--border); border-radius: 4px; font-size: 9px; line-height: 1.55; }
 .eco-criteria svg { color: var(--home-brand); margin-top: 2px; }
-.eco-venue { margin-top: 9px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); }
+.eco-venue { margin-top: 6px; padding: 6px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); }
 .eco-provider-planned { border-style: dashed; }
 .eco-provider-current { border-color: color-mix(in oklab, var(--success) 35%, var(--border)); }
 .eco-venue-heading { display: flex; align-items: center; gap: 5px; }
 .eco-venue-heading strong { font-size: 10px; flex: 1; }
 .eco-venue > strong { font-size: 10px; }
 .eco-venue-heading .eco-status { margin-top: 0; font-size: 6px; }
-.eco-venue-list { display: flex; justify-content: space-between; gap: 4px; margin-top: 10px; }
+.eco-venue-list { display: flex; justify-content: space-between; gap: 4px; margin-top: 6px; }
 .eco-venue-list > div { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
 .eco-venue-list > div > span:last-child { font-size: 7px; }
 .eco-venue-mark { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--home-tint); color: var(--home-brand); font-size: 9px; font-weight: 700; }
+.eco-venue .eco-footnote { font-size: 7px; line-height: 1.4; margin-top: 4px; }
 .eco-settlement .eco-stage > img { width: 44px; height: 44px; margin-block: 20px; }
 .eco-partner-item { padding-block: 8px; }
 .eco-partner-item + .eco-partner-item { border-top: 1px solid var(--border); margin-top: 8px; }
 .eco-partner-item strong { display: block; font-size: 11px; }
 .eco-partner-item .eco-icon { width: 26px; height: 26px; margin-block: 6px; }
-.eco-benefits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--border); border-radius: 8px; background: var(--home-surface); padding: 16px 20px; gap: 24px; }
+.eco-benefits { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--border); border-radius: 8px; background: var(--home-surface); padding: 12px 20px; gap: 24px; }
 .eco-benefits > div { display: flex; gap: 12px; align-items: flex-start; }
 .eco-benefits strong { font-size: 12px; }
 .eco-benefits p { margin-top: 4px; font-size: 10px; line-height: 1.6; color: var(--muted-foreground); }
