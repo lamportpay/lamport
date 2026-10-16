@@ -1,5 +1,6 @@
-import { Bitcoin, Layers, ScanSearch, ShieldCheck, Coins, Landmark, Banknote, Building2, Check, X, Info, Network } from "lucide-react";
-import type { ReactNode } from "react";
+import { Bitcoin, Layers, ScanSearch, ShieldCheck, Coins, Landmark, Banknote, Building2, Check, X, Info, Network, ArrowRight } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 
 type Status = "LIVE" | "PLANNED" | "IN DEVELOPMENT" | "SANDBOX";
 
@@ -183,6 +184,9 @@ const STEPS: StepDef[] = [
 ];
 
 export function MultiAssetFlow() {
+  const [selected, setSelected] = useState(1);
+  const step = STEPS[selected];
+  if (!step) return null;
   return (
     <section aria-labelledby="maf-title" className="maf bg-muted/30 py-20">
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6">
@@ -195,34 +199,65 @@ export function MultiAssetFlow() {
           additional routes being integrated.
         </p>
 
-        <div className="maf-tree relative mx-auto mt-12 max-w-5xl">
-          <span className="maf-spine" aria-hidden="true"><span className="maf-spine-dot" /></span>
-          <ol className="relative list-none space-y-6 p-0">
-            {STEPS.map((s, i) => {
-              const right = i % 2 === 1;
-              return (
-                <li key={s.n} className={`relative pl-14 lg:w-1/2 lg:pl-0 ${right ? "lg:ml-auto lg:pl-12" : "lg:pr-12"}`}>
-                  <span className={`maf-node ${right ? "lg:maf-node-r" : ""}`} data-side={right ? "r" : "l"} aria-hidden="true">{s.n}</span>
-                  <span className="maf-branch" data-side={right ? "r" : "l"} aria-hidden="true" />
-                  <div className={`rounded-2xl border bg-card p-4 shadow-sm ${s.n === "04" ? "border-destructive/30" : "border-border"}`}>
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="text-primary">{s.icon}</span>
-                      <h3 className="text-sm font-semibold leading-snug text-card-foreground">{s.title}</h3>
-                    </div>
-                    <div className="text-xs leading-snug text-muted-foreground">{s.body}</div>
-                    {s.n === "04" && (
-                      <p className="mt-3 flex items-center gap-1.5 rounded-lg border border-dashed border-destructive/60 bg-destructive/5 p-2 text-[11px] font-medium text-destructive">
-                        <span className="maf-return-arrow" aria-hidden="true">↺</span> Funds returned to original wallet (live rate) — back to 01
-                      </p>
-                    )}
-                  </div>
+        <div className="mt-10 grid items-center gap-6 lg:grid-cols-[1fr_2rem_1.15fr_2rem_1fr]">
+          <div className="min-w-0">
+            <p className="mb-4 text-xs font-semibold uppercase text-muted-foreground">01 / Digital assets in</p>
+            <ul className="space-y-2">
+              {ASSETS.map((asset) => (
+                <li key={asset.name} className="flex items-center gap-3 rounded-lg border border-border bg-card p-3">
+                  {asset.logo ? <img src={asset.logo} alt="" className="h-7 w-7 shrink-0 object-contain" /> : asset.name.startsWith("Bitcoin") ? <Bitcoin className="h-7 w-7 shrink-0 text-warning" /> : <Layers className="h-7 w-7 shrink-0 text-primary" />}
+                  <span className="min-w-0 flex-1 text-xs font-medium text-card-foreground">{asset.name}</span>
+                  <Badge s={asset.s} />
                 </li>
-              );
-            })}
-          </ol>
+              ))}
+            </ul>
+          </div>
+          <ArrowRight className="mx-auto h-6 w-6 rotate-90 text-primary lg:rotate-0" aria-hidden="true" />
+          <div className="maf-hub flex min-h-64 flex-col items-center justify-center px-5 py-8 text-center">
+            <Network className="mb-4 h-9 w-9 text-primary" />
+            <h3 className="text-3xl font-bold text-foreground">LamportPay</h3>
+            <p className="mt-2 text-sm text-muted-foreground">Detect · Route · Verify · Settle</p>
+            <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-primary">
+              <img src="/logos/usd-coin.png" alt="" className="h-6 w-6" /> USDC settlement
+            </div>
+            <div className="mt-5 flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><img src="/logos/jupiter-exchange-solana.png" alt="" className="h-5 w-5" /> Jupiter</span>
+              <span className="flex items-center gap-1.5"><img src="/partners/stables.svg" alt="" className="h-5 w-5" /> Stables <Badge s="SANDBOX" /></span>
+            </div>
+          </div>
+          <ArrowRight className="mx-auto h-6 w-6 rotate-90 text-primary lg:rotate-0" aria-hidden="true" />
+          <div className="min-w-0">
+            <p className="mb-4 text-xs font-semibold uppercase text-muted-foreground">08 / Local money out</p>
+            <ul className="space-y-2">
+              {[["USD", "United States"], ["GBP", "United Kingdom"], ["INR", "India"], ["PHP", "Philippines"]].map(([currency, country]) => (
+                <li key={currency} className="flex items-center gap-3 rounded-lg border border-border bg-card p-3">
+                  <span className="w-10 shrink-0 text-sm font-bold text-primary">{currency}</span>
+                  <span className="min-w-0 flex-1 text-xs text-card-foreground">{country}</span>
+                  <Badge s="SANDBOX" />
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground"><Landmark className="h-4 w-4" /> Recipient bank account</p>
+          </div>
         </div>
 
-        <div className="mt-8 flex gap-3 rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
+        <div className="mt-10 grid gap-6 border-t border-border py-6 md:grid-cols-[0.8fr_1.2fr]">
+          <div id="maf-detail" aria-live="polite" className="min-h-72 min-w-0">
+            <p className="text-xs font-semibold text-primary">THE JOURNEY / {step.n} OF 08</p>
+            <h3 className="mt-3 flex items-center gap-2 text-xl font-semibold text-foreground">{step.icon}{step.title}</h3>
+            <div className="mt-4 max-w-lg text-sm leading-relaxed text-muted-foreground">{step.body}</div>
+          </div>
+          <div className="grid content-start grid-cols-2 gap-2" role="group" aria-label="Payment journey steps">
+            {STEPS.map((item, index) => (
+              <Button key={item.n} aria-pressed={selected === index} aria-controls="maf-detail" variant={selected === index ? "default" : "outline"} onClick={() => setSelected(index)} className="h-auto min-h-16 justify-start whitespace-normal px-3 py-3 text-left">
+                <span className="shrink-0 text-xs opacity-70">{item.n}</span>
+                <span className="text-xs leading-snug">{item.title}</span>
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-2 flex gap-3 border-t border-border pt-5 text-sm text-muted-foreground">
           <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
           <p>
             Solana / SPL assets are supported through the live Jupiter route. Additional asset and liquidity routes are being
