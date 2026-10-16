@@ -132,7 +132,7 @@ export function MultiAssetFlow() {
           <li className="contents">
             <Step n="04" title="Identity Check (KYC)" icon={<ShieldCheck className="h-5 w-5" />}>
               <p className="mb-3">Verify sender and recipient (where required)</p>
-              <div className="maf-pass rounded-lg border border-success/40 bg-success/10 p3 p-3">
+              <div className="maf-pass rounded-lg border border-success/40 bg-success/10 p-3">
                 <p className="flex items-center gap-1.5 text-xs font-semibold text-success">
                   <Check className="h-4 w-4" /> KYC PASSED
                 </p>
