@@ -1,3 +1,8 @@
+## Logo-led motion flow
+
+- [ ] Replace static hub and selectors with a screen-fitting connected logo journey and viewport-gated motion
+- [ ] Verify desktop, preview-width, mobile, pause and reduced motion
+
 ## Compact payment-flow replacement
 
 - [x] Replace rejected tree with assets → settlement → currencies overview and manual eight-step details; preserve other sections and financial behavior
