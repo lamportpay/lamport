@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { HomeBankNetwork } from "@/components/site/HomeBankNetwork";
 import { HomeGlance } from "@/components/site/HomeGlance";
 import { HomeCapabilities } from "@/components/site/HomeCapabilities";
-import { IntegrationStatus } from "@/components/site/IntegrationStatus";
+import { TechnologyEcosystem } from "@/components/site/TechnologyEcosystem";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
 import { HomeLatestNews } from "@/components/site/HomeLatestNews";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
@@ -78,7 +78,7 @@ function Index() {
         <HomeBankNetwork />
         <InfrastructureFlowImage />
         <FeeCalculator />
-        <IntegrationStatus />
+        <TechnologyEcosystem />
         <SupportedCorridors />
         <HomeLatestNews />
         <HomeCtaBanner />

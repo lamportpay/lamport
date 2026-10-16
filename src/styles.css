@@ -47,6 +47,7 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
   --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -2220,3 +2221,18 @@ body.has-cookie-banner .site-footer-legal {
   .flow-image-hint { display: block; margin-top: 8px; font-size: 11px; color: var(--muted-foreground); }
 }
 
+
+/* Technology ecosystem carousel */
+.tech-eco-scroller { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.tech-eco-scroller::-webkit-scrollbar { display: none; }
+.tech-eco-card { width: 220px; flex-shrink: 0; border-radius: 16px; border: 1px solid var(--border); background: var(--background); padding: 16px; box-shadow: 0 6px 20px -14px color-mix(in oklab, var(--home-brand) 45%, transparent); transition: transform .3s ease, box-shadow .3s ease; }
+.tech-eco-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -16px color-mix(in oklab, var(--home-brand) 55%, transparent); }
+.tech-eco-nav { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid var(--border); background: var(--background); color: var(--home-brand); transition: transform .2s ease; }
+.tech-eco-nav:hover { transform: scale(1.06); }
+.tech-eco-nav-primary { background: var(--home-brand); color: var(--primary-foreground); border-color: transparent; }
+.tech-eco-usdc { position: relative; overflow: hidden; border-radius: 20px; border: 1px solid var(--border); background: var(--background); padding: 24px; }
+@media (min-width: 768px) { .tech-eco-usdc { padding: 32px; } }
+.tech-eco-lines { position: absolute; inset: 0 0 auto 35%; width: 65%; height: 160px; opacity: .45; pointer-events: none; }
+.tech-eco-lines path { fill: none; stroke: var(--home-brand); stroke-width: 1; opacity: .35; }
+.tech-eco-lines circle { fill: var(--home-brand); }
+@media (prefers-reduced-motion: reduce) { .tech-eco-lines circle { display: none; } .tech-eco-card { transition: none; } }
