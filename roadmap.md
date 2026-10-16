@@ -176,3 +176,9 @@
 - [x] Joining from the launch popup records the connected wallet; admin shows wallet, place in line and whether each free place has been used
 - [x] Verify: typecheck clean, 508 unit tests pass, build OK, signed-in calculator still quotes 2% for a non-listed account with the new waiver field present
 - [x] Both fee lines browser-verified on /pay: a normal account shows "LamportPay fee 4.00 USDC" on 200 USDC; an account on the list shows "LamportPay fee Waived (early access)" with the full amount converted. The list entry used for that check was a temporary row, removed afterwards (list back to 0 signups, fee back to 2%)
+
+## Homepage: connected payment journey section removed
+
+- [x] "One connected payment journey / From your wallet to their bank." section removed from the homepage, not replaced: wallet / LamportPay / Jupiter → USDC / Stables / bank account route panel, the sandbox panel, the vertical flow graphic and every label, note and control inside it
+- [x] Section component and its now-unused animation styles deleted; nothing else on the page touched (capabilities, banks, calculator, infrastructure, corridors, news, banner all unchanged)
+- [x] Verify: typecheck clean, 508 unit tests pass; browser check on desktop (1280px) and mobile (390px) — section absent from the DOM, bank-destinations and payout-calculator sections now sit flush with a single divider and no empty gap
