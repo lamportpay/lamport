@@ -31,7 +31,7 @@ const PARTNERS: Partner[] = [
   { name: "USDT", status: "PLANNED", role: "Network support (USDT)", logo: L("tether.png") },
   { name: "BNB Chain", status: "PLANNED", role: "Network support (BNB / BEP-20)", logo: L("binancecoin.png") },
   { name: "Uniswap", status: "PLANNED", role: "DEX integration", logo: L("uniswap.png") },
-  { name: "1inch", status: "PLANNED", role: "DEX aggregation", logo: L("1inch.jpg") },
+  { name: "1inch", status: "PLANNED", role: "DEX aggregation", logo: L("1inch.png") },
   { name: "Arbitrum", status: "PLANNED", role: "Network support (ARB)", logo: L("arbitrum.jpg") },
   { name: "Polygon", status: "PLANNED", role: "Network support (POL)", logo: L("polygon-ecosystem-token.png") },
 ];
@@ -64,7 +64,7 @@ const DEXS = [
   { name: "Raydium", logo: L("raydium.jpg") },
   { name: "Orca", logo: L("orca.png") },
   { name: "Uniswap", logo: L("uniswap.png") },
-  { name: "1inch", logo: L("1inch.jpg") },
+  { name: "1inch", logo: L("1inch.png") },
   { name: "Curve", logo: L("curve-dao-token.png") },
   { name: "Balancer", logo: L("balancer.png") },
 ];
