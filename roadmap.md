@@ -1,7 +1,7 @@
 ## Reference-style connected infographic
 
-- [ ] Replace the logo stations with grouped asset cards, routing, liquidity, raised KYC branch and connected settlement/payout stages
-- [ ] Verify fitting layouts, connectors, playback, reduced motion and accurate disabled-refund disclosure
+- [x] Replace the logo stations with grouped asset cards, routing, liquidity, raised KYC branch and connected settlement/payout stages
+- [x] Verify at 1536px, 1280px, 871px and 390px: no overflow, all logos loaded, seven moving paths, pause/resume and reduced motion; no browser errors and latest build OK. Refund explicitly planned/disabled; preview only.
 
 ## Logo-led motion flow
 
