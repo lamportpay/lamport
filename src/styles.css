@@ -2243,3 +2243,19 @@ body.has-cookie-banner .site-footer-legal {
   .maf-link-arrow, .maf-link-dot, .maf-return-path::after, .maf-pass, .maf-fail { animation: none; }
   .maf-link-dot { display: none; }
 }
+/* Multi-asset flow as a vertical tree */
+.maf-spine { position: absolute; top: 0; bottom: 0; left: 1.25rem; width: 2px; background: linear-gradient(var(--primary), color-mix(in oklab, var(--primary) 25%, transparent)); }
+.maf-spine-dot { position: absolute; left: -4px; width: 10px; height: 10px; border-radius: 9999px; background: var(--primary); box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 20%, transparent); animation: maf-spine 8s linear infinite; }
+.maf-node { position: absolute; top: 0.75rem; left: 1.25rem; transform: translateX(-50%); z-index: 1; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; background: var(--primary); color: var(--primary-foreground); font-size: 0.75rem; font-weight: 700; box-shadow: 0 0 0 4px var(--background); }
+.maf-branch { position: absolute; top: 1.85rem; left: 2.4rem; width: 1.1rem; border-top: 2px dashed color-mix(in oklab, var(--primary) 45%, transparent); }
+@media (min-width: 1024px) {
+  .maf-spine { left: 50%; transform: translateX(-50%); }
+  .maf-node[data-side="l"] { left: 100%; }
+  .maf-node[data-side="r"] { left: 0; }
+  .maf-branch[data-side="l"] { left: auto; right: 1.1rem; width: 1.9rem; }
+  .maf-branch[data-side="r"] { left: 1.1rem; width: 1.9rem; }
+}
+.maf-return-arrow { display: inline-block; animation: maf-spin 3s linear infinite; }
+@keyframes maf-spine { from { top: 0; } to { top: calc(100% - 10px); } }
+@keyframes maf-spin { to { transform: rotate(-360deg); } }
+@media (prefers-reduced-motion: reduce) { .maf-spine-dot, .maf-return-arrow { animation: none; } }
