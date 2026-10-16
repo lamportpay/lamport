@@ -1,3 +1,9 @@
+## Infrastructure ecosystem replacement
+
+- [x] Replace old connected-systems section with branching assets, verification, routing, settlement and payout ecosystem
+- [x] Animate token movement on measured connections; preserve sandbox/planned labels and all financial behavior
+- [x] Verify at 1280px, 699px and 390px: token movement, pause/resume, reduced motion, all images loaded, no horizontal overflow or page errors; preview build OK
+
 ## Map gestures and integration timeline
 
 - [x] Enable bounded touch drag, pinch zoom, wheel zoom and consistent map controls
