@@ -1,3 +1,8 @@
+## Logo-led motion flow
+
+- [x] Replace static hub and selectors with a screen-fitting connected logo journey and viewport-gated motion
+- [x] Verified at 1280px, 871px and 390px: seven measured connections, moving tokens, pause/play, reduced motion, all logos loaded, no overflow or browser errors; build OK
+
 ## Compact payment-flow replacement
 
 - [x] Replace rejected tree with assets → settlement → currencies overview and manual eight-step details; preserve other sections and financial behavior
