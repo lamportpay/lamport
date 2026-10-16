@@ -47,6 +47,41 @@ const CAPABILITIES: { icon: LucideIcon; title: string; text: string }[] = [
   { icon: Building2, title: "Licensed payout infrastructure", text: "Connect to supported payout partners for local-currency delivery." },
 ];
 
+const NETWORKS = [
+  { name: "Solana", logo: "/tokens/sol.svg" },
+  { name: "Ethereum", logo: "/tokens/eth.svg" },
+  { name: "BNB Chain" }, { name: "Polygon" }, { name: "Arbitrum" }, { name: "Base" }, { name: "Avalanche" },
+];
+const DEXS = [
+  { name: "Jupiter", logo: "/partners/jupiter.svg" },
+  { name: "Raydium" }, { name: "Orca" }, { name: "Uniswap" }, { name: "1inch" }, { name: "Curve" }, { name: "Balancer" },
+];
+
+function LogoRow({ title, items, reverse }: { title: string; items: { name: string; logo?: string }[]; reverse?: boolean }) {
+  const row = (dup: boolean) =>
+    items.map((i) => (
+      <li key={(dup ? "d-" : "") + i.name} aria-hidden={dup || undefined} className="tech-eco-pill">
+        {i.logo ? (
+          <img src={i.logo} alt="" width="22" height="22" loading="lazy" className="size-5 object-contain" />
+        ) : (
+          <span className="flex size-5 items-center justify-center rounded-full bg-home-brand/12 text-[9px] font-bold text-home-brand">{i.name.slice(0, 2).toUpperCase()}</span>
+        )}
+        <span>{i.name}</span>
+      </li>
+    ));
+  return (
+    <div className="mt-6">
+      <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</h3>
+      <div className="tech-eco-marquee mt-3">
+        <ul className={cn("tech-eco-marquee-track", reverse && "tech-eco-marquee-reverse")}>
+          {row(false)}
+          {row(true)}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function Card({ p, hidden }: { p: Partner; hidden?: boolean }) {
   const Icon = p.icon;
   return (
@@ -150,6 +185,12 @@ export function TechnologyEcosystem() {
             {PARTNERS.map((p) => <Card key={`d-${p.name}`} p={p} hidden />)}
           </ul>
         </div>
+
+        <LogoRow title="Blockchain & Settlement Networks" items={NETWORKS} />
+        <LogoRow title="Decentralized Exchanges & Liquidity" items={DEXS} reverse />
+        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          Networks and liquidity venues are shown as part of LamportPay’s expanding technology ecosystem. Availability depends on route, asset and integration status.
+        </p>
 
         <div className="tech-eco-usdc mt-8">
           <svg aria-hidden="true" className="tech-eco-lines" viewBox="0 0 600 160" preserveAspectRatio="none">
