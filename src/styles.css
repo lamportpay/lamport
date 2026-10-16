@@ -2217,35 +2217,29 @@ body.has-cookie-banner .site-footer-legal {
 @keyframes tech-eco-marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 8px)); } }
 @media (prefers-reduced-motion: reduce) { .tech-eco-marquee-track { animation: none; } }
 
-/* Multi-asset flow: subtle travelling dot on each step + red return line */
-.maf-step::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 1.25rem;
-  width: 6px;
-  height: 6px;
-  margin-top: -3px;
-  border-radius: 9999px;
-  background: var(--primary);
-  opacity: 0.7;
-  animation: maf-dot 4s linear infinite;
+/* Multi-asset flow: one connected 01→08 journey with connectors + red return path */
+.maf-link { position: relative; display: grid; place-items: center; height: 2.25rem; }
+.maf-link::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 2px dashed color-mix(in oklab, var(--primary) 45%, transparent); }
+.maf-link-arrow { position: relative; z-index: 1; display: grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 9999px; background: var(--primary); color: var(--primary-foreground); box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--primary) 60%, transparent); animation: maf-nudge-y 2s ease-in-out infinite; }
+.maf-link-dot { position: absolute; left: calc(50% - 3px); width: 6px; height: 6px; border-radius: 9999px; background: var(--primary); animation: maf-travel-y 2.4s linear infinite; }
+@media (min-width: 1280px) {
+  .maf-link { position: absolute; top: 50%; right: -0.875rem; height: 1.5rem; width: 1.75rem; transform: translate(50%, -50%); z-index: 2; }
+  .maf-link::before { top: 50%; bottom: auto; left: -0.5rem; right: -0.5rem; border-left: 0; border-top: 2px dashed color-mix(in oklab, var(--primary) 45%, transparent); }
+  .maf-link-arrow { width: 1.4rem; height: 1.4rem; animation-name: maf-nudge-x; }
+  .maf-link-dot { left: auto; top: calc(50% - 3px); animation-name: maf-travel-x; }
 }
-.maf-return-line::after {
-  content: "";
-  position: absolute;
-  top: -5px;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background: var(--destructive);
-  animation: maf-return 5s linear infinite;
-}
+.maf-return-path { position: absolute; top: 0; left: 6%; width: 38%; height: 2.25rem; border: 2px dashed color-mix(in oklab, var(--destructive) 75%, transparent); border-bottom: 0; border-radius: 12px 12px 0 0; }
+.maf-return-path::after { content: ""; position: absolute; top: -5px; width: 8px; height: 8px; border-radius: 9999px; background: var(--destructive); animation: maf-return 5s linear infinite; }
 .maf-pass { animation: maf-pulse 3s ease-in-out infinite; }
-@keyframes maf-dot { from { left: 1.25rem; } to { left: calc(100% - 1.5rem); } }
-@keyframes maf-return { from { right: 0; opacity: 1; } to { right: 100%; opacity: 0.2; } }
+.maf-fail { animation: maf-pulse-red 3s ease-in-out infinite 1.5s; }
+@keyframes maf-travel-x { from { left: -0.5rem; opacity: 0; } 30% { opacity: 1; } to { left: 2rem; opacity: 0; } }
+@keyframes maf-travel-y { from { top: 0; opacity: 0; } 30% { opacity: 1; } to { top: 100%; opacity: 0; } }
+@keyframes maf-nudge-x { 0%,100% { transform: translateX(0); } 50% { transform: translateX(2px); } }
+@keyframes maf-nudge-y { 0%,100% { transform: translateY(0); } 50% { transform: translateY(2px); } }
+@keyframes maf-return { from { left: calc(100% - 4px); opacity: 1; } to { left: -4px; opacity: 0.3; } }
 @keyframes maf-pulse { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 0 4px color-mix(in oklab, var(--success) 18%, transparent); } }
+@keyframes maf-pulse-red { 0%,100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 0 4px color-mix(in oklab, var(--destructive) 16%, transparent); } }
 @media (prefers-reduced-motion: reduce) {
-  .maf-step::after, .maf-return-line::after, .maf-pass { animation: none; }
+  .maf-link-arrow, .maf-link-dot, .maf-return-path::after, .maf-pass, .maf-fail { animation: none; }
+  .maf-link-dot { display: none; }
 }
