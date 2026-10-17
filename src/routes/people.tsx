@@ -217,19 +217,26 @@ function People() {
                     </span>
                   ))}
                 </div>
-                <h3 className="mt-8 text-sm font-semibold uppercase tracking-wider">Experience</h3>
-                <ol className="mt-4 space-y-5 border-l-2 border-primary/30 pl-5">
-                  {active.history.map((h) => (
-                    <li key={h.title + h.period} className="relative">
-                      <span className="absolute -left-[27px] top-1 size-3 rounded-full bg-gradient-to-br from-primary to-violet-500 ring-4 ring-background" />
-                      <p className="text-xs font-semibold text-muted-foreground">{h.period}</p>
-                      <p className="font-semibold">{h.title}</p>
-                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                        {h.detail}
-                      </p>
-                    </li>
-                  ))}
-                </ol>
+                {active.history.length > 0 && (
+                  <>
+                    <h3 className="mt-8 text-sm font-semibold uppercase tracking-wider">
+                      Experience
+                    </h3>
+                    <ol className="mt-4 space-y-5 border-l-2 border-primary/30 pl-5">
+                      {active.history.map((h) => (
+                        <li key={h.title + h.period} className="relative">
+                          <span className="absolute -left-[27px] top-1 size-3 rounded-full bg-gradient-to-br from-primary to-violet-500 ring-4 ring-background" />
+                          <p className="text-xs font-semibold text-muted-foreground">{h.period}</p>
+                          <p className="font-semibold">{h.title}</p>
+                          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                            {h.detail}
+                          </p>
+                        </li>
+                      ))}
+                    </ol>
+                  </>
+                )}
+
               </div>
             </>
           )}
