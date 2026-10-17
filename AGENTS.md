@@ -32,4 +32,4 @@
 - Ecosystem logos stay shared. MultiAssetFlow measures card edges so infographic connectors adapt; viewport-gated, reduced-motion-aware motion never drives financial state.
 - Journey content is manual-only, above selectors, with previous/next controls, so reading stays uninterrupted. Decorative motion is viewport-gated and reduced-motion-aware, never financial state. Scope phone styling to `.commercial-home`. Public deposit warnings are not payout blacklists; pending submissions imply no backing.
 - Heading reveals read the heading's own box on scroll/resize, never an IntersectionObserver on the heading: its own clip-path zeroes the observer's ratio, so the text would stay permanently hidden.
-- Subdirectories may have their own AGENTS.md (e.g. src/routes/api); read it before changing files there.
+- Read nested AGENTS.md before edits. Team profiles share a browser-safe registry; history must be source-backed, never invented LamportPay work.

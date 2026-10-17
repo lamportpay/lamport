@@ -3,6 +3,7 @@ import zaheerMuneer from "@/assets/team/framed-zaheer.jpg";
 import ghazanfarAbbas from "@/assets/team/framed-ghazanfar.jpg";
 import izzat from "@/assets/team/framed-izzat.jpg";
 import safiUllahAdam from "@/assets/team/framed-safi.jpg";
+import gregMirt from "@/assets/team/greg-mirt-portrait.jpg.asset.json";
 
 export type TeamCategory = "Leadership" | "Engineering" | "Growth & Community" | "Advisors";
 
@@ -21,7 +22,7 @@ export type TeamMember = {
   photo: string;
   summary: string;
   focus: string[];
-  /** Work at LamportPay, newest first. Only owner-supplied facts. */
+  /** Professional experience, newest first. Only supplied facts. */
   history: { period: string; title: string; detail: string }[];
   /** Only filled in when the person has shared the profile URL. */
   socials: { linkedin?: string; twitter?: string; github?: string };
@@ -99,6 +100,25 @@ export const TEAM: TeamMember[] = [
         period: "LamportPay",
         title: "Advisor — Technology & AI",
         detail: "Advises on AI architecture, technical strategy and platform infrastructure.",
+      },
+    ],
+    socials: {},
+  },
+  {
+    slug: "greg-mirt",
+    name: "Greg Mirt",
+    role: "Advisor",
+    category: "Advisors",
+    photo: gregMirt.url,
+    summary:
+      "Physiotherapist based in Ljubljana, Slovenia, with over five years of experience in musculoskeletal care, sports injuries and evidence-based rehabilitation.",
+    focus: ["Physiotherapy", "Musculoskeletal care", "Sports injury rehabilitation", "Evidence-based recovery", "Patient communication"],
+    history: [
+      {
+        period: "Professional background · Ljubljana, Slovenia",
+        title: "Physiotherapist · M.A.",
+        detail:
+          "Over five years of experience treating musculoskeletal conditions, including back, neck, shoulder and joint pain, as well as sports injuries. Uses a holistic, evidence-based approach to rehabilitation, tailored to each patient's needs. Communicates in English, Slovene and Italian.",
       },
     ],
     socials: {},
