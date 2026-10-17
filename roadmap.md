@@ -1,3 +1,8 @@
+## Greg Mirt team profile
+
+- [x] Add Greg as Advisor with a matching portrait and screenshot-sourced skills
+- [x] Verify his team card, advisor filter and full profile at 1280px and 390px; hosted portrait returns image/jpeg, no overflow or browser errors, latest build OK. Local browser image check uses the hosted image because localhost does not serve the asset gateway.
+
 ## Reference-style connected infographic
 
 - [x] Replace the logo stations with grouped asset cards, routing, liquidity, raised KYC branch and connected settlement/payout stages
