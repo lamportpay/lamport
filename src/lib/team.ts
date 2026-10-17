@@ -107,20 +107,20 @@ export const TEAM: TeamMember[] = [
   {
     slug: "greg-mirt",
     name: "Greg Mirt",
-    role: "Advisor",
+    role: "Advisor — Team Wellbeing & Performance",
     category: "Advisors",
     photo: gregMirt.url,
     summary:
-      "Physiotherapist based in Ljubljana, Slovenia, with over five years of experience in musculoskeletal care, sports injuries and evidence-based rehabilitation.",
-    focus: ["Physiotherapy", "Musculoskeletal care", "Sports injury rehabilitation", "Evidence-based recovery", "Patient communication"],
-    history: [
-      {
-        period: "Professional background · Ljubljana, Slovenia",
-        title: "Physiotherapist · M.A.",
-        detail:
-          "Over five years of experience treating musculoskeletal conditions, including back, neck, shoulder and joint pain, as well as sports injuries. Uses a holistic, evidence-based approach to rehabilitation, tailored to each patient's needs. Communicates in English, Slovene and Italian.",
-      },
+      "Physiotherapy-trained advisor supporting team wellbeing, mental health, stress management and sustainable performance within a fast-paced startup environment.",
+    focus: [
+      "Team Wellbeing",
+      "Mental Health",
+      "Stress Management",
+      "Performance & Resilience",
+      "Healthy Work Culture",
     ],
+    history: [],
+
     socials: {},
   },
   {
