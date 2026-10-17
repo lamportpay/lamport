@@ -1,4 +1,10 @@
+## Greg Mirt profile wording
+
+- [x] Replace his role, description and focus areas with the owner's supplied card text; remove the previous physiotherapy-practice description
+- [ ] Verify his team card, advisor filter and full profile panel on desktop and phone
+
 ## Greg Mirt team profile
+
 
 - [x] Add Greg as Advisor with a matching portrait and screenshot-sourced skills
 - [x] Verify his team card, advisor filter and full profile at 1280px and 390px; hosted portrait returns image/jpeg, no overflow or browser errors, latest build OK. Local browser image check uses the hosted image because localhost does not serve the asset gateway.
