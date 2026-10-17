@@ -66,7 +66,7 @@
 - [x] Keep Nigeria and Pakistan as planned markets in amber, show other countries by name only, and remove the green ticks from the map
 - [x] Replace the country row under the banner with one compact card: crypto in (SOL, USDC) to local money out as currency symbols
 - [x] Verify a country click zooms correctly with no page errors and no horizontal overflow at phone and desktop sizes
-- [ ] Automatic checks on the newest commit: that run stopped at install because the lock file was only updated by the follow-up sync commit; a clean install from the current lock file plus lint and 524 unit tests now pass locally, so this push re-runs every check on the current copy
+- [ ] Automatic checks on the newest commit: the run reached lint and stopped there — a pre-existing type problem in the Ask AI chat admin file (an `any` the lint rules reject) fails it on every recent commit. Fixed in that file (typed like the other admin files) and lint, type checks and all 509 unit tests pass locally; the fix reaches GitHub on the next sync, which re-runs every check on the current copy.
 
 
 ## Manual homepage content navigation
