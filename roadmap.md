@@ -1,3 +1,8 @@
+## Greg Mirt team profile
+
+- [ ] Add Greg as Advisor with a matching portrait and screenshot-sourced skills
+- [ ] Verify his team card, advisor filter and full profile on desktop and phone
+
 ## Reference-style connected infographic
 
 - [x] Replace the logo stations with grouped asset cards, routing, liquidity, raised KYC branch and connected settlement/payout stages
