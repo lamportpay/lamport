@@ -52,6 +52,25 @@ export const TEAM: TeamMember[] = [
     socials: {},
   },
   {
+    slug: "ghazanfar-abbas",
+    name: "Ghazanfar Abbas",
+    role: "CTO & Lead Developer",
+    category: "Engineering",
+    photo: ghazanfarAbbas,
+    summary:
+      "Product engineering · Web3 · Solana · full-stack development. Built the LamportPay payment engine.",
+    focus: ["Solana & Web3", "Payment engine", "Full-stack development"],
+    history: [
+      {
+        period: "LamportPay",
+        title: "CTO & Lead Developer",
+        detail:
+          "Built the LamportPay payment engine, wallet sign-in and the partner payout integration.",
+      },
+    ],
+    socials: {},
+  },
+  {
     slug: "zaheer-muneer",
     name: "Zaheer Muneer",
     role: "Advisor",
@@ -69,20 +88,19 @@ export const TEAM: TeamMember[] = [
     socials: {},
   },
   {
-    slug: "ghazanfar-abbas",
-    name: "Ghazanfar Abbas",
-    role: "CTO & Lead Developer",
-    category: "Engineering",
-    photo: ghazanfarAbbas,
-    summary:
-      "Product engineering · Web3 · Solana · full-stack development. Built the LamportPay payment engine.",
-    focus: ["Solana & Web3", "Payment engine", "Full-stack development"],
+    slug: "izzat",
+    name: "Izzat",
+    role: "Marketing & Community",
+    category: "Growth & Community",
+    photo: izzat,
+    summary: "Community growth, ambassador programme and ecosystem outreach.",
+    focus: ["Community growth", "Ambassador programme", "Ecosystem outreach"],
     history: [
       {
         period: "LamportPay",
-        title: "CTO & Lead Developer",
+        title: "Marketing & Community",
         detail:
-          "Built the LamportPay payment engine, wallet sign-in and the partner payout integration.",
+          "Runs community growth, the ambassador programme and outreach across the ecosystem.",
       },
     ],
     socials: {},
@@ -121,24 +139,6 @@ export const TEAM: TeamMember[] = [
     ],
     history: [],
 
-    socials: {},
-  },
-  {
-    slug: "izzat",
-    name: "Izzat",
-    role: "Marketing & Community",
-    category: "Growth & Community",
-    photo: izzat,
-    summary: "Community growth, ambassador programme and ecosystem outreach.",
-    focus: ["Community growth", "Ambassador programme", "Ecosystem outreach"],
-    history: [
-      {
-        period: "LamportPay",
-        title: "Marketing & Community",
-        detail:
-          "Runs community growth, the ambassador programme and outreach across the ecosystem.",
-      },
-    ],
     socials: {},
   },
 ];
