@@ -1,7 +1,7 @@
 ## Greg Mirt profile wording
 
 - [x] Replace his role, description and focus areas with the owner's supplied card text; remove the previous physiotherapy-practice description
-- [ ] Verify his team card, advisor filter and full profile panel on desktop and phone
+- [x] Verify his team card, advisor filter and full profile panel on desktop and phone: role, new description and all five focus pills present, no Experience section, none of the old wording; other advisors' Experience sections still render; build OK
 
 ## Greg Mirt team profile
 
