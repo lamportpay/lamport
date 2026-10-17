@@ -71,23 +71,6 @@ export const TEAM: TeamMember[] = [
     socials: {},
   },
   {
-    slug: "zaheer-muneer",
-    name: "Zaheer Muneer",
-    role: "Advisor",
-    category: "Advisors",
-    photo: zaheerMuneer,
-    summary: "Strategic guidance, growth scaling and institutional partnerships.",
-    focus: ["Strategic guidance", "Growth scaling", "Institutional partnerships"],
-    history: [
-      {
-        period: "LamportPay",
-        title: "Advisor",
-        detail: "Advises on strategy, scaling growth and institutional partnerships.",
-      },
-    ],
-    socials: {},
-  },
-  {
     slug: "izzat",
     name: "Izzat",
     role: "Marketing & Community",
@@ -101,6 +84,23 @@ export const TEAM: TeamMember[] = [
         title: "Marketing & Community",
         detail:
           "Runs community growth, the ambassador programme and outreach across the ecosystem.",
+      },
+    ],
+    socials: {},
+  },
+  {
+    slug: "zaheer-muneer",
+    name: "Zaheer Muneer",
+    role: "Advisor",
+    category: "Advisors",
+    photo: zaheerMuneer,
+    summary: "Strategic guidance, growth scaling and institutional partnerships.",
+    focus: ["Strategic guidance", "Growth scaling", "Institutional partnerships"],
+    history: [
+      {
+        period: "LamportPay",
+        title: "Advisor",
+        detail: "Advises on strategy, scaling growth and institutional partnerships.",
       },
     ],
     socials: {},

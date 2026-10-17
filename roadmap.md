@@ -1,3 +1,8 @@
+## Team card order
+
+- [x] Show the People page cards in the owner's order: Zoaib Ali, Ghazanfar Abbas, Izzat, Zaheer Muneer, Safi Ullah Adam, Greg Mirt
+- [x] Verify the card order at 1280px, 871px and 390px; build OK
+
 ## Greg Mirt profile wording
 
 - [x] Replace his role, description and focus areas with the owner's supplied card text; remove the previous physiotherapy-practice description
