@@ -1,3 +1,10 @@
+## Publish this batch live
+
+- [x] Publish so the People page order and "Izzat Iftikhar", the How it works comparison section and the one-complaint-per-chat fix go live (owner, 19 Oct 2026)
+- [x] Verify on lamportpay.com: card order Zoaib Ali, Ghazanfar Abbas, Izzat Iftikhar, Zaheer Muneer, Safi Ullah Adam, Greg Mirt; comparison section present on /how-it-works and the homepage; live chat code saves every reply under one conversation id (fresh id only on "New chat")
+- [ ] Confirm this batch is in the company GitHub repository (git state is managed outside this editor; nothing was pushed from here)
+
+
 ## Team member full name
 
 - [x] Show the marketing & community member as "Izzat Iftikhar" on the People page (owner, 19 Oct 2026)
