@@ -2349,3 +2349,11 @@ body.has-cookie-banner .site-footer-legal {
  .maf-failed .flex { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) { .maf-diagram .maf-wire-route, .maf-diagram .maf-kyc-pass { animation: none !important; } }
+
+.difference-lp {
+  background: linear-gradient(120deg, color-mix(in oklab, var(--home-brand, var(--primary)) 7%, transparent), color-mix(in oklab, var(--primary) 4%, transparent), color-mix(in oklab, var(--home-brand, var(--primary)) 9%, transparent));
+  background-size: 200% 200%;
+  animation: difference-shift 12s ease-in-out infinite;
+}
+@keyframes difference-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@media (prefers-reduced-motion: reduce) { .difference-lp { animation: none; } }
