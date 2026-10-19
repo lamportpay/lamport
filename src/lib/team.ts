@@ -71,8 +71,8 @@ export const TEAM: TeamMember[] = [
     socials: {},
   },
   {
-    slug: "izzat",
-    name: "Izzat",
+    slug: "izzat-iftikhar",
+    name: "Izzat Iftikhar",
     role: "Marketing & Community",
     category: "Growth & Community",
     photo: izzat,

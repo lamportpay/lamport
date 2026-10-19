@@ -1,4 +1,11 @@
+## Team member full name
+
+- [x] Show the marketing & community member as "Izzat Iftikhar" on the People page (owner, 19 Oct 2026)
+- [x] Verify the card and open profile show the full name at desktop and phone widths
+
+
 ## Team card order
+
 
 - [x] Show the People page cards in the owner's order: Zoaib Ali, Ghazanfar Abbas, Izzat, Zaheer Muneer, Safi Ullah Adam, Greg Mirt
 - [x] Verify the card order at 1280px, 871px and 390px; build OK
