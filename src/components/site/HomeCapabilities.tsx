@@ -192,15 +192,25 @@ export function HomeCapabilities() {
 
         <div className="home-cap-details">
           <div className="home-cap-routes" aria-label="Conversion routes">
-            <p><span className="home-cap-label">Conversion routes</span></p>
-            <p>Solana / SPL assets → <strong>Jupiter</strong> → USDC <span className="home-cap-status home-cap-status--live">Live</span></p>
-            <p>Major digital assets → <strong>Hyperliquid</strong> → USDC <span className="home-cap-status home-cap-status--planned">In progress</span></p>
-            <p className="text-muted-foreground">BTC, ETH, USDT and other major-asset routes are in development, not enabled for deposits.</p>
+            <p className="home-cap-routes-title"><span className="home-cap-label">Conversion routes</span></p>
+            <div className="home-cap-route-row">
+              <span className="home-cap-route-text">Solana / SPL assets → <strong>Jupiter</strong> → USDC</span>
+              <span className="home-cap-status home-cap-status--live">Live</span>
+            </div>
+            <div className="home-cap-route-row">
+              <span className="home-cap-route-text">Major digital assets → <strong>Hyperliquid</strong> → USDC</span>
+              <span className="home-cap-status home-cap-status--planned">In progress</span>
+            </div>
+            <p className="home-cap-routes-note">BTC, ETH, USDT and other major-asset routes are in development, not enabled for deposits.</p>
           </div>
         </div>
 
         <p className="home-cap-note">
-          Live means the step works today. Sandbox means it runs in a test environment, where no real money moves. In progress means it is not finished.
+          <span>Live means the step works today</span>
+          <span className="home-cap-note-sep" aria-hidden="true">·</span>
+          <span>Sandbox means it runs in a test environment, where no real money moves</span>
+          <span className="home-cap-note-sep" aria-hidden="true">·</span>
+          <span>In progress means it is not finished</span>
         </p>
       </div>
     </section>
