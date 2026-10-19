@@ -11,10 +11,10 @@ import { MultiAssetFlow } from "@/components/site/MultiAssetFlow";
 import { SupportedCorridors } from "@/components/site/SupportedCorridors";
 import { HomeLatestNews } from "@/components/site/HomeLatestNews";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
-  import { HeroRibbon } from "@/components/site/HeroRibbon";
-  import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
-  import payoutNetworkAsset from "@/assets/global-payout-network.png.asset.json";
-  import { pageSeo } from "@/lib/seo";
+import { HeroRibbon } from "@/components/site/HeroRibbon";
+import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
+import payoutNetworkAsset from "@/assets/global-payout-network.png.asset.json";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () =>
