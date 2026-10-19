@@ -1,7 +1,8 @@
 ## Team member full name
 
-- [ ] Show the marketing & community member as "Izzat Iftikhar" on the People page (owner, 19 Oct 2026)
-- [ ] Verify the card and open profile show the full name at desktop and phone widths
+- [x] Show the marketing & community member as "Izzat Iftikhar" on the People page (owner, 19 Oct 2026)
+- [x] Verify the card and open profile show the full name at desktop and phone widths
+
 
 ## Team card order
 
