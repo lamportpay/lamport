@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
+import { HomeDifference } from "@/components/site/HomeDifference";
 import { PAYMENT_JOURNEY, PAYMENT_COSTS } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
 import { ScrollJourney } from "@/components/site/ScrollJourney";
@@ -164,6 +165,8 @@ function HowItWorks() {
             DISABLED.
           </p>
         </section>
+
+        <HomeDifference />
       </main>
     </SiteLayout>
   );
