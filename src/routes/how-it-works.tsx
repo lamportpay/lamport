@@ -165,6 +165,8 @@ function HowItWorks() {
             DISABLED.
           </p>
         </section>
+
+        <HomeDifference />
       </main>
     </SiteLayout>
   );
