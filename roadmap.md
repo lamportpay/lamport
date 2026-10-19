@@ -1,3 +1,9 @@
+## Publish hero artwork, fee row and comparison live
+
+- [x] Publish so the hero payout-network artwork, the "One 2% fee" step in the capability row and the How it works comparison go live on lamportpay.com (owner, 19 Oct 2026)
+- [x] Verify on lamportpay.com and lamportpay.lovable.app: hero artwork loads at full resolution (1024x1536); all eight capability steps share one horizontal line (same vertical centre) with "One 2% fee" last and Live, Identity check and Local currency payout still Sandbox; /how-it-works shows "The difference" and "The result" with eight table rows; no sideways scrolling, no browser errors
+- [ ] Confirm this batch is in the company GitHub repository (git state is managed outside this editor; nothing was pushed from here)
+
 ## Publish this batch live
 
 - [x] Publish so the People page order and "Izzat Iftikhar", the How it works comparison section and the one-complaint-per-chat fix go live (owner, 19 Oct 2026)
