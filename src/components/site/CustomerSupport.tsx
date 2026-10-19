@@ -39,6 +39,8 @@ function ChatBody() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const timer = useRef<number | null>(null);
   const [busy, setBusy] = useState(false);
+  // One id per conversation (memory only) so repeat saves update the same complaint row.
+  const chatId = useRef<string>(crypto.randomUUID());
 
   useEffect(() => () => {
     if (timer.current) window.clearInterval(timer.current);
@@ -53,7 +55,7 @@ function ChatBody() {
     fetch("/api/ask-ai", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ sessionId: crypto.randomUUID(), messages: next.map(({ role, text }) => ({ role, text })) }),
+      body: JSON.stringify({ sessionId: chatId.current, messages: next.map(({ role, text }) => ({ role, text })) }),
     }).catch(() => {});
   }
 
@@ -98,6 +100,7 @@ function ChatBody() {
     setBusy(false);
     setTyping(false);
     setMessages([]);
+    chatId.current = crypto.randomUUID();
     inputRef.current?.focus();
   }
 
