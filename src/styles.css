@@ -970,7 +970,7 @@
     mask-image: none;
     padding: 0;
     gap: 18px 10px;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(8, minmax(0, 1fr));
   }
   .home-cap-item {
     width: auto;
@@ -979,7 +979,7 @@
 }
 @media (min-width: 1024px) {
   .home-cap-grid {
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-columns: repeat(8, minmax(0, 1fr));
     gap: 12px 6px;
   }
   .home-cap-hex {
@@ -2438,3 +2438,23 @@ body.has-cookie-banner .site-footer-legal {
 }
 @keyframes difference-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 @media (prefers-reduced-motion: reduce) { .difference-lp { animation: none; } }
+
+/* Capability row: one straight line (fee included) with a travelling glow. */
+.home-cap-grid { position: relative; }
+@media (min-width: 700px) {
+  .home-cap-grid::before {
+    content: ""; position: absolute; left: 6%; right: 6%; top: 27px; height: 2px; z-index: 0;
+    background: linear-gradient(90deg, transparent, oklch(0.6 0.15 275 / 35%), transparent);
+    background-size: 40% 100%; background-repeat: no-repeat;
+  }
+  .home-cap-item { position: relative; z-index: 1; }
+}
+.home-cap-item--fee .home-cap-hex-shape { fill: oklch(0.95 0.04 275 / 90%); }
+@media (prefers-reduced-motion: no-preference) {
+  .home-cap-grid::before { animation: home-cap-sweep 4.5s linear infinite; }
+  .home-cap-item { animation: home-cap-rise 0.6s ease backwards; animation-delay: calc(var(--cap-i, 0) * 90ms); }
+  .home-cap-hex-shape { animation: home-cap-pulse 4.5s ease-in-out infinite; animation-delay: calc(var(--cap-i, 0) * 0.55s); }
+}
+@keyframes home-cap-sweep { from { background-position: -60% 0; } to { background-position: 160% 0; } }
+@keyframes home-cap-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes home-cap-pulse { 0%, 80%, 100% { filter: none; } 88% { filter: drop-shadow(0 0 6px oklch(0.6 0.16 275 / 55%)); } }

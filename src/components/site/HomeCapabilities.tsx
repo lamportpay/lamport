@@ -144,9 +144,9 @@ const STATUS_TEXT = {
   planned: "In progress",
 } as const;
 
-function CapabilityItem({ item }: { item: Capability }) {
+function CapabilityItem({ item, index = 0 }: { item: Capability; index?: number }) {
   return (
-    <li className="home-cap-item" title={item.title}>
+    <li className={`home-cap-item${item.key === "one-fee" ? " home-cap-item--fee" : ""}`} title={item.title} style={{ ["--cap-i" as string]: index }}>
       <svg aria-hidden="true" focusable="false" viewBox="0 0 64 72" className="home-cap-hex" fill="none" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="32,3 60,19 60,53 32,69 4,53 4,19" stroke={STROKE} strokeWidth="1.6" className="home-cap-hex-shape" />
         <g transform="translate(17.6 21.6) scale(1.2)" stroke={STROKE} strokeWidth="1.3">{item.icon}</g>
@@ -187,7 +187,7 @@ export function HomeCapabilities() {
         </div>
 
         <ul className="home-cap-grid" role="list" tabIndex={0} aria-label="What LamportPay does">
-          {CAPABILITIES.map((item) => <CapabilityItem key={item.key} item={item} />)}
+          {[...CAPABILITIES, FEE_FEATURE].map((item, i) => <CapabilityItem key={item.key} item={item} index={i} />)}
         </ul>
 
         <div className="home-cap-details">
@@ -197,7 +197,6 @@ export function HomeCapabilities() {
             <p>Major digital assets → <strong>Hyperliquid</strong> → USDC <span className="home-cap-status home-cap-status--planned">In progress</span></p>
             <p className="text-muted-foreground">BTC, ETH, USDT and other major-asset routes are in development, not enabled for deposits.</p>
           </div>
-          <ul className="home-cap-feature" aria-label="Product feature"><CapabilityItem item={FEE_FEATURE} /></ul>
         </div>
 
         <p className="home-cap-note">
