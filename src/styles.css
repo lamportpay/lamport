@@ -2452,7 +2452,7 @@ body.has-cookie-banner .site-footer-legal {
 .home-cap-item--fee .home-cap-hex-shape { fill: oklch(0.95 0.04 275 / 90%); }
 @media (prefers-reduced-motion: no-preference) {
   .home-cap-grid::before { animation: home-cap-sweep 4.5s linear infinite; }
-  .home-cap-item { animation: home-cap-rise 0.6s ease both; animation-delay: calc(var(--cap-i, 0) * 90ms); }
+  .home-cap-item { animation: home-cap-rise 0.6s ease backwards; animation-delay: calc(var(--cap-i, 0) * 90ms); }
   .home-cap-hex-shape { animation: home-cap-pulse 4.5s ease-in-out infinite; animation-delay: calc(var(--cap-i, 0) * 0.55s); }
 }
 @keyframes home-cap-sweep { from { background-position: -60% 0; } to { background-position: 160% 0; } }
