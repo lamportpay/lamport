@@ -917,12 +917,16 @@
   background: oklch(0.95 0.03 275 / 65%);
 }
 .home-cap-note {
-  max-width: 640px;
+  max-width: 720px;
   margin: 16px auto 0;
   font-size: 10px;
   line-height: 1.55;
   text-align: center;
+  text-wrap: balance;
   color: var(--home-connector);
+}
+.home-cap-note-sep {
+  margin: 0 7px;
 }
 .home-cap-details {
   display: flex;
