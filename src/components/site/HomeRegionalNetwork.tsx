@@ -6,6 +6,7 @@ import type { Topology, GeometryCollection } from "topojson-specification";
 import world from "world-atlas/countries-110m.json";
 import { ArrowLeftRight, Database, Globe2, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import lamportMark from "@/assets/lamportpay-mark.png";
 
 /**
  * Regional expansion strategy. Regions are NOT partners: Stables (sandbox) is the
@@ -18,12 +19,12 @@ const path = geoPath(projection);
 
 const HUB: [number, number] = [45, 28];
 const REGIONS = [
-  { name: "North America", lon: -100, lat: 42, pos: "left-[3%] top-[14%]" },
-  { name: "Europe", lon: 12, lat: 52, pos: "left-[40%] top-[4%]" },
-  { name: "Asia", lon: 95, lat: 35, pos: "right-[3%] top-[22%]" },
-  { name: "South America", lon: -60, lat: -15, pos: "left-[6%] bottom-[12%]" },
-  { name: "Africa", lon: 20, lat: 3, pos: "left-[42%] bottom-[6%]" },
-  { name: "Oceania", lon: 135, lat: -25, pos: "right-[3%] bottom-[10%]" },
+  { name: "North America", cur: "USD", lon: -100, lat: 42, pos: "left-[3%] top-[14%]" },
+  { name: "Europe", cur: "EUR", lon: 12, lat: 52, pos: "left-[40%] top-[4%]" },
+  { name: "Asia", cur: "INR", lon: 95, lat: 35, pos: "right-[3%] top-[22%]" },
+  { name: "South America", cur: "BRL", lon: -60, lat: -15, pos: "left-[6%] bottom-[12%]" },
+  { name: "Africa", cur: "NGN", lon: 20, lat: 3, pos: "left-[42%] bottom-[6%]" },
+  { name: "Oceania", cur: "AUD", lon: 135, lat: -25, pos: "right-[3%] bottom-[10%]" },
 ];
 
 const FACTORS = [
@@ -83,32 +84,48 @@ export function HomeRegionalNetwork() {
         </p>
 
         <div className={cn("rn-map relative mx-auto mt-8 max-w-5xl overflow-hidden rounded-2xl border border-border", rv)} style={delay(2)}>
-          <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label="World map showing LamportPay's planned regional payout expansion">
+          <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label="World map: USDC routed by LamportPay toward local currencies in six expansion regions">
             <defs>
               <linearGradient id="rn-grad" x1="0" x2="1">
-                <stop offset="0%" stopColor="var(--home-brand)" />
-                <stop offset="100%" stopColor="var(--primary)" />
+                <stop offset="0%" stopColor="var(--rn-glow-a)" />
+                <stop offset="100%" stopColor="var(--rn-glow-b)" />
               </linearGradient>
+              <pattern id="rn-dots" width="6" height="6" patternUnits="userSpaceOnUse">
+                <circle cx="3" cy="3" r="1.3" className="rn-dot" />
+              </pattern>
+              <mask id="rn-land-mask"><path d={land} fill="#fff" /></mask>
+              <filter id="rn-blur"><feGaussianBlur stdDeviation="3" /></filter>
             </defs>
-            <path d={land} className="rn-land" />
+            <rect width={W} height={H} fill="url(#rn-dots)" mask="url(#rn-land-mask)" />
             {routes.map((r, i) => (
               <g key={r.name}>
-                <path id={`rn-route-${i}`} d={r.d} className="rn-route" stroke="url(#rn-grad)" style={{ animationDelay: `${i * 0.6}s` }} />
-                <circle r={4} className="rn-spark">
-                  <animateMotion dur={`${6 + i}s`} begin={`${i * 0.8}s`} repeatCount="indefinite" rotate="auto">
+                <path d={r.d} className="rn-route-glow" stroke="url(#rn-grad)" filter="url(#rn-blur)" />
+                <path id={`rn-route-${i}`} d={r.d} className="rn-route" stroke="url(#rn-grad)" />
+                <circle cx={r.pt[0]} cy={r.pt[1]} r={9} className="rn-node-halo" />
+                <circle cx={r.pt[0]} cy={r.pt[1]} r={4.5} className="rn-node" />
+                <g className="rn-token">
+                  <animateMotion dur="5s" begin={`${i * 0.8}s`} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1">
                     <mpath href={`#rn-route-${i}`} />
                   </animateMotion>
-                </circle>
-                <circle cx={r.pt[0]} cy={r.pt[1]} r={6} className="rn-node" />
+                  <rect x={-21} y={-10} width={42} height={20} rx={10} className="rn-chip" />
+                  <text y={4} textAnchor="middle" className="rn-chip-text">USDC
+                    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.55;1" dur="5s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
+                  </text>
+                  <text y={4} textAnchor="middle" className="rn-chip-text rn-chip-local" opacity={0}>{r.cur}
+                    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.5;0.55;1" dur="5s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
+                  </text>
+                </g>
               </g>
             ))}
-            <circle cx={hub[0]} cy={hub[1]} r={22} className="rn-hub-glow" />
-            <circle cx={hub[0]} cy={hub[1]} r={11} className="rn-hub" />
+            <circle cx={hub[0]} cy={hub[1]} r={34} className="rn-hub-glow" />
+            <circle cx={hub[0]} cy={hub[1]} r={22} className="rn-hub" />
+            <image href={lamportMark} x={hub[0] - 14} y={hub[1] - 14} width={28} height={28} />
+            <text x={hub[0]} y={hub[1] + 40} textAnchor="middle" className="rn-hub-label">LamportPay</text>
           </svg>
           {REGIONS.map((r) => (
-            <div key={r.name} className={cn("absolute hidden rounded-xl border border-border bg-card/95 px-3 py-2 shadow-sm backdrop-blur md:block", r.pos)}>
-              <p className="text-sm font-semibold text-foreground">{r.name}</p>
-              <p className="text-xs text-muted-foreground">Partner expansion</p>
+            <div key={r.name} className={cn("rn-card absolute hidden rounded-xl px-3 py-2 md:block", r.pos)}>
+              <p className="text-sm font-semibold">{r.name}</p>
+              <p className="text-xs opacity-75">USDC → {r.cur} · Partner expansion</p>
             </div>
           ))}
         </div>
@@ -116,7 +133,7 @@ export function HomeRegionalNetwork() {
           {REGIONS.map((r) => (
             <div key={r.name} className="rounded-xl border border-border bg-card px-3 py-2">
               <p className="text-sm font-semibold text-foreground">{r.name}</p>
-              <p className="text-xs text-muted-foreground">Partner expansion</p>
+              <p className="text-xs text-muted-foreground">USDC → {r.cur} · Partner expansion</p>
             </div>
           ))}
         </div>
