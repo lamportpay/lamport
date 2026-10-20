@@ -19,12 +19,12 @@ const path = geoPath(projection);
 
 const HUB: [number, number] = [45, 28];
 const REGIONS = [
-  { name: "North America", cur: "USD", lon: -100, lat: 42, pos: "left-[3%] top-[14%]" },
-  { name: "Europe", cur: "EUR", lon: 12, lat: 52, pos: "left-[40%] top-[4%]" },
-  { name: "Asia", cur: "INR", lon: 95, lat: 35, pos: "right-[3%] top-[22%]" },
-  { name: "South America", cur: "BRL", lon: -60, lat: -15, pos: "left-[6%] bottom-[12%]" },
-  { name: "Africa", cur: "NGN", lon: 20, lat: 3, pos: "left-[42%] bottom-[6%]" },
-  { name: "Oceania", cur: "AUD", lon: 135, lat: -25, pos: "right-[3%] bottom-[10%]" },
+  { name: "North America", currencies: ["USD", "CAD", "MXN"], lon: -100, lat: 42, pos: "left-[3%] top-[14%]" },
+  { name: "Europe", currencies: ["EUR", "GBP", "CHF", "PLN"], lon: 12, lat: 52, pos: "left-[40%] top-[4%]" },
+  { name: "Asia", currencies: ["INR", "PKR", "PHP", "JPY"], lon: 95, lat: 35, pos: "right-[3%] top-[22%]" },
+  { name: "South America", currencies: ["BRL", "ARS", "CLP", "COP"], lon: -60, lat: -15, pos: "left-[6%] bottom-[12%]" },
+  { name: "Africa", currencies: ["NGN", "ZAR", "KES", "GHS"], lon: 20, lat: 3, pos: "left-[42%] bottom-[6%]" },
+  { name: "Oceania", currencies: ["AUD", "NZD", "FJD", "PGK"], lon: 135, lat: -25, pos: "right-[3%] bottom-[10%]" },
 ];
 
 const FACTORS = [
@@ -43,6 +43,22 @@ function arc(a: [number, number], b: [number, number]) {
 export function HomeRegionalNetwork() {
   const ref = useRef<HTMLElement>(null);
   const [seen, setSeen] = useState(false);
+  const [currencyCycle, setCurrencyCycle] = useState(0);
+  useEffect(() => {
+    if (!seen) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let timer: ReturnType<typeof setInterval> | undefined;
+    const sync = () => {
+      if (timer !== undefined) clearInterval(timer);
+      if (!reducedMotion.matches) timer = setInterval(() => setCurrencyCycle((cycle) => cycle + 1), 5000);
+    };
+    sync();
+    reducedMotion.addEventListener("change", sync);
+    return () => {
+      if (timer !== undefined) clearInterval(timer);
+      reducedMotion.removeEventListener("change", sync);
+    };
+  }, [seen]);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -57,8 +73,11 @@ export function HomeRegionalNetwork() {
     const fc = feature(topo, topo.objects.countries) as unknown as FeatureCollection<Geometry, { name: string }>;
     return fc.features.filter((f) => f.properties?.name !== "Antarctica").map((f) => path(f) ?? "").join("");
   }, []);
-  const hub = projection(HUB)!;
-  const routes = REGIONS.map((r) => ({ ...r, pt: projection([r.lon, r.lat])!, d: arc(hub as [number, number], projection([r.lon, r.lat]) as [number, number]) }));
+  const hub = projection(HUB) ?? [W / 2, H / 2];
+  const routes = REGIONS.map((r) => {
+    const pt = projection([r.lon, r.lat]) ?? [W / 2, H / 2];
+    return { ...r, pt, d: arc(hub as [number, number], pt as [number, number]) };
+  });
   const rv = cn("rn-reveal", seen && "rn-in");
   const delay = (i: number) => ({ transitionDelay: `${i * 90}ms` });
 
@@ -111,7 +130,7 @@ export function HomeRegionalNetwork() {
                   <text y={4} textAnchor="middle" className="rn-chip-text">USDC
                     <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.55;1" dur="5s" begin={`-${i * 0.8}s`} repeatCount="indefinite" />
                   </text>
-                  <text y={4} textAnchor="middle" className="rn-chip-text rn-chip-local" opacity={0}>{r.cur}
+                  <text y={4} textAnchor="middle" className="rn-chip-text rn-chip-local" opacity={0}>{r.currencies[(currencyCycle + i) % r.currencies.length]}
                     <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.5;0.55;1" dur="5s" begin={`-${i * 0.8}s`} repeatCount="indefinite" />
                   </text>
                 </g>
@@ -125,7 +144,9 @@ export function HomeRegionalNetwork() {
           {REGIONS.map((r) => (
             <div key={r.name} className={cn("rn-card absolute hidden rounded-xl px-3 py-2 md:block", r.pos)}>
               <p className="text-sm font-semibold">{r.name}</p>
-              <p className="text-xs opacity-75">USDC → {r.cur} · Partner expansion</p>
+              <p className="text-xs opacity-75">USDC → Local currencies</p>
+              <p className="mt-1 text-[11px] opacity-75">{r.currencies.join(" · ")}</p>
+              <p className="mt-1 text-[10px] font-semibold text-primary">PLANNED · Partner expansion</p>
             </div>
           ))}
         </div>
@@ -133,10 +154,16 @@ export function HomeRegionalNetwork() {
           {REGIONS.map((r) => (
             <div key={r.name} className="rounded-xl border border-border bg-card px-3 py-2">
               <p className="text-sm font-semibold text-foreground">{r.name}</p>
-              <p className="text-xs text-muted-foreground">USDC → {r.cur} · Partner expansion</p>
+              <p className="text-xs text-muted-foreground">USDC → Local currencies</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">{r.currencies.join(" · ")}</p>
+              <p className="mt-1 text-[10px] font-semibold text-primary">PLANNED · Partner expansion</p>
             </div>
           ))}
         </div>
+
+        <p className="mx-auto mt-4 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">
+          Currency examples, not a complete list. Region-wide coverage is our expansion goal; availability depends on each partner and corridor. Current bank payouts remain sandbox-only.
+        </p>
 
         <div className={cn("mt-14 text-center", rv)} style={delay(3)}>
           <h3 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Built around the best available route.</h3>
