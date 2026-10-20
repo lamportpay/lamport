@@ -104,15 +104,15 @@ export function HomeRegionalNetwork() {
                 <circle cx={r.pt[0]} cy={r.pt[1]} r={9} className="rn-node-halo" />
                 <circle cx={r.pt[0]} cy={r.pt[1]} r={4.5} className="rn-node" />
                 <g className="rn-token">
-                  <animateMotion dur="5s" begin={`${i * 0.8}s`} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1">
+                  <animateMotion dur="5s" begin={`-${i * 0.8}s`} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1">
                     <mpath href={`#rn-route-${i}`} />
                   </animateMotion>
                   <rect x={-21} y={-10} width={42} height={20} rx={10} className="rn-chip" />
                   <text y={4} textAnchor="middle" className="rn-chip-text">USDC
-                    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.55;1" dur="5s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.55;1" dur="5s" begin={`-${i * 0.8}s`} repeatCount="indefinite" />
                   </text>
                   <text y={4} textAnchor="middle" className="rn-chip-text rn-chip-local" opacity={0}>{r.cur}
-                    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.5;0.55;1" dur="5s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.5;0.55;1" dur="5s" begin={`-${i * 0.8}s`} repeatCount="indefinite" />
                   </text>
                 </g>
               </g>
