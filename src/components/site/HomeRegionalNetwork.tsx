@@ -16,7 +16,7 @@ const H = 500;
 const projection = geoEquirectangular().scale(W / (2 * Math.PI)).translate([W / 2, H / 2]);
 const path = geoPath(projection);
 
-const HUB: [number, number] = [20, 30];
+const HUB: [number, number] = [45, 28];
 const REGIONS = [
   { name: "North America", lon: -100, lat: 42, pos: "left-[3%] top-[14%]" },
   { name: "Europe", lon: 12, lat: 52, pos: "left-[40%] top-[4%]" },
@@ -58,12 +58,13 @@ export function HomeRegionalNetwork() {
   }, []);
   const hub = projection(HUB)!;
   const routes = REGIONS.map((r) => ({ ...r, pt: projection([r.lon, r.lat])!, d: arc(hub as [number, number], projection([r.lon, r.lat]) as [number, number]) }));
-  const reveal = (i: number) => ({ className: cn("rn-reveal", seen && "rn-in"), style: { transitionDelay: `${i * 90}ms` } });
+  const rv = cn("rn-reveal", seen && "rn-in");
+  const delay = (i: number) => ({ transitionDelay: `${i * 90}ms` });
 
   return (
     <section ref={ref} className="home-section border-t border-border" id="regional-network" style={{ overflowX: "clip" }}>
       <div className="home-container">
-        <div className="mx-auto max-w-3xl text-center" {...reveal(0)}>
+        <div className={cn("mx-auto max-w-3xl text-center", rv)} style={delay(0)}>
           <p className="home-eyebrow">Regional expertise. Global reach.</p>
           <h2 className="home-heading">One global network, built corridor by corridor.</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base">
@@ -72,7 +73,7 @@ export function HomeRegionalNetwork() {
           </p>
         </div>
 
-        <p className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs font-semibold text-muted-foreground" {...reveal(1)}>
+        <p className={cn("mt-6 flex flex-wrap items-center justify-center gap-2 text-xs font-semibold text-muted-foreground", rv)} style={delay(1)}>
           {["LamportPay", "Smart Routing", "Regional Infrastructure", "Local Payout"].map((s, i) => (
             <span key={s} className="flex items-center gap-2">
               {i > 0 && <span aria-hidden="true" className="text-primary">→</span>}
@@ -81,7 +82,7 @@ export function HomeRegionalNetwork() {
           ))}
         </p>
 
-        <div className="rn-map relative mx-auto mt-8 max-w-5xl overflow-hidden rounded-2xl border border-border" {...reveal(2)}>
+        <div className={cn("rn-map relative mx-auto mt-8 max-w-5xl overflow-hidden rounded-2xl border border-border", rv)} style={delay(2)}>
           <svg viewBox={`0 0 ${W} ${H}`} className="block h-auto w-full" role="img" aria-label="World map showing LamportPay's planned regional payout expansion">
             <defs>
               <linearGradient id="rn-grad" x1="0" x2="1">
@@ -120,12 +121,12 @@ export function HomeRegionalNetwork() {
           ))}
         </div>
 
-        <div className="mt-14 text-center" {...reveal(3)}>
+        <div className={cn("mt-14 text-center", rv)} style={delay(3)}>
           <h3 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">Built around the best available route.</h3>
         </div>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {FACTORS.map((f, i) => (
-            <div key={f.n} {...reveal(4 + i)} className={cn("rn-reveal rounded-2xl border border-border bg-card p-5 shadow-sm", seen && "rn-in")}>
+            <div key={f.n} style={delay(4 + i)} className={cn("rounded-2xl border border-border bg-card p-5 shadow-sm", rv)}>
               <div className="flex items-center gap-3">
                 <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">{f.n}</span>
                 <f.icon className="size-5 text-primary" />
