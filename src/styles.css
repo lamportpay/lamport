@@ -2495,19 +2495,28 @@ body.has-cookie-banner .site-footer-legal {
 /* Regional network section */
 .rn-reveal { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
 .rn-reveal.rn-in { opacity: 1; transform: none; }
-.rn-map { --rn-glow-a: oklch(0.72 0.19 250); --rn-glow-b: oklch(0.68 0.22 295); background: radial-gradient(ellipse at 50% 40%, oklch(0.26 0.09 265), oklch(0.15 0.05 265)); border-color: oklch(0.35 0.08 265); }
-.rn-dot { fill: oklch(0.62 0.15 255); opacity: .55; }
+.rn-map { --rn-glow-a: var(--home-cap-stroke-a); --rn-glow-b: var(--home-cap-stroke-b); background: radial-gradient(ellipse at 50% 40%, color-mix(in oklab, var(--home-brand) 7%, var(--home-surface)), var(--home-surface)); }
+.rn-dot { fill: color-mix(in oklab, var(--home-brand) 38%, transparent); opacity: .5; }
 .rn-route { fill: none; stroke-width: 2; stroke-linecap: round; stroke-dasharray: 6 8; animation: rn-dash 14s linear infinite; }
-.rn-route-glow { fill: none; stroke-width: 5; opacity: .45; }
-.rn-node { fill: oklch(0.95 0.03 250); }
+.rn-route-glow { fill: none; stroke-width: 5; opacity: .35; }
+.rn-node { fill: var(--home-brand); }
 .rn-node-halo { fill: var(--rn-glow-a); opacity: .35; transform-box: fill-box; transform-origin: center; animation: rn-pulse 3s ease-in-out infinite; }
-.rn-hub { fill: oklch(0.98 0.01 260); stroke: var(--rn-glow-b); stroke-width: 3; }
+.rn-hub { fill: var(--card); stroke: var(--rn-glow-b); stroke-width: 3; }
 .rn-hub-glow { fill: var(--rn-glow-b); opacity: .3; transform-box: fill-box; transform-origin: center; animation: rn-pulse 4s ease-in-out infinite; }
-.rn-hub-label { fill: oklch(0.97 0.01 260); font-size: 13px; font-weight: 700; }
-.rn-chip { fill: oklch(0.2 0.06 265); stroke: var(--rn-glow-a); stroke-width: 1.5; }
-.rn-chip-text { fill: oklch(0.97 0.01 260); font-size: 10px; font-weight: 800; letter-spacing: .03em; }
-.rn-chip-local { fill: oklch(0.85 0.15 160); }
-.rn-card { color: oklch(0.97 0.01 260); background: oklch(0.22 0.07 265 / .8); border: 1px solid oklch(0.6 0.15 260 / .5); box-shadow: 0 0 24px oklch(0.6 0.2 270 / .3); backdrop-filter: blur(6px); }
+.rn-hub-label { fill: var(--foreground); font-size: 13px; font-weight: 700; }
+.rn-chip { fill: var(--home-brand); stroke: color-mix(in oklab, var(--home-brand) 65%, transparent); stroke-width: 1.5; }
+.rn-chip-text { fill: var(--primary-foreground); font-size: 10px; font-weight: 800; letter-spacing: .03em; }
+.rn-chip-local { fill: var(--primary-foreground); }
+.rn-card { color: var(--foreground); background: color-mix(in oklab, var(--card) 85%, transparent); border: 1px solid var(--border); box-shadow: 0 6px 20px -12px color-mix(in oklab, var(--home-brand) 45%, transparent); backdrop-filter: blur(6px); }
+@media (max-width: 640px) {
+  .rn-route { stroke-width: 4; }
+  .rn-route-glow { stroke-width: 8; }
+  .rn-dot { r: 2; }
+  .rn-node { r: 7; }
+  .rn-node-halo { r: 14; }
+  .rn-chip { x: -30px; y: -14px; width: 60px; height: 28px; rx: 14px; }
+  .rn-chip-text { font-size: 14px; }
+}
 @keyframes rn-dash { to { stroke-dashoffset: -140; } }
 @keyframes rn-pulse { 50% { transform: scale(1.5); opacity: .05; } }
 @media (prefers-reduced-motion: reduce) {
