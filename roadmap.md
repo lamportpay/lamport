@@ -1,3 +1,9 @@
+## Publish regional network map live
+
+- [x] Publish the "One global network, built corridor by corridor." section with several currency examples per region (owner, 20 Oct 2026)
+- [x] Verify on lamportpay.com and lamportpay.lovable.app: all six regions list multiple currencies, each marked PLANNED · Partner expansion; map routes, currency chips and the LamportPay hub render in the site's own colours; no sideways scrolling, no browser errors
+- [ ] Confirm this batch is in the company GitHub repository (git state is managed outside this editor; nothing was pushed from here)
+
 ## Publish hero artwork, fee row and comparison live
 
 - [x] Publish so the hero payout-network artwork, the "One 2% fee" step in the capability row and the How it works comparison go live on lamportpay.com (owner, 19 Oct 2026)
