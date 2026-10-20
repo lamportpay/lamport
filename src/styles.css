@@ -2508,6 +2508,15 @@ body.has-cookie-banner .site-footer-legal {
 .rn-chip-text { fill: var(--primary-foreground); font-size: 10px; font-weight: 800; letter-spacing: .03em; }
 .rn-chip-local { fill: var(--primary-foreground); }
 .rn-card { color: var(--foreground); background: color-mix(in oklab, var(--card) 85%, transparent); border: 1px solid var(--border); box-shadow: 0 6px 20px -12px color-mix(in oklab, var(--home-brand) 45%, transparent); backdrop-filter: blur(6px); }
+@media (max-width: 640px) {
+  .rn-route { stroke-width: 4; }
+  .rn-route-glow { stroke-width: 8; }
+  .rn-dot { r: 2; }
+  .rn-node { r: 7; }
+  .rn-node-halo { r: 14; }
+  .rn-chip { x: -30px; y: -14px; width: 60px; height: 28px; rx: 14px; }
+  .rn-chip-text { font-size: 14px; }
+}
 @keyframes rn-dash { to { stroke-dashoffset: -140; } }
 @keyframes rn-pulse { 50% { transform: scale(1.5); opacity: .05; } }
 @media (prefers-reduced-motion: reduce) {
