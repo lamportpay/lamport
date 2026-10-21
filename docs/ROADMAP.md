@@ -1,8 +1,13 @@
 # LamportPay execution tracker
 
-**Updated:** 1 October 2026. **The phase structure is the master roadmap** (MASTER_PLAN and
+**Updated:** 21 October 2026. **The phase structure is the master roadmap** (MASTER_PLAN and
 the company Google Sheet, "Roadmap" tab). This file only tracks execution against it; it does
 not define phases.
+
+The **public** roadmap (13 phases on `/roadmap`, the white paper and the downloadable PDF) is
+kept in `src/content/roadmap-tracker.ts`. After editing it, rebuild the PDF with
+`scripts/build-roadmap-pdf.py` (instructions at the top of that file). The table below is the
+internal engineering view and uses its own numbering.
 
 | # | Phase | Status |
 |---|---|---|
@@ -22,14 +27,19 @@ not define phases.
 Phase gate for every phase: implementation → function testing → security review → technical
 audit → documentation → approval.
 
-## Owner decisions in force (30 Sep 2026)
+## Owner decisions in force (updated 21 Oct 2026)
 - **LamportPay fee = 2% of what the user sends, taken out of it** (150 sent → 3.00 fee → 147.00 to Stables; update 30 Sep), all of it LamportPay revenue, charged once per payment (conversion
   and any Jupiter swap together; never 2% + 2%). Collected in the user-signed funding
   transaction; no separate swap fee. **Provider fees are separate and extra:** Stables' fees,
   Jupiter's own swap fee/price impact and Solana network fees are paid by the user, shown as
   their own lines, and never taken out of LamportPay's 2%.
-- **Payouts only to the verified user's own bank account** (the account holder is the person
-  who passed KYC). Earlier notes allowing third-party recipients are withdrawn.
+- **Payouts to the verified sender's own bank account or a beneficiary's** (owner decision
+  11 Oct 2026, replacing "own account only"). Own account is the default and the holder name
+  comes from the verified Stables record; a beneficiary payout needs the beneficiary's name,
+  type and a purpose other than transfer to own account. The sender must always be verified.
+- **Early access** (owner decision 15 Oct 2026): the first 10 people who join from the website's
+  launch popup pay no LamportPay fee (the 2% is waived); partner and network costs still apply.
+  Rule and matching in `src/lib/early-access.ts`; list in Admin → Early access.
 - **USDC only for now**; USDT is switched off.
 - **Minimum 15 USDC per payment, LIVE and TEST** (owner decision 7 Oct 2026, following Stables'
   answer #5: "Minimums are 15 USD equivalent, below this transactions risk failure"). Replaces
@@ -43,9 +53,20 @@ audit → documentation → approval.
 ## Product structure
 | Experience | Where | Shell |
 |---|---|---|
-| Marketing website | `/`, `/how-it-works`, `/workflow`, `/whitepaper`, `/compliance`, `/docs`, `/blog`, `/contact` | `SiteLayout` |
+| Marketing website | `/`, `/how-it-works`, `/workflow`, `/technology`, `/partners`, `/people`, `/about`, `/roadmap`, `/whitepaper`, `/compliance`, `/docs`, `/faq`, `/blog`, `/news`, `/contact` | `SiteLayout` |
 | App (dApp) | `/pay` (conversion, includes any swap), `/payments`; `/swap` redirects to `/pay` | `AppLayout` |
 | Admin (operational foundation; full dashboard is Phase 7) | `/admin/*` | `AdminShell` |
+
+## Website and product updates (8–21 Oct 2026)
+
+| Area | Change | Where |
+|---|---|---|
+| Homepage | Hero repositioned as "Crypto in. Local money out." with the Solana + Hyperliquid route marked in progress; capabilities strip, bank network, fee calculator, multi-asset flow, comparison with P2P / exchanges / remittances, regional network map, technology ecosystem, corridors, news | `src/routes/index.tsx`, `src/components/site/Home*.tsx` |
+| Conversion routes | Solana / SPL → Jupiter → USDC (live read-only quotes); major digital assets → Hyperliquid → USDC (in progress, not enabled for deposits) | `HomeCapabilities.tsx`, `content/integrations.ts` |
+| Regional network | Six planned partner regions (North America, Europe, Asia, South America, Africa, Oceania) with example currencies; current payout infrastructure stays Stables sandbox | `HomeRegionalNetwork.tsx` |
+| Early access | Launch popup signup (name, email, optional wallet), rate limited; first 10 get the fee waived; admin list | `LaunchPopup.tsx`, `api/early-access.ts`, `admin.early-access.tsx` |
+| People | Greg Mirt added as advisor; owner's card order | `lib/team.ts`, `people.tsx` |
+| Docs | White paper, README and public roadmap brought in line with the above (21 Oct) | `whitepaper.tsx`, `README.md`, `content/roadmap-tracker.ts` |
 
 ## Phase 3 engineering items (1 Oct 2026)
 | ID | Item | Status | Evidence |

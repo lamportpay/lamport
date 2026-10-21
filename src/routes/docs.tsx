@@ -102,7 +102,7 @@ function Docs() {
               <h2 className="text-2xl font-semibold">Integration boundaries</h2>
               <div className="mt-4 space-y-3 text-sm text-muted-foreground leading-relaxed">
                 <p>In the production design, the user's wallet sends USDC directly to Stables' single-use deposit address. LamportPay never holds funds, keys or customer balances; its ledger records activity only. The sandbox build moves no payment funds and executes no mainnet swaps.</p>
-                <p>Asset and network models are separate. New intake requires an explicit allowlist, provider selection and a validated conversion route without changing the existing Jupiter endpoints. Bitcoin, Ethereum and additional networks are PLANNED, not accepted deposits; Hyperliquid trading, deposits and withdrawals remain DISABLED.</p>
+                <p>Asset and network models are separate. New intake requires an explicit allowlist, provider selection and a validated conversion route without changing the existing Jupiter endpoints. A Hyperliquid route for major digital assets such as Bitcoin and Ethereum is IN PROGRESS and additional networks are PLANNED; none of them are accepted deposits, and Hyperliquid trading, deposits and withdrawals remain DISABLED.</p>
                 <p>Keep private provider credentials server-side and out of source control and browser configuration. Production availability requires security review, end-to-end validation, provider onboarding and applicable legal readiness. The current documentation does not announce a production launch.</p>
               </div>
               <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm">

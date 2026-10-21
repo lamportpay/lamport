@@ -125,6 +125,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
     items: [
       { label: "Website, blog and FAQs live", done: true },
       { label: "Colosseum hackathon submission", done: true },
+      { label: "Company channels live on X and LinkedIn", done: true },
       { label: "First users from our own network", done: false },
       { label: "Community campaigns on X, Telegram, Discord", done: false },
       { label: "Content, SEO and creator partnerships", done: false },
@@ -171,6 +172,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
       { label: "Circle and Tether partnership talks", done: false },
       { label: "More payout API providers", done: false },
       { label: "New countries such as Nigeria and Pakistan", done: false },
+      { label: "Regional payout partner network across six regions", done: false },
     ],
   },
   {

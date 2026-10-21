@@ -1,3 +1,12 @@
+## Docs refresh to match the new homepage
+
+- [x] White paper: Hyperliquid route for major assets marked in progress (not enabled), two conversion routes, regional partner network (six regions, planned), sandbox corridors US/GB/IN/PH with NG/PK planned, comparison with P2P/exchanges/remittances, early-access fee waiver
+- [x] Docs page: Bitcoin/Ethereum wording aligned with the Hyperliquid route status
+- [x] Public roadmap: "Company channels live on X and LinkedIn" (done) and "Regional payout partner network across six regions" (open); downloadable PDF rebuilt from the tracker with `scripts/build-roadmap-pdf.py`
+- [x] `docs/ROADMAP.md`: decisions updated (beneficiary payouts 11 Oct, early access 15 Oct), full site map, 8–21 Oct updates table
+- [x] README refreshed: team voice, corridors, architecture, road to mainnet, development history kept
+- [ ] Verify typecheck, lint, unit tests and production build
+
 ## Publish regional network map live
 
 - [x] Publish the "One global network, built corridor by corridor." section with several currency examples per region (owner, 20 Oct 2026)

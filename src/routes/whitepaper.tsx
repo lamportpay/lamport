@@ -26,8 +26,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
         LamportPay is a non-custodial crypto-to-bank payment interface built around Solana and
         USDC settlement. Users keep control of their wallet; LamportPay records payment activity
         without holding funds, private keys or customer balances. Stables is the payout infrastructure
-        provider, and Jupiter supplies the Solana conversion route when needed. The current experience
-        is a sandbox demonstration, not a live bank-payout service.
+        provider, and Jupiter supplies the Solana conversion route when needed. A second route, for
+        major digital assets through Hyperliquid liquidity, is in progress, and a regional network of
+        payout partners is planned corridor by corridor. The current experience is a sandbox
+        demonstration, not a live bank-payout service.
       </p>
     ),
   },
@@ -38,7 +40,9 @@ const sections: { title: string; body: React.ReactNode }[] = [
         Crypto wallets and local banking systems use different payment rails. A sender needs to
         understand the conversion, recipient details, verification requirements and total costs
         before authorizing a payment. Unclear fees and disconnected status updates make that journey
-        difficult to assess.
+        difficult to assess. Today's options each add a compromise: P2P marketplaces put a
+        counterparty in the middle of the trade, exchanges add custody, trading and withdrawal
+        steps, and traditional remittance services hold funds and often price with wide rates.
       </p>
     ),
   },
@@ -128,12 +132,28 @@ const sections: { title: string; body: React.ReactNode }[] = [
   {
     title: "8. Liquidity layer",
     body: (
-      <p>
-        USDC payments do not require a swap. For an eligible SOL route, Jupiter supplies the
-        conversion quote into USDC, including route costs and price impact. LIVE · read-only market
-        quotes are available in the sandbox build; mainnet swap execution is DISABLED. Additional asset
-        intake requires an explicit allowlist and a validated conversion route, not just a wallet balance.
-      </p>
+      <div className="space-y-3">
+        <p>
+          USDC payments do not require a swap. LamportPay selects a conversion route from the enabled
+          asset and its network:
+        </p>
+        <ul className="space-y-2 list-disc pl-5">
+          <li>
+            <strong className="text-foreground">Solana / SPL assets → Jupiter → USDC.</strong> Jupiter
+            supplies the conversion quote, including route costs and price impact. LIVE · read-only
+            market quotes are available in the sandbox build; mainnet swap execution is DISABLED.
+          </li>
+          <li>
+            <strong className="text-foreground">Major digital assets → Hyperliquid → USDC.</strong>{" "}
+            IN PROGRESS. This route is being built for deeper liquidity on assets such as BTC and ETH;
+            it is not enabled for deposits.
+          </li>
+        </ul>
+        <p>
+          Additional asset intake requires an explicit allowlist and a validated conversion route, not
+          just a wallet balance.
+        </p>
+      </div>
     ),
   },
   {
@@ -155,21 +175,33 @@ const sections: { title: string; body: React.ReactNode }[] = [
         USDC on Solana is the enabled settlement currency. The model includes USDT on Solana,
         but USDT payments are currently DISABLED. SOL routing is available where supported by
         the wallet; the sandbox build does not execute the conversion or move payment funds.
-        Bitcoin, Ethereum and other networks are PLANNED exploration, not accepted deposits.
-        Hyperliquid is PLANNED / integration in progress; trading, deposits and withdrawals remain DISABLED.
+        Bitcoin, Ethereum, USDT and other major-asset routes are IN PROGRESS through the Hyperliquid
+        route and are not accepted deposits; trading, deposits and withdrawals through Hyperliquid
+        remain DISABLED.
       </p>
     ),
   },
   {
     title: "11. Supported countries and currencies",
     body: (
-      <p>
-        The app offers configured destination countries and fills the payout currency from a
-        country reference table. That reference is not a promise of coverage: Stables quotes
-        determine whether a country/currency pair is available, and Stables validates the required
-        bank fields. The sandbox build restricts the country picker to sandbox destinations; production
-        coverage is not confirmed. Limits are shown in the payment app and checked before approval.
-      </p>
+      <div className="space-y-3">
+        <p>
+          The app offers configured destination countries and fills the payout currency from a
+          country reference table. That reference is not a promise of coverage: Stables quotes
+          determine whether a country/currency pair is available, and Stables validates the required
+          bank fields. The sandbox build restricts the country picker to the destinations the Stables
+          sandbox completes: the United States (USD), the United Kingdom (GBP), India (INR) and the
+          Philippines (PHP). Nigeria (NGN) and Pakistan (PKR) are planned. Production coverage is not
+          confirmed. Limits are shown in the payment app and checked before approval.
+        </p>
+        <p>
+          Beyond the current payout infrastructure, LamportPay plans a network of specialist payout
+          partners, built corridor by corridor across six regions: North America, Europe, Asia, South
+          America, Africa and Oceania. For each corridor the route is chosen on coverage, available
+          liquidity, FX and total conversion cost, and settlement conditions. These regional partners
+          are PLANNED and not yet confirmed.
+        </p>
+      </div>
     ),
   },
   {
@@ -231,6 +263,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
           Optional minimum and maximum fee bounds are off by default. In production, LamportPay's
           revenue transfer is separate from the Stables deposit within the user-signed transaction;
           no additional LamportPay swap fee is charged. The sandbox build collects no real revenue.
+        </p>
+        <p>
+          Early access: the first 10 people who join from the website's launch popup pay no
+          LamportPay fee. Payout partner and network costs still apply to them.
         </p>
       </div>
     ),
