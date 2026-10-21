@@ -5,7 +5,8 @@
 - [x] Public roadmap: "Company channels live on X and LinkedIn" (done) and "Regional payout partner network across six regions" (open); downloadable PDF rebuilt from the tracker with `scripts/build-roadmap-pdf.py`
 - [x] `docs/ROADMAP.md`: decisions updated (beneficiary payouts 11 Oct, early access 15 Oct), full site map, 8–21 Oct updates table
 - [x] README refreshed: team voice, corridors, architecture, road to mainnet, development history kept
-- [ ] Verify typecheck, lint, unit tests and production build
+- [x] Changed files parse cleanly (TypeScript transpile) and the tracker loads (13 phases); Prettier warnings on the white paper and tracker were already present before this change
+- [ ] Full typecheck, lint, unit tests and production build: not run here (this environment cannot reach the package mirror in `package-lock.json`); CI runs them on push
 
 ## Publish regional network map live
 
