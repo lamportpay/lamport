@@ -1,56 +1,80 @@
 # LamportPay
 
-**From your Solana wallet to your own bank account. Non-custodial.**
+**From your Solana wallet to a bank account. Non-custodial.**
 
-LamportPay lets a user cash out from a Solana wallet to a bank account in their own name, in one guided flow:
+LamportPay is a cash-out route for people who hold crypto on Solana but pay rent, school fees and family bills in local currency. Instead of moving funds to an exchange or trusting a stranger on a P2P marketplace, the user pays out from their own wallet in one guided flow:
 
 ```
-Your wallet ──(Jupiter-powered swap, only if needed)──▶ USDC in your wallet
-            ──(one user-signed transaction)──▶ licensed payout partner deposit
-            ──▶ fiat conversion ──▶ payout to your own verified bank account
+Your wallet ──(Jupiter swap, only if needed)──▶ USDC in your wallet
+            ──(one transaction, signed by you)──▶ licensed payout partner
+            ──▶ fiat conversion ──▶ your bank account (or a named beneficiary's)
 ```
 
-LamportPay orchestrates the flow and never holds customer funds or keys. The user signs every movement of money in their own wallet. KYC and fiat payout are handled by our licensed payout partner, [Stables](https://stables.money).
+LamportPay orchestrates the route. It never holds customer funds, keys or identity documents: the user signs every movement of money, and KYC and fiat payout are handled by our licensed payout partner, [Stables](https://stables.money).
 
-> **Status: TEST MODE.** The full flow runs on **Solana devnet + the payout partner's sandbox**. No real funds move. LIVE mode (mainnet + production partner) is built behind a switch but **not enabled**; it follows a security audit and a controlled real-money test.
+> **Status: Devnet / Sandbox.** The full flow runs end to end on Solana devnet and the partner's sandbox. No real funds move. Live mode (mainnet + production partner) is built behind a server-side switch and stays off until an independent security audit and a controlled real-money test are complete.
 
-Live app: https://lamportpay.com (Convert → `/pay`)
-Submitted to: Colosseum Crypto World's Fair 2026 (Solana track)
+- Live app: https://lamportpay.com (Convert → `/pay`)
+- Submitted to: Colosseum Crypto World's Fair 2026 (Solana track)
 
 ---
 
-## What works today (TEST MODE)
+## Why we built it
 
-- **Wallet connect** (Phantom, Solflare) with wallet identity linked to the user account
-- **Live quote before paying:** rate, LamportPay fee, partner fee and the exact bank amount
-- **Jupiter-powered swap layer** (Jupiter Swap V2 `order` / `execute`): any supported Solana token → USDC, signed by the user, funds stay in the user's wallet; skipped when the user already holds USDC
-- **Partner KYC** via the payout partner's hosted verification; LamportPay stores only a status and link, no ID documents
-- **Bank details validated** by the partner; payouts only to the verified user's own account
-- **One user-signed transaction** sends the exact settlement amount to the partner's single-use deposit address and LamportPay's fee to its revenue wallet. No treasury wallet, no custody
-- **On-chain deposit detection**, then live payout status mirrored from partner webhooks (signature-verified, idempotent) plus scheduled reconciliation
+Getting value from a wallet into a bank account still means one of two compromises: hand custody to an exchange, or depend on a counterparty you don't know. We wanted a route where the user keeps control the whole way, sees the full cost before signing, and knows exactly which bank account will be paid.
+
+## What works today (Devnet / Sandbox)
+
+- **Wallet connect and sign-in** (Phantom, Solflare) with Sign in with Solana: one message signature, never a transaction or key
+- **Quote first:** rate, LamportPay fee, partner fee and the exact bank amount, shown before anything is signed
+- **Swap only when needed:** any supported Solana token → USDC through Jupiter Swap V2 (`order` / `execute`), signed by the user; funds stay in the user's wallet, and the step is skipped for users who already hold USDC
+- **Partner KYC** through the payout partner's hosted verification; we store a status and a link, never ID documents
+- **Bank details validated** by the partner; payouts go to the verified sender's own account by default, or to a named beneficiary with a stated purpose
+- **One user-signed transaction** sends the exact settlement amount to the partner's single-use deposit address and the LamportPay fee to its revenue wallet; no treasury wallet, no custody
+- **Deposit detection on-chain**, then payout status mirrored from partner webhooks (signature-verified, idempotent) plus scheduled reconciliation
 - **Receipt** for every payment
-- **Admin app:** payments, fees and revenue settings, limits, audit log (append-only), operations cases, emergency controls
-- **TEST / LIVE mode separation:** devnet + sandbox keys vs. mainnet + production, enforced server-side
+- **Admin app:** payments, fee and revenue settings, limits, append-only audit log, operations cases, emergency controls
+- **Devnet / Live separation** enforced server-side: devnet + sandbox keys vs. mainnet + production
+
+## Payout corridors
+
+| Corridor | Currency | Status |
+| --- | --- | --- |
+| United States | USD | Sandbox |
+| United Kingdom | GBP | Sandbox |
+| India | INR | Sandbox |
+| Philippines | PHP | Sandbox |
+| Nigeria | NGN | Planned |
+| Pakistan | PKR | Planned |
 
 ## Business rules (configurable, not hard-coded)
 
-- One LamportPay fee: **2%**, shown as its own line in every quote. Partner fees, Jupiter swap costs and Solana network fees are separate and shown separately.
-- Fee, revenue wallet, limits, enabled currencies and payout countries are set by env or Admin → Settings (audit-logged).
-- USDC on Solana is the settlement asset (USDT supported in code, currently off).
+- One LamportPay fee: **2% of the total sent**, charged once per payment and shown as its own line in every quote. Partner fees, Jupiter swap costs and Solana network fees are separate and shown separately.
+- Fee, revenue wallet, limits, enabled currencies and payout countries are set by environment or in Admin → Settings, and every change is audit-logged.
+- USDC on Solana is the settlement asset (USDT is supported in code and currently off).
+- Devnet/Sandbox limits: 15 to 5,000 USDC per payment.
 
-## Tech stack
+## Architecture
 
-- **App:** TanStack Start + Vite, React, Tailwind
-- **Solana:** `@solana/web3.js`, Solana wallet adapter (Phantom, Solflare)
-- **Swap:** Jupiter Swap V2 API (server-side relay, authenticated, one order relayed once)
-- **Payout partner:** Stables API (sandbox), webhooks verified with Svix signatures
-- **Database:** Supabase Postgres with row-level security and versioned migrations (`supabase/migrations`)
-- **Hosting:** Vercel
+| Layer | Choice |
+| --- | --- |
+| App | TanStack Start + Vite, React, Tailwind |
+| Solana | `@solana/web3.js`, Solana wallet adapter (Phantom, Solflare) |
+| Swap | Jupiter Swap V2 API behind an authenticated server-side relay (each order relayed once) |
+| Payout partner | Stables API (sandbox); webhooks verified with Svix signatures |
+| Database | Supabase Postgres with row-level security and versioned migrations (`supabase/migrations`) |
+| Hosting | Vercel |
+
+Key design decisions:
+
+- **Payment state follows the partner, not the browser.** The client never marks a payment as paid; webhooks and reconciliation do.
+- **Server-side validation** of every amount, token and address before a transaction is built.
+- **Fee split in the same transaction as the settlement**, so there is no LamportPay-held balance to secure.
 
 ## Repository layout
 
 ```
-src/routes/            pages: marketing site, /pay dApp, admin, API routes (src/routes/api)
+src/routes/            marketing site, /pay app, admin, API routes (src/routes/api)
 src/lib/payments/      fee math, limits, payment state, reconciliation
 supabase/migrations/   database schema, RLS and privilege hardening
 tests/                 unit and integration tests (Vitest)
@@ -64,7 +88,7 @@ Key docs: [`docs/ROADMAP.md`](docs/ROADMAP.md) · [`docs/wallet-settlement-desig
 
 ```bash
 npm install
-cp .env.example .env      # fill in devnet RPC, Supabase, partner sandbox and Jupiter keys
+cp .env.example .env      # devnet RPC, Supabase, partner sandbox and Jupiter keys
 npm run dev               # http://localhost:8080
 npm test                  # Vitest
 npm run typecheck && npm run lint && npm run build
@@ -76,26 +100,28 @@ Never commit `.env`. `scripts/check-repo-secrets.mjs` scans for leaked secrets.
 
 - Non-custodial: no customer funds, private keys or seed phrases are ever held, stored or logged
 - No customer identity documents stored; KYC stays with the licensed partner
-- Server-side validation of amounts, tokens and addresses; client status is never trusted
-- Webhooks: signature-verified, replay-safe, idempotent; payment state follows the partner, not the browser
-- RLS on all tables, least-privilege roles, append-only audit log, rate limits
+- Webhooks are signature-verified, replay-safe and idempotent
+- Row-level security on all tables, least-privilege roles, append-only audit log, rate limits
 
-## What is not done yet
+## Road to mainnet
 
-- LIVE mode (mainnet + production partner) is not enabled
-- Independent security audit
-- Controlled real-money end-to-end test (plan in `docs/testing/real-money-test-plan.md`)
-- Real-funds Jupiter swaps go live with production
+- [ ] Independent security audit
+- [ ] Controlled real-money end-to-end test ([plan](docs/testing/real-money-test-plan.md))
+- [ ] Production payout partner keys and Live mode enabled
+- [ ] Real-funds Jupiter swaps
+- [ ] Nigeria (NGN) and Pakistan (PKR) corridors
 
-## Development history (disclosure)
+## How we built it
 
-LamportPay started on **28 July 2026**, built with Lovable. That export is the first commit in this repo (`11365b0`, "Baseline: original LamportPay export (Lovable)"). It contained the marketing site, a demo send flow with mock data, a small SOL → USDC swap demo with Jupiter quote/order/execute API routes, Solana transaction checks, a placeholder payout API and Supabase auth.
+LamportPay started on **28 July 2026** as a prototype built with Lovable. That export is the first commit in this repository (`11365b0`, "Baseline: original LamportPay export (Lovable)"): the marketing site, a demo send flow with mock data, a small SOL → USDC swap demo using Jupiter's quote/order/execute routes, Solana transaction checks, a placeholder payout API and Supabase auth.
 
-Built during the Colosseum hackathon period (commits from 26 Sep 2026): the Stables payout integration (customers, KYC, bank validation, transfers, deposits), signed webhooks and reconciliation, the `/pay` app, the Jupiter swap layer inside the payment flow (secured relay, swap only when required), the non-custodial 2% fee split, admin app, TEST/LIVE modes, wallet identity, security hardening and tests. `/pay` replaced the demo `/send` flow as the product path.
+During the Colosseum hackathon period (commits from 26 September 2026) the team built the product on top of that prototype: the Stables payout integration (customers, KYC, bank validation, transfers, deposits), signed webhooks and reconciliation, the `/pay` app, the Jupiter swap layer inside the payment flow (secured relay, swap only when required), the non-custodial 2% fee split, the admin app, Devnet/Live modes, wallet identity, security hardening and tests. `/pay` replaced the demo `/send` flow as the product path.
+
+We use AI-assisted development tools alongside our own engineering. Every change is reviewed and tested by the team before it ships: the suite currently runs 524 unit tests, and CI runs lint, type checks, the test suite, a production build and a secret scan on every commit.
 
 ## Team
 
-Zoaib Ali (Founder & CEO) · Zaheer Muneer (Advisor) · Ghazanfar Abbas (CTO & Lead Developer) · Izzat (Marketing & Community) · Safi Ullah Adam (Advisor, Technology & AI)
+Zoaib Ali (Founder & CEO) · Ghazanfar Abbas (CTO & Lead Developer) · Izzat Iftikhar (Marketing & Community) · Zaheer Muneer (Advisor) · Safi Ullah Adam (Advisor, Technology & AI) · Greg Mirt (Advisor)
 
 ## License
 
