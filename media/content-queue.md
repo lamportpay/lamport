@@ -28,7 +28,7 @@ Every post ends with one call to action only: "Join early access at lamportpay.c
 |---|---|---|---|---|
 | 1 | scheduled 25 Oct | X | decks/lamportpay-real-cost-01, -03, -04, -07 .png (4 images) | Where does your money go when you cash out crypto? Custody, spreads, withdrawals. Here's what a fair cash-out looks like 👇 lamportpay.com #Solana #USDC |
 | 2 | scheduled 27 Oct | LinkedIn | decks/lamportpay-real-cost.pdf (cover: decks/lamportpay-real-cost-01.png) | The real cost of cashing out crypto (see Buffer) |
-| 3 | ready | TikTok | lamportpay-better-way-9x16.mp4 | Still waiting in line to cash out your crypto? There's a better way. #crypto #solana #cryptotobank #lamportpay |
+| 3 | scheduled 25 Oct | TikTok | lamportpay-better-way-9x16.mp4 | Still waiting in line to cash out your crypto? There's a better way. #crypto #solana #cryptotobank #lamportpay |
 | 4 | ready | X | lamportpay-better-way-16x9.mp4 | Still standing in line to cash out? From your Solana wallet to your bank, one signature. Sandbox demo → lamportpay.com #Solana |
 | 5 | ready | LinkedIn | decks/lamportpay-how-it-works.pdf (cover: decks/lamportpay-how-it-works-01.png) | Wallet to bank in six steps, and you stay in control of your wallet the whole way. A product walkthrough of LamportPay (running on devnet + partner sandbox today). Swipe 👉 #Fintech #Payments #Solana |
 | 6 | ready | TikTok | lamportpay-tap-send-9x16.mp4 | Pick an amount. Tap send. Sign once in your own wallet. #solana #crypto #fintech #lamportpay |
