@@ -7,11 +7,8 @@
 import { spawnSync } from "node:child_process";
 
 const ACCEPTED = {
-  // braces <= 3.0.3 (no fixed release yet). Reaches the tree only through
-  // @solana/wallet-adapter-react -> @solana-mobile/wallet-adapter-mobile ->
-  // react-native -> metro (React Native's bundler), which the web app never
-  // runs. Owner decision 2026-10-08.
-  "GHSA-vfj7-8cjw-p6xm": "braces: metro (React Native bundler) only, not loaded by the app",
+  // Empty since 2026-10-24: the braces advisory GHSA-vfj7-8cjw-p6xm (accepted
+  // 2026-10-08, metro only) is no longer reported by npm audit.
 };
 
 const FAIL_ON = new Set(["high", "critical"]);

@@ -130,9 +130,10 @@ npm run reconcile  # pull transfer status from Stables, replay stored webhooks
 - **Dependencies** (C09): `uuid` forced to ^11.1.1 via `overrides`. Remaining moderate
   advisory: `stream-json` under `jayson` (from `@solana/web3.js` v1) — not loaded by the app
   (web3.js uses only `jayson/lib/client/browser`); no upstream fix; forcing v3 breaks jayson.
-  Accepted high (owner decision 2026-10-08): `braces` ≤ 3.0.3 (GHSA-vfj7-8cjw-p6xm), reached only via
-  `@solana-mobile/wallet-adapter-mobile` → `react-native` → `metro` (never run by the web app); no fixed
-  release yet. Remove it from `ACCEPTED` in `scripts/check-audit.mjs` once `braces` ships a fix.
+  No accepted high advisories (2026-10-24): `braces` (GHSA-vfj7-8cjw-p6xm, accepted 2026-10-08) is no
+  longer reported, so `ACCEPTED` in `scripts/check-audit.mjs` is empty. Same day, four new highs
+  (body-parser, undici, vite, zod) were fixed with in-range patch updates (`npm update`; `npm audit fix`
+  is not safe here: it downgrades `drizzle-kit` and the Solana packages).
 - **Revenue reconciliation** (C10): Admin → Fees & Revenue → Reconciliation.
 
 ## Sign-in (2026-09-30)
