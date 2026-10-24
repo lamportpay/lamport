@@ -3,8 +3,9 @@
 LamportPay turns stablecoins on Solana into a bank payout, through Stables
 (docs.stables.money). Stack: TanStack Start + Vite, Supabase, deployed on Vercel.
 
-The long brief at the top of `README.md` is the original Lovable prompt (Bridge, "demo only",
-a fixed corridor list). It is history. Where it conflicts with this file, this file wins.
+`README.md` is the public project overview. The original Lovable prompt (Bridge, "demo only",
+a fixed corridor list) is history and lives only in git history. Where any document conflicts
+with this file, this file wins.
 
 ## Product rules
 
