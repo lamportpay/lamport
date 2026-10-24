@@ -196,7 +196,7 @@ export function FeeCalculator() {
             {quoting && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-none bg-home-surface/80 backdrop-blur-sm motion-safe:animate-in motion-safe:fade-in" role="status" aria-live="polite">
                 <Loader2 className="size-7 text-home-brand motion-safe:animate-spin" />
-                <p className="text-xs font-medium text-muted-foreground">Fetching live quote…</p>
+                <p className="text-xs font-medium text-muted-foreground">Calculating estimate…</p>
               </div>
             )}
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Recipient gets</p>

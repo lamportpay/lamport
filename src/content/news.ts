@@ -27,7 +27,7 @@ export const NEWS: NewsItem[] = [
     body: [
       {
         paragraphs: [
-          "LamportPay converts USDC on Solana into a payout to a local bank account, through our payout partner Stables. The full payment flow is built and tested end to end.",
+          "LamportPay converts USDC on Solana into a payout to a local bank account, through our payout partner Stables. The full payment flow is built and tested end to end on Solana devnet and our partner's sandbox; it has not yet run with real funds.",
           "The next milestone is launch. As soon as our final security phase — independent audit, penetration testing and hardening — is complete, LamportPay goes live, starting with a controlled rollout.",
         ],
       },
@@ -40,7 +40,7 @@ export const NEWS: NewsItem[] = [
           "Admin sign-in with password plus emailed code, tamper-proof audit log and fee ledger",
           "Rate limits, emergency payment controls and automatic payment status sync",
           "Automated secret and dependency scans, with security scans passing",
-          "Full payment flow tested end to end, from wallet to bank payout",
+          "Full payment flow tested end to end in the sandbox, from wallet to bank payout (no real funds yet)",
         ],
       },
       {

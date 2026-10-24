@@ -10,6 +10,11 @@ export type AuthenticatedUser = {
   id: string;
   email: string | null;
   /**
+   * True only when Supabase Auth has confirmed this email. The early-access fee
+   * waiver relies on it; KYC keeps using `email` as before.
+   */
+  emailConfirmed?: boolean;
+  /**
    * Solana wallets this account signed in with, as verified by Supabase Auth
    * (web3 identities). Empty for email accounts. Optional so internal callers
    * and tests can omit it (treated as no linked wallet).
@@ -36,6 +41,7 @@ export async function authenticateUser(
     user: {
       id: data.user.id,
       email: realEmailOf(data.user.email),
+      emailConfirmed: Boolean(data.user.email_confirmed_at),
       wallets: walletAddressesOf(data.user.identities, data.user.app_metadata),
     },
     denied: null,

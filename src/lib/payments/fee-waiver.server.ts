@@ -24,19 +24,34 @@ export type FeeWaiver = {
 
 export const NO_WAIVER: FeeWaiver = { waived: false, rank: null };
 
+type WaiverUser = Pick<AuthenticatedUser, "email" | "emailConfirmed" | "wallets">;
+
+/**
+ * What may match an early-access signup: the paying wallet, the account's
+ * verified wallets, and the account's email only once Supabase Auth has
+ * confirmed it (an unconfirmed email proves nothing about who joined).
+ */
+export function waiverIdentityOf(
+  user: WaiverUser | null | undefined,
+  wallet: string | null,
+): { wallets: string[]; email: string | null } {
+  const wallets = [wallet, ...(user?.wallets ?? [])].filter(
+    (w): w is string => typeof w === "string" && w.trim().length > 0,
+  );
+  const email = user?.emailConfirmed === true ? (user.email ?? null) : null;
+  return { wallets, email };
+}
+
 /**
  * Whether this customer is one of the first FREE_SLOTS early-access signups.
  * `wallet` is the wallet the payment will actually be paid from; the account's
  * own verified wallets and its email are considered too.
  */
 export async function earlyAccessWaiver(
-  user: Pick<AuthenticatedUser, "email" | "wallets"> | null | undefined,
+  user: WaiverUser | null | undefined,
   wallet: string | null,
 ): Promise<FeeWaiver> {
-  const wallets = [wallet, ...(user?.wallets ?? [])].filter(
-    (w): w is string => typeof w === "string" && w.trim().length > 0,
-  );
-  const email = user?.email ?? null;
+  const { wallets, email } = waiverIdentityOf(user, wallet);
   if (wallets.length === 0 && !email) return NO_WAIVER;
 
   try {
