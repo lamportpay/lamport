@@ -12,7 +12,7 @@ Your wallet ──(Jupiter swap, only if needed)──▶ USDC in your wallet
 
 LamportPay orchestrates the route. It never holds customer funds, keys or identity documents: the user signs every movement of money, and KYC and fiat payout are handled by our licensed payout partner, [Stables](https://stables.money).
 
-> **Status: Devnet / Sandbox.** The full flow runs end to end on Solana devnet and the partner's sandbox. No real funds move. Live mode (mainnet + production partner) is built behind a server-side switch and stays off until an independent security audit and a controlled real-money test are complete.
+> **Status: Devnet / Sandbox.** The full flow runs end to end on Solana devnet and the partner's sandbox for US, UK, India and the Philippines. No real funds move. Live mode (mainnet + production partner) is built behind a server-side switch and stays off until an independent security audit and a controlled real-money test are complete.
 
 - Live app: https://lamportpay.com (Convert → `/pay`)
 - Submitted to: Colosseum Crypto World's Fair 2026 (Solana track)
@@ -27,11 +27,12 @@ Getting value from a wallet into a bank account still means one of two compromis
 
 - **Wallet connect and sign-in** (Phantom, Solflare) with Sign in with Solana: one message signature, never a transaction or key
 - **Quote first:** rate, LamportPay fee, partner fee and the exact bank amount, shown before anything is signed
-- **Swap only when needed:** any supported Solana token → USDC through Jupiter Swap V2 (`order` / `execute`), signed by the user; funds stay in the user's wallet, and the step is skipped for users who already hold USDC
+- **Swap only when needed:** any supported Solana token → USDC through Jupiter Swap V2. Live Jupiter quotes are shown today; swap execution (`order` / `execute`, signed by the user, funds stay in the user's wallet) is built but runs only in Live mode, because Jupiter has no devnet. The step is skipped for users who already hold USDC
 - **Partner KYC** through the payout partner's hosted verification; we store a status and a link, never ID documents
 - **Bank details validated** by the partner; payouts go to the verified sender's own account by default, or to a named beneficiary with a stated purpose
-- **One user-signed transaction** sends the exact settlement amount to the partner's single-use deposit address and the LamportPay fee to its revenue wallet; no treasury wallet, no custody
-- **Deposit detection on-chain**, then payout status mirrored from partner webhooks (signature-verified, idempotent) plus scheduled reconciliation
+- **Pay Now in Devnet / Sandbox:** the user's wallet signs a real devnet transaction that moves no funds (an SPL Memo naming the payment); the server verifies it on devnet (signer, memo, freshness, no reuse) and then triggers the partner's simulated deposit
+- **Live-mode settlement (built and tested, not yet run with real funds):** one user-signed transaction sends the exact settlement amount to the partner's single-use deposit address and the LamportPay fee to its revenue wallet; no treasury wallet, no custody
+- **Payout status mirrored from the partner:** signature-verified, idempotent webhooks, live status sync while the user watches, and scheduled reconciliation. The partner's sandbox sends only `transfer.created` webhooks, so sandbox status changes arrive through sync and reconciliation
 - **Receipt** for every payment
 - **Admin app:** payments, fee and revenue settings, limits, append-only audit log, operations cases, emergency controls
 - **Devnet / Live separation** enforced server-side: devnet + sandbox keys vs. mainnet + production
@@ -44,7 +45,7 @@ Getting value from a wallet into a bank account still means one of two compromis
 | United Kingdom | GBP | Sandbox |
 | India | INR | Sandbox |
 | Philippines | PHP | Sandbox |
-| Nigeria | NGN | Planned |
+| Nigeria | NGN | Planned (sandbox transfers stay `in_progress`) |
 | Pakistan | PKR | Planned |
 
 ## Business rules (configurable, not hard-coded)
@@ -90,7 +91,8 @@ Key docs: [`docs/ROADMAP.md`](docs/ROADMAP.md) · [`docs/wallet-settlement-desig
 npm install
 cp .env.example .env      # devnet RPC, Supabase, partner sandbox and Jupiter keys
 npm run dev               # http://localhost:8080
-npm test                  # Vitest
+npm run test:unit         # Vitest unit suite (what CI runs)
+npm test                  # also runs integration suites that need `npm run dev` on :8080
 npm run typecheck && npm run lint && npm run build
 ```
 
@@ -117,7 +119,7 @@ LamportPay started on **28 July 2026** as a prototype built with Lovable. That e
 
 During the Colosseum hackathon period (commits from 26 September 2026) the team built the product on top of that prototype: the Stables payout integration (customers, KYC, bank validation, transfers, deposits), signed webhooks and reconciliation, the `/pay` app, the Jupiter swap layer inside the payment flow (secured relay, swap only when required), the non-custodial 2% fee split, the admin app, Devnet/Live modes, wallet identity, security hardening and tests. `/pay` replaced the demo `/send` flow as the product path.
 
-We use AI-assisted development tools alongside our own engineering. Every change is reviewed and tested by the team before it ships: the suite currently runs 524 unit tests, and CI runs lint, type checks, the test suite, a production build and a secret scan on every commit.
+We use AI-assisted development tools alongside our own engineering. Every change is reviewed and tested by the team before it ships: the unit suite currently runs 509 tests, and CI runs a secret scan, type checks, lint, the unit tests, a production build, a client-bundle secret scan and a dependency audit on every push.
 
 ## Team
 
