@@ -634,17 +634,11 @@
   display: grid;
   gap: 40px;
 }
-@media (min-width: 1024px) {
-  .hero-network-grid {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  }
-  /* Left-align the copy once the artwork joins it on the right. */
-  .hero-network-grid .mx-auto {
-    margin-inline: 0;
-  }
-  .hero-network-grid .home-hero-actions {
-    justify-content: flex-start;
-  }
+/* The payout-network artwork now sits behind the hero as a map, so the copy
+   spans the full width and stays centred at every screen size. */
+.hero-network-copy {
+  margin-inline: auto;
+  max-width: 62rem;
 }
 /* Phones keep the stacked, full-width hero buttons. */
 @media (max-width: 640px) {
