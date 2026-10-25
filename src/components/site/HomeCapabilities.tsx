@@ -21,19 +21,6 @@ const STROKE = "url(#home-cap-stroke)";
 
 const CAPABILITIES: Capability[] = [
   {
-    key: "crypto-in",
-    label: "Asset + network",
-    status: "live",
-    title: "Identify a supported asset and its blockchain. Only explicitly enabled assets can be used today; additional networks and assets are in development.",
-    icon: (
-      <>
-        <ellipse cx="12" cy="6.6" rx="6.6" ry="2.8" />
-        <path d="M5.4 6.6v4.2c0 1.6 2.9 2.8 6.6 2.8s6.6-1.2 6.6-2.8V6.6" />
-        <path d="M5.4 11.2v4.2c0 1.6 2.9 2.8 6.6 2.8s6.6-1.2 6.6-2.8v-4.2" />
-      </>
-    ),
-  },
-  {
     key: "wallet-sign-in",
     label: "Wallet sign-in",
     status: "live",
@@ -45,6 +32,19 @@ const CAPABILITIES: Capability[] = [
         <path d="M10.5 13.8a2 2 0 0 1 3.4.9" />
         <path d="M12.2 16.6c.4 1 .6 2 .7 3.1" />
         <path d="M8.9 18.7c-.5-1-.9-2-1-3.1" />
+      </>
+    ),
+  },
+  {
+    key: "crypto-in",
+    label: "Asset + network",
+    status: "live",
+    title: "Identify a supported asset and its blockchain. Only explicitly enabled assets can be used today; additional networks and assets are in development.",
+    icon: (
+      <>
+        <ellipse cx="12" cy="6.6" rx="6.6" ry="2.8" />
+        <path d="M5.4 6.6v4.2c0 1.6 2.9 2.8 6.6 2.8s6.6-1.2 6.6-2.8V6.6" />
+        <path d="M5.4 11.2v4.2c0 1.6 2.9 2.8 6.6 2.8s6.6-1.2 6.6-2.8v-4.2" />
       </>
     ),
   },
