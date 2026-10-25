@@ -78,20 +78,8 @@ function Index() {
                   Your keys stay yours. No real funds move in the sandbox build.
                 </p>
               </div>
-              <div className="hero-network-visual mt-12 lg:mt-0">
-                <span className="hero-network-glow" aria-hidden="true" />
-                <figure className="hero-network-card hero-network-float">
-                  <img
-                    src={payoutNetworkAsset.url}
-                    alt="Global payout partner network: LamportPay connecting North America, Europe, South America, Africa, Asia and Oceania to local payout routes"
-                    width={1024}
-                    height={1536}
-                    loading="eager"
-                    decoding="async"
-                  />
-                </figure>
-              </div>
             </div>
+
           </div>
         </section>
         <HomeCapabilities />
