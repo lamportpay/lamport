@@ -34,8 +34,8 @@ export function MultiAssetFlow() {
       const connection = (from: string, to: string, failed = false) => {
         const a = rect(from), b = rect(to);
         if (!a || !b) return { d: '', failed };
-        if (b.y >= a.y + a.h - 2 && Math.abs(a.x - b.x) < 4) {
-          return { d: `M ${a.x + a.w / 2} ${a.y + a.h} V ${b.y}`, failed };
+        if (b.y >= a.y + a.h - 2 && b.x + b.w / 2 >= a.x + 10 && b.x + b.w / 2 <= a.x + a.w - 10) {
+          return { d: `M ${b.x + b.w / 2} ${a.y + a.h} V ${b.y}`, failed };
         }
         if (b.x >= a.x + a.w - 2) {
           const x1 = a.x + a.w, y1 = a.y + a.h / 2, x2 = b.x, y2 = b.y + b.h / 2;
