@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 type Capability = {
   key: string;
   label: string;
-  status: "live" | "demo" | "planned" | "mixed";
+  status: "live" | "demo" | "planned";
   title: string;
   icon: ReactNode;
 };
@@ -80,7 +80,7 @@ const CAPABILITIES: Capability[] = [
   {
     key: "conversion",
     label: "Conversion",
-    status: "mixed",
+    status: "live",
     title: "Solana / SPL assets → Jupiter → USDC: live quotes. Major digital assets → Hyperliquid → USDC: in progress, not enabled for deposits. Sandbox mode does not execute mainnet swaps.",
     icon: (
       <>
@@ -152,14 +152,7 @@ function CapabilityItem({ item, index = 0 }: { item: Capability; index?: number 
         <g transform="translate(17.6 21.6) scale(1.2)" stroke={STROKE} strokeWidth="1.3">{item.icon}</g>
       </svg>
       <span className="home-cap-label">{item.label}</span>
-      {item.status === "mixed" ? (
-        <span className="flex flex-wrap justify-center gap-1">
-          <span className="home-cap-status home-cap-status--live">Live</span>
-          <span className="home-cap-status home-cap-status--planned">In progress</span>
-        </span>
-      ) : (
-        <span className={`home-cap-status home-cap-status--${item.status}`}>{STATUS_TEXT[item.status]}</span>
-      )}
+      <span className={`home-cap-status home-cap-status--${item.status}`}>{STATUS_TEXT[item.status]}</span>
     </li>
   );
 }
