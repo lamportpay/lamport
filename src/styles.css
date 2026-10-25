@@ -2325,7 +2325,7 @@ body.has-cookie-banner .site-footer-legal {
 
 /* Connected reference infographic: measured edges never drive payment state. */
 .maf-infographic { background: var(--background); border-block: 1px solid var(--border); }
-.maf-container { max-width: 1600px; margin-inline: auto; padding-inline: 2rem; }
+.maf-container { max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
 .maf-diagram { position: relative; margin-top: 1.5rem; padding-top: 60px; }
 .maf-connections { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
 .maf-reference-grid { position: relative; display: grid; grid-template-columns: 1.65fr 1.15fr 1.65fr .85fr .85fr .9fr .95fr; grid-template-rows: auto auto; gap: 44px 26px; align-items: center; }
