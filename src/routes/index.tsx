@@ -14,7 +14,6 @@ import { HomeLatestNews } from "@/components/site/HomeLatestNews";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { HeroRibbon } from "@/components/site/HeroRibbon";
 import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
-import { HeroWorldMap } from "@/components/site/HeroWorldMap";
 import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -33,7 +32,6 @@ function Index() {
     <div className="commercial-home">
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden">
-          <HeroWorldMap />
           <HeroRibbon />
           <div className="home-container relative py-12 md:py-14">
             <div className="hero-network-grid">
