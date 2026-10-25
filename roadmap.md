@@ -12,19 +12,19 @@
 
 - [x] Publish the "One global network, built corridor by corridor." section with several currency examples per region (owner, 20 Oct 2026)
 - [x] Verify on lamportpay.com and lamportpay.lovable.app: all six regions list multiple currencies, each marked PLANNED · Partner expansion; map routes, currency chips and the LamportPay hub render in the site's own colours; no sideways scrolling, no browser errors
-- [ ] Confirm this batch is in the company GitHub repository (git state is managed outside this editor; nothing was pushed from here)
+- [x] Confirm this batch is in the company GitHub repository: `main` HEAD is 3ea807c ("Width normalize karda"), the same commit as this editor's copy (checked 25 Oct 2026)
 
 ## Publish hero artwork, fee row and comparison live
 
 - [x] Publish so the hero payout-network artwork, the "One 2% fee" step in the capability row and the How it works comparison go live on lamportpay.com (owner, 19 Oct 2026)
 - [x] Verify on lamportpay.com and lamportpay.lovable.app: hero artwork loads at full resolution (1024x1536); all eight capability steps share one horizontal line (same vertical centre) with "One 2% fee" last and Live, Identity check and Local currency payout still Sandbox; /how-it-works shows "The difference" and "The result" with eight table rows; no sideways scrolling, no browser errors
-- [ ] Confirm this batch is in the company GitHub repository (git state is managed outside this editor; nothing was pushed from here)
+- [x] Confirm this batch is in the company GitHub repository: carried on `main` under 3ea807c (checked 25 Oct 2026)
 
 ## Publish this batch live
 
 - [x] Publish so the People page order and "Izzat Iftikhar", the How it works comparison section and the one-complaint-per-chat fix go live (owner, 19 Oct 2026)
 - [x] Verify on lamportpay.com: card order Zoaib Ali, Ghazanfar Abbas, Izzat Iftikhar, Zaheer Muneer, Safi Ullah Adam, Greg Mirt; comparison section present on /how-it-works and the homepage; live chat code saves every reply under one conversation id (fresh id only on "New chat")
-- [ ] Confirm this batch is in the company GitHub repository (git state is managed outside this editor; nothing was pushed from here)
+- [x] Confirm this batch is in the company GitHub repository: carried on `main` under 3ea807c (checked 25 Oct 2026)
 
 
 ## Team member full name
@@ -107,7 +107,7 @@
 - [x] Keep Nigeria and Pakistan as planned markets in amber, show other countries by name only, and remove the green ticks from the map
 - [x] Replace the country row under the banner with one compact card: crypto in (SOL, USDC) to local money out as currency symbols
 - [x] Verify a country click zooms correctly with no page errors and no horizontal overflow at phone and desktop sizes
-- [ ] Automatic checks on the newest commit: the run reached lint and stopped there — a pre-existing type problem in the Ask AI chat admin file (an `any` the lint rules reject) fails it on every recent commit. Fixed in that file (typed like the other admin files) and lint, type checks and all 509 unit tests pass locally; the fix reaches GitHub on the next sync, which re-runs every check on the current copy.
+- [x] Automatic checks on the newest commit: the run on 3ea807c completed with conclusion `success` (checked 25 Oct 2026); the lint fix in the admin chat file is on `main`
 
 
 ## Manual homepage content navigation
