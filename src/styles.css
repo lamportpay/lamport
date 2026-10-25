@@ -2524,3 +2524,9 @@ body.has-cookie-banner .site-footer-legal {
   .rn-token { display: none; }
   .rn-reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* Hero background world map */
+.hero-map { opacity: 0.55; mask-image: radial-gradient(ellipse 80% 75% at 50% 50%, #000 45%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 80% 75% at 50% 50%, #000 45%, transparent 100%); }
+.hero-map-hub-glow { transform-box: fill-box; transform-origin: center; animation: hero-map-pulse 3s ease-in-out infinite; }
+@keyframes hero-map-pulse { 50% { transform: scale(1.35); opacity: 0.04; } }
+@media (prefers-reduced-motion: reduce) { .hero-map-token { display: none; } .hero-map-hub-glow { animation: none; } }
