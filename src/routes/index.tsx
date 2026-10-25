@@ -14,7 +14,7 @@ import { HomeLatestNews } from "@/components/site/HomeLatestNews";
 import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { HeroRibbon } from "@/components/site/HeroRibbon";
 import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
-import payoutNetworkAsset from "@/assets/global-payout-network.png.asset.json";
+import { HeroWorldMap } from "@/components/site/HeroWorldMap";
 import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -33,10 +33,11 @@ function Index() {
     <div className="commercial-home">
       <SiteLayout>
         <section className="home-hero relative isolate overflow-hidden">
+          <HeroWorldMap />
           <HeroRibbon />
           <div className="home-container relative py-12 md:py-14">
-            <div className="hero-network-grid items-center gap-10 lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-              <div className="hero-network-copy text-center lg:text-left">
+            <div className="hero-network-grid">
+              <div className="hero-network-copy text-center">
                 <p className="home-hero-badge">
                   <span className="home-hero-badge-dot" aria-hidden="true" />
                   Building the first Solana + Hyperliquid fiat engine
