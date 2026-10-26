@@ -12,7 +12,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
 }));
 
 import { waiverIdentityOf } from "@/lib/payments/fee-waiver.server";
-import { resetRateLimits } from "@/lib/payments/rate-limit.server";
+import { resetRateLimits, trustedClientIp } from "@/lib/payments/rate-limit.server";
 import { Route as AskAiRoute } from "@/routes/api/ask-ai";
 
 type Handler = (ctx: { request: Request }) => Promise<Response>;
@@ -42,6 +42,24 @@ describe("early-access waiver identity", () => {
 
   it("handles a signed-out visitor", () => {
     expect(waiverIdentityOf(null, null)).toEqual({ wallets: [], email: null });
+  });
+});
+
+describe("trusted client IP", () => {
+  const req = (headers: Record<string, string>) => new Request("https://x.test/", { headers });
+
+  it("on Cloudflare uses cf-connecting-ip and ignores a client-sent x-forwarded-for", () => {
+    const r = req({ "cf-connecting-ip": "203.0.113.9", "x-forwarded-for": "1.2.3.4, 203.0.113.9" });
+    expect(trustedClientIp(r, {})).toBe("203.0.113.9");
+  });
+
+  it("on Vercel ignores a client-sent cf-connecting-ip", () => {
+    const r = req({ "cf-connecting-ip": "1.2.3.4", "x-real-ip": "198.51.100.7" });
+    expect(trustedClientIp(r, { VERCEL: "1" })).toBe("198.51.100.7");
+  });
+
+  it("is 'unknown' when the platform header is missing", () => {
+    expect(trustedClientIp(req({ "x-forwarded-for": "1.2.3.4" }), {})).toBe("unknown");
   });
 });
 

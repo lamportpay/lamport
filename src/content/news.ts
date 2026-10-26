@@ -21,7 +21,7 @@ export const NEWS: NewsItem[] = [
     title: "LamportPay prepares for launch",
     headline: "LamportPay is going live soon — join early access.",
     summary:
-      "The LamportPay website is live and the payment flow is built and tested. We launch as soon as the final security phase is complete. The first 10 early-access users pay no LamportPay fee.",
+      "The LamportPay website is live and the payment flow is built and tested in the sandbox (no real funds yet). We launch as soon as the final security phase is complete. The first 10 early-access users pay no LamportPay fee.",
     published: "2026-10-15",
     keywords: ["LamportPay mainnet", "crypto to bank payout", "Solana stablecoin payout", "USDC to bank", "early access"],
     body: [

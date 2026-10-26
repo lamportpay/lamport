@@ -22,9 +22,8 @@ export const Route = createFileRoute("/api/ask-ai")({
           return Response.json({ error: "Invalid request." }, { status: 400 });
 
         // Public and unauthenticated: limit per IP before anything is stored.
-        const { allowShared } = await import("@/lib/payments/rate-limit.server");
-        const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for") ?? "unknown";
-        if (!(await allowShared("ask-ai", ip.split(",")[0].trim(), 30, 3600)))
+        const { allowShared, trustedClientIp } = await import("@/lib/payments/rate-limit.server");
+        if (!(await allowShared("ask-ai", trustedClientIp(request), 30, 3600)))
           return Response.json({ error: "Too many messages. Please try again later." }, { status: 429 });
 
         const messages = body.messages

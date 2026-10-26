@@ -6,12 +6,28 @@
  */
 const windows = new Map<string, { start: number; count: number }>();
 
-export function clientKey(request: Request, userId: string | null): string {
+export function clientKey(
+  request: Request,
+  userId: string | null,
+  env: Record<string, string | undefined> = process.env,
+): string {
   if (userId) return `u:${userId}`;
-  const fwd = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const ip =
-    fwd || request.headers.get("x-real-ip") || request.headers.get("cf-connecting-ip") || "unknown";
-  return `ip:${ip}`;
+  // Never the first x-forwarded-for entry: behind Cloudflare the client controls it.
+  return `ip:${trustedClientIp(request, env)}`;
+}
+
+/**
+ * The client IP from the header the hosting platform sets and clients cannot forge:
+ * Vercel overwrites x-real-ip / x-forwarded-for; Cloudflare (Lovable) overwrites
+ * cf-connecting-ip but appends to a client-sent x-forwarded-for. "unknown" if absent.
+ */
+export function trustedClientIp(
+  request: Request,
+  env: Record<string, string | undefined> = process.env,
+): string {
+  const h = (n: string) => request.headers.get(n)?.split(",")[0]?.trim() || null;
+  const ip = env["VERCEL"] ? (h("x-real-ip") ?? h("x-forwarded-for")) : h("cf-connecting-ip");
+  return ip ?? "unknown";
 }
 
 /** True when the call is allowed; false when `key` used up `limit` calls in `windowMs`. */
