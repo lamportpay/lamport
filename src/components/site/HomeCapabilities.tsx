@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 type Capability = {
   key: string;
   label: string;
-  status: "live" | "demo" | "planned" | "mixed";
+  status: "live" | "demo" | "planned";
   title: string;
   icon: ReactNode;
 };
@@ -20,19 +20,6 @@ type Capability = {
 const STROKE = "url(#home-cap-stroke)";
 
 const CAPABILITIES: Capability[] = [
-  {
-    key: "crypto-in",
-    label: "Asset + network",
-    status: "live",
-    title: "Identify a supported asset and its blockchain. Only explicitly enabled assets can be used today; additional networks and assets are in development.",
-    icon: (
-      <>
-        <ellipse cx="12" cy="6.6" rx="6.6" ry="2.8" />
-        <path d="M5.4 6.6v4.2c0 1.6 2.9 2.8 6.6 2.8s6.6-1.2 6.6-2.8V6.6" />
-        <path d="M5.4 11.2v4.2c0 1.6 2.9 2.8 6.6 2.8s6.6-1.2 6.6-2.8v-4.2" />
-      </>
-    ),
-  },
   {
     key: "wallet-sign-in",
     label: "Wallet sign-in",
@@ -45,6 +32,19 @@ const CAPABILITIES: Capability[] = [
         <path d="M10.5 13.8a2 2 0 0 1 3.4.9" />
         <path d="M12.2 16.6c.4 1 .6 2 .7 3.1" />
         <path d="M8.9 18.7c-.5-1-.9-2-1-3.1" />
+      </>
+    ),
+  },
+  {
+    key: "crypto-in",
+    label: "Asset + network",
+    status: "live",
+    title: "Identify a supported asset and its blockchain. Only explicitly enabled assets can be used today; additional networks and assets are in development.",
+    icon: (
+      <>
+        <ellipse cx="12" cy="6.6" rx="6.6" ry="2.8" />
+        <path d="M5.4 6.6v4.2c0 1.6 2.9 2.8 6.6 2.8s6.6-1.2 6.6-2.8V6.6" />
+        <path d="M5.4 11.2v4.2c0 1.6 2.9 2.8 6.6 2.8s6.6-1.2 6.6-2.8v-4.2" />
       </>
     ),
   },
@@ -80,7 +80,7 @@ const CAPABILITIES: Capability[] = [
   {
     key: "conversion",
     label: "Conversion",
-    status: "mixed",
+    status: "live",
     title: "Solana / SPL assets → Jupiter → USDC: live quotes. Major digital assets → Hyperliquid → USDC: in progress, not enabled for deposits. Sandbox mode does not execute mainnet swaps.",
     icon: (
       <>
@@ -152,14 +152,7 @@ function CapabilityItem({ item, index = 0 }: { item: Capability; index?: number 
         <g transform="translate(17.6 21.6) scale(1.2)" stroke={STROKE} strokeWidth="1.3">{item.icon}</g>
       </svg>
       <span className="home-cap-label">{item.label}</span>
-      {item.status === "mixed" ? (
-        <span className="flex flex-wrap justify-center gap-1">
-          <span className="home-cap-status home-cap-status--live">Live</span>
-          <span className="home-cap-status home-cap-status--planned">In progress</span>
-        </span>
-      ) : (
-        <span className={`home-cap-status home-cap-status--${item.status}`}>{STATUS_TEXT[item.status]}</span>
-      )}
+      <span className={`home-cap-status home-cap-status--${item.status}`}>{STATUS_TEXT[item.status]}</span>
     </li>
   );
 }
@@ -190,20 +183,6 @@ export function HomeCapabilities() {
           {[...CAPABILITIES, FEE_FEATURE].map((item, i) => <CapabilityItem key={item.key} item={item} index={i} />)}
         </ul>
 
-        <div className="home-cap-details">
-          <div className="home-cap-routes" aria-label="Conversion routes">
-            <p className="home-cap-routes-title"><span className="home-cap-label">Conversion routes</span></p>
-            <div className="home-cap-route-row">
-              <span className="home-cap-route-text">Solana / SPL assets → <strong>Jupiter</strong> → USDC</span>
-              <span className="home-cap-status home-cap-status--live">Live</span>
-            </div>
-            <div className="home-cap-route-row">
-              <span className="home-cap-route-text">Major digital assets → <strong>Hyperliquid</strong> → USDC</span>
-              <span className="home-cap-status home-cap-status--planned">In progress</span>
-            </div>
-            <p className="home-cap-routes-note">BTC, ETH, USDT and other major-asset routes are in development, not enabled for deposits.</p>
-          </div>
-        </div>
 
         <p className="home-cap-note">
           <span>Live means the step works today</span>

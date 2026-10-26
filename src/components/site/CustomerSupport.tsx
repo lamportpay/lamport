@@ -211,17 +211,15 @@ export function CustomerSupport() {
           type="button"
           className="group fixed bottom-5 right-5 z-40 flex items-center gap-3 rounded-full py-2.5 pl-3 pr-7 text-white shadow-xl shadow-[oklch(0.48_0.23_275/0.4)] ring-1 ring-white/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[oklch(0.48_0.23_275/0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
           style={{ backgroundImage: "var(--home-gradient)" }}
-          aria-label="Ask AI — open LamportPay assistant"
-          title="Ask AI"
+          aria-label="Ask Lammy — open LamportPay assistant"
+          title="Ask Lammy"
         >
           <span className="relative">
             <Mark size="size-9" inner="size-5" />
             <span className="absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-emerald-400 ring-2 ring-white motion-safe:animate-pulse" />
           </span>
-          <span className="flex flex-col items-start leading-none">
-            <span className="text-[15px] font-semibold tracking-wide">Ask AI</span>
-            <span className="mt-1 text-[10px] font-medium uppercase tracking-widest text-white/70">Lammy · online</span>
-          </span>
+          <span className="text-[15px] font-semibold tracking-wide">Ask Lammy</span>
+
         </button>
       </DialogTrigger>
       <DialogContent className="home-support left-auto right-4 top-auto bottom-4 w-[calc(100%-2rem)] max-w-sm translate-x-0 translate-y-0 gap-0 overflow-hidden rounded-lg p-0">
