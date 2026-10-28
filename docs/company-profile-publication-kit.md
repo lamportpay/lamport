@@ -34,7 +34,7 @@ Use consistent company name, website and founder details on owner-controlled Lin
 ## Google setup status
 
 - Search Console: connection could not link because the project owner lacks access. The connection owner must grant **Can use** under Sharing before setup can resume. No Google verification or sitemap submission has been performed.
-- Google Analytics: connection request declined. No tracking installed and no analytics data claimed.
+- Google Analytics: owner subsequently supplied G-J4DVLBPWRZ and authorized manual installation. Consent-gated public-page tracking implemented and browser-tested; awaits publication. No report data or hosted Enhanced Measurement settings verified.
 - Google Tag Manager: no authorized container ID supplied. No tags installed; avoid duplicate page views if Analytics and Tag Manager are configured later. Require consent before nonessential tracking and support withdrawal.
 - Google Business Profile: not eligible because the owner confirmed an online-only business. The registered office is not a customer-facing storefront.
 - Google Ads: no paid campaign or ad spend requested or created. Advertising is separate from organic search and requires a budget and approved campaign.

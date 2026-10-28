@@ -3,10 +3,10 @@ import { Cookie, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
-const KEY = "lamportpay-cookie-consent";
+import { COOKIE_KEY as KEY, COOKIE_VERSION, COOKIE_CHANGE_EVENT, readCookieChoice, type CookieChoice } from "@/lib/analytics-consent";
 const OPEN_EVENT = "lamportpay:open-cookie-settings";
 
-export type CookieChoice = "all" | "essential";
+export type { CookieChoice } from "@/lib/analytics-consent";
 
 export function openCookieSettings() {
   if (typeof window !== "undefined") window.dispatchEvent(new Event(OPEN_EVENT));
@@ -18,7 +18,7 @@ export function CookieConsent() {
 
   useEffect(() => {
     try {
-      if (!window.localStorage.getItem(KEY)) setOpen(true);
+      if (!readCookieChoice(window.localStorage.getItem(KEY))) setOpen(true);
     } catch {
       setOpen(true);
     }
@@ -56,11 +56,12 @@ export function CookieConsent() {
     try {
       window.localStorage.setItem(
         KEY,
-        JSON.stringify({ choice, at: new Date().toISOString(), version: 1 }),
+        JSON.stringify({ choice, at: new Date().toISOString(), version: COOKIE_VERSION }),
       );
     } catch {
       /* storage blocked: banner simply closes for this visit */
     }
+    window.dispatchEvent(new Event(COOKIE_CHANGE_EVENT));
     setOpen(false);
   };
 
@@ -92,7 +93,7 @@ export function CookieConsent() {
       </div>
       <p className="text-sm text-muted-foreground">
         LamportPay uses essential cookies and browser storage to keep you signed in, remember your
-        wallet session and secure payments. We do not use advertising cookies.{" "}
+        wallet session and secure payments. With your permission, Google Analytics helps us understand visits to public pages. We do not use advertising cookies.{" "}
         <Link to="/cookies" className="text-primary underline underline-offset-2">
           Cookie policy
         </Link>

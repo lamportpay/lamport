@@ -34,3 +34,4 @@
 - Heading reveals read the heading's own box on scroll/resize, never an IntersectionObserver on the heading: its own clip-path zeroes the observer's ratio, so the text would stay permanently hidden.
 - Read nested AGENTS.md before edits. Team profiles share a browser-safe registry; history must be source-backed, never invented LamportPay work.
 - Public corporate facts and organization/founder structured data share the browser-safe company-profile registry so visible company details and search metadata remain consistent without changing financial logic.
+- GA4 is mounted only in the marketing layout and gated by versioned cookie consent; send allowlisted public paths without query strings or financial/account data, and disable tracking on withdrawal or layout exit.

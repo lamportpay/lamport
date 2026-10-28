@@ -17,6 +17,12 @@ export const Route = createFileRoute("/cookies")({
 
 const rows = [
   {
+    name: "Google Analytics (_ga, _ga_*)",
+    type: "Optional analytics",
+    purpose: "Measures visits to public pages only after you accept optional cookies. No wallet addresses, payment details, account information or chat content are sent by our tracking code.",
+    duration: "Up to 2 years; removed on this site when you choose Essential only",
+  },
+  {
     name: "Sign-in session",
     type: "Essential",
     purpose: "Keeps you signed in to your LamportPay account after wallet or email sign-in.",
@@ -56,7 +62,7 @@ function CookiesPage() {
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight">Cookie policy</h1>
         <p className="mt-4 text-muted-foreground max-w-2xl">
           This page explains the cookies and similar browser storage that Lamport Pay Ltd uses on
-          lamportpay.com and the LamportPay app. Last updated: 15 October 2026.
+          lamportpay.com and the LamportPay app. Last updated: 28 October 2026.
         </p>
       </section>
 
@@ -64,9 +70,7 @@ function CookiesPage() {
         <div>
           <h2 className="text-2xl font-semibold mb-3">What we use</h2>
           <p className="text-muted-foreground">
-            We only use cookies and browser storage that the service needs to work, plus one
-            functional item for speed. We do not use advertising, cross-site tracking or
-            third-party marketing cookies, and we never store private keys or seed phrases.
+            We use essential browser storage, one functional item for speed, and optional Google Analytics on public pages only when you accept it. Analytics is not loaded before consent. We do not use advertising cookies and never store private keys or seed phrases.
           </p>
         </div>
 
@@ -101,6 +105,7 @@ function CookiesPage() {
             hosted page, which applies its own cookie policy. Your wallet extension (for example
             Phantom or Solflare) also manages its own storage.
           </p>
+          <p className="mt-3 text-muted-foreground">If you accept optional analytics, Google receives basic public-page visit information and processes it under its <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary underline">privacy policy</a>. Advertising storage, Google signals and advertising personalisation are disabled. We do not track signed-in payment or admin pages.</p>
         </div>
 
         <div>
@@ -108,7 +113,7 @@ function CookiesPage() {
           <p className="text-muted-foreground mb-4">
             Essential items cannot be switched off, because sign-in and payments would stop
             working. You can change your choice at any time, or clear cookies in your browser
-            settings.
+            settings. Choose Essential only to withdraw analytics consent and stop future tracking. Your updated choice is remembered for twelve months; earlier cookie choices made before analytics was introduced do not authorize analytics.
           </p>
           <Button onClick={openCookieSettings}>Cookie settings</Button>
         </div>

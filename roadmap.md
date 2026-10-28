@@ -3,7 +3,8 @@
 - [x] Add verified legal company profile, founder and search structured data; preserve sandbox disclosures
 - [x] Validate company page and founder profile at 1280px/390px, metadata, sitemap and five fact tests; no overflow or page errors, build OK
 - [ ] Google Search Console: blocked until connection owner shares Can use access with the project owner
-- [ ] Google Analytics / Tag Manager: blocked — Analytics connection declined and no Tag Manager container supplied; no tracking installed
+- [x] Install owner-supplied GA4 G-J4DVLBPWRZ: fresh consent required, public pages only, no query strings or financial/account data; five tests pass, browser observed Google collection requests and successful withdrawal/reload blocking, build OK
+- [ ] Publish Analytics: tracking code awaits next publication; Google Analytics report ingestion and hosted Enhanced Measurement settings remain unverified
 - [x] Google Business Profile eligibility: owner confirmed online-only, so no ineligible listing created
 - [x] Prepare off-site company profile material without claiming external listings or rankings (docs/company-profile-publication-kit.md)
 - [x] Request publication after validation and basic security scan (no findings); expected URL https://lamportpay.lovable.app
