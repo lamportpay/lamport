@@ -33,3 +33,4 @@
 - Journey content is manual-only, above selectors, with previous/next controls, so reading stays uninterrupted. Decorative motion is viewport-gated and reduced-motion-aware, never financial state. Scope phone styling to `.commercial-home`. Public deposit warnings are not payout blacklists; pending submissions imply no backing.
 - Heading reveals read the heading's own box on scroll/resize, never an IntersectionObserver on the heading: its own clip-path zeroes the observer's ratio, so the text would stay permanently hidden.
 - Read nested AGENTS.md before edits. Team profiles share a browser-safe registry; history must be source-backed, never invented LamportPay work.
+- Public corporate facts and organization/founder structured data share the browser-safe company-profile registry so visible company details and search metadata remain consistent without changing financial logic.
