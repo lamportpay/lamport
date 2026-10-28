@@ -1,9 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { ANALYTICS_ID, analyticsPath, readCookieChoice } from "../src/lib/analytics-consent";
+import { ANALYTICS_ID, GA_BOOTSTRAP_SNIPPET, analyticsPath, readCookieChoice } from "../src/lib/analytics-consent";
 const now = Date.parse("2026-10-28T12:05:00Z");
 const record = (choice: string, version = 2) => JSON.stringify({ choice, version, at: "2026-10-28T12:00:00Z" });
 describe("analytics privacy", () => {
   it("uses the authorized measurement ID", () => expect(ANALYTICS_ID).toBe("G-J4DVLBPWRZ"));
+  it("boots the Google tag with every consent signal denied and no automatic page view", () => {
+    expect(GA_BOOTSTRAP_SNIPPET).toContain("'consent','default'");
+    expect(GA_BOOTSTRAP_SNIPPET).toContain("analytics_storage:'denied'");
+    expect(GA_BOOTSTRAP_SNIPPET).toContain("ad_storage:'denied'");
+    expect(GA_BOOTSTRAP_SNIPPET).toContain("send_page_view:false");
+    expect(GA_BOOTSTRAP_SNIPPET).toContain(ANALYTICS_ID);
+  });
   it("requires fresh analytics-aware acceptance", () => {
     expect(readCookieChoice(record("all", 1), now)).toBeNull();
     expect(readCookieChoice(record("all"), now)).toBe("all");
