@@ -89,6 +89,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@LamportPay" },
       { name: "theme-color", content: "#4C4EE4" },
+      {
+        name: "google-site-verification",
+        content: "ODOlfZLbWMykjGc3uniTm1aW0pT1hjw3QnsXRFFwpXQ",
+      },
     ],
     links: [
       {
