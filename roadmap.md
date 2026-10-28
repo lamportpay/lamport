@@ -1,3 +1,13 @@
+## Company profile and Google setup (28 October 2026)
+
+- [ ] Add verified legal company profile, founder and search structured data; preserve sandbox disclosures
+- [ ] Validate company page, metadata, sitemap and profile rules
+- [ ] Google Search Console: blocked until connection owner shares Can use access with the project owner
+- [ ] Google Analytics / Tag Manager: obtain authorized tracking setup and respect cookie consent
+- [ ] Google Business Profile: confirm in-person customer eligibility before connecting or creating a listing
+- [ ] Prepare off-site company profile material without claiming external listings or rankings
+- [ ] Publish after validation and security checks; verify deployment and company GitHub sync
+
 ## Docs refresh to match the new homepage
 
 - [x] White paper: Hyperliquid route for major assets marked in progress (not enabled), two conversion routes, regional partner network (six regions, planned), sandbox corridors US/GB/IN/PH with NG/PK planned, comparison with P2P/exchanges/remittances, early-access fee waiver
