@@ -1,11 +1,11 @@
 ## Company profile and Google setup (28 October 2026)
 
-- [ ] Add verified legal company profile, founder and search structured data; preserve sandbox disclosures
-- [ ] Validate company page, metadata, sitemap and profile rules
+- [x] Add verified legal company profile, founder and search structured data; preserve sandbox disclosures
+- [x] Validate company page and founder profile at 1280px/390px, metadata, sitemap and five fact tests; no overflow or page errors, build OK
 - [ ] Google Search Console: blocked until connection owner shares Can use access with the project owner
-- [ ] Google Analytics / Tag Manager: obtain authorized tracking setup and respect cookie consent
-- [ ] Google Business Profile: confirm in-person customer eligibility before connecting or creating a listing
-- [ ] Prepare off-site company profile material without claiming external listings or rankings
+- [ ] Google Analytics / Tag Manager: blocked — Analytics connection declined and no Tag Manager container supplied; no tracking installed
+- [x] Google Business Profile eligibility: owner confirmed online-only, so no ineligible listing created
+- [x] Prepare off-site company profile material without claiming external listings or rankings (docs/company-profile-publication-kit.md)
 - [ ] Publish after validation and security checks; verify deployment and company GitHub sync
 
 ## Docs refresh to match the new homepage
