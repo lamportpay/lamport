@@ -67,6 +67,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       className="min-h-screen flex flex-col bg-background text-foreground"
       style={{ ["--site-header-h" as string]: `${headerH}px` }}
     >
+      {/* Google tag in the served HTML; Consent Mode keeps it denied until the visitor accepts cookies. */}
+      <script dangerouslySetInnerHTML={{ __html: GA_BOOTSTRAP_SNIPPET }} />
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`} />
       <BrandFrame />
       <LaunchStatus />
       <LaunchPopup />
