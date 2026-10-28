@@ -4,12 +4,13 @@
 - [x] Validate company page and founder profile at 1280px/390px, metadata, sitemap and five fact tests; no overflow or page errors, build OK
 - [ ] Google Search Console: blocked until connection owner shares Can use access with the project owner
 - [x] Install owner-supplied GA4 G-J4DVLBPWRZ: fresh consent required, public pages only, no query strings or financial/account data; five tests pass, browser observed Google collection requests and successful withdrawal/reload blocking, build OK
-- [ ] Publish Analytics: tracking code awaits next publication; Google Analytics report ingestion and hosted Enhanced Measurement settings remain unverified
+- [x] Publish Analytics: GA4 G-J4DVLBPWRZ, its consent-mode bootstrap and Tag Manager GTM-M8XDHCH4 are live on lamportpay.com (fetch confirmed 28 Oct); Google Analytics report ingestion and hosted Enhanced Measurement settings remain unverified
+- [x] Install Tag Manager GTM-M8XDHCH4 in the page head with the after-body noscript fallback; keep Analytics installed directly rather than duplicated inside Tag Manager, so visitors cannot be counted twice and the cookie banner still governs collection
 - [x] Google Business Profile eligibility: owner confirmed online-only, so no ineligible listing created
 - [x] Prepare off-site company profile material without claiming external listings or rankings (docs/company-profile-publication-kit.md)
 - [x] Request publication after validation and basic security scan (no findings); expected URL https://lamportpay.lovable.app
 - [ ] Confirm deployment: one fetch after publication still served the previous About page on both domains; await deployment, do not claim live completion
-- [ ] Confirm company GitHub sync: main did not yet contain src/lib/company-profile.ts (404 at check); automatic sync remains unconfirmed
+- [x] Confirm company GitHub sync: `main` HEAD is 569c774 ("Added GTM-M8XDHCH4", 28 Oct 2026), byte-identical to this editor for `src/routes/__root.tsx`, `src/lib/analytics-consent.ts`, `src/components/site/Layout.tsx`, `src/lib/company-profile.ts`, `src/routes/about.tsx` and `tests/analytics-consent.unit.test.ts`
 
 ## Docs refresh to match the new homepage
 
