@@ -12,6 +12,7 @@ import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
+import { companyGraph } from "@/lib/company-profile";
 
 function NotFoundComponent() {
   return (
@@ -109,34 +110,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@graph": [
-            {
-              "@type": "Organization",
-              "@id": "https://lamportpay.com/#organization",
-              name: "LamportPay",
-              legalName: "Lamport Pay Ltd",
-              url: "https://lamportpay.com",
-              email: "hello@lamportpay.com",
-              description:
-                "LamportPay is a multi-asset crypto-to-local-currency payment routing platform, currently available as a demonstration product.",
-              sameAs: [
-                "https://x.com/LamportPay",
-                "https://www.linkedin.com/company/lamportpay",
-                "https://github.com/lamportpay",
-              ],
-            },
-            {
-              "@type": "WebSite",
-              "@id": "https://lamportpay.com/#website",
-              name: "LamportPay",
-              url: "https://lamportpay.com",
-              inLanguage: "en",
-              publisher: { "@id": "https://lamportpay.com/#organization" },
-            },
-          ],
-        }),
+        children: JSON.stringify(companyGraph()),
       },
     ],
   }),

@@ -1,12 +1,14 @@
 ## Company profile and Google setup (28 October 2026)
 
-- [ ] Add verified legal company profile, founder and search structured data; preserve sandbox disclosures
-- [ ] Validate company page, metadata, sitemap and profile rules
+- [x] Add verified legal company profile, founder and search structured data; preserve sandbox disclosures
+- [x] Validate company page and founder profile at 1280px/390px, metadata, sitemap and five fact tests; no overflow or page errors, build OK
 - [ ] Google Search Console: blocked until connection owner shares Can use access with the project owner
-- [ ] Google Analytics / Tag Manager: obtain authorized tracking setup and respect cookie consent
-- [ ] Google Business Profile: confirm in-person customer eligibility before connecting or creating a listing
-- [ ] Prepare off-site company profile material without claiming external listings or rankings
-- [ ] Publish after validation and security checks; verify deployment and company GitHub sync
+- [ ] Google Analytics / Tag Manager: blocked — Analytics connection declined and no Tag Manager container supplied; no tracking installed
+- [x] Google Business Profile eligibility: owner confirmed online-only, so no ineligible listing created
+- [x] Prepare off-site company profile material without claiming external listings or rankings (docs/company-profile-publication-kit.md)
+- [x] Request publication after validation and basic security scan (no findings); expected URL https://lamportpay.lovable.app
+- [ ] Confirm deployment: one fetch after publication still served the previous About page on both domains; await deployment, do not claim live completion
+- [ ] Confirm company GitHub sync: main did not yet contain src/lib/company-profile.ts (404 at check); automatic sync remains unconfirmed
 
 ## Docs refresh to match the new homepage
 

@@ -2,17 +2,21 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Building2, Globe2, ShieldCheck, Wallet } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
-import { pageSeo } from "@/lib/seo";
+import { pageSeo, breadcrumbSchema } from "@/lib/seo";
 import { AboutPartners } from "@/components/site/AboutPartners";
+import { COMPANY } from "@/lib/company-profile";
+import { TEAM } from "@/lib/team";
 
 export const Route = createFileRoute("/about")({
-  head: () =>
-    pageSeo({
+  head: () => ({
+    ...pageSeo({
       path: "/about",
-      title: "About LamportPay — Crypto in. Local money out.",
+      title: "Lamport Pay Ltd — Company profile & founder Zoaib Ali",
       description:
-        "Who we are: Lamport Pay Ltd builds LamportPay, a non-custodial way to turn Solana stablecoins into local bank payouts through licensed partners.",
+        "Lamport Pay Ltd (11464834): incorporated 16 July 2018, registered in London, led by founder and CEO Zoaib Ali. Explore the company and its sandbox payment platform.",
     }),
+    scripts: [{ type: "application/ld+json", children: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Company profile", path: "/about" }])) }],
+  }),
   component: About,
 });
 
@@ -46,6 +50,12 @@ const values = [
 const facts = [
   { label: "Brand", value: "LamportPay" },
   { label: "Legal entity", value: "Lamport Pay Ltd" },
+  { label: "Company number", value: COMPANY.number },
+  { label: "Incorporated", value: COMPANY.incorporationLabel },
+  { label: "Company status", value: COMPANY.status },
+  { label: "Company type", value: COMPANY.type },
+  { label: "Founder & CEO", value: COMPANY.founder.name },
+  { label: "Registered office", value: COMPANY.office },
   { label: "Network", value: "Solana" },
   { label: "Settlement asset", value: "USDC" },
   { label: "Payout partner", value: "Stables" },
@@ -53,13 +63,15 @@ const facts = [
 ];
 
 function About() {
+  const founder = TEAM.find((member) => member.slug === "zoaib-ali");
   return (
     <SiteLayout>
       <section className="max-w-6xl mx-auto px-5 py-12 md:py-16">
         <div className="text-xs font-semibold uppercase tracking-wider text-primary">About us</div>
         <h1 className="mt-3 max-w-3xl text-4xl md:text-5xl font-semibold leading-tight">
-          Crypto in. Local money out.
+          Lamport Pay Ltd
         </h1>
+        <p className="mt-3 text-xl font-medium text-primary">Crypto in. Local money out.</p>
         <p className="mt-4 max-w-3xl text-lg text-muted-foreground leading-relaxed">
           LamportPay is built by Lamport Pay Ltd. We help people and businesses turn stablecoins on
           Solana into money in a local bank account — simply, transparently and without handing
@@ -69,6 +81,39 @@ function About() {
 
         <div className="mt-12 grid gap-10 md:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-10">
+            <div>
+              <h2 className="text-2xl font-semibold">The company behind LamportPay</h2>
+              <p className="mt-3 text-muted-foreground leading-relaxed">
+                Lamport Pay Ltd is an active UK private limited company, incorporated on {COMPANY.incorporationLabel}.
+                The company adopted its current name on 14 September 2026. Its legal incorporation date is not the launch date of the LamportPay product.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Button asChild variant="outline"><a href={COMPANY.registerUrl} target="_blank" rel="noopener noreferrer">Companies House record <ArrowRight className="size-4" /></a></Button>
+              </div>
+            </div>
+            {founder && (
+              <div className="grid items-start gap-6 sm:grid-cols-[144px_minmax(0,1fr)]">
+                <img src={founder.photo} alt="Zoaib Ali, Founder and CEO of LamportPay" loading="lazy" className="aspect-square w-36 rounded-lg object-cover object-top" />
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-primary">Leadership</p>
+                  <h2 className="mt-2 text-2xl font-semibold">{founder.name}</h2>
+                  <p className="mt-1 font-medium text-primary">Founder & CEO · Director</p>
+                  <p className="mt-3 text-muted-foreground leading-relaxed">{founder.summary} Companies House records his appointment as director on 16 July 2018.</p>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <Button asChild variant="outline"><Link to="/people">Meet the leadership <ArrowRight className="size-4" /></Link></Button>
+                    <a href={COMPANY.officersUrl} target="_blank" rel="noopener noreferrer" className="self-center text-sm text-primary underline underline-offset-4">Official director record</a>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div>
+              <h2 className="text-2xl font-semibold">Company history</h2>
+              <ol className="mt-5 space-y-4 border-l border-border pl-5">
+                {COMPANY.previousNames.map((entry) => <li key={entry.name}><p className="text-sm text-muted-foreground">{entry.from} – {entry.to}</p><p className="mt-1 font-medium">{entry.name}</p></li>)}
+                <li><p className="text-sm text-muted-foreground">14 September 2026 – present</p><p className="mt-1 font-medium">{COMPANY.legalName}</p></li>
+              </ol>
+              <p className="mt-5 text-sm text-muted-foreground">Registered activities: {COMPANY.sic.map((activity) => `${activity.code} — ${activity.name}`).join("; ")}.</p>
+            </div>
             <div>
               <h2 className="text-2xl font-semibold">Our mission</h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
@@ -119,18 +164,20 @@ function About() {
               </div>
             </div>
           </div>
-          <aside className="self-start rounded-xl border border-border bg-card p-6 md:sticky md:top-24">
+          <aside className="min-w-0 self-start rounded-xl border border-border bg-card p-6 md:sticky md:top-24">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Company facts
             </h2>
             <dl className="mt-4 divide-y divide-border text-sm">
               {facts.map((f) => (
-                <div key={f.label} className="flex justify-between gap-4 py-3">
+                <div key={f.label} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-4 py-3">
                   <dt className="text-muted-foreground">{f.label}</dt>
-                  <dd className="text-right font-medium">{f.value}</dd>
+                  <dd className="break-words text-right font-medium">{f.value}</dd>
                 </div>
               ))}
             </dl>
+            <p className="mt-5 text-xs leading-relaxed text-muted-foreground">Source: Companies House, checked 28 October 2026. Registration is not a financial-services licence or production payout approval. The registered office is a legal correspondence address; LamportPay operates online only.</p>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">No public stock-exchange listing or ticker is claimed. Market capitalisation and share-price data are not presented.</p>
           </aside>
         </div>
       </section>
