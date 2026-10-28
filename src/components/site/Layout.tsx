@@ -13,6 +13,7 @@ import { LaunchPopup } from "@/components/site/LaunchPopup";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
 import { GoogleAnalytics } from "@/components/site/GoogleAnalytics";
+import { ANALYTICS_ID, GA_BOOTSTRAP_SNIPPET } from "@/lib/analytics-consent";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
   return (
@@ -66,6 +67,9 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       className="min-h-screen flex flex-col bg-background text-foreground"
       style={{ ["--site-header-h" as string]: `${headerH}px` }}
     >
+      {/* Google tag in the served HTML; Consent Mode keeps it denied until the visitor accepts cookies. */}
+      <script dangerouslySetInnerHTML={{ __html: GA_BOOTSTRAP_SNIPPET }} />
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_ID}`} />
       <BrandFrame />
       <LaunchStatus />
       <LaunchPopup />
