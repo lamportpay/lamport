@@ -13,6 +13,7 @@ import { LaunchPopup } from "@/components/site/LaunchPopup";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
 import { GoogleAnalytics } from "@/components/site/GoogleAnalytics";
+import { ANALYTICS_ID, GA_BOOTSTRAP_SNIPPET } from "@/lib/analytics-consent";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
   return (
