@@ -12,6 +12,7 @@ import { LaunchStatus } from "@/components/site/LaunchStatus";
 import { LaunchPopup } from "@/components/site/LaunchPopup";
 import { CryptoPriceTicker } from "@/components/site/CryptoPriceTicker";
 import { ScrollReveal } from "@/components/site/ScrollReveal";
+import { GoogleAnalytics } from "@/components/site/GoogleAnalytics";
 
 export function BrandLogo({ className = "" }: { className?: string }) {
   return (
@@ -187,6 +188,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       </main>
       <SiteFooter />
       <CookieConsent />
+      <GoogleAnalytics />
       <CustomerSupport />
     </div>
   );
