@@ -6,7 +6,9 @@
 - [ ] Google Analytics / Tag Manager: blocked — Analytics connection declined and no Tag Manager container supplied; no tracking installed
 - [x] Google Business Profile eligibility: owner confirmed online-only, so no ineligible listing created
 - [x] Prepare off-site company profile material without claiming external listings or rankings (docs/company-profile-publication-kit.md)
-- [ ] Publish after validation and security checks; verify deployment and company GitHub sync
+- [x] Request publication after validation and basic security scan (no findings); expected URL https://lamportpay.lovable.app
+- [ ] Confirm deployment: one fetch after publication still served the previous About page on both domains; await deployment, do not claim live completion
+- [ ] Confirm company GitHub sync: main did not yet contain src/lib/company-profile.ts (404 at check); automatic sync remains unconfirmed
 
 ## Docs refresh to match the new homepage
 
