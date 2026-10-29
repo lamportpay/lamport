@@ -83,6 +83,22 @@ fee ledger refuse changes); X5 not started.
     and the internal 0–11 numbering differ by design (`docs/ROADMAP.md`), but describe
     different current phases.
 
+## Fee wording: conflicts to resolve before any wording change
+
+Source of truth in force: `CLAUDE.md` and `docs/ROADMAP.md` (owner decisions 30 Sep): one
+LamportPay fee of **2% of the total the user sends, taken out of it** (150 sent → 3.00 fee →
+147.00 to Stables), charged once, collected on-chain in the user's own transaction; Stables,
+Jupiter and network costs are separate; the `/pay` UI shows the fee amount, not a percentage.
+Code and tests agree (`fee-math.ts`, `fees.unit.test.ts`, `funding-transaction.unit.test.ts`).
+
+| Where | Says | Conflict | Proposed correction (for review; nothing changed) |
+|---|---|---|---|
+| Tracker, Business Model B17 | "2% of the amount converted… Added on top… shown as 'LamportPay fee — 2%'" | Base (converted vs total) and display (percentage) | "2% of the total the user sends, taken out of it; shown as the fee amount" |
+| Tracker, Stables Questions P8 | "LamportPay's 0.5% fee… as integrator_fee in the quote" | Rate and mechanism (Stables-collected 0.5% vs own on-chain 2%) | Mark P8 superseded by the 30 Sep decision |
+| Public MCP tool `quote_transfer` (`src/lib/mcp/tools/quote-transfer.ts`) | "Indicative Stables payout fee 1% (min $1)" | Invents a partner fee; Stables' real fees come from the live quote and are confidential | Drop the partner-fee figure; say partner fees come from the live quote |
+| Admin settings description (`BusinessSettingsAdmin.tsx`) | "added on top of the Stables quote" | Consistent arithmetic (fee is on top of the amount sent to Stables) but reads like "on top of what you send" | Optional: "taken out of what the user sends; Stables receives its quoted amount" |
+| Tracker, Business Model B14 | Own account only | Superseded by the 11 Oct beneficiary decision | Update |
+
 ## Priorities (do not start later phases early)
 
 1. Phase 2/3 gates the owner holds: revenue wallet (C01), click-through (C02), technical audit

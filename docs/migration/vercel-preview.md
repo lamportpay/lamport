@@ -16,10 +16,28 @@ database, and no Vercel deployment exists yet.
 `bun.lock` still resolves from Lovable's private mirror and is left alone so Lovable keeps
 working; Vercel uses `npm ci` (set in `vercel.json`), never bun.
 
+### Branches (29 Oct): one protected `main`, one working branch
+
+There is no `develop`, so `vercel-preview-migration` is the shared working branch. `main` is
+**not protected** yet (owner: Settings → Branches → add a rule for `main`: require a pull
+request and the `CI` status check, block force pushes and deletion).
+
+| Branch | Commits not in `main` or this branch | Open PR | Proposal (nothing deleted) |
+|---|---|---|---|
+| `fix/vercel-readiness` | 0 | lamportpay/lamport#1 → `main` | Keep until #1 is reviewed; its commit is already here |
+| `claude/jolly-archimedes-f39xm5` | 0 | – | Safe to delete after approval |
+| `fix/launch-blockers`, `fix/dependency-audit`, `docs/readme-accuracy`, `docs/readme-refresh`, `docs/update-project-documentation` | 0 (all in `main`) | – | Safe to delete after approval |
+| `social-media` | 11 (unrelated history: 162 image/video files) | – | Keep; better moved to Drive or a separate assets repository |
+
 ## 2. Vercel project (company team only)
 
-Not created yet: the Vercel connector available to the engineering agent is a personal account
-and was not used. Owner steps, in the **company** Vercel team:
+Status 29 Oct (evening): the connector is now the company account (`hello@lamportpay.com`,
+Hobby plan, team `lamportpay-7634`), linked to the `lamportpay` GitHub account with access to
+selected repositories. The team itself is not yet authorized for the connector, so its projects,
+settings and environment variables could not be read; no project was created or changed. Hobby
+is for non-commercial use and runs crons once a day; a paid plan is needed before production.
+
+Owner steps, in the **company** Vercel team:
 
 1. Vercel → Add New → Project → Import `lamportpay/lamport` (requires the Vercel GitHub app on the
    `lamportpay` org with access to this repository only).
@@ -44,10 +62,48 @@ and no domain it serves nothing usable on `*.vercel.app` only; cancel it if it s
 
 ## 3. Database for Preview
 
-**Recommended: a new, company-owned Supabase project** (for example `lamportpay-preview`), filled
-with the migrations below and made-up test data only.
+**Owner decision 29 Oct: no new project; Preview uses the existing project
+`gdksfksypkcfiohozzsx`.** It needs **no schema change**: its schema still matches the 28 migration
+files exactly (re-checked 29 Oct evening, same fingerprint). Nothing below has been changed on it.
 
-The existing dev project `gdksfksypkcfiohozzsx` was assessed read-only on 29 Oct:
+Identity (verified): project `gdksfksypkcfiohozzsx`, name "LamportPay", region ap-southeast-2,
+Postgres 17, in the Supabase organization "GhazanfarGw's Org" (**Free plan**; the same org holds
+an unrelated project). It is not the live database: it has no early-access signups and no
+support chats, while the live site collects both.
+
+### Before the Preview URL is shared (owner decisions; nothing done)
+
+- **Admins:** 4 accounts hold the admin role (3 `example.com` test accounts, 1 `gmail.com`), none
+  with MFA. On a reachable Preview, a weak test password is an admin login. Keep Vercel
+  Deployment Protection on, and decide whether the test accounts keep the admin role and how
+  their passwords are set.
+- **Auth URLs:** Authentication → URL Configuration must list the Preview URL as a redirect URL
+  (password reset and admin magic links use the page's own origin).
+- **Leaked-password protection:** off; Supabase offers it on paid plans only.
+- **Coins:** the project stores no coin list, so set `PAYMENT_ENABLED_CURRENCIES=usdc` in Preview
+  (unset means USDC and USDT).
+- **Scheduler:** `lamportpay-reconcile-payments` runs every 5 minutes and does nothing while the
+  two Vault secrets are unset; leave them unset for Preview.
+
+### Recovery plan (before any future change to this database)
+
+1. Free plan: no point-in-time recovery. Before a change, the owner takes a dump on their own
+   machine with the Supabase CLI (`supabase db dump` for the schema, `supabase db dump
+   --data-only` for data), stored outside the repository; or the org moves to a paid plan with
+   daily backups.
+2. Changes only as reviewed files in `supabase/migrations/`, additive and safe to re-run, each
+   with its rollback SQL written down; no destructive statements.
+3. Record the schema fingerprint (md5 of `table.column nullability`, 279 lines today) before and
+   after, and re-run the security advisors.
+4. Stop if a change would touch payment rows, users or admin roles.
+
+**Migration history (metadata only, not done):** the project's history lists 26 re-stamped
+versions instead of the 28 file versions, so `supabase db push` would try to re-apply every file.
+With approval it can be aligned without touching schema or data
+(`supabase migration repair --status reverted <old versions>` then `--status applied <file
+versions>`); afterwards `supabase db push --dry-run` must report nothing to apply.
+
+### Earlier read-only assessment (29 Oct, morning)
 
 | Check | Result |
 |---|---|
