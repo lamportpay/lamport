@@ -224,3 +224,45 @@ No real customer data goes to Preview. At cutover, with owner approval:
    orphan foreign keys; append-only tables unchanged.
 5. Personal data (emails, names, chat contents) is handled only in that restricted copy; delete
    export files after verification.
+
+## 7. First Preview deployment and live checks (29 Oct, night)
+
+**Deployed:** `dpl_4jM185DamSwwKs6kirtjdfXctF2B`, target **preview**, commit `7d9bb25`, at
+`lamport-ck56g1480-lamportpay-7634.vercel.app` and the branch alias
+`lamport-git-vercel-preview-migration-lamportpay-7634.vercel.app` (Vercel Authentication on).
+Created with an explicit preview deployment through the Vercel API.
+
+**Incident (no impact):** the first Git-triggered build (`877c02e`, `dpl_Aw2tE93vEAg3HnKjy63DtVctn2VT`)
+was classified by Vercel as **production**: aliases `lamport-kohl.vercel.app` and
+`lamport-lamportpay-7634.vercel.app`, protected, and without the Preview-only variables (0
+Production variables exist), so it holds no credentials. lamportpay.com, Lovable and `main`
+were not touched. Git-triggered deployments were paused again (`7d9bb25`). Owner: in Vercel →
+project `lamport` → Settings → Environments → Production, set branch tracking to `main`, and
+delete that deployment if not wanted.
+
+**Live checks on the Preview (GET via Vercel's authenticated fetch):**
+
+| Check | Result |
+|---|---|
+| `/api/integration-status` | mode `test`, devnet, Stables sandbox, `realFunds: false`, LIVE unavailable, Jupiter configured, webhook verification on |
+| Security headers (every response) | CSP `frame-ancestors 'none'`, HSTS, `X-Frame-Options: DENY`, `nosniff`, Referrer-Policy, Permissions-Policy, `X-Robots-Tag: noindex` |
+| `/api/solana/health?cluster=devnet` | reachable (Alchemy devnet) |
+| `/api/solana/health?cluster=mainnet-beta` | refused: "TEST MODE: the mainnet-beta cluster is blocked" |
+| `/api/cron/reconcile-payments` without the secret | 401 (request reached the app) |
+| `/mcp` without OAuth | 401 (request reached the app) |
+| `/api/kyc` signed out | 401 |
+| `/pay`, `/admin/login` | 200; GTM tag present on both (open item) |
+| Business settings | **failed: Supabase answered "Unregistered API key" for `SUPABASE_SERVICE_ROLE_KEY`**. The publishable key matches the project; the secret key does not. The app fails safe (status falls back to defaults; payment actions pause), so database features (sign-in records, payments, admin data) do not work on Preview until the key is replaced |
+
+**Not testable from here:** POST endpoints (Stables webhook signatures, payment creation, the
+read-only Jupiter ExactOut quote): the available fetch tool is GET-only and this environment
+cannot reach `*.vercel.app` directly. These remain covered by unit tests (553) and the local
+integration run.
+
+**To finish Preview (owner):**
+1. Supabase → project `gdksfksypkcfiohozzsx` → Project Settings → API Keys → copy (or create) a
+   secret key, then Vercel → `lamport` → Settings → Environment Variables → edit
+   `SUPABASE_SERVICE_ROLE_KEY` (Preview, branch `vercel-preview-migration`) and paste it there,
+   not in chat. Then redeploy the Preview.
+2. Supabase → Authentication → URL Configuration → add the Preview URL to Redirect URLs.
+3. Set Vercel's production branch to `main` (above).
