@@ -20,6 +20,10 @@ export const Route = createFileRoute("/api/solana/health")({
   server: {
     handlers: {
       GET: async ({ request }) => {
+        // Public and unauthenticated, and every call spends RPC provider quota: limit per IP.
+        const { allowShared, trustedClientIp } = await import("@/lib/payments/rate-limit.server");
+        if (!(await allowShared("solana-health", trustedClientIp(request), 10)))
+          return Response.json({ error: "Too many requests. Please try again later." }, { status: 429 });
         const requestUrl = new URL(request.url);
         const raw = requestUrl.searchParams.get("cluster") ?? "devnet";
         if (!isSolanaCluster(raw)) {

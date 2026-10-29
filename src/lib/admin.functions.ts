@@ -494,6 +494,9 @@ export const redeemAdminInvite = createServerFn({ method: "POST" })
     if (userError) throw new Error(userError.message);
     const email = (user?.user?.email ?? "").toLowerCase();
     if (!email) throw new Error("Your account has no email address.");
+    // An unconfirmed email proves nothing: whoever signs up first with an invited
+    // address must not receive the invite's role.
+    if (!user?.user?.email_confirmed_at) throw new Error("Confirm your email address first.");
 
     const { data: invite, error: inviteError } = await supabaseAdmin
       .from("admin_invites")
@@ -529,13 +532,29 @@ export const redeemAdminInvite = createServerFn({ method: "POST" })
   });
 
 /**
- * Demo bootstrap: lets the first signed-in operator claim the admin role while
- * no admin exists yet. Once an admin exists this always refuses.
+ * Bootstrap: lets the operator named in ADMIN_BOOTSTRAP_EMAIL claim the admin
+ * role while no admin exists yet (a fresh production database). The account's
+ * email must match and be confirmed; without the variable this always refuses,
+ * so the first person to sign in to a new database cannot make themselves admin.
+ * Once an admin exists this always refuses.
  */
 export const claimFirstAdminRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const bootstrapEmail = process.env["ADMIN_BOOTSTRAP_EMAIL"]?.trim().toLowerCase();
+    if (!bootstrapEmail) throw new Error("Admin bootstrap is not enabled on this server.");
+    const { data: me, error: meError } = await supabaseAdmin.auth.admin.getUserById(
+      context.userId,
+    );
+    if (meError) throw new Error(meError.message);
+    if (
+      !me?.user?.email_confirmed_at ||
+      (me.user.email ?? "").toLowerCase() !== bootstrapEmail
+    ) {
+      throw new Error("This account may not claim the admin role.");
+    }
 
     const { count, error: countError } = await supabaseAdmin
       .from("user_roles")

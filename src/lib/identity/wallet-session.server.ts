@@ -17,13 +17,26 @@ import {
   parseWalletSignInMessage,
 } from "@/lib/identity/wallet-message";
 
-/** LamportPay's own sites; a sign-in message naming any other host is refused. */
+/**
+ * LamportPay's own sites; a sign-in message naming any other host is refused.
+ * The list is fixed on the server. Request headers (Origin, Host,
+ * X-Forwarded-Host) are never trusted here: a script can set them to any
+ * value, so a message a victim signed on a look-alike site could otherwise be
+ * replayed here with that site named in the headers.
+ */
 const OWN_HOSTS = new Set(["lamportpay.com", "www.lamportpay.com", "lamportpay.lovable.app"]);
 const PROJECT_ID = "1dfad1b7-e30c-4233-9276-65c1ba5b7e9b";
 const OWN_HOST_PATTERNS = [
   new RegExp(`^(id-preview--)?${PROJECT_ID}\\.lovableproject\\.com$`),
   new RegExp(`^id-preview--${PROJECT_ID}\\.lovable\\.app$`),
-  /^localhost(:\d+)?$/,
+];
+/** Deployment URLs set by the operator (.env) or by Vercel itself (system variables). */
+const DEPLOYMENT_URL_VARS = [
+  "LAMPORTPAY_LIVE_URL",
+  "LAMPORTPAY_TEST_URL",
+  "VERCEL_PROJECT_PRODUCTION_URL",
+  "VERCEL_BRANCH_URL",
+  "VERCEL_URL",
 ];
 
 function hostOf(value: string | null | undefined): string | null {
@@ -37,13 +50,13 @@ function hostOf(value: string | null | undefined): string | null {
 
 export function isOwnSiteHost(
   host: string,
-  request: { requestOrigin: string | null; requestHosts?: (string | null | undefined)[] },
+  env: Record<string, string | undefined> = process.env,
 ): boolean {
   const h = host.toLowerCase();
-  const seen = [request.requestOrigin, ...(request.requestHosts ?? [])].map(hostOf);
-  if (seen.includes(h)) return true;
   if (OWN_HOSTS.has(h) || OWN_HOST_PATTERNS.some((p) => p.test(h))) return true;
-  return false;
+  if (DEPLOYMENT_URL_VARS.some((name) => hostOf(env[name]?.trim()) === h)) return true;
+  // Local development only; a production build never accepts a localhost message.
+  return env["NODE_ENV"] !== "production" && /^localhost(:\d+)?$/.test(h);
 }
 
 function placeholderEmail(publicKey: Uint8Array): string {
@@ -80,16 +93,12 @@ async function verifyEd25519(publicKey: Uint8Array, signature: Uint8Array, messa
 export async function walletSignIn(input: {
   message: string;
   signature: string;
-  requestOrigin: string | null;
-  /** Other hosts this request reached us on (request URL, forwarded host). */
-  requestHosts?: (string | null | undefined)[];
 }): Promise<{ tokenHash: string; address: string }> {
   const parsed = parseWalletSignInMessage(input.message);
   if (!parsed) throw new WalletSignInError("The sign-in message is not valid.");
 
-  // The message must name this site: the host the browser is on, or one of
-  // LamportPay's own addresses (the preview proxy can rewrite the Origin header).
-  if (!isOwnSiteHost(parsed.host, input) || hostOf(parsed.origin) !== parsed.host) {
+  // The message must name one of LamportPay's own sites (isOwnSiteHost).
+  if (!isOwnSiteHost(parsed.host) || hostOf(parsed.origin) !== parsed.host) {
     throw new WalletSignInError("The sign-in message is for another site.");
   }
 
