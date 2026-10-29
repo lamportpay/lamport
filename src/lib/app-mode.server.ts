@@ -187,7 +187,12 @@ export function requireRealFundsMode(status: ModeStatus = currentMode()): void {
 }
 
 export type EndpointKind =
-  "stables" | "solana_rpc" | "jupiter_quote" | "jupiter_order" | "jupiter_execute";
+  | "stables"
+  | "solana_rpc"
+  | "jupiter_quote"
+  | "jupiter_order"
+  | "jupiter_execute"
+  | "hyperliquid_info";
 
 export class ModeGuardError extends Error {
   constructor(
@@ -225,6 +230,20 @@ export function endpointAllowed(
       return { ok: false, reason: "LIVE MODE: Solana test clusters are blocked." };
     return { ok: true };
   }
+  if (kind === "hyperliquid_info") {
+    // Read-only market data only, in every mode: the public info endpoint and
+    // nothing else. The exchange endpoint (orders, transfers, withdrawals) is
+    // never called; the Hyperliquid route is not enabled (src/lib/hyperliquid).
+    let path = "";
+    try {
+      path = new URL(url).pathname;
+    } catch {
+      // Unparseable URL: refused below.
+    }
+    if (host !== "api.hyperliquid.xyz" || path !== "/info")
+      return { ok: false, reason: "Only Hyperliquid's read-only info endpoint may be called." };
+    return { ok: true };
+  }
   if (isJupiterKind(kind)) {
     // Jupiter has no devnet: every Jupiter call is a mainnet call. TEST MODE
     // allows only the read-only price quote (no wallet, no transaction: nothing
@@ -256,10 +275,10 @@ export function assertEndpointAllowed(
   let verdict = endpointAllowed(status.mode, kind, url, opts);
   // A mode whose configuration fails its checks (e.g. LIVE requested but not
   // approved) never reaches Jupiter, not even for a quote.
-  if (verdict.ok && isJupiterKind(kind) && !status.ok) {
+  if (verdict.ok && (isJupiterKind(kind) || kind === "hyperliquid_info") && !status.ok) {
     verdict = {
       ok: false,
-      reason: `${status.mode.toUpperCase()} MODE is blocked by its configuration: Jupiter is not called.`,
+      reason: `${status.mode.toUpperCase()} MODE is blocked by its configuration: ${isJupiterKind(kind) ? "Jupiter" : "Hyperliquid"} is not called.`,
     };
   }
   if (!verdict.ok) {
