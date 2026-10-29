@@ -175,18 +175,6 @@ export const getRevenuePayments = createServerFn({ method: "GET" })
     }));
   });
 
-const PERIODS = { day: 1, week: 7, month: 30 } as const;
-
-function bucketStart(iso: string, period: keyof typeof PERIODS): string {
-  const d = new Date(iso);
-  const day = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
-  if (period === "day") return new Date(day).toISOString().slice(0, 10);
-  if (period === "month") return new Date(day).toISOString().slice(0, 7);
-  // Weeks start on Monday (UTC).
-  const weekday = (new Date(day).getUTCDay() + 6) % 7;
-  return new Date(day - weekday * 86_400_000).toISOString().slice(0, 10);
-}
-
 /** Revenue received per day, week or month (UTC), from verified fundings. */
 export const getRevenueReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -206,27 +194,12 @@ export const getRevenueReport = createServerFn({ method: "POST" })
       .order("funding_verified_at", { ascending: false })
       .limit(REVENUE_SCAN_LIMIT);
     if (error) throw new Error(error.message);
-    const buckets = new Map<string, { expected: bigint; received: bigint; payments: number }>();
-    for (const row of (rows ?? []) as RevenueRow[]) {
-      const key = bucketStart(row.funding_verified_at!, data.period);
-      const b = buckets.get(key) ?? { expected: 0n, received: 0n, payments: 0 };
-      b.expected += BigInt(row.platform_fee_minor ?? 0);
-      b.received += BigInt(row.platform_fee_received_minor ?? 0);
-      b.payments += 1;
-      buckets.set(key, b);
-    }
+    const { revenueByPeriod } = await import("@/lib/payments/revenue-report");
     return {
       period: data.period,
       currency: "usdc",
       partial: (rows ?? []).length >= REVENUE_SCAN_LIMIT,
-      rows: [...buckets]
-        .sort(([a], [b]) => (a < b ? 1 : -1))
-        .map(([start, b]) => ({
-          start,
-          payments: b.payments,
-          expectedMinor: b.expected.toString(),
-          receivedMinor: b.received.toString(),
-        })),
+      rows: revenueByPeriod((rows ?? []) as RevenueRow[], data.period),
     };
   });
 
