@@ -30,7 +30,11 @@ export async function generateRecoverySteps(input: {
   lastStep?: string;
 }): Promise<string> {
   const apiKey = process.env.LOVABLE_API_KEY;
-  if (!apiKey) throw new RecoveryError("config", "The recovery assistant is not configured.");
+  // Off Lovable (e.g. Vercel) there is no AI gateway: give fixed steps for the status instead.
+  if (!apiKey) {
+    const { fallbackRecoverySteps } = await import("./recovery-fallback");
+    return fallbackRecoverySteps(input.status);
+  }
 
   const provider = createOpenAI({
     baseURL: GATEWAY,
