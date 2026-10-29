@@ -90,8 +90,9 @@ describe("GET|POST /api/cron/reconcile-payments", () => {
       for (const headers of variants) {
         const res = await api<ErrorBody>("/api/cron/reconcile-payments", { method, headers });
         assertNoSecretLeak(res.raw);
-        // 500 when CRON_SECRET is not configured on the server, 401 otherwise.
-        expect([401, 500], `${method} ${JSON.stringify(headers)}`).toContain(res.status);
+        // 503 when no cron secret is configured on the server (src/lib/cron-auth.server.ts),
+        // 401 otherwise.
+        expect([401, 503], `${method} ${JSON.stringify(headers)}`).toContain(res.status);
       }
     }
   });

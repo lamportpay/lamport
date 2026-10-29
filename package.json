@@ -3,6 +3,9 @@
   "private": true,
   "sideEffects": false,
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
@@ -95,6 +98,8 @@
   },
   "overrides": {
     "uuid": "^11.1.1",
-    "@modelcontextprotocol/sdk": "^1.32.1"
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "seroval": "~1.6.12",
+    "seroval-plugins": "~1.6.12"
   }
 }
