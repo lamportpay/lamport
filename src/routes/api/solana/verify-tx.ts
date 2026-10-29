@@ -33,6 +33,10 @@ export const Route = createFileRoute("/api/solana/verify-tx")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        // Public and unauthenticated, and every call spends RPC provider quota: limit per IP.
+        const { allowShared, trustedClientIp } = await import("@/lib/payments/rate-limit.server");
+        if (!(await allowShared("solana-verify-tx", trustedClientIp(request), 10)))
+          return Response.json({ error: "Too many requests. Please try again later." }, { status: 429 });
         let body: Record<string, unknown>;
         try {
           body = (await request.json()) as Record<string, unknown>;
