@@ -31,11 +31,34 @@ request and the `CI` status check, block force pushes and deletion).
 
 ## 2. Vercel project (company team only)
 
-Status 29 Oct (evening): the connector is now the company account (`hello@lamportpay.com`,
-Hobby plan, team `lamportpay-7634`), linked to the `lamportpay` GitHub account with access to
-selected repositories. The team itself is not yet authorized for the connector, so its projects,
-settings and environment variables could not be read; no project was created or changed. Hobby
-is for non-commercial use and runs crons once a day; a paid plan is needed before production.
+Status 29 Oct (night): project **`lamport`** (`prj_NpycYKRJJS6K2JPzfuSZEBjd6IRd`) created in the
+company team `lamportpay-7634` (account `hello@lamportpay.com`, Hobby plan) with owner approval:
+
+| Setting | Value (read back from Vercel) |
+|---|---|
+| Git | `lamportpay/lamport`, production branch `main` |
+| Ignored Build Step | builds only `vercel-preview-migration` (`[ "$VERCEL_GIT_COMMIT_REF" = "vercel-preview-migration" ] && exit 1 \|\| exit 0`); `main`, including Lovable's pushes, is skipped, so no production deployment of `main` is made |
+| Build | framework none (Nitro writes `.vercel/output`), install `npm ci`, build `npm run build`, Node 22.x |
+| Deployment Protection | Vercel Authentication on all deployments except custom domains (there are none) |
+| System environment variables | exposed (`VERCEL_URL`, `VERCEL_BRANCH_URL` for the wallet sign-in allowlist) |
+| Environment variables | 22, all Preview and branch `vercel-preview-migration` only; 0 Production. Secrets stored as Vercel "sensitive" (write-only) |
+| Domains | none |
+| Deployments | none; `vercel.json` on this branch keeps `git.deploymentEnabled: false` |
+
+Preview variables loaded (names only): `LAMPORTPAY_MODE`, `VITE_LAMPORTPAY_MODE` (test),
+`SUPABASE_PROJECT_ID`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `VITE_SUPABASE_PROJECT_ID`,
+`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (project `gdksfksypkcfiohozzsx`);
+sensitive: `SUPABASE_SERVICE_ROLE_KEY`, `SOLANA_DEVNET_RPC_URL`, `JUPITER_API_KEY`,
+`STABLES_API_KEY` (sandbox), `STABLES_WEBHOOK_SECRET`, `CRON_SECRET`; config: `STABLES_API_URL`
+(sandbox), `PAYMENT_MAX_USDC`, `PAYMENT_MIN_USDT`, `PAYMENT_MAX_USDT`, `LAMPORTPAY_FEE_BPS`,
+`LAMPORTPAY_REVENUE_WALLET`, `LAMPORTPAY_SWAP_FEE_BPS` (0), `PAYMENT_ENABLED_CURRENCIES` (usdc).
+Deliberately not set: `SOLANA_RPC_URL` (mainnet; TEST MODE blocks mainnet calls),
+`PAYMENT_MIN_USDC` (code default 15), `JUPITER_REFERRAL_ACCOUNT` (swap fee is 0), and every
+LIVE-only variable. These values were shared in a chat session on 29 Oct: rotate the service-role
+key, the Alchemy RPC key and the Jupiter key once Preview is verified (owner-approved plan).
+
+Hobby is for non-commercial use, has one member and runs crons once a day; production needs a
+paid plan. Remaining steps (7 below) wait for owner approval.
 
 Owner steps, in the **company** Vercel team:
 
