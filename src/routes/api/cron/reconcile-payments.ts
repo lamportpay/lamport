@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { authenticateCronRequest } from "@/integrations/supabase/cron-auth";
+import { authenticateCronRequest } from "@/lib/cron-auth.server";
 import { reconcilePayments } from "@/lib/payments/service.server";
 
 /** Stop starting new checks after this long, well inside function time limits. */
