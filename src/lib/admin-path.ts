@@ -1,3 +1,8 @@
+/** True for /admin and everything under it, including the admin sign-in page. */
+export function isAdminArea(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
 /** True for /admin and everything under it, except the admin sign-in page itself. */
 export function isAdminPath(pathname: string): boolean {
   if (pathname === "/admin/login" || pathname.startsWith("/admin/login/")) return false;

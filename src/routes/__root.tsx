@@ -13,6 +13,9 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { companyGraph } from "@/lib/company-profile";
+import { GoogleTagManager } from "@/components/site/GoogleTagManager";
+import { isAdminArea } from "@/lib/admin-path";
+import { googleTagLoaded, reloadWithoutTags } from "@/lib/tag-manager";
 
 function NotFoundComponent() {
   return (
@@ -72,6 +75,21 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: ({ location }) => {
+    // Admin pages are served without Google's tags; a client-side visit from a tagged page
+    // would keep that code running, so load the admin page fresh instead.
+    if (typeof window === "undefined" || !isAdminArea(location.pathname)) return;
+    if (!googleTagLoaded(window)) return;
+    let storage: Storage | undefined;
+    try {
+      storage = window.sessionStorage;
+    } catch {
+      storage = undefined;
+    }
+    if (reloadWithoutTags(location.href, storage, (href) => window.location.assign(href))) {
+      return new Promise<never>(() => {});
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -113,10 +131,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
-        children:
-          "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-M8XDHCH4');",
-      },
-      {
         type: "application/ld+json",
         children: JSON.stringify(companyGraph()),
       },
@@ -136,15 +150,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-M8XDHCH4"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-            title="Google Tag Manager"
-          />
-        </noscript>
+        <GoogleTagManager />
         {children}
         <Scripts />
       </body>
