@@ -266,3 +266,25 @@ integration run.
    not in chat. Then redeploy the Preview.
 2. Supabase → Authentication → URL Configuration → add the Preview URL to Redirect URLs.
 3. Set Vercel's production branch to `main` (above).
+
+## 8. Preview connected to the database (30 Oct)
+
+- **Key:** the owner's new `sb_secret_` key was saved as a Production-only variable; it was moved
+  (owner approved) to Preview, branch `vercel-preview-migration`. The project again has no
+  Production variables. The old key from the uploaded `.env` (Supabase answered "Unregistered API
+  key") is out of date; the local `.env` needs the new one.
+- **Result:** Preview `dpl_BWEVZbZyiv36iat34UY7QAvqbG2a` (`599b443`) reads business settings from
+  the dev project: USDC only, fee 200 bps, 15–5,000 USDC (TEST profile), payout countries US, GB,
+  IN, PH. Security checks from section 7 repeated with the same results.
+- **PGRST303:** with the same valid key, Supabase refused one of two parallel requests with
+  "JWT issued at future" (09:45 and 10:03 UTC; edge logs show the other request answered 200, and
+  the database clock was correct). The three Supabase clients now share
+  `src/integrations/supabase/fetch.ts`, which retries such a request once after 1 s
+  (`tests/supabase-fetch.unit.test.ts`). If it keeps happening, report it to Supabase support
+  with the project ref and those times.
+- **Vercel production branch is now `main`.** `main` has an empty `vercel.json` (from Lovable), so
+  each Lovable push to `main` makes a production build that fails at `build-container-init`
+  (`invalid_vercel_json`, e.g. `dpl_2mtPYuiZiKnCg5x9FWu6pWRjJ3nt` for `e1b3e61`). Nothing is built
+  or served and the Lovable site is unaffected; it stops once `main` gets a valid `vercel.json`.
+- **Leftover production deployments** of `877c02e` (`dpl_Aw2t…`, `dpl_Hv4B…`, `dpl_9PUf…`):
+  `*.vercel.app` only, behind Vercel login. Owner may delete them; do not use "Redeploy".

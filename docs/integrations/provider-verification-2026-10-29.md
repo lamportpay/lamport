@@ -18,7 +18,11 @@ tests, not from live calls.
 | Timeouts | 15 s on order and execute |
 | **Finding: ExactOut** | The current `/swap/v2/order` reference lists **ExactIn only**. Two paths send `swapMode=ExactOut`: the `/pay` SOL-cost estimate (`live-estimate.server.ts:168`, read-only; degrades to "unavailable") and LIVE swap sizing (`swaps.server.ts:321`, `sizeSwap`). If Jupiter refuses ExactOut, every LIVE SOL→USDC top-up fails with a misleading "wallet doesn't hold enough" message |
 
-Verify before changing code (read-only, no key needed, run anywhere with internet):
+**Resolved 30 Oct (live check from a Vercel Sandbox, no key, no taker):** `/swap/v2/order` accepts
+`swapMode=ExactOut` (SOL → 1 USDC quoted at 0.0104 SOL in, `swapMode: "ExactOut"` in the answer).
+No code change needed; the command below was the check.
+
+Check used (read-only, no key needed, run anywhere with internet):
 
 ```bash
 curl -s "https://api.jup.ag/swap/v2/order?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=1000000&swapMode=ExactOut"
@@ -45,6 +49,10 @@ only (`spotMeta`, `spotMetaAndAssetCtxs`, `allMids`); spot pairs are quoted in U
 `PURR/USDC` or `@{index}`. Orders, transfers and withdrawals are signed actions on the separate
 exchange endpoint. BTC/ETH reach Hyperliquid through Unit and are sold for USDC on the spot book;
 USDC is withdrawn to **Arbitrum** with a signature. Hyperliquid accounts are EVM addresses.
+
+**Live check 30 Oct (Vercel Sandbox, read-only info endpoint):** `spotMeta` returned 511 tokens and
+348 spot pairs, USDC is token 0, `UBTC`, `UETH` and `PURR/USDC` exist; `allMids` returned 1,422
+mids including `PURR/USDC`, `BTC` and `ETH`. Matches the shapes `info.server.ts` expects.
 
 **Built (commit `ab1fb08`):** `src/lib/hyperliquid/info.server.ts`, read-only spot metadata and
 mid prices with an exact indicative USDC value; the mode guard allows only the info URL and
