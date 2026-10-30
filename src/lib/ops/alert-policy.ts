@@ -6,7 +6,7 @@
  * it opens, when it becomes critical, and then as a reminder while it stays
  * open; a "resolved" notice follows only if the team was told it opened.
  */
-import { formatDuration, type OpsAlert, type OpsAlertSeverity } from "./webhook-alerts";
+import { formatDuration, type OpsAlert, type OpsAlertSeverity } from "./alert";
 
 export const REMIND_AFTER_MS: Record<OpsAlertSeverity, number> = {
   critical: 6 * 60 * 60_000,

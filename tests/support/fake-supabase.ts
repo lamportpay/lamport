@@ -115,6 +115,12 @@ const DEFAULTS: Record<string, () => Row> = {
     detail: {},
     created_at: now(),
   }),
+  payment_cases: () => ({
+    id: randomUUID(),
+    status: "refund_required",
+    created_at: now(),
+    updated_at: now(),
+  }),
   ops_alerts: () => ({
     detail: {},
     opened_at: now(),
@@ -177,6 +183,10 @@ class Query implements PromiseLike<Result> {
   }
   eq(column: string, value: unknown) {
     this.filters.push((r) => r[column] === value);
+    return this;
+  }
+  neq(column: string, value: unknown) {
+    this.filters.push((r) => r[column] !== value);
     return this;
   }
   in(column: string, values: unknown[]) {

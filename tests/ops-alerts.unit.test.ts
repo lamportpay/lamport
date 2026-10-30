@@ -1,4 +1,4 @@
-/** Production alerts for webhook failures (lib/ops): rules, send policy, channel, the job step. */
+/** Production alerts (lib/ops): webhook and stuck-payment rules, send policy, channel, the job step. */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/integrations/supabase/client.server", async () => {
@@ -10,6 +10,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { alertText, notifyReason, REMIND_AFTER_MS, resolvedText } from "@/lib/ops/alert-policy";
 import { runOpsAlerts } from "@/lib/ops/alerts.server";
 import { alertChannelMisconfigured, sendOpsAlert } from "@/lib/ops/notify.server";
+import { paymentAlerts, type StuckCandidate } from "@/lib/ops/payment-alerts";
 import { webhookAlerts, type WebhookFacts } from "@/lib/ops/webhook-alerts";
 
 import type { FakeSupabase } from "./support/fake-supabase";
@@ -119,6 +120,77 @@ describe("webhook alert rules", () => {
       NOW,
     );
     expect(alerts.map((a) => a.severity)).toEqual(["critical", "warning"]);
+  });
+});
+
+describe("stuck payment rules", () => {
+  const waiting = (over: Partial<StuckCandidate> = {}): StuckCandidate => ({
+    id: "11111111-2222-3333-4444-555555555555",
+    transfer_id: "tr_1",
+    status: "IN_PROGRESS",
+    created_at: minutesAgo(48 * HOUR),
+    status_changed_at: minutesAgo(3 * HOUR),
+    openCase: false,
+    ...over,
+  });
+
+  it("follows the admin rule: quiet under 2 h, warning after, critical after 24 h", () => {
+    expect(paymentAlerts([waiting({ status_changed_at: minutesAgo(HOUR) })], NOW)).toEqual([]);
+    const [warning] = paymentAlerts([waiting()], NOW);
+    expect(warning).toMatchObject({
+      key: "payment_stuck:11111111-2222-3333-4444-555555555555",
+      severity: "warning",
+      title: "Payment 11111111 stuck: no update from Stables for 3 h (IN_PROGRESS)",
+      detail: {
+        payment_id: "11111111-2222-3333-4444-555555555555",
+        transfer_id: "tr_1",
+        status: "IN_PROGRESS",
+        last_change_at: minutesAgo(3 * HOUR),
+      },
+    });
+    expect(
+      paymentAlerts([waiting({ status_changed_at: minutesAgo(25 * HOUR) })], NOW)[0],
+    ).toMatchObject({
+      severity: "critical",
+    });
+  });
+
+  it("falls back to the creation time when no status change is recorded", () => {
+    expect(
+      paymentAlerts(
+        [waiting({ status_changed_at: null, created_at: minutesAgo(30 * HOUR) })],
+        NOW,
+      )[0],
+    ).toMatchObject({ severity: "critical" });
+  });
+
+  it("leaves out payments with an open case, and payments waiting on the user", () => {
+    expect(paymentAlerts([waiting({ openCase: true })], NOW)).toEqual([]);
+    expect(
+      paymentAlerts(
+        [
+          waiting({
+            status: "AWAITING_FUNDS_COLLECTION",
+            status_changed_at: minutesAgo(48 * HOUR),
+          }),
+        ],
+        NOW,
+      ),
+    ).toEqual([]);
+  });
+
+  it("covers a long compliance hold and puts critical first", () => {
+    const alerts = paymentAlerts(
+      [
+        waiting({ id: "aaaaaaaa-0000", status: "COMPLIANCE_HOLD" }),
+        waiting({ id: "bbbbbbbb-0000", status_changed_at: minutesAgo(30 * HOUR) }),
+      ],
+      NOW,
+    );
+    expect(alerts.map((a) => [a.key, a.severity])).toEqual([
+      ["payment_stuck:bbbbbbbb-0000", "critical"],
+      ["payment_stuck:aaaaaaaa-0000", "warning"],
+    ]);
   });
 });
 
@@ -285,7 +357,14 @@ describe("alerts step of the reconcile job", () => {
     addTransfer("p1", minutesAgo(HOUR));
     addTransfer("p2", minutesAgo(2 * HOUR));
 
-    expect(await runOpsAlerts(NOW)).toEqual({ open: 1, sent: 1, resolved: 0, failed: 0 });
+    expect(await runOpsAlerts(NOW)).toEqual({
+      open: 1,
+      sent: 1,
+      resolved: 0,
+      failed: 0,
+      deferred: 0,
+      errors: [],
+    });
     expect(sentTexts()[0]).toMatch(
       /^\[LamportPay TEST\] CRITICAL: No Stables webhooks are arriving/,
     );
@@ -297,7 +376,7 @@ describe("alerts step of the reconcile job", () => {
     });
 
     const later = NOW + 5 * 60_000;
-    expect(await runOpsAlerts(later)).toEqual({ open: 1, sent: 0, resolved: 0, failed: 0 });
+    expect(await runOpsAlerts(later)).toMatchObject({ open: 1, sent: 0, resolved: 0, failed: 0 });
 
     db.table("stables_webhook_events").push(
       {
@@ -315,7 +394,7 @@ describe("alerts step of the reconcile job", () => {
         processed_at: later,
       },
     );
-    expect(await runOpsAlerts(later + 60_000)).toEqual({
+    expect(await runOpsAlerts(later + 60_000)).toMatchObject({
       open: 0,
       sent: 0,
       resolved: 1,
@@ -360,8 +439,88 @@ describe("alerts step of the reconcile job", () => {
     expect(sentTexts()[0]).toContain("CRITICAL: Stables webhooks are refused");
   });
 
+  const addStuck = (id: string, changedMinutesAgo: number, status = "IN_PROGRESS") => {
+    db.table("payments").push({
+      id,
+      transfer_id: `tr_${id}`,
+      status,
+      created_at: minutesAgo(48 * HOUR),
+    });
+    db.table("payment_events").push({
+      id: db.nextId(),
+      payment_id: id,
+      to_status: status,
+      created_at: minutesAgo(changedMinutesAgo),
+    });
+    // Webhooks arrived for it: only the stuck rule speaks.
+    db.table("stables_webhook_events").push({
+      event_id: `ev_${id}`,
+      event_type: "transfer.created",
+      event_object_id: `tr_${id}`,
+      received_at: minutesAgo(48 * HOUR),
+      processed_at: minutesAgo(48 * HOUR),
+    });
+  };
+
+  it("alerts once per stuck payment and resolves it when Stables moves it on", async () => {
+    addStuck("p1", 3 * HOUR);
+    expect(await runOpsAlerts(NOW)).toMatchObject({ open: 1, sent: 1 });
+    expect(sentTexts()[0]).toMatch(
+      /^\[LamportPay TEST\] WARNING: Payment p1 stuck: no update from Stables for 3 h/,
+    );
+    expect(db.table("ops_alerts")[0]).toMatchObject({
+      key: "payment_stuck:p1",
+      severity: "warning",
+    });
+
+    expect(await runOpsAlerts(NOW + 5 * 60_000)).toMatchObject({ open: 1, sent: 0 });
+
+    db.table("payments")[0]["status"] = "COMPLETED";
+    expect(await runOpsAlerts(NOW + 10 * 60_000)).toMatchObject({ open: 0, resolved: 1 });
+    expect(sentTexts()[1]).toMatch(/Resolved after 10 min: Payment p1 stuck/);
+  });
+
+  it("sends again when the payment becomes critical", async () => {
+    addStuck("p1", 23 * HOUR);
+    await runOpsAlerts(NOW);
+    expect(await runOpsAlerts(NOW + 2 * 60 * 60_000)).toMatchObject({ sent: 1 });
+    expect(sentTexts()[1]).toMatch(/CRITICAL \(now critical\): Payment p1 stuck/);
+  });
+
+  it("stops alerting once an operations case is opened", async () => {
+    addStuck("p1", 3 * HOUR);
+    await runOpsAlerts(NOW);
+    db.table("payment_cases").push({ id: "c1", payment_id: "p1", status: "waiting_for_stables" });
+    expect(await runOpsAlerts(NOW + 5 * 60_000)).toMatchObject({ open: 0, resolved: 1 });
+  });
+
+  it("sends at most ten per run and the rest on the next run", async () => {
+    for (let i = 0; i < 12; i++) addStuck(`p${String(i).padStart(2, "0")}`, 3 * HOUR);
+    expect(await runOpsAlerts(NOW)).toMatchObject({ open: 12, sent: 10, deferred: 2 });
+    expect(await runOpsAlerts(NOW + 5 * 60_000)).toMatchObject({ open: 12, sent: 2, deferred: 0 });
+  });
+
+  it("keeps a rule set's alerts open while it cannot check", async () => {
+    addTransfer("p1", minutesAgo(HOUR));
+    addTransfer("p2", minutesAgo(HOUR));
+    await runOpsAlerts(NOW);
+    expect(db.table("ops_alerts")[0]).toMatchObject({ key: "webhook_missing", resolved_at: null });
+
+    const from = db.from.bind(db);
+    vi.spyOn(db, "from").mockImplementation((table: string) => {
+      if (table === "stables_webhook_events") throw new Error("database unavailable");
+      return from(table);
+    });
+    expect(await runOpsAlerts(NOW + 5 * 60_000)).toMatchObject({
+      open: 0,
+      resolved: 0,
+      errors: ["webhooks"],
+    });
+    expect(db.table("ops_alerts")[0]["resolved_at"]).toBeNull();
+  });
+
   it("sends nothing when there is nothing wrong", async () => {
-    expect(await runOpsAlerts(NOW)).toEqual({ open: 0, sent: 0, resolved: 0, failed: 0 });
+    expect(await runOpsAlerts(NOW)).toMatchObject({ open: 0, sent: 0, resolved: 0, failed: 0 });
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });

@@ -7,7 +7,7 @@
 /** Waiting for the user (deposit not seen yet). */
 const WAITING_FOR_USER = new Set(["CREATED", "AWAITING_FUNDS_COLLECTION"]);
 /** Waiting for Stables after the deposit (conversion / payout). */
-const WAITING_FOR_STABLES = new Set([
+export const WAITING_FOR_STABLES: ReadonlySet<string> = new Set([
   "FUNDS_COLLECTED",
   "IN_PROGRESS",
   "PAYMENT_SUBMITTED",

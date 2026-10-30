@@ -45,9 +45,9 @@ Questions", "Carry-overs", "Roadmap").
 - [ ] **Security:** credential rotation completed (`docs/security/credential-rotation-2026-10-30.md`);
       `main` protected; GTM/consent decision applied; independent security review (Phase 10).
 - [ ] **Operations:** emergency payment controls tested in production config; reconciliation
-      scheduler running; alerting on webhook failures (built 30 Oct, `src/lib/ops/`; needs
-      `OPS_ALERT_WEBHOOK_URL` in Production and the scheduler's Vault secrets) and stuck
-      payments (not built yet).
+      scheduler running; alerting on webhook failures and stuck payments (built 30 Oct,
+      `src/lib/ops/`; needs `OPS_ALERT_WEBHOOK_URL` in Production and the scheduler's Vault
+      secrets).
 - [ ] **LIVE unlock:** reviewed PR changing the code lock, owner approval variable, and
       `LAMPORTPAY_MODE=live`, deployed only with explicit owner approval.
 

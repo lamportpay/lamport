@@ -13,18 +13,7 @@
  * - no signing secret configured, so every signed delivery is refused.
  */
 
-export type OpsAlertSeverity = "warning" | "critical";
-
-export type OpsAlert = {
-  /** Stable identity: one open alert per key. */
-  key: string;
-  severity: OpsAlertSeverity;
-  title: string;
-  /** What the operations team should do next. */
-  action: string;
-  /** IDs, counts and reasons only. */
-  detail: Record<string, unknown>;
-};
+import { formatDuration, SAMPLE_SIZE, type OpsAlert } from "./alert";
 
 /** Thresholds, in one place so they can be reviewed and changed together. */
 export const WEBHOOK_ALERT_AFTER_MS = {
@@ -41,8 +30,6 @@ export const WEBHOOK_ALERT_AFTER_MS = {
   missingLookback: 3 * 24 * 60 * 60_000,
 } as const;
 
-/** How many IDs an alert lists; the count is always complete. */
-export const SAMPLE_SIZE = 5;
 const REASON_LENGTH = 160;
 
 export type UnappliedDelivery = {
@@ -83,14 +70,6 @@ function countBy<T>(items: T[], keyOf: (item: T) => string): Record<string, numb
     out[key] = (out[key] ?? 0) + 1;
   }
   return out;
-}
-
-/** "45 min", "5 h", "3 days". */
-export function formatDuration(ms: number): string {
-  const minutes = Math.max(0, Math.floor(ms / 60_000));
-  if (minutes < 120) return `${minutes} min`;
-  const hours = Math.floor(minutes / 60);
-  return hours < 48 ? `${hours} h` : `${Math.floor(hours / 24)} days`;
 }
 
 /** Every webhook alert that is open now, most severe first. Empty when all is well. */
