@@ -1,24 +1,35 @@
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 import { isAdminArea } from "@/lib/admin-path";
-import { googleTagLoaded, GTM_SNIPPET, reloadWithoutTags, tagManagerAllowed } from "@/lib/tag-manager";
+import { googleTagLoaded, reloadWithoutTags } from "@/lib/tag-manager";
 
-describe("Google Tag Manager is kept off admin pages", () => {
-  it("never loads on /admin, its sub-pages or the admin sign-in", () => {
+function sourceFiles(dir: string): string[] {
+  return readdirSync(dir).flatMap((name) => {
+    const path = join(dir, name);
+    return statSync(path).isDirectory() ? sourceFiles(path) : [path];
+  });
+}
+
+describe("Google Tag Manager is not loaded on the application origin (30 Oct 2026)", () => {
+  it("no source file loads the container or gtm.js", () => {
+    const offenders = sourceFiles(join(process.cwd(), "src")).filter((path) => {
+      const text = readFileSync(path, "utf8");
+      return /GTM-[A-Z0-9]{4,}/.test(text) || text.includes("gtm.js") || text.includes("googletagmanager.com/ns.html");
+    });
+    expect(offenders).toEqual([]);
+  });
+});
+
+describe("admin pages are never shown in a document where Google's tag code ran", () => {
+  it("treats /admin, its sub-pages and the admin sign-in as admin", () => {
     for (const path of ["/admin", "/admin/login", "/admin/payments/123", "/admin/roles", "/admin/stables/x"]) {
       expect(isAdminArea(path)).toBe(true);
-      expect(tagManagerAllowed(path)).toBe(false);
     }
-  });
-
-  it("still loads on the marketing site and the app", () => {
     for (const path of ["/", "/pay", "/about", "/administration-guide", "/blog/admin"]) {
-      expect(tagManagerAllowed(path)).toBe(true);
+      expect(isAdminArea(path)).toBe(false);
     }
-  });
-
-  it("uses the same container as before", () => {
-    expect(GTM_SNIPPET).toContain("'GTM-M8XDHCH4'");
   });
 
   it("detects tag code already running in the document", () => {

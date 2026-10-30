@@ -1,18 +1,11 @@
-import { isAdminArea } from "@/lib/admin-path";
-
-export const GTM_ID = "GTM-M8XDHCH4";
-
 /**
- * Google Tag Manager runs whatever code is published in the GTM console, so it never loads on
- * admin pages (sign-in included). Everywhere else it loads as before.
+ * Google Tag Manager was removed from the application origin (30 Oct 2026): it ran whatever
+ * code was published in its console on the same origin as the session tokens. What remains
+ * is Google Analytics on marketing pages after consent, and this guard: an admin page is never
+ * shown in a document where Google's tag code already ran.
  */
-export function tagManagerAllowed(pathname: string): boolean {
-  return !isAdminArea(pathname);
-}
 
-export const GTM_SNIPPET = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
-
-/** True when Google's tag code (GTM, or gtag.js from the marketing pages) ran in this document. */
+/** True when Google's tag code (gtag.js from the marketing pages) ran in this document. */
 export function googleTagLoaded(win: object): boolean {
   return Reflect.get(win, "google_tag_manager") !== undefined || Reflect.get(win, "dataLayer") !== undefined;
 }

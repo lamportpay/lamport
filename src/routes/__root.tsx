@@ -13,7 +13,6 @@ import { type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { Toaster } from "@/components/ui/sonner";
 import { companyGraph } from "@/lib/company-profile";
-import { GoogleTagManager } from "@/components/site/GoogleTagManager";
 import { isAdminArea } from "@/lib/admin-path";
 import { googleTagLoaded, reloadWithoutTags } from "@/lib/tag-manager";
 
@@ -150,7 +149,6 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <GoogleTagManager />
         {children}
         <Scripts />
       </body>
