@@ -62,7 +62,7 @@ Vercel (names in `docs/migration/vercel-preview.md`); local work needs your own 
 | 30 Oct | Owner: Stables KYB verified and production API access issued | – |
 | 30 Oct | Production alerts for webhook failures: secret missing, deliveries not applied, transfers with no webhook; sent to `OPS_ALERT_WEBHOOK_URL` by the reconcile job, no repeats (`ops_alerts`, applied to dev) | `18974f8` |
 | 30 Oct | Stuck-payment alerts: one per payment with no update from Stables for 2 h (critical at 24 h), same rule as the admin, silenced by an open operations case; at most 10 messages per run | `f2b01ff` |
-| 30 Oct | Ended-after-funds alerts: one per payment that failed, was cancelled or expired after funds reached Stables (critical); silenced by any operations case; taken off the channel 14 days after it ended, with a note | this session |
+| 30 Oct | Ended-after-funds alerts: one per payment that failed, was cancelled or expired after funds reached Stables (critical); silenced by any operations case; taken off the channel 14 days after it ended, with a note | `b747d52` |
 
 Every code commit passed CI (secret scan, typecheck, lint, 665 unit tests, build, browser-bundle
 scan, dependency audit) and was deployed to the Preview and checked there.
