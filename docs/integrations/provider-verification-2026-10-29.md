@@ -33,6 +33,17 @@ compute the SOL input for the shortfall plus the existing size buffer, then conf
 ExactIn quote whose minimum output covers the shortfall (the existing "minimum output ≥
 shortfall" check still guards the real order). LIVE only; not implemented until verified.
 
+**Transaction preparation, live check 30 Oct (Vercel Sandbox, nothing signed or sent):**
+`/swap/v2/order` with a `taker` was called for ExactIn (0.01 SOL → USDC) and ExactOut (→ 1 USDC)
+with two takers holding no mainnet SOL (a throwaway keypair and the company's public revenue
+address). Jupiter answered HTTP 200 with a quote, `gasless: true`, `errorCode: 1` and "Insufficient
+funds" / "Insufficient balance to fund the swap", and **no transaction**. The client turns exactly
+this into `JupiterError(422)` (regression test added in `tests/jupiter-client.unit.test.ts`), and
+the payment flow refuses gasless or transaction-less orders before anything is signed
+(`checkOrderTerms` in `src/lib/payments/swaps.server.ts`). Decoding a real unsigned transaction
+(fee payer = taker, no signatures) needs a taker that holds SOL; with a company wallet holding a
+little SOL the same read-only check can be repeated. Order-with-wallet stays blocked in TEST mode.
+
 Variables (names only): `JUPITER_API_KEY` (needed for quotes, Preview included);
 `JUPITER_REFERRAL_ACCOUNT` stays unset while the swap fee is 0; `SOLANA_RPC_URL` (LIVE only,
 mainnet) and `SOLANA_DEVNET_RPC_URL` (TEST, optional).
