@@ -60,7 +60,7 @@ Vercel (names in `docs/migration/vercel-preview.md`); local work needs your own 
 | 30 Oct | **G3 and G4 (owner-approved, dev database):** test admin accounts removed, admin rights need the authenticator code in the database too, fee ledger cannot be emptied; the admin set up the authenticator | `09c4de8` |
 | 30 Oct | Recovery assistant never sends customer text to an AI service in LIVE; guard test for one migration trail; checklist rows closed | `6f8ed02`, `431cf47` |
 | 30 Oct | Owner: Stables KYB verified and production API access issued | – |
-| 30 Oct | Production alerts for webhook failures: secret missing, deliveries not applied, transfers with no webhook; sent to `OPS_ALERT_WEBHOOK_URL` by the reconcile job, no repeats (`ops_alerts`, applied to dev) | this session |
+| 30 Oct | Production alerts for webhook failures: secret missing, deliveries not applied, transfers with no webhook; sent to `OPS_ALERT_WEBHOOK_URL` by the reconcile job, no repeats (`ops_alerts`, applied to dev) | `18974f8` |
 
 Every code commit passed CI (secret scan, typecheck, lint, 650 unit tests, build, browser-bundle
 scan, dependency audit) and was deployed to the Preview and checked there.
