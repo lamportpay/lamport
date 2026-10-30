@@ -17,4 +17,4 @@ Disallow: /auth/
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://lamportpay.com/sitemap.xml
+Sitemap: https://lamportpay.lovable.app/sitemap.xml

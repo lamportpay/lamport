@@ -1,3 +1,9 @@
+## SEO failures (30 October 2026)
+
+- [x] Correct crawler sitemap directive and sitemap entry origin; preserve custom-domain page canonicals and page-specific article dates
+- [x] Verify sitemap output and crawler rules: three focused tests pass, both preview responses return 200, all 24 URLs use the published project origin, build OK; changes reach the live site on next publish
+- [ ] Link Search Console to Lovable: blocked until connection owner shares Can use access with the project owner; lamportpay.com is verified and Google reports zero sitemap errors
+
 ## Company profile and Google setup (28 October 2026)
 
 - [x] Add verified legal company profile, founder and search structured data; preserve sandbox disclosures

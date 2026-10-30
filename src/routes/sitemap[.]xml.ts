@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { POSTS } from "@/content/blog";
 import { NEWS } from "@/content/news";
-import { canonical } from "@/lib/seo";
+const SITEMAP_ORIGIN = "https://lamportpay.lovable.app";
 
 const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
   { path: "/", priority: "1.0", changefreq: "weekly" },
@@ -23,22 +23,22 @@ const STATIC_PAGES: { path: string; priority: string; changefreq: string }[] = [
   { path: "/news", priority: "0.8", changefreq: "weekly" },
 ];
 
-function buildSitemap() {
+export function buildSitemap() {
   const entries = [
     ...STATIC_PAGES.map((p) => ({
-      loc: canonical(p.path),
+      loc: new URL(p.path, SITEMAP_ORIGIN).href,
       lastmod: undefined as string | undefined,
       changefreq: p.changefreq,
       priority: p.priority,
     })),
     ...POSTS.map((p) => ({
-      loc: canonical(`/blog/${p.slug}`),
+      loc: new URL(`/blog/${p.slug}`, SITEMAP_ORIGIN).href,
       lastmod: p.updated ?? p.published,
       changefreq: "monthly",
       priority: "0.8",
     })),
     ...NEWS.map((n) => ({
-      loc: canonical(`/news/${n.slug}`),
+      loc: new URL(`/news/${n.slug}`, SITEMAP_ORIGIN).href,
       lastmod: n.published,
       changefreq: "monthly",
       priority: "0.8",
