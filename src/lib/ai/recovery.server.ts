@@ -1,6 +1,8 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { streamText } from "ai";
 
+import { currentMode } from "@/lib/app-mode.server";
+
 const GATEWAY = "https://ai.gateway.lovable.dev/v1";
 const MODEL = "openai/gpt-6-astra";
 
@@ -30,8 +32,10 @@ export async function generateRecoverySteps(input: {
   lastStep?: string;
 }): Promise<string> {
   const apiKey = process.env.LOVABLE_API_KEY;
-  // Off Lovable (e.g. Vercel) there is no AI gateway: give fixed steps for the status instead.
-  if (!apiKey) {
+  // Fixed steps for the status instead of the AI gateway: off Lovable (e.g. Vercel) there is
+  // none, and in LIVE customer text never goes to it (not a processor named in the privacy
+  // policy, and INSTRUCTIONS describe the sandbox).
+  if (!apiKey || currentMode().mode === "live") {
     const { fallbackRecoverySteps } = await import("./recovery-fallback");
     return fallbackRecoverySteps(input.status);
   }
