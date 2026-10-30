@@ -81,7 +81,7 @@ scan, dependency audit) and was deployed to the Preview and checked there.
 | Admin | Payments, operations cases, alerts, limits, emergency pause, fees and revenue, users and roles, exports, audit log | `src/components/admin/`, `src/routes/_authenticated/admin*`, `src/lib/admin*.functions.ts` |
 | Security | Headers and CSP trial, CSP reports, shared rate limits, webhook checks | `src/lib/security-headers.ts`, `src/lib/csp-report.server.ts`, `src/lib/payments/rate-limit.server.ts` |
 | Database | 30 migrations, RLS, append-only audit log and fee ledger | `supabase/migrations/` |
-| Tests | 62 unit test files, 632 tests | `tests/` |
+| Tests | 60 test files; the unit run (`npm run test:unit`) covers 55 of them, 632 tests | `tests/` |
 | Scripts | Secret scan, bundle scan, dependency audit, credential check, Stables sandbox probes, reconcile | `scripts/` |
 | CI | Runs on every push and pull request | `.github/workflows/ci.yml` |
 
