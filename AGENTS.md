@@ -35,3 +35,4 @@
 - Read nested AGENTS.md before edits. Team profiles share a browser-safe registry; history must be source-backed, never invented LamportPay work.
 - Public corporate facts and organization/founder structured data share the browser-safe company-profile registry so visible company details and search metadata remain consistent without changing financial logic.
 - GA4 is mounted only in the marketing layout and gated by versioned cookie consent; send allowlisted public paths without query strings or financial/account data, and disable tracking on withdrawal or layout exit.
+- Keep the sitemap origin independent of marketing canonical URLs so correcting published-project discovery does not silently move the verified custom-domain page identity; sitemap dates must come from individual article records, never generation time.
