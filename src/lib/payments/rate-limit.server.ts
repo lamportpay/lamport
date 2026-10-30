@@ -89,9 +89,19 @@ export async function allowShared(
   }
   if (!allowed) {
     // The key is a user id or an IP; log only its kind, never the value.
-    console.warn(JSON.stringify({ event: "rate_limited", bucket, key_kind: key.split(":")[0] }));
+    console.warn(JSON.stringify({ event: "rate_limited", bucket, key_kind: keyKind(key) }));
   }
   return allowed;
+}
+
+/**
+ * "u" or "ip" for keys made by clientKey(); anything else is "other". Derived from a fixed set
+ * so a raw address passed as a key ("203.0.113.9", "2001:db8::1") can never reach the logs.
+ */
+function keyKind(key: string): "u" | "ip" | "other" {
+  if (key.startsWith("u:")) return "u";
+  if (key.startsWith("ip:")) return "ip";
+  return "other";
 }
 
 /** Per-minute limits for the payment API, per signed-in user. */

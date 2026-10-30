@@ -32,8 +32,8 @@ export const Route = createFileRoute("/api/early-access")({
         if (!parsed.success)
           return Response.json({ error: "Please check your name and email address." }, { status: 400 });
 
-        const { allowShared, trustedClientIp } = await import("@/lib/payments/rate-limit.server");
-        if (!(await allowShared("early-access", trustedClientIp(request), 5, 3600)))
+        const { allowShared, clientKey } = await import("@/lib/payments/rate-limit.server");
+        if (!(await allowShared("early-access", clientKey(request, null), 5, 3600)))
           return Response.json({ error: "Too many attempts. Please try again later." }, { status: 429 });
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
