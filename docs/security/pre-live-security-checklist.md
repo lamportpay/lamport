@@ -62,3 +62,16 @@ scan, repo + git-history secret scan, production audit (no high/critical) — al
 
 Still open from earlier rounds: #22 leaked-password protection, #23 admin MFA, #13 CSP, #8 creation
 idempotency key, independent security review.
+
+### Round 4 (30 Oct 2026, branch `vercel-preview-migration`)
+
+| #   | Area | Status | Evidence / note |
+| --- | --- | --- | --- |
+| 38  | Admin sign-in second factor | PASS (fixed round 4) | Was: password checked in the browser, then sign-in by emailed code alone (inbox access = admin session). Now TOTP MFA; admin rights need an `aal2` session in `src/lib/admin-guard.ts` (all admin server functions) and in `has_role()` (migration `20261030120000`, **not applied to dev yet**). Local Postgres: aal1 admin gets no admin rows, aal2 does. Closes #23 once applied and admins are enrolled |
+| 39  | GTM on admin pages (#32, part) | PASS (fixed round 4) | GTM no longer renders on `/admin/*` (sign-in included); entering admin from a tagged page reloads clean. Still OPEN (owner decision): GTM loads before consent on the marketing site and `/pay`, while the cookie policy says analytics waits for consent and payment pages are not tracked |
+| 40  | Fee ledger TRUNCATE | PASS (fixed round 4) | Row triggers do not fire on TRUNCATE and `service_role` held UPDATE/DELETE/TRUNCATE; migration `20261030130000` (statement trigger + revoke), **not applied to dev yet** |
+| 41  | Leaked passwords (#22) | PARTIAL | `/auth/reset` refuses breached passwords (HaveIBeenPwned range API). Supabase's own setting needs a paid plan: `docs/security/leaked-password-protection.md` |
+| 42  | Legal pages | PARTIAL | `/privacy`, `/terms` drafted with a visible "awaiting legal review" notice |
+| 43  | Sensitive details in public docs | PASS (fixed round 4) | Removed the admin-account description, a test user's address, the Vercel account email and the Stables tenant id. History still holds them; the repository is public |
+| 44  | Shared `.env` credentials | OPEN (owner) | Not in git history (all refs searched). Rotation checklist and `scripts/verify-credentials.mjs` in `docs/security/credential-rotation-2026-10-30.md` |
+| 45  | Dev database ownership | OPEN (owner) | The dev Supabase project sits in a contributor's personal organisation on the free plan |

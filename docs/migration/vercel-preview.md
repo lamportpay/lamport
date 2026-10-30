@@ -287,3 +287,12 @@ integration run.
   or served and the Lovable site is unaffected; it stops once `main` gets a valid `vercel.json`.
 - **Leftover production deployments** of `877c02e` (`dpl_Aw2t…`, `dpl_Hv4B…`, `dpl_9PUf…`):
   `*.vercel.app` only, behind Vercel login. Owner may delete them; do not use "Redeploy".
+
+## 9. Round 4 (30 Oct)
+
+Preview `dpl_pPqHyqheNbkzWQQDCpNkqwuVZkFw` (`7b22cee`, target preview): database connected (USDC
+only, 200 bps, 15–5,000 USDC), no Google tags on `/admin/login`, GTM still on marketing pages,
+`/privacy` and `/terms` render with the draft notice, mainnet blocked, security headers present.
+CI run #271 green. `main` merged into this branch (`1d93a4d`). Two migrations wait for approval
+before being applied to dev: `20261030120000_admin_role_requires_mfa.sql` and
+`20261030130000_fee_ledger_no_truncate.sql`.
