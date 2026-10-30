@@ -1218,13 +1218,15 @@ describe("Travel Rule wallet verification", () => {
   });
 
   it("reports an expired link, and a payment that ended with the hold open", async () => {
-    const { id } = await paymentAwaitingFunds();
+    const { id, deposit } = await paymentAwaitingFunds();
     await deliver(travelRuleEvent("tr_1", { createdAt: at(-7200_000), expiresAt: at(-60_000) }));
     expect((await service.getPaymentView(user, id)).travelRule).toMatchObject({
       status: "expired",
       verificationUrl: null,
     });
 
+    // A terminal webhook is confirmed with Stables before it is applied.
+    api.getTransfer.mockResolvedValueOnce(transfer("tr_1", deposit, "75", "failed"));
     await deliver(transferEvent("tr_1", "FAILED"));
     expect((await service.getPaymentView(user, id)).travelRule?.status).toBe("closed");
     expect(paymentRow(id)["travel_rule_resolved_at"]).toBeNull();
@@ -2312,5 +2314,76 @@ describe("emergency controls (server-enforced)", () => {
 
   it("refuses a pause without a reason", async () => {
     await expect(setControls({ paused: true })).rejects.toThrow(/reason/);
+  });
+});
+
+// ------------------------------------- terminal webhooks confirmed with Stables
+
+describe("terminal transfer webhooks are confirmed with Stables (30 Oct 2026)", () => {
+  const storedEvent = () => db.table("stables_webhook_events").at(-1)!;
+
+  it("does not complete a payment on a signed COMPLETED event that Stables does not confirm", async () => {
+    const { id, deposit } = await paymentAwaitingFunds();
+    api.getTransfer.mockResolvedValueOnce(transfer("tr_1", deposit, "75", "awaiting_funds_collection"));
+    await deliver(
+      transferEvent("tr_1", "COMPLETED", { actual_payout: { amount: "9999", currency: "INR" } }),
+    );
+    expect(paymentRow(id)).toMatchObject({ status: "AWAITING_FUNDS_COLLECTION", actual_payout_minor: null });
+    expect(storedEvent()["processed_at"]).not.toBeNull();
+  });
+
+  it("completes it when Stables confirms, with the payout Stables reports, reading the transfer once", async () => {
+    const { id, deposit } = await paymentAwaitingFunds();
+    api.getTransfer.mockClear();
+    api.getTransfer.mockResolvedValueOnce(
+      transfer("tr_1", deposit, "75", "completed", {
+        actual_payout: { amount: "6230.10", amount_minor: 623010, currency: "INR" },
+      }),
+    );
+    // The payload's payout figure is ignored in favour of the one Stables returns.
+    await deliver(
+      transferEvent("tr_1", "COMPLETED", { actual_payout: { amount: "9999", currency: "INR" } }),
+    );
+    expect(paymentRow(id)).toMatchObject({ status: "COMPLETED", actual_payout_minor: 623010 });
+    expect(api.getTransfer).toHaveBeenCalledTimes(1);
+  });
+
+  it("fails it only when Stables confirms FAILED", async () => {
+    const { id, deposit } = await paymentAwaitingFunds();
+    api.getTransfer.mockResolvedValueOnce(transfer("tr_1", deposit, "75", "failed"));
+    await deliver(transferEvent("tr_1", "FAILED"));
+    expect(paymentRow(id)["status"]).toBe("FAILED");
+  });
+
+  it("leaves the event for reconciliation when Stables cannot be reached", async () => {
+    const { id, deposit } = await paymentAwaitingFunds();
+    api.getTransfer.mockRejectedValueOnce(new Error("Stables unreachable"));
+    expect((await deliver(transferEvent("tr_1", "COMPLETED"))).status).toBe(200);
+    expect(paymentRow(id)["status"]).toBe("AWAITING_FUNDS_COLLECTION");
+    expect(storedEvent()["processed_at"]).toBeNull();
+
+    // Reconciliation retries stored events once they are 2 minutes old.
+    storedEvent()["received_at"] = new Date(Date.now() - 5 * 60_000).toISOString();
+    api.getTransfer.mockResolvedValue(transfer("tr_1", deposit, "75", "completed"));
+    await service.reconcilePayments({ deadline: Date.now() + 10_000 });
+    expect(paymentRow(id)["status"]).toBe("COMPLETED");
+    expect(storedEvent()["processed_at"]).not.toBeNull();
+  });
+
+  it("does not apply a transfer that Stables says belongs to another payment", async () => {
+    const { id, deposit } = await paymentAwaitingFunds();
+    api.getTransfer.mockResolvedValueOnce(
+      transfer("tr_1", deposit, "75", "completed", { metadata: { payment_id: randomUUID() } }),
+    );
+    await deliver(transferEvent("tr_1", "COMPLETED"));
+    expect(paymentRow(id)["status"]).toBe("AWAITING_FUNDS_COLLECTION");
+  });
+
+  it("applies non-terminal states from the signed event without an extra Stables read", async () => {
+    const { id } = await paymentAwaitingFunds();
+    api.getTransfer.mockClear();
+    await deliver(transferEvent("tr_1", "FUNDS_COLLECTED"));
+    expect(paymentRow(id)["status"]).toBe("FUNDS_COLLECTED");
+    expect(api.getTransfer).not.toHaveBeenCalled();
   });
 });

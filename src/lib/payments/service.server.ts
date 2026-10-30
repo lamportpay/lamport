@@ -73,6 +73,7 @@ import {
 import {
   ACTIVE_TRANSFER_STATES,
   checkTransition,
+  isTerminal,
   isTransferState,
   liftsTravelRuleHold,
   normalizeTransferStatus,
@@ -2408,20 +2409,68 @@ export async function handleStablesEvent(event: StablesWebhookEvent): Promise<Ev
     const payment = await paymentForTransferEvent(object, transferId);
     if (!payment) return { processed: false, note: "No payment for this transfer yet." };
 
-    // event_object.status is the authoritative current state.
-    const status = normalizeTransferStatus(object["status"] ?? event.event_object_status);
-    if (!status) return { processed: true, note: "Event carries no transfer state." };
+    const claimed = normalizeTransferStatus(object["status"] ?? event.event_object_status);
+    if (!claimed) return { processed: true, note: "Event carries no transfer state." };
+
+    // A terminal state cannot be undone (transitions only move forward), so it
+    // is confirmed with Stables before it is applied: a delivery signed with a
+    // leaked webhook secret must not complete or fail a payment on its own.
+    // Non-terminal states are applied from the signed event as before.
+    let status: TransferState = claimed;
+    let actualPayout: unknown = object["actual_payout"];
+    if (isTerminal(claimed)) {
+      const config = getStablesConfig();
+      if (!config.configured) return { processed: false, note: "Stables is not configured." };
+      let transfer: StablesTransfer;
+      try {
+        transfer = await stables.getTransfer(config, payment.transfer_id ?? transferId ?? "");
+      } catch (error) {
+        console.error(`[stables-webhook] could not confirm ${claimed} for ${payment.id}`, error);
+        // Left unprocessed: the reconciliation job retries the stored event.
+        return { processed: false, note: "Terminal status not confirmed with Stables yet." };
+      }
+      const echoed = transfer.metadata?.["payment_id"];
+      if (echoed && echoed !== payment.id) {
+        console.error(
+          `[stables-webhook] transfer ${transfer.id} echoes payment_id ${echoed}, not ${payment.id}`,
+        );
+        return { processed: true, note: "Transfer belongs to another payment." };
+      }
+      const confirmed = normalizeTransferStatus(transfer.status);
+      if (!confirmed) return { processed: true, note: "Stables reports no transfer state." };
+      if (confirmed !== claimed) {
+        console.warn(
+          JSON.stringify({
+            event: "webhook_status_mismatch",
+            event_id: event.event_id,
+            transfer_id: transfer.id,
+            claimed,
+            confirmed,
+          }),
+        );
+      }
+      // Stables' answer is authoritative; it still only moves the payment forward.
+      status = confirmed;
+      actualPayout = transfer.actual_payout ?? null;
+    }
 
     const stablesAt = eventTime(event);
     const result = await ledger.transitionPayment(payment.id, status, {
       source: "webhook",
-      detail: { event_id: event.event_id, event_type: event.event_type, stables_at: stablesAt },
+      detail: {
+        event_id: event.event_id,
+        event_type: event.event_type,
+        stables_at: stablesAt,
+        ...(status !== claimed && { claimed_status: claimed }),
+      },
     });
     if (result.applied) await liftTravelRuleHold(result.payment, stablesAt, "webhook");
     if (ledger.paymentState(result.payment) === "COMPLETED") {
-      await settlePayout(result.payment, object["actual_payout"], "webhook");
+      await settlePayout(result.payment, actualPayout, "webhook");
     }
-    return { processed: true, ...(!result.applied && { note: result.reason }) };
+    const mismatch = status !== claimed && `Stables reports ${status}, not ${claimed}.`;
+    const note = mismatch || (!result.applied && result.reason);
+    return { processed: true, ...(note && { note }) };
   }
 
   return { processed: true, note: `Ignored ${event.event_type}.` };
