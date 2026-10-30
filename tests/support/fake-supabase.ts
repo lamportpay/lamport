@@ -115,6 +115,15 @@ const DEFAULTS: Record<string, () => Row> = {
     detail: {},
     created_at: now(),
   }),
+  ops_alerts: () => ({
+    detail: {},
+    opened_at: now(),
+    last_seen_at: now(),
+    resolved_at: null,
+    notified_at: null,
+    notified_severity: null,
+    notify_count: 0,
+  }),
 };
 
 const UNIQUE: Record<string, string[]> = {
@@ -122,6 +131,7 @@ const UNIQUE: Record<string, string[]> = {
   payment_events: ["id"],
   stables_customers: ["user_id", "stables_customer_id"],
   stables_webhook_events: ["event_id"],
+  ops_alerts: ["key"],
   payment_swaps: ["id", "jupiter_request_id", "signature"],
   jupiter_swap_orders: ["id", "jupiter_request_id", "signature"],
 };

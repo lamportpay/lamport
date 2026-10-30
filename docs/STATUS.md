@@ -31,7 +31,7 @@ access (owner, 30 Oct); nothing production-side is configured yet.
 | This status file | `docs/STATUS.md` |
 | Older execution tracker (to 21 Oct) | `docs/ROADMAP.md` |
 | Hosting | Vercel, company team, project `lamport`, Hobby plan. Preview only, behind Vercel login, built from this branch. Production has no variables and no deployment |
-| Database | Supabase dev project `gdksfksypkcfiohozzsx` (the one in `supabase/config.toml`). Every migration in `supabase/migrations/` (30 files) is reflected there, some applied under other names, so compare with `list_migrations` before building a new database. The 5-minute reconcile job is scheduled but does nothing until its Vault secrets are set. The Lovable live database must never be touched (`CLAUDE.md`) |
+| Database | Supabase dev project `gdksfksypkcfiohozzsx` (the one in `supabase/config.toml`). Every migration in `supabase/migrations/` (31 files) is reflected there, some applied under other names, so compare with `list_migrations` before building a new database. The 5-minute reconcile job is scheduled but does nothing until its Vault secrets are set. The Lovable live database must never be touched (`CLAUDE.md`) |
 | Payout partner | Stables. Sandbox key on the Preview. Production access issued; the production key is not in Vercel yet |
 | Solana RPC | Alchemy. Devnet key on the Preview; mainnet key only for Production later |
 | Swap quotes | Jupiter, API key on the Preview (read-only quotes in TEST) |
@@ -60,8 +60,9 @@ Vercel (names in `docs/migration/vercel-preview.md`); local work needs your own 
 | 30 Oct | **G3 and G4 (owner-approved, dev database):** test admin accounts removed, admin rights need the authenticator code in the database too, fee ledger cannot be emptied; the admin set up the authenticator | `09c4de8` |
 | 30 Oct | Recovery assistant never sends customer text to an AI service in LIVE; guard test for one migration trail; checklist rows closed | `6f8ed02`, `431cf47` |
 | 30 Oct | Owner: Stables KYB verified and production API access issued | – |
+| 30 Oct | Production alerts for webhook failures: secret missing, deliveries not applied, transfers with no webhook; sent to `OPS_ALERT_WEBHOOK_URL` by the reconcile job, no repeats (`ops_alerts`, applied to dev) | this session |
 
-Every code commit passed CI (secret scan, typecheck, lint, 632 unit tests, build, browser-bundle
+Every code commit passed CI (secret scan, typecheck, lint, 650 unit tests, build, browser-bundle
 scan, dependency audit) and was deployed to the Preview and checked there.
 
 ## 4. What is built (and where the code is)
@@ -72,6 +73,7 @@ scan, dependency audit) and was deployed to the Preview and checked there.
 | Payment states | Forward-only state machine that mirrors Stables | `src/lib/payments/state.ts`, `ledger.server.ts` |
 | Fees and revenue | One 2% fee taken out of the total; optional min/max; fee ledger; reconciliation; reports | `src/lib/payments/fee-math.ts`, `fees.server.ts`, `fee-ledger.server.ts`, `revenue-*.ts` |
 | Stables | Client with Idempotency-Key on writes, Svix-signed webhooks, config | `src/lib/stables/`, `src/routes/api/public/stables-webhook.ts` |
+| Operations alerts | Webhook failures pushed to the team's channel (stuck payments: admin only so far) | `src/lib/ops/`, `docs/architecture/operations-and-recovery.md` §3a |
 | Status sync | Webhooks, live sync while a payment is open, background reconciliation | `syncPaymentWithStables` in `service.server.ts`, `src/routes/api/cron/reconcile-payments.ts`, `scripts/reconcile-payments.mjs` |
 | Solana | RPC with timeout and mode guard; balances; deposit and fee checks | `src/lib/solana-rpc.server.ts`, `src/lib/solana-usdc.server.ts`, `src/lib/payments/wallet-holdings.server.ts` |
 | Jupiter | Quotes; swap orders (blocked in TEST) | `src/lib/jupiter/` |
@@ -80,8 +82,8 @@ scan, dependency audit) and was deployed to the Preview and checked there.
 | Sign-in | Wallet sign-in (Sign in with Solana); admin password plus authenticator code | `src/lib/wallet-sign-in.ts`, `src/lib/identity/`, `src/routes/admin.login.tsx`, `src/lib/admin-guard.ts` |
 | Admin | Payments, operations cases, alerts, limits, emergency pause, fees and revenue, users and roles, exports, audit log | `src/components/admin/`, `src/routes/_authenticated/admin*`, `src/lib/admin*.functions.ts` |
 | Security | Headers and CSP trial, CSP reports, shared rate limits, webhook checks | `src/lib/security-headers.ts`, `src/lib/csp-report.server.ts`, `src/lib/payments/rate-limit.server.ts` |
-| Database | 30 migrations, RLS, append-only audit log and fee ledger | `supabase/migrations/` |
-| Tests | 60 test files; the unit run (`npm run test:unit`) covers 55 of them, 632 tests | `tests/` |
+| Database | 31 migrations, RLS, append-only audit log and fee ledger | `supabase/migrations/` |
+| Tests | 61 test files; the unit run (`npm run test:unit`) covers 56 of them, 650 tests | `tests/` |
 | Scripts | Secret scan, bundle scan, dependency audit, credential check, Stables sandbox probes, reconcile | `scripts/` |
 | CI | Runs on every push and pull request | `.github/workflows/ci.yml` |
 
@@ -137,8 +139,9 @@ None of these may be done without the owner's explicit approval (`CLAUDE.md`).
 ## 8. What is left
 
 **Before the real-money test:** the approvals above (1 to 6); G2; production webhook in the
-Stables dashboard; production alerts for webhook failures and stuck payments; background job
-secrets; the TEST-mode end-to-end run on the Preview (owner clicks, engineering verifies).
+Stables dashboard; `OPS_ALERT_WEBHOOK_URL` in Production (owner picks the channel; webhook-failure
+alerts are built); stuck-payment alerts (engineering); background job secrets (alerts only run with
+the job); the TEST-mode end-to-end run on the Preview (owner clicks, engineering verifies).
 
 **Before inviting users:** the real-money test; CSP enforced; lawyer review of `/terms` and
 `/privacy`; early-access fee waiver cap or confirmation; Stables' production country list.
@@ -186,3 +189,8 @@ npm run lint
   `in_progress`; only `transfer.created` webhooks arrive, so status relies on live sync and
   reconciliation.
 - `src/routeTree.gen.ts` is generated by the build; commit it when routes change.
+- No Stables webhook has been stored in the dev database for any transfer created since 2 Oct
+  (36 transfers; the last delivery of any kind arrived 8 Oct). Status has relied on live sync
+  and reconciliation. Check the sandbox endpoint in the Stables dashboard (URL, enabled, signing
+  secret equal to the Preview's `STABLES_WEBHOOK_SECRET`) and its delivery log; the
+  `webhook_missing` alert reports this once the background job runs.

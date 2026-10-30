@@ -97,6 +97,35 @@ The admin payments list shows the alerts and filters: needs attention, critical 
 refund, pending, processing, completed, failed, compliance review, today, plus status and free
 text (ID, transfer, user, wallet, country).
 
+### 3a. Alerts pushed to the team (webhook failures, 30 Oct 2026)
+
+The alerts above are shown in the admin. These are sent to the team's channel, because nobody
+watches the admin all day. The reconcile job (`/api/cron/reconcile-payments`) runs them after it has
+retried stored webhooks, so an alert means retrying did not help. Rules: `src/lib/ops/webhook-alerts.ts`
+(pure, unit-tested); sending: `src/lib/ops/alerts.server.ts`, `alert-policy.ts`, `notify.server.ts`.
+
+| Alert (key)                                       | Severity                                                    | Rule                                                                                            | Next action                                                                                     |
+| ------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Webhook secret missing (`webhook_secret_missing`) | critical                                                    | Stables is configured but `STABLES_WEBHOOK_SECRET` is not, so every signed delivery gets 503    | set the secret from the Stables dashboard and redeploy                                          |
+| Webhooks not applied (`webhook_not_applied`)      | warning ≥ 15 min, critical ≥ 2 h                            | stored deliveries (last 14 days) with no `processed_at`; grouped by type and by `process_error` | read the reasons; Recheck Stables; fix the cause                                                |
+| Webhooks missing (`webhook_missing`)              | warning; critical when every recent transfer (≥ 2) has none | transfers created 30 min to 3 days ago with no stored delivery at all                           | check the endpoint in the Stables dashboard (URL, enabled, signing secret) and its delivery log |
+
+- **Channel:** `OPS_ALERT_WEBHOOK_URL` (https; a Slack incoming webhook works as is; the URL is a
+  credential and is never logged). Every alert is also logged as one `ops_alert` JSON line
+  (with `delivery`: sent, failed or no_channel), and each run logs `ops_alerts_checked`.
+- **No repeats:** `ops_alerts` keeps one row per key. An alert is sent when it opens, again at once
+  if it becomes critical, then as a reminder every 6 h (critical) or 24 h (warning) while open. When
+  the condition clears the row is resolved and a "Resolved after …" message follows. Sending is
+  claimed with a conditional update, so overlapping runs send once; a failed send is retried on the
+  next run.
+- **Content:** mode, severity, next step, counts, reasons, payment/transfer/event IDs. Never names,
+  bank details, wallet addresses or amounts.
+- **Runs only when the job runs:** the Supabase pg_cron job (every 5 minutes, needs its Vault
+  secrets) or the daily Vercel Cron (Production only). Until the Vault secrets are set, alerts run
+  once a day in Production and not at all on Preview.
+- Not built yet: stuck-payment alerts (the "No update from Stables" rule above), refused deliveries
+  with a wrong signature (they are not stored; the "missing" rule catches their effect).
+
 ## 4. Operations cases (refunds and other manual follow-ups)
 
 Stables returns funds manually with its operations team (answers #1, #8, #19–22). LamportPay never

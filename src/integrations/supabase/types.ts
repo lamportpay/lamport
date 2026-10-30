@@ -409,6 +409,45 @@ export type Database = {
           },
         ]
       }
+      ops_alerts: {
+        Row: {
+          detail: Json
+          key: string
+          last_seen_at: string
+          notified_at: string | null
+          notified_severity: string | null
+          notify_count: number
+          opened_at: string
+          resolved_at: string | null
+          severity: string
+          title: string
+        }
+        Insert: {
+          detail?: Json
+          key: string
+          last_seen_at?: string
+          notified_at?: string | null
+          notified_severity?: string | null
+          notify_count?: number
+          opened_at?: string
+          resolved_at?: string | null
+          severity: string
+          title: string
+        }
+        Update: {
+          detail?: Json
+          key?: string
+          last_seen_at?: string
+          notified_at?: string | null
+          notified_severity?: string | null
+          notify_count?: number
+          opened_at?: string
+          resolved_at?: string | null
+          severity?: string
+          title?: string
+        }
+        Relationships: []
+      }
       payment_case_events: {
         Row: {
           action: string | null
