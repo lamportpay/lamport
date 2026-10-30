@@ -37,6 +37,7 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as ApiAskAiRouteImport } from './routes/api/ask-ai'
+import { Route as ApiCspReportRouteImport } from './routes/api/csp-report'
 import { Route as ApiEarlyAccessRouteImport } from './routes/api/early-access'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
 import { Route as ApiKycRouteImport } from './routes/api/kyc'
@@ -228,6 +229,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
 const ApiAskAiRoute = ApiAskAiRouteImport.update({
   id: '/api/ask-ai',
   path: '/api/ask-ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCspReportRoute = ApiCspReportRouteImport.update({
+  id: '/api/csp-report',
+  path: '/api/csp-report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiEarlyAccessRoute = ApiEarlyAccessRouteImport.update({
@@ -541,6 +547,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
@@ -620,6 +627,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
@@ -702,6 +710,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
@@ -784,6 +793,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/csp-report'
     | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
@@ -863,6 +873,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/csp-report'
     | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
@@ -944,6 +955,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/csp-report'
     | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
@@ -1025,6 +1037,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
   ApiAskAiRoute: typeof ApiAskAiRoute
+  ApiCspReportRoute: typeof ApiCspReportRoute
   ApiEarlyAccessRoute: typeof ApiEarlyAccessRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
   ApiKycRoute: typeof ApiKycRoute
@@ -1256,6 +1269,13 @@ declare module '@tanstack/react-router' {
       path: '/api/ask-ai'
       fullPath: '/api/ask-ai'
       preLoaderRoute: typeof ApiAskAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/csp-report': {
+      id: '/api/csp-report'
+      path: '/api/csp-report'
+      fullPath: '/api/csp-report'
+      preLoaderRoute: typeof ApiCspReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/early-access': {
@@ -1704,6 +1724,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
   ApiAskAiRoute: ApiAskAiRoute,
+  ApiCspReportRoute: ApiCspReportRoute,
   ApiEarlyAccessRoute: ApiEarlyAccessRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
   ApiKycRoute: ApiKycRoute,
