@@ -10,7 +10,12 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { alertText, notifyReason, REMIND_AFTER_MS, resolvedText } from "@/lib/ops/alert-policy";
 import { runOpsAlerts } from "@/lib/ops/alerts.server";
 import { alertChannelMisconfigured, sendOpsAlert } from "@/lib/ops/notify.server";
-import { paymentAlerts, type StuckCandidate } from "@/lib/ops/payment-alerts";
+import {
+  endedAfterFundsAlerts,
+  stuckPaymentAlerts,
+  type EndedCandidate,
+  type StuckCandidate,
+} from "@/lib/ops/payment-alerts";
 import { webhookAlerts, type WebhookFacts } from "@/lib/ops/webhook-alerts";
 
 import type { FakeSupabase } from "./support/fake-supabase";
@@ -135,8 +140,8 @@ describe("stuck payment rules", () => {
   });
 
   it("follows the admin rule: quiet under 2 h, warning after, critical after 24 h", () => {
-    expect(paymentAlerts([waiting({ status_changed_at: minutesAgo(HOUR) })], NOW)).toEqual([]);
-    const [warning] = paymentAlerts([waiting()], NOW);
+    expect(stuckPaymentAlerts([waiting({ status_changed_at: minutesAgo(HOUR) })], NOW)).toEqual([]);
+    const [warning] = stuckPaymentAlerts([waiting()], NOW);
     expect(warning).toMatchObject({
       key: "payment_stuck:11111111-2222-3333-4444-555555555555",
       severity: "warning",
@@ -149,7 +154,7 @@ describe("stuck payment rules", () => {
       },
     });
     expect(
-      paymentAlerts([waiting({ status_changed_at: minutesAgo(25 * HOUR) })], NOW)[0],
+      stuckPaymentAlerts([waiting({ status_changed_at: minutesAgo(25 * HOUR) })], NOW)[0],
     ).toMatchObject({
       severity: "critical",
     });
@@ -157,7 +162,7 @@ describe("stuck payment rules", () => {
 
   it("falls back to the creation time when no status change is recorded", () => {
     expect(
-      paymentAlerts(
+      stuckPaymentAlerts(
         [waiting({ status_changed_at: null, created_at: minutesAgo(30 * HOUR) })],
         NOW,
       )[0],
@@ -165,9 +170,9 @@ describe("stuck payment rules", () => {
   });
 
   it("leaves out payments with an open case, and payments waiting on the user", () => {
-    expect(paymentAlerts([waiting({ openCase: true })], NOW)).toEqual([]);
+    expect(stuckPaymentAlerts([waiting({ openCase: true })], NOW)).toEqual([]);
     expect(
-      paymentAlerts(
+      stuckPaymentAlerts(
         [
           waiting({
             status: "AWAITING_FUNDS_COLLECTION",
@@ -180,7 +185,7 @@ describe("stuck payment rules", () => {
   });
 
   it("covers a long compliance hold and puts critical first", () => {
-    const alerts = paymentAlerts(
+    const alerts = stuckPaymentAlerts(
       [
         waiting({ id: "aaaaaaaa-0000", status: "COMPLIANCE_HOLD" }),
         waiting({ id: "bbbbbbbb-0000", status_changed_at: minutesAgo(30 * HOUR) }),
@@ -191,6 +196,65 @@ describe("stuck payment rules", () => {
       ["payment_stuck:bbbbbbbb-0000", "critical"],
       ["payment_stuck:aaaaaaaa-0000", "warning"],
     ]);
+  });
+});
+
+describe("ended-after-funds rules", () => {
+  const ended = (over: Partial<EndedCandidate> = {}): EndedCandidate => ({
+    id: "99999999-2222-3333-4444-555555555555",
+    transfer_id: "tr_9",
+    status: "FAILED",
+    created_at: minutesAgo(5 * HOUR),
+    ended_at: minutesAgo(HOUR),
+    funding_signature: "sig",
+    funding_verified_at: null,
+    everCollectedFunds: false,
+    hasCase: false,
+    ...over,
+  });
+
+  it("is critical when a transfer ends after the deposit", () => {
+    const { alerts, retired } = endedAfterFundsAlerts([ended()], NOW);
+    expect(retired).toEqual({});
+    expect(alerts).toEqual([
+      expect.objectContaining({
+        key: "payment_ended_after_funds:99999999-2222-3333-4444-555555555555",
+        severity: "critical",
+        title: "Payment 99999999 failed after funds reached Stables",
+        detail: {
+          payment_id: "99999999-2222-3333-4444-555555555555",
+          transfer_id: "tr_9",
+          status: "FAILED",
+          ended_at: minutesAgo(HOUR),
+        },
+      }),
+    ]);
+    expect(alerts[0].action).toContain("Opening a case on the payment stops this alert.");
+  });
+
+  it("also counts funds Stables reported collected without a recorded deposit", () => {
+    const { alerts } = endedAfterFundsAlerts(
+      [ended({ status: "CANCELLED", funding_signature: null, everCollectedFunds: true })],
+      NOW,
+    );
+    expect(alerts[0].title).toBe("Payment 99999999 cancelled after funds reached Stables");
+  });
+
+  it("stays quiet without funds, with any case, or for a payout", () => {
+    expect(endedAfterFundsAlerts([ended({ funding_signature: null })], NOW).alerts).toEqual([]);
+    expect(endedAfterFundsAlerts([ended({ hasCase: true })], NOW).alerts).toEqual([]);
+    expect(endedAfterFundsAlerts([ended({ status: "COMPLETED" })], NOW).alerts).toEqual([]);
+  });
+
+  it("retires a payment that ended more than 14 days ago", () => {
+    const { alerts, retired } = endedAfterFundsAlerts(
+      [ended({ ended_at: minutesAgo(15 * 24 * HOUR) })],
+      NOW,
+    );
+    expect(alerts).toEqual([]);
+    expect(retired["payment_ended_after_funds:99999999-2222-3333-4444-555555555555"]).toContain(
+      "Needs attention in Admin → Payments",
+    );
   });
 });
 
@@ -517,6 +581,54 @@ describe("alerts step of the reconcile job", () => {
       errors: ["webhooks"],
     });
     expect(db.table("ops_alerts")[0]["resolved_at"]).toBeNull();
+  });
+
+  const addEnded = (id: string, endedMinutesAgo: number) => {
+    db.table("payments").push({
+      id,
+      transfer_id: `tr_${id}`,
+      status: "FAILED",
+      funding_signature: `sig_${id}`,
+      funding_verified_at: null,
+      created_at: minutesAgo(endedMinutesAgo + HOUR),
+      updated_at: minutesAgo(endedMinutesAgo),
+    });
+    db.table("payment_events").push({
+      id: db.nextId(),
+      payment_id: id,
+      to_status: "FAILED",
+      created_at: minutesAgo(endedMinutesAgo),
+    });
+    db.table("stables_webhook_events").push({
+      event_id: `ev_${id}`,
+      event_type: "transfer.created",
+      event_object_id: `tr_${id}`,
+      received_at: minutesAgo(endedMinutesAgo + HOUR),
+      processed_at: minutesAgo(endedMinutesAgo + HOUR),
+    });
+  };
+
+  it("alerts when a payment ends after funds, until a case is opened", async () => {
+    addEnded("e1", 10);
+    expect(await runOpsAlerts(NOW)).toMatchObject({ open: 1, sent: 1 });
+    expect(sentTexts()[0]).toMatch(
+      /^\[LamportPay TEST\] CRITICAL: Payment e1 failed after funds reached Stables/,
+    );
+    // Even a case that is already closed counts: the refund is followed there.
+    db.table("payment_cases").push({ id: "c1", payment_id: "e1", status: "closed" });
+    expect(await runOpsAlerts(NOW + 5 * 60_000)).toMatchObject({ open: 0, resolved: 1 });
+    expect(sentTexts()[1]).toMatch(/Resolved after 5 min: Payment e1 failed/);
+  });
+
+  it("takes an unhandled one off the channel after 14 days, saying why", async () => {
+    addEnded("e1", 10);
+    await runOpsAlerts(NOW);
+    const later = NOW + 14 * 24 * 60 * 60_000;
+    expect(await runOpsAlerts(later)).toMatchObject({ open: 0, resolved: 1 });
+    const last = sentTexts().at(-1)!;
+    expect(last).toMatch(/^\[LamportPay TEST\] No longer alerted after 14 days: Payment e1 failed/);
+    expect(last).toContain("still has no operations case");
+    expect(await runOpsAlerts(later + 5 * 60_000)).toMatchObject({ open: 0, sent: 0, resolved: 0 });
   });
 
   it("sends nothing when there is nothing wrong", async () => {

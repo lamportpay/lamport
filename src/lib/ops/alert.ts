@@ -18,6 +18,16 @@ export type OpsAlert = {
   detail: Record<string, unknown>;
 };
 
+/** What one set of rules reports in a run. */
+export type RuleResult = {
+  alerts: OpsAlert[];
+  /**
+   * Keys whose condition still holds but that are no longer sent, with the
+   * reason; their open alert is closed with that note instead of "resolved".
+   */
+  retired: Record<string, string>;
+};
+
 /** How many IDs an alert lists; the count is always complete. */
 export const SAMPLE_SIZE = 5;
 

@@ -61,6 +61,17 @@ export function alertText(
   return lines.join("\n");
 }
 
+/** An alert taken off the channel while its condition still holds (see RuleResult.retired). */
+export function retiredText(
+  mode: string,
+  title: string,
+  openedAt: string,
+  note: string,
+  now: number = Date.now(),
+): string {
+  return `[LamportPay ${mode.toUpperCase()}] No longer alerted after ${since(openedAt, now)}: ${title}. ${note}`;
+}
+
 export function resolvedText(
   mode: string,
   title: string,

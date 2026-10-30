@@ -45,7 +45,7 @@ Questions", "Carry-overs", "Roadmap").
 - [ ] **Security:** credential rotation completed (`docs/security/credential-rotation-2026-10-30.md`);
       `main` protected; GTM/consent decision applied; independent security review (Phase 10).
 - [ ] **Operations:** emergency payment controls tested in production config; reconciliation
-      scheduler running; alerting on webhook failures and stuck payments (built 30 Oct,
+      scheduler running; alerting on webhook failures, stuck payments and payments ended after funds (built 30 Oct,
       `src/lib/ops/`; needs `OPS_ALERT_WEBHOOK_URL` in Production and the scheduler's Vault
       secrets).
 - [ ] **LIVE unlock:** reviewed PR changing the code lock, owner approval variable, and

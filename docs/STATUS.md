@@ -62,8 +62,9 @@ Vercel (names in `docs/migration/vercel-preview.md`); local work needs your own 
 | 30 Oct | Owner: Stables KYB verified and production API access issued | – |
 | 30 Oct | Production alerts for webhook failures: secret missing, deliveries not applied, transfers with no webhook; sent to `OPS_ALERT_WEBHOOK_URL` by the reconcile job, no repeats (`ops_alerts`, applied to dev) | `18974f8` |
 | 30 Oct | Stuck-payment alerts: one per payment with no update from Stables for 2 h (critical at 24 h), same rule as the admin, silenced by an open operations case; at most 10 messages per run | `f2b01ff` |
+| 30 Oct | Ended-after-funds alerts: one per payment that failed, was cancelled or expired after funds reached Stables (critical); silenced by any operations case; taken off the channel 14 days after it ended, with a note | this session |
 
-Every code commit passed CI (secret scan, typecheck, lint, 659 unit tests, build, browser-bundle
+Every code commit passed CI (secret scan, typecheck, lint, 665 unit tests, build, browser-bundle
 scan, dependency audit) and was deployed to the Preview and checked there.
 
 ## 4. What is built (and where the code is)
@@ -74,7 +75,7 @@ scan, dependency audit) and was deployed to the Preview and checked there.
 | Payment states | Forward-only state machine that mirrors Stables | `src/lib/payments/state.ts`, `ledger.server.ts` |
 | Fees and revenue | One 2% fee taken out of the total; optional min/max; fee ledger; reconciliation; reports | `src/lib/payments/fee-math.ts`, `fees.server.ts`, `fee-ledger.server.ts`, `revenue-*.ts` |
 | Stables | Client with Idempotency-Key on writes, Svix-signed webhooks, config | `src/lib/stables/`, `src/routes/api/public/stables-webhook.ts` |
-| Operations alerts | Webhook failures and stuck payments pushed to the team's channel | `src/lib/ops/`, `docs/architecture/operations-and-recovery.md` §3a |
+| Operations alerts | Webhook failures, stuck payments and payments ended after funds pushed to the team's channel | `src/lib/ops/`, `docs/architecture/operations-and-recovery.md` §3a |
 | Status sync | Webhooks, live sync while a payment is open, background reconciliation | `syncPaymentWithStables` in `service.server.ts`, `src/routes/api/cron/reconcile-payments.ts`, `scripts/reconcile-payments.mjs` |
 | Solana | RPC with timeout and mode guard; balances; deposit and fee checks | `src/lib/solana-rpc.server.ts`, `src/lib/solana-usdc.server.ts`, `src/lib/payments/wallet-holdings.server.ts` |
 | Jupiter | Quotes; swap orders (blocked in TEST) | `src/lib/jupiter/` |
@@ -84,7 +85,7 @@ scan, dependency audit) and was deployed to the Preview and checked there.
 | Admin | Payments, operations cases, alerts, limits, emergency pause, fees and revenue, users and roles, exports, audit log | `src/components/admin/`, `src/routes/_authenticated/admin*`, `src/lib/admin*.functions.ts` |
 | Security | Headers and CSP trial, CSP reports, shared rate limits, webhook checks | `src/lib/security-headers.ts`, `src/lib/csp-report.server.ts`, `src/lib/payments/rate-limit.server.ts` |
 | Database | 31 migrations, RLS, append-only audit log and fee ledger | `supabase/migrations/` |
-| Tests | 61 test files; the unit run (`npm run test:unit`) covers 56 of them, 659 tests | `tests/` |
+| Tests | 61 test files; the unit run (`npm run test:unit`) covers 56 of them, 665 tests | `tests/` |
 | Scripts | Secret scan, bundle scan, dependency audit, credential check, Stables sandbox probes, reconcile | `scripts/` |
 | CI | Runs on every push and pull request | `.github/workflows/ci.yml` |
 
@@ -140,8 +141,8 @@ None of these may be done without the owner's explicit approval (`CLAUDE.md`).
 ## 8. What is left
 
 **Before the real-money test:** the approvals above (1 to 6); G2; production webhook in the
-Stables dashboard; `OPS_ALERT_WEBHOOK_URL` in Production (owner picks the channel; webhook-failure and
-stuck-payment alerts are built); background job secrets (alerts only run with the job); the TEST-mode end-to-end run on the Preview (owner clicks, engineering verifies).
+Stables dashboard; `OPS_ALERT_WEBHOOK_URL` in Production (owner picks the channel; webhook-failure,
+stuck-payment and ended-after-funds alerts are built); background job secrets (alerts only run with the job); the TEST-mode end-to-end run on the Preview (owner clicks, engineering verifies).
 
 **Before inviting users:** the real-money test; CSP enforced; lawyer review of `/terms` and
 `/privacy`; early-access fee waiver cap or confirmation; Stables' production country list.

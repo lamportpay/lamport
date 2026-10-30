@@ -2,10 +2,10 @@
  * Runs the operations alerts: gather facts, keep `ops_alerts` in step, tell the
  * team. Called by the reconcile job (`/api/cron/reconcile-payments`) after it
  * has retried stored webhooks and re-read open transfers from Stables, so an
- * alert means catching up did not help. Two sets of rules: webhook failures
- * (`webhook-alerts.ts`) and stuck payments (`payment-alerts.ts`); if one cannot
- * gather its facts, the other still runs and the failed one's alerts stay as
- * they were.
+ * alert means catching up did not help. Three sets of rules: webhook failures
+ * (`webhook-alerts.ts`), stuck payments and payments that ended after funds
+ * reached Stables (`payment-alerts.ts`); if one cannot gather its facts, the
+ * others still run and the failed one's alerts stay as they were.
  *
  * Each alert key has one row. A new or reopened alert is sent; while it stays
  * open it is sent again only when it becomes critical or a reminder is due
@@ -17,13 +17,22 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import type { Json } from "@/integrations/supabase/types";
 import { requestedMode } from "@/lib/app-mode.server";
+import { ENDED_WITHOUT_PAYOUT, reachedFunds } from "@/lib/payments/attention";
 import { WAITING_FOR_STABLES } from "@/lib/payments/stuck";
 import { getStablesConfig, getStablesWebhookSecret } from "@/lib/stables/config.server";
 
-import type { OpsAlert } from "./alert";
-import { alertText, notifyReason, resolvedText } from "./alert-policy";
+import type { OpsAlert, RuleResult } from "./alert";
+import { alertText, notifyReason, resolvedText, retiredText } from "./alert-policy";
 import { sendOpsAlert } from "./notify.server";
-import { paymentAlerts, PAYMENT_STUCK_PREFIX, type StuckCandidate } from "./payment-alerts";
+import {
+  endedAfterFundsAlerts,
+  ENDED_ALERT_WINDOW_MS,
+  PAYMENT_ENDED_PREFIX,
+  PAYMENT_STUCK_PREFIX,
+  stuckPaymentAlerts,
+  type EndedCandidate,
+  type StuckCandidate,
+} from "./payment-alerts";
 import {
   webhookAlerts,
   WEBHOOK_ALERT_AFTER_MS,
@@ -113,6 +122,34 @@ async function gatherWebhookFacts(now: number): Promise<WebhookFacts> {
   return { stablesConfigured, secretConfigured, unapplied: unapplied.data, transfers };
 }
 
+/** Each payment's status changes, newest first: when it last changed and what it passed through. */
+async function statusHistory(ids: string[]) {
+  const { data, error } = await supabaseAdmin
+    .from("payment_events")
+    .select("payment_id, created_at, to_status")
+    .in("payment_id", ids)
+    .not("to_status", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(5000);
+  if (error) fail("Load status changes", error);
+  const lastChange = new Map<string, string>();
+  const statuses = new Map<string, string[]>();
+  for (const e of data) {
+    if (!lastChange.has(e.payment_id)) lastChange.set(e.payment_id, e.created_at);
+    statuses.set(e.payment_id, [...(statuses.get(e.payment_id) ?? []), e.to_status as string]);
+  }
+  return { lastChange, statuses };
+}
+
+/** Payments with an operations case: open ones only, or any. */
+async function paymentsWithCase(ids: string[], which: "open" | "any"): Promise<Set<string>> {
+  let query = supabaseAdmin.from("payment_cases").select("payment_id").in("payment_id", ids);
+  if (which === "open") query = query.neq("status", "closed");
+  const { data, error } = await query;
+  if (error) fail("Load operations cases", error);
+  return new Set(data.map((c) => c.payment_id));
+}
+
 /** Payments waiting on Stables after the deposit, with their last status change and cases. */
 async function gatherStuckCandidates(): Promise<StuckCandidate[]> {
   const payments = await supabaseAdmin
@@ -124,29 +161,10 @@ async function gatherStuckCandidates(): Promise<StuckCandidate[]> {
   if (payments.error) fail("Load waiting payments", payments.error);
   if (payments.data.length === 0) return [];
   const ids = payments.data.map((p) => p.id);
-
-  const [events, cases] = await Promise.all([
-    supabaseAdmin
-      .from("payment_events")
-      .select("payment_id, created_at")
-      .in("payment_id", ids)
-      .not("to_status", "is", null)
-      .order("created_at", { ascending: false })
-      .limit(5000),
-    supabaseAdmin
-      .from("payment_cases")
-      .select("payment_id")
-      .in("payment_id", ids)
-      .neq("status", "closed"),
+  const [{ lastChange }, withCase] = await Promise.all([
+    statusHistory(ids),
+    paymentsWithCase(ids, "open"),
   ]);
-  if (events.error) fail("Load status changes", events.error);
-  if (cases.error) fail("Load operations cases", cases.error);
-
-  const lastChange = new Map<string, string>();
-  for (const e of events.data)
-    if (!lastChange.has(e.payment_id)) lastChange.set(e.payment_id, e.created_at);
-  const withCase = new Set(cases.data.map((c) => c.payment_id));
-
   return payments.data.map((p) => ({
     ...p,
     status_changed_at: lastChange.get(p.id) ?? null,
@@ -154,23 +172,69 @@ async function gatherStuckCandidates(): Promise<StuckCandidate[]> {
   }));
 }
 
+/**
+ * Payments that ended without a payout, recently enough to matter: the alert
+ * window plus margin, so one that just left the window is still seen (and
+ * retired) by a later run.
+ */
+async function gatherEndedCandidates(now: number): Promise<EndedCandidate[]> {
+  const payments = await supabaseAdmin
+    .from("payments")
+    .select(
+      "id, transfer_id, status, created_at, updated_at, funding_signature, funding_verified_at",
+    )
+    .in("status", [...ENDED_WITHOUT_PAYOUT])
+    .gte("updated_at", new Date(now - 2 * ENDED_ALERT_WINDOW_MS).toISOString())
+    .order("updated_at", { ascending: false })
+    .limit(ROW_LIMIT);
+  if (payments.error) fail("Load ended payments", payments.error);
+  if (payments.data.length === 0) return [];
+  const ids = payments.data.map((p) => p.id);
+  const [{ lastChange, statuses }, withCase] = await Promise.all([
+    statusHistory(ids),
+    paymentsWithCase(ids, "any"),
+  ]);
+  return payments.data.map((p) => ({
+    id: p.id,
+    transfer_id: p.transfer_id,
+    status: p.status,
+    created_at: p.created_at,
+    ended_at: lastChange.get(p.id) ?? p.updated_at,
+    funding_signature: p.funding_signature,
+    funding_verified_at: p.funding_verified_at,
+    everCollectedFunds: reachedFunds(statuses.get(p.id) ?? []),
+    hasCase: withCase.has(p.id),
+  }));
+}
+
 type RuleSet = {
   name: string;
   /** Whether an alert key belongs to this rule set (so it may resolve it). */
   owns: (key: string) => boolean;
-  alerts: (now: number) => Promise<OpsAlert[]>;
+  check: (now: number) => Promise<RuleResult>;
 };
 
 const RULE_SETS: RuleSet[] = [
   {
     name: "webhooks",
     owns: (key) => (WEBHOOK_ALERT_KEYS as readonly string[]).includes(key),
-    alerts: async (now) => webhookAlerts(await gatherWebhookFacts(now), now),
+    check: async (now) => ({
+      alerts: webhookAlerts(await gatherWebhookFacts(now), now),
+      retired: {},
+    }),
   },
   {
     name: "stuck_payments",
     owns: (key) => key.startsWith(PAYMENT_STUCK_PREFIX),
-    alerts: async (now) => paymentAlerts(await gatherStuckCandidates(), now),
+    check: async (now) => ({
+      alerts: stuckPaymentAlerts(await gatherStuckCandidates(), now),
+      retired: {},
+    }),
+  },
+  {
+    name: "ended_after_funds",
+    owns: (key) => key.startsWith(PAYMENT_ENDED_PREFIX),
+    check: async (now) => endedAfterFundsAlerts(await gatherEndedCandidates(now), now),
   },
 ];
 
@@ -232,10 +296,13 @@ export async function runOpsAlerts(now: number = Date.now()): Promise<OpsAlertsR
   const at = new Date(now).toISOString();
 
   const alerts: OpsAlert[] = [];
+  const retired: Record<string, string> = {};
   const checked: RuleSet[] = [];
   for (const rules of RULE_SETS) {
     try {
-      alerts.push(...(await rules.alerts(now)));
+      const result = await rules.check(now);
+      alerts.push(...result.alerts);
+      Object.assign(retired, result.retired);
       checked.push(rules);
     } catch (error) {
       report.errors.push(rules.name);
@@ -331,9 +398,12 @@ export async function runOpsAlerts(now: number = Date.now()): Promise<OpsAlertsR
     report.resolved++;
     // Only worth a message if the team was told it opened.
     if (!row.notified_at) continue;
+    const note = retired[row.key];
     await sendOpsAlert({
-      text: resolvedText(mode, row.title, row.opened_at, now),
-      fields: { mode, key: row.key, reason: "resolved", title: row.title },
+      text: note
+        ? retiredText(mode, row.title, row.opened_at, note, now)
+        : resolvedText(mode, row.title, row.opened_at, now),
+      fields: { mode, key: row.key, reason: note ? "retired" : "resolved", title: row.title },
     });
   }
   return report;
