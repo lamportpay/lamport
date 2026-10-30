@@ -313,7 +313,7 @@ npm run webhook:send -- travel-rule <transfer_id>
 - **USDT on Solana:** it quotes (GBP, AUD, NGN on 2026-09-27; not USD). A USDT → AUD transfer ran
   to `completed` in the sandbox (simulated deposit). USDT → GBP could not be created because of the
   500s below. Real funding with USDT is untested (sandbox-limited).
-- **GBP transfer creation 500s** (tenant `9337824d-1860-4ac5-a352-88416f59085b`): from about 14:03
+- **GBP transfer creation 500s** (LamportPay's sandbox tenant): from about 14:03
   UTC on 2026-09-27, `POST /api/v1/transfer` to GB / GBP answered 500 "Something went wrong while
   creating the transfer." for USDC and USDT. One call succeeded at 14:47:33, then it failed again
   at 14:48; AUD transfers worked at the same time. Correlation IDs: `d39b1358-e405-4f83-83ca-0749b04d7f31`

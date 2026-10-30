@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { passwordBreachCount } from "@/lib/password-check";
 
 export const Route = createFileRoute("/auth_/reset")({
   ssr: false,
@@ -64,6 +65,14 @@ function ResetPasswordPage() {
       return;
     }
     setBusy(true);
+    const breaches = await passwordBreachCount(password);
+    if (breaches) {
+      setBusy(false);
+      setError(
+        "This password has appeared in a known data breach, so it is not safe to use. Please choose a different one.",
+      );
+      return;
+    }
     const { error: updateError } = await supabase.auth.updateUser({ password });
     setBusy(false);
     if (updateError) {

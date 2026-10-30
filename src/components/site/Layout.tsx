@@ -331,6 +331,16 @@ function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link to="/privacy" className="hover:text-white">
+                Privacy policy
+              </Link>
+            </li>
+            <li>
+              <Link to="/terms" className="hover:text-white">
+                Terms of use
+              </Link>
+            </li>
+            <li>
               <Link to="/cookies" className="hover:text-white">
                 Cookie policy
               </Link>

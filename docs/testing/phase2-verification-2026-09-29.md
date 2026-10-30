@@ -169,7 +169,7 @@ order 200. No transfer was created and no money moved.
   `true`. The Supabase advisor still lists the generic "SECURITY DEFINER callable by
   authenticated" warning: the function must stay callable (RLS policies use it), but it no longer
   answers for other users.
-- **Signed-in E2E:** dev-only test user `e2e-phase2@lamportpay.test` created with the service role
+- **Signed-in E2E:** a dev-only test user created with the service role
   (random password, not stored; reset it with the service role to re-run). Token obtained by
   normal sign-in and passed to the test run only.
   **Full suite: 343 tests, 343 passed, 0 failed, 0 skipped** (NTFS mirror, dev server up).

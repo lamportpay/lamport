@@ -7,8 +7,10 @@ import { NEWS } from "../src/content/news";
 describe("public discovery URLs", () => {
   it("uses the published project origin for every sitemap entry", () => {
     const locations = [...buildSitemap().matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
-    expect(locations).toHaveLength(16 + POSTS.length + NEWS.length);
+    expect(locations).toHaveLength(18 + POSTS.length + NEWS.length);
     expect(locations).toContain("https://lamportpay.lovable.app/");
+    expect(locations).toContain("https://lamportpay.lovable.app/privacy");
+    expect(locations).toContain("https://lamportpay.lovable.app/terms");
     for (const location of locations) {
       expect(new URL(location).origin).toBe("https://lamportpay.lovable.app");
     }
@@ -23,7 +25,7 @@ describe("public discovery URLs", () => {
 
   it("uses only page-specific article dates and omits static-page lastmod", () => {
     const entries = [...buildSitemap().matchAll(/<url>([\s\S]*?)<\/url>/g)].map((match) => match[1]);
-    expect(entries.filter((entry) => !entry.includes("<lastmod>"))).toHaveLength(16);
+    expect(entries.filter((entry) => !entry.includes("<lastmod>"))).toHaveLength(18);
     for (const post of POSTS) {
       const entry = entries.find((value) => value.includes(`/blog/${post.slug}</loc>`));
       expect(entry).toContain(`<lastmod>${post.updated ?? post.published}</lastmod>`);

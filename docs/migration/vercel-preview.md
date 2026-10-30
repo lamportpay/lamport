@@ -32,7 +32,7 @@ request and the `CI` status check, block force pushes and deletion).
 ## 2. Vercel project (company team only)
 
 Status 29 Oct (night): project **`lamport`** (`prj_NpycYKRJJS6K2JPzfuSZEBjd6IRd`) created in the
-company team `lamportpay-7634` (account `hello@lamportpay.com`, Hobby plan) with owner approval:
+company team `lamportpay-7634` (Hobby plan) with owner approval:
 
 | Setting | Value (read back from Vercel) |
 |---|---|
@@ -96,10 +96,9 @@ support chats, while the live site collects both.
 
 ### Before the Preview URL is shared (owner decisions; nothing done)
 
-- **Admins:** 4 accounts hold the admin role (3 `example.com` test accounts, 1 `gmail.com`), none
-  with MFA. On a reachable Preview, a weak test password is an admin login. Keep Vercel
-  Deployment Protection on, and decide whether the test accounts keep the admin role and how
-  their passwords are set.
+- **Admins:** admin accounts on the dev project are listed in the private owner report, not
+  here. Admin access now needs an authenticator-app code (30 Oct); keep Vercel Deployment
+  Protection on, and remove the admin role from test accounts (owner decision).
 - **Auth URLs:** Authentication → URL Configuration must list the Preview URL as a redirect URL
   (password reset and admin magic links use the page's own origin).
 - **Leaked-password protection:** off; Supabase offers it on paid plans only.
