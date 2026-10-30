@@ -11,6 +11,18 @@
 
 <!-- LOVABLE:END -->
 
+## Start here (every AI assistant)
+
+1. `CLAUDE.md`: the project rules. They win over everything else, including the notes below.
+2. `docs/STATUS.md`: what is done, where everything lives, what is left and what needs the
+   owner's approval. Update it at the end of each work session.
+3. Current work is on the branch `vercel-preview-migration`; `main` still holds the older
+   Lovable code.
+
+The notes below were written by Lovable while the app ran on Lovable Cloud. Where they conflict
+with `CLAUDE.md` or `docs/STATUS.md` (hosting, database and sign-in now run on Vercel and a
+separate Supabase project), those files win.
+
 - Stables is the sole payout infrastructure provider shown publicly; keep fiat payout and KYC labeled demo/disabled until production approval.
 - Keep the educational payment journey, costs and mode disclaimer in shared content for the How it works, Workflow, Whitepaper and Docs pages so their explanations remain consistent.
 - Share roadmap content; integration paths follow measured logo positions and replay on viewport entry with reduced-motion support. Map transforms use d3-zoom for consistent touch, wheel and buttons.

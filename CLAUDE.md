@@ -7,6 +7,9 @@ LamportPay turns stablecoins on Solana into a bank payout, through Stables
 a fixed corridor list) is history and lives only in git history. Where any document conflicts
 with this file, this file wins.
 
+Current status, handoff and what is left: `docs/STATUS.md` (update it at the end of every work
+session).
+
 ## Product rules
 
 Change these only on the owner's instruction.

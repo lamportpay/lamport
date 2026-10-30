@@ -1,5 +1,8 @@
 # LamportPay execution tracker
 
+> Current status (30 Oct 2026 onwards): `docs/STATUS.md`. This tracker was last updated on
+> 21 October and is kept for its history.
+
 **Updated:** 21 October 2026. **The phase structure is the master roadmap** (MASTER_PLAN and
 the company Google Sheet, "Roadmap" tab). This file only tracks execution against it; it does
 not define phases.
