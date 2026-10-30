@@ -5,6 +5,7 @@ import { stuckSignal } from "./payments/stuck";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { isAdminSession, requireAdminSession as requireAdmin } from "@/lib/admin-guard";
 import { toPaymentView } from "@/lib/payments/view";
 import { logAdminActions } from "./admin.audit.server";
 import {
@@ -15,18 +16,6 @@ import {
   type AdminStablesPaymentRow,
   type AdminUnmatchedTravelRule,
 } from "./admin.constants";
-
-async function requireAdmin(context: {
-  supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => unknown };
-  userId: string;
-}) {
-  const { data: isAdmin, error } = (await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  })) as { data: boolean | null; error: unknown };
-  if (error) throw new Error("Could not verify admin access.");
-  if (!isAdmin) throw new Error("Admin role required.");
-}
 
 /**
  * One live Stables payment for admins: the same view (and receipt) the user
@@ -120,11 +109,7 @@ export const getStablesPaymentsAdmin = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) {
       return {
         isAdmin: false,
@@ -286,11 +271,7 @@ export const getRoleManagement = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) {
       return { isAdmin: false, roles: [] as AdminRoleRow[], invites: [] as AdminInviteRow[] };
     }
@@ -337,11 +318,7 @@ export const grantRoleByEmail = createServerFn({ method: "POST" })
     const { supabase, userId, claims } = context;
     const actor = { id: userId, email: (claims as { email?: string } | null)?.email ?? null };
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) throw new Error("Forbidden");
 
     const email = data.email.trim().toLowerCase();
@@ -405,11 +382,7 @@ export const revokeRole = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) throw new Error("Forbidden");
     if (data.userId === userId && data.role === "admin") {
       throw new Error("You cannot revoke your own admin role.");

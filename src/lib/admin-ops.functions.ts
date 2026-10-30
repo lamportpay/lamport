@@ -10,24 +10,28 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import {
+  isAdminSession,
+  requireAdminSession as requireAdmin,
+  sessionPassedMfa,
+} from "@/lib/admin-guard";
 import { AUDIT_COLUMNS, type AdminAuditRow } from "./admin.constants";
 
-type AdminContext = {
-  supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => unknown };
-  userId: string;
-};
-
-async function isAdmin(context: AdminContext): Promise<boolean> {
-  const { data, error } = (await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  })) as { data: boolean | null; error: unknown };
+/**
+ * Whether the account holds the admin role, whatever its session's assurance level. Read with
+ * the service role (has_role() answers false to an admin session that has not passed MFA yet);
+ * used only to tell such a session that the authenticator-app step is next.
+ */
+async function holdsAdminRole(userId: string): Promise<boolean> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("user_id")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .limit(1);
   if (error) throw new Error("Could not verify admin access.");
-  return Boolean(data);
-}
-
-async function requireAdmin(context: AdminContext): Promise<void> {
-  if (!(await isAdmin(context))) throw new Error("Admin role required.");
+  return (data ?? []).length > 0;
 }
 
 /** Rows scanned for revenue sums; beyond this the answer says it is partial. */
@@ -59,17 +63,25 @@ function revenueStatus(row: RevenueRow): "received" | "short" | "missing" | "pen
   return received > 0 ? "short" : "missing";
 }
 
-/** Who is signed in, and whether they are an admin (for the admin shell). */
+/**
+ * Who is signed in, and whether they are an admin (for the admin shell). `mfaRequired`: the
+ * account is an admin but this session has not passed the authenticator-app step yet.
+ */
 export const getAdminSession = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const admin = await isAdmin(context);
+    const admin = await isAdminSession(context);
     const email = (context.claims as { email?: string } | null)?.email ?? null;
-    if (!admin) return { isAdmin: false, email, stablesEnvironment: null };
+    if (!admin) {
+      const mfaRequired =
+        !sessionPassedMfa(context.claims) && (await holdsAdminRole(context.userId));
+      return { isAdmin: false, mfaRequired, email, stablesEnvironment: null };
+    }
     const { getStablesConfig } = await import("@/lib/stables/config.server");
     const stables = getStablesConfig();
     return {
       isAdmin: true,
+      mfaRequired: false,
       email,
       stablesEnvironment: stables.configured ? stables.environment : null,
     };
