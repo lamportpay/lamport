@@ -2449,7 +2449,8 @@ export async function handleStablesEvent(event: StablesWebhookEvent): Promise<Ev
           }),
         );
       }
-      // Stables' answer is authoritative; it still only moves the payment forward.
+      // Stables' answer is authoritative (owner decision D-7, 30 Oct 2026); it still only
+      // moves the payment forward.
       status = confirmed;
       actualPayout = transfer.actual_payout ?? null;
     }

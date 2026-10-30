@@ -99,6 +99,10 @@ Three separate experiences (see `docs/ROADMAP.md`):
 - Every Stables write sends an `Idempotency-Key` (`src/lib/stables/client.server.ts`).
 - The Stables transfer state is authoritative; our payment status follows it. The Travel Rule
   is a requirement on the payment (`travel_rule_*` columns), not a payment state.
+- A terminal webhook status (completed, failed, cancelled, expired) applies only after
+  `GET /transfers/{id}` confirms it. If Stables reports a different status, Stables' status
+  applies (still forward-only) and `webhook_status_mismatch` is logged (owner decision D-7,
+  30 Oct 2026). If Stables can't be reached, the event stays unprocessed for reconciliation.
 - Webhooks: Svix-signed only, at `POST /api/public/stables-webhook`. Store, answer 200, then
   process. Unsigned or badly signed requests get 401; 503 only when the secret is not set.
   Missed events are caught up by `/api/cron/reconcile-payments`.
