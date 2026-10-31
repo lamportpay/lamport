@@ -4,9 +4,13 @@
 `docs/LOVABLE-VSCODE-WORKFLOW-AUDIT.md`, `CLAUDE.md` and `docs/STATUS.md` (remote branch
 `vercel-preview-migration` at `1422b62`, `main` at `e1b3e61`).
 
-**Progress (31 Oct, owner "go for step 1").** Done: R0 (verified backup sent to the owner),
-R4 (`73847d7`), R6 files (`d7e9de6`), R5 (`b48d85f`). Waiting for owner approval: R1, R2, R3,
-then R7–R10, and decisions D1–D7. Implemented R6 differs from the draft below in one point: the
+**Progress (31 Oct).** Done: R0 (verified backup sent to the owner), R4 (`73847d7`), R6 files
+(`d7e9de6`), R5 (`b48d85f`). Owner approved all remaining approvals the same day: R1 set and
+checked (Vercel Ignored Build Step); R2 branch `lovable/legacy` created at `e1b3e61` (owner switches
+Lovable to it); R3 rulesets in `.github/rulesets/` for the owner to import. Decisions applied:
+D1 no approval count beyond the code owner; D2 `@lamportpay` only; D3 admin bypass for pull
+requests only; D4 retarget (done); D5 MCP server removed after LIVE (R10); D6 Lovable UI work after
+the live move; D7 R1 applied by engineering. R7 deferred until after LIVE. Implemented R6 differs from the draft below in one point: the
 sitemap route, `src/lib/seo.ts` and `public/robots.txt` stay owner-only (a server route and the
 page head), and CODEOWNERS is `* @lamportpay` minus exactly the allowlist, kept equal by a test.
 

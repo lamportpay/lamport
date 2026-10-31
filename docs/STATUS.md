@@ -30,7 +30,7 @@ access (owner, 30 Oct); nothing production-side is configured yet.
 | Project rules | `CLAUDE.md` |
 | This status file | `docs/STATUS.md` |
 | Older execution tracker (to 21 Oct) | `docs/ROADMAP.md` |
-| Hosting | Vercel, company team, project `lamport`, Hobby plan. Preview only, behind Vercel login, built from this branch. Production has no variables and no deployment |
+| Hosting | Vercel, company team, project `lamport`, Hobby plan. Preview only, behind Vercel login, built from this branch. Production: non-secret settings only (31 Oct), no deployment; an Ignored Build Step skips every Production build and every branch except this one |
 | Database | Supabase dev project `gdksfksypkcfiohozzsx` (the one in `supabase/config.toml`). Every migration in `supabase/migrations/` (31 files) is reflected there, some applied under other names, so compare with `list_migrations` before building a new database. The 5-minute reconcile job is scheduled but does nothing until its Vault secrets are set. The Lovable live database must never be touched (`CLAUDE.md`) |
 | Payout partner | Stables. Sandbox key on the Preview. Production access issued; the production key is not in Vercel yet |
 | Solana RPC | Alchemy. Devnet key on the Preview; mainnet key only for Production later |
@@ -69,6 +69,7 @@ Vercel (names in `docs/migration/vercel-preview.md`); local work needs your own 
 | 31 Oct | R4: no live Supabase fallback in `vite.config.ts`; `src/lib/public-env.ts` stops `vite dev` / `vite build` on missing or inconsistent public config; CI builds with placeholders; the browser-bundle scan refuses the live ref | `73847d7` |
 | 31 Oct | R6: `.github/CODEOWNERS` (owner reviews everything except the Lovable UI paths), `.github/lovable-allowed-paths.txt`, `scripts/check-lovable-paths.mjs` and the CI job `lovable-path-guard` (inert until a ruleset requires them) | `d7e9de6` |
 | 31 Oct | R5: lockfile bot runs only on `lovable/*` and `lovable-sync`, never main; actions pinned to commits | `b48d85f` |
+| 31 Oct | **Owner approved all open approvals and said no further test runs.** R1: Vercel Ignored Build Step set and checked (Production skipped, this branch builds). R2: branch `lovable/legacy` created at `e1b3e61` (today's `main`). R3: rulesets ready to import (`.github/rulesets/`). Vercel Production: `LAMPORTPAY_MODE`/`VITE_LAMPORTPAY_MODE` = live (locked in code), USDC only, fee 200 bps, swap fee 0, minimum 15 | – |
 
 Every code commit passed CI (secret scan, typecheck, lint, unit tests (770 on 31 Oct), build,
 browser-bundle scan, dependency audit) and was deployed to the Preview and checked there.
@@ -122,9 +123,8 @@ Still open:
 | G2: rotate the keys that were shared in a `.env` file (`docs/security/credential-rotation-2026-10-30.md`) | Owner, then engineering verifies |
 | Enforce the CSP after a wallet session on `/pay` shows no violations | Engineering |
 | Leaked-password protection (needs the paid Supabase plan) | Owner |
-| Vercel: no Production build from a Git push (plan R1, Ignored Build Step) | Owner approval |
-| Move Lovable's GitHub sync off `main` to `lovable/legacy` (plan R2) | Owner |
-| Protect `main` and `vercel-preview-migration` with rulesets; then require code-owner review and the `lovable-path-guard` check (plan R3) | Owner |
+| Move Lovable's GitHub sync to the branch `lovable/legacy` (created 31 Oct; plan R2) | Owner, in Lovable |
+| Import the two rulesets in `.github/rulesets/` (see its README; plan R3) | Owner, in GitHub |
 | Independent security review before scaling | External |
 
 ## 7. Approvals needed to go LIVE
@@ -150,11 +150,24 @@ None of these may be done without the owner's explicit approval (`CLAUDE.md`).
 
 ## 8. What is left
 
-**Lovable / VS Code workflow** (`docs/LOVABLE-VSCODE-REMEDIATION-PLAN.md`): R0, R4, R5 and R6 done
-(31 Oct). Next, with owner approval: R1 Vercel Ignored Build Step, R2 `lovable/legacy` and the
-Lovable branch switch, R3 rulesets, answers to D1–D7; then R7 pull requests on the VS Code branch,
-R8 `main` catches up, R9 rehearsal before Lovable edits again, R10 Lovable dependencies removed
-after the live move.
+**Lovable / VS Code workflow** (`docs/LOVABLE-VSCODE-REMEDIATION-PLAN.md`): R0, R1, R4, R5, R6 done
+and R2/R3 prepared (31 Oct, owner approval). Owner: switch Lovable to `lovable/legacy`, import the
+rulesets. Then R8 (`main` catches up through one pull request). R7 (pull requests on this branch)
+waits until after LIVE to keep pace; R9/R10 after the live move.
+
+**Blocking the production database (31 Oct):** the Supabase organisation is on the free plan and
+already has its two free projects (LamportPay dev and an unrelated project), so a production
+project cannot be created until the organisation is on Pro. Pro also brings backups, no
+auto-pause and leaked-password protection. Lovable's old data is not migrated (owner, 31 Oct).
+
+**Owner steps before the live test (in order):** Supabase Pro → engineering creates the production
+project and applies the migrations; Lovable branch switch and rulesets → engineering merges into
+`main`; a custom (sub)domain on Vercel (webhooks cannot reach a URL behind Vercel login); Production
+secrets in Vercel (`STABLES_API_URL`, `STABLES_API_KEY`, `STABLES_WEBHOOK_SECRET`,
+`SUPABASE_SERVICE_ROLE_KEY`, `SOLANA_RPC_URL`, `CRON_SECRET`, `LAMPORTPAY_REVENUE_WALLET`, optional
+`JUPITER_API_KEY` and `OPS_ALERT_WEBHOOK_URL`; new keys, never ones from the shared `.env`); the
+Stables IP-allowlist answer. Then engineering deploys Production with LIVE still locked, and the
+LIVE unlock happens at the real-money test with the owner.
 
 **Before the real-money test:** the approvals above (1 to 6); G2; production webhook in the
 Stables dashboard; `OPS_ALERT_WEBHOOK_URL` in Production (owner picks the channel; webhook-failure,
