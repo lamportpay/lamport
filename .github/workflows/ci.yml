@@ -56,3 +56,29 @@ jobs:
 
       - name: Dependency audit (production; high and critical fail unless accepted in scripts/check-audit.mjs)
         run: node scripts/check-audit.mjs
+
+  # R6 (31 Oct 2026): a pull request from a Lovable branch may change only the UI files in
+  # .github/lovable-allowed-paths.txt; anything else needs the owner (.github/CODEOWNERS).
+  # Skipped for every other branch, which GitHub counts as passing.
+  lovable-path-guard:
+    if: github.event_name == 'pull_request' && (startsWith(github.head_ref, 'lovable/') || github.head_ref == 'lovable-sync')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Lovable may change only UI files
+        # The guard and the allowlist come from the base branch, so a pull request cannot loosen
+        # its own check. The ref reaches the shell through env, never by interpolation.
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git show "origin/$BASE_REF:scripts/check-lovable-paths.mjs" > "$RUNNER_TEMP/check-lovable-paths.mjs"
+          git show "origin/$BASE_REF:.github/lovable-allowed-paths.txt" > "$RUNNER_TEMP/lovable-allowed-paths.txt"
+          node "$RUNNER_TEMP/check-lovable-paths.mjs" "origin/$BASE_REF" --allowlist "$RUNNER_TEMP/lovable-allowed-paths.txt"

@@ -1,0 +1,58 @@
+# Code owners (remediation R6, 31 Oct 2026).
+#
+# Every change needs the owner's review except the UI files Lovable may change, which are listed
+# in .github/lovable-allowed-paths.txt. This file mirrors that list: a pattern with no owner takes
+# paths out again, and the last matching line wins. tests/codeowners.unit.test.ts fails when the
+# two disagree for any tracked file, so a new file is owned until it is listed in both.
+#
+# GitHub enforces code-owner review only once a ruleset requires it (plan R3). A second owner
+# can be added on every owned line once the owner decides (plan D2).
+#
+# Only three pattern forms are used: `*`, `/exact/path` and `/directory/`.
+
+* @lamportpay
+
+# Lovable UI paths: no code owner
+/src/routes/index.tsx
+/src/routes/about.tsx
+/src/routes/people.tsx
+/src/routes/how-it-works.tsx
+/src/routes/workflow.tsx
+/src/routes/technology.tsx
+/src/routes/partners.tsx
+/src/routes/roadmap.tsx
+/src/routes/whitepaper.tsx
+/src/routes/compliance.tsx
+/src/routes/docs.tsx
+/src/routes/faq.tsx
+/src/routes/contact.tsx
+/src/routes/blog.index.tsx
+/src/routes/blog.$slug.tsx
+/src/routes/news.index.tsx
+/src/routes/news.$slug.tsx
+/src/components/site/
+/src/components/ui/
+/src/content/
+/src/assets/
+/src/styles.css
+/public/
+/src/lib/company-profile.ts
+/src/lib/team.ts
+/src/lib/world-map.ts
+/src/lib/world-map-paths.ts
+
+# Owned again inside those directories
+/src/components/site/Layout.tsx @lamportpay
+/src/components/site/GoogleAnalytics.tsx @lamportpay
+/src/components/site/CookieConsent.tsx @lamportpay
+/src/components/site/LegalPage.tsx @lamportpay
+/src/components/site/wallet/ @lamportpay
+/src/components/site/LaunchPopup.tsx @lamportpay
+/src/components/site/FeeCalculator.tsx @lamportpay
+/src/components/site/PaymentReceipt.tsx @lamportpay
+/src/components/site/SwapRoutePreview.tsx @lamportpay
+/src/components/site/CustomerSupport.tsx @lamportpay
+/src/components/site/BusinessSettingsAdmin.tsx @lamportpay
+/src/components/site/StablesPaymentsAdmin.tsx @lamportpay
+/src/components/site/demo-data.ts @lamportpay
+/public/robots.txt @lamportpay
