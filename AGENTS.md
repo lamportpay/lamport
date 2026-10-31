@@ -25,7 +25,12 @@ separate Supabase project), those files win.
 
 Superseded (31 Oct 2026): the note below about "built-in fallbacks in `vite.config.ts`". There
 are none: a build without the `VITE_SUPABASE_*` values stops (`src/lib/public-env.ts`), because
-the fallback pointed every such build at the live database.
+the fallback pointed every such build at the live database. Also superseded: the note about
+`lockfile.yml` committing to main. It now runs only on `lovable/*` branches and `lovable-sync`
+and commits the lock file to that branch for review; no bot writes to main.
+
+Lovable may change only the UI files in `.github/lovable-allowed-paths.txt`; everything else is
+owner-reviewed (`.github/CODEOWNERS`, CI job `lovable-path-guard`).
 
 - Stables is the sole payout infrastructure provider shown publicly; keep fiat payout and KYC labeled demo/disabled until production approval.
 - Keep the educational payment journey, costs and mode disclaimer in shared content for the How it works, Workflow, Whitepaper and Docs pages so their explanations remain consistent.
