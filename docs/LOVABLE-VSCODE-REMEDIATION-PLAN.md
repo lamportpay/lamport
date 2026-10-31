@@ -14,6 +14,26 @@ the live move; D7 R1 applied by engineering. R7 deferred until after LIVE. Imple
 sitemap route, `src/lib/seo.ts` and `public/robots.txt` stay owner-only (a server route and the
 page head), and CODEOWNERS is `* @lamportpay` minus exactly the allowlist, kept equal by a test.
 
+### Evidence (31 Oct 2026)
+
+| Item | State | Evidence |
+| --- | --- | --- |
+| R0 backup | Done | Full and code-only Git bundles, restore-tested, sent to the owner; Windows steps in `docs/LOCAL-SETUP-WINDOWS.md` section 2 |
+| R1 Production protected | Done | Vercel Ignored Build Step = `if [ -f scripts/vercel-ignore-build.sh ]; then sh scripts/vercel-ignore-build.sh; else exit 0; fi`: Production builds only from `main` (deliberate deployment), Previews only for the integration branch, any commit without the script (Lovable's `main`, `lovable/legacy`) skipped. `vercel.json`: Git pushes never deploy `main`, auto-deploy only the integration branch. The 31 Oct Preview build log shows the guard running; `tests/deploy-guards.unit.test.ts` covers every case |
+| R2 Lovable separated | Branch ready; owner switch pending | `lovable/legacy` created at `e1b3e61` (= today's `main`, the live site's code). Owner: Lovable → project → GitHub → branch `lovable/legacy` |
+| R3 Branch protection | Files ready; owner import pending | `.github/rulesets/main.json`, `vercel-preview-migration.json`, README with the import steps; `tests/deploy-guards.unit.test.ts` checks their rules. The tools available to engineering cannot create rulesets |
+| R4 No live fallback | Done | `73847d7`; `tests/public-env.unit.test.ts` |
+| R5 Lockfile bot | Done | `b48d85f`; `tests/lockfile-workflow.unit.test.ts` |
+| R6 Path guard, CODEOWNERS | Done (enforced after R3) | `d7e9de6`; `tests/codeowners.unit.test.ts`, `tests/lovable-path-guard.unit.test.ts` |
+| R7 Pull requests on the integration branch | Ready; active with the ruleset import | Integration ruleset requires a pull request with `checks` and `lovable-path-guard`; `.githooks/pre-push` refuses direct pushes to `main`, the integration branch and `lovable/legacy` (`git config core.hooksPath .githooks`); workflow in `docs/LOCAL-SETUP-WINDOWS.md` section 6 |
+| D1 approvals on `main` | Applied | `required_approving_review_count` 0, `require_code_owner_review` true (`main.json`) |
+| D2 code owners | Applied | `.github/CODEOWNERS`: `@lamportpay` only |
+| D3 admin bypass | Applied | `bypass_mode: pull_request` for repository admins in both rulesets: no direct pushes for anyone |
+| D4 lockfile | Applied | Retargeted (R5) |
+| D5 MCP server | Decided: remove after the live move | R10 item 8; until then it stays as is |
+| D6 Lovable UI work | Decided: after the live move | R9 gates |
+| D7 who applies R1 | Applied | Engineering through the Vercel API; checked in the build log |
+
 ## 0. Order of work
 
 | Phase | Goal | Priority | Owner approval | Can start under existing approvals |

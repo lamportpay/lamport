@@ -1,0 +1,23 @@
+#!/bin/sh
+# LamportPay local guard (31 Oct 2026): refuses a push from this computer to a protected branch.
+# Switch it on once per clone:  git config core.hooksPath .githooks
+#
+# main                      production only; changes arrive through the owner-approved release PR
+# vercel-preview-migration  integration branch; changes arrive through pull requests (plan R7)
+# lovable/legacy            Lovable's copy of the live site's code; never pushed from VS Code
+#
+# GitHub enforces the same with rulesets (.github/rulesets/); this hook only stops mistakes early.
+
+status=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main | refs/heads/vercel-preview-migration | refs/heads/lovable/legacy)
+      branch=${remote_ref#refs/heads/}
+      echo "Push to '$branch' refused by .githooks/pre-push." >&2
+      echo "Work on a feature branch (git switch -c feat/<name>), push it and open a pull request." >&2
+      echo "See docs/LOCAL-SETUP-WINDOWS.md, section 6." >&2
+      status=1
+      ;;
+  esac
+done
+exit $status

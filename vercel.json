@@ -3,6 +3,10 @@
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
   "git": {
-    "deploymentEnabled": false
+    "deploymentEnabled": {
+      "**": false,
+      "main": false,
+      "vercel-preview-migration": true
+    }
   }
 }

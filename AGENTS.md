@@ -16,8 +16,10 @@
 1. `CLAUDE.md`: the project rules. They win over everything else, including the notes below.
 2. `docs/STATUS.md`: what is done, where everything lives, what is left and what needs the
    owner's approval. Update it at the end of each work session.
-3. Current work is on the branch `vercel-preview-migration`; `main` still holds the older
-   Lovable code.
+3. The integration branch is `vercel-preview-migration`: work on a feature branch from it and
+   open a pull request into it. `main` is production only (still the older Lovable code until
+   the owner-approved release); `lovable/legacy` is Lovable's. Windows setup and the Git
+   workflow: `docs/LOCAL-SETUP-WINDOWS.md`. `https://lamportpay.com` stays the domain.
 
 The notes below were written by Lovable while the app ran on Lovable Cloud. Where they conflict
 with `CLAUDE.md` or `docs/STATUS.md` (hosting, database and sign-in now run on Vercel and a

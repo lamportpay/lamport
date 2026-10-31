@@ -93,6 +93,12 @@ Three separate experiences (see `docs/ROADMAP.md`):
   consistent (`src/lib/public-env.ts`). The live project is refused on a Vercel Preview always,
   and elsewhere unless `LAMPORTPAY_SHARED_DB=1` (Lovable's own builds). Never add a fallback back.
 - **Migrations:** add a file to `supabase/migrations/` and apply it to the dev project only.
+- **Branches and deployments (31 Oct 2026):** work on a feature branch from
+  `vercel-preview-migration` and merge through a pull request; never push to `main` (production
+  only, owner-approved release PR). Vercel builds Production only from `main` and only when
+  someone deliberately creates that deployment (`scripts/vercel-ignore-build.sh`, `vercel.json`).
+  **`https://lamportpay.com` stays the domain**: no new subdomain, DNS, URL, canonical, sitemap or
+  SEO change without the owner's explicit approval.
 - **Stables sandbox only** (`sti_test_` keys, `https://api.sandbox.stables.money`) until the
   owner starts the planned production test.
 - **Never print or commit secrets.** Don't cat, echo or log `.env` / `.env.local` values;
