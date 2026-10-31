@@ -36,13 +36,14 @@ access (owner, 30 Oct); nothing production-side is configured yet.
 | Solana RPC | Alchemy. Devnet key on the Preview; mainnet key only for Production later |
 | Swap quotes | Jupiter, API key on the Preview (read-only quotes in TEST) |
 | Company tracker, Stables questions and answers | Owner's Google Drive (private) |
+| Lovable / VS Code workflow | Audit: `docs/LOVABLE-VSCODE-WORKFLOW-AUDIT.md`. Phased fix (R0–R10), approvals and decisions D1–D7: `docs/LOVABLE-VSCODE-REMEDIATION-PLAN.md` |
 | Owner-facing status docs | "LamportPay: road to LIVE" and "LamportPay work report" (private Claude docs, shared by the owner) |
 
 Secrets are never in the repository: only the empty `.env.example`. Preview variables live in
 Vercel (names in `docs/migration/vercel-preview.md`); local work needs your own `.env` with
 **sandbox** keys only.
 
-## 3. Work done on 29 and 30 October 2026
+## 3. Work done from 29 to 31 October 2026
 
 | Date | Work | Commits |
 | --- | --- | --- |
@@ -63,9 +64,14 @@ Vercel (names in `docs/migration/vercel-preview.md`); local work needs your own 
 | 30 Oct | Production alerts for webhook failures: secret missing, deliveries not applied, transfers with no webhook; sent to `OPS_ALERT_WEBHOOK_URL` by the reconcile job, no repeats (`ops_alerts`, applied to dev) | `18974f8` |
 | 30 Oct | Stuck-payment alerts: one per payment with no update from Stables for 2 h (critical at 24 h), same rule as the admin, silenced by an open operations case; at most 10 messages per run | `f2b01ff` |
 | 30 Oct | Ended-after-funds alerts: one per payment that failed, was cancelled or expired after funds reached Stables (critical); silenced by any operations case; taken off the channel 14 days after it ended, with a note | `b747d52` |
+| 31 Oct | Lovable / VS Code / GitHub / Vercel workflow audit and phased remediation plan | `2856d67` |
+| 31 Oct | **Remediation step 1 (owner "go"):** R0 verified backup of every branch (sent to the owner, not in the repository) | – |
+| 31 Oct | R4: no live Supabase fallback in `vite.config.ts`; `src/lib/public-env.ts` stops `vite dev` / `vite build` on missing or inconsistent public config; CI builds with placeholders; the browser-bundle scan refuses the live ref | `73847d7` |
+| 31 Oct | R6: `.github/CODEOWNERS` (owner reviews everything except the Lovable UI paths), `.github/lovable-allowed-paths.txt`, `scripts/check-lovable-paths.mjs` and the CI job `lovable-path-guard` (inert until a ruleset requires them) | `d7e9de6` |
+| 31 Oct | R5: lockfile bot runs only on `lovable/*` and `lovable-sync`, never main; actions pinned to commits | `b48d85f` |
 
-Every code commit passed CI (secret scan, typecheck, lint, 665 unit tests, build, browser-bundle
-scan, dependency audit) and was deployed to the Preview and checked there.
+Every code commit passed CI (secret scan, typecheck, lint, unit tests (770 on 31 Oct), build,
+browser-bundle scan, dependency audit) and was deployed to the Preview and checked there.
 
 ## 4. What is built (and where the code is)
 
@@ -116,7 +122,9 @@ Still open:
 | G2: rotate the keys that were shared in a `.env` file (`docs/security/credential-rotation-2026-10-30.md`) | Owner, then engineering verifies |
 | Enforce the CSP after a wallet session on `/pay` shows no violations | Engineering |
 | Leaked-password protection (needs the paid Supabase plan) | Owner |
-| Protect `main` on GitHub (ruleset in `.github/rulesets/main.json`) | Owner |
+| Vercel: no Production build from a Git push (plan R1, Ignored Build Step) | Owner approval |
+| Move Lovable's GitHub sync off `main` to `lovable/legacy` (plan R2) | Owner |
+| Protect `main` and `vercel-preview-migration` with rulesets; then require code-owner review and the `lovable-path-guard` check (plan R3) | Owner |
 | Independent security review before scaling | External |
 
 ## 7. Approvals needed to go LIVE
@@ -130,7 +138,9 @@ None of these may be done without the owner's explicit approval (`CLAUDE.md`).
 3. **Production secrets:** the owner enters them in Vercel → Environment Variables → Production
    (Stables production key and webhook secret, Supabase production keys, Alchemy mainnet key).
    Engineering sets the non-secret values.
-4. **Production deployment:** a pull request merging `vercel-preview-migration` into `main`.
+4. **Production deployment:** a pull request merging `vercel-preview-migration` into `main`,
+   only after Lovable syncs another branch (plan R2) and `main` is protected (R1, R3): Lovable's
+   preview runs whatever `main` holds against the live database.
 5. **Domain:** move the domain and DNS from Lovable to Vercel.
 6. **LIVE unlock:** a reviewed change to `src/lib/app-mode-lock.ts`, the owner approval
    variable and `LAMPORTPAY_MODE=live`.
@@ -139,6 +149,12 @@ None of these may be done without the owner's explicit approval (`CLAUDE.md`).
 8. **Soft launch:** invited users, low limits, USDC only.
 
 ## 8. What is left
+
+**Lovable / VS Code workflow** (`docs/LOVABLE-VSCODE-REMEDIATION-PLAN.md`): R0, R4, R5 and R6 done
+(31 Oct). Next, with owner approval: R1 Vercel Ignored Build Step, R2 `lovable/legacy` and the
+Lovable branch switch, R3 rulesets, answers to D1–D7; then R7 pull requests on the VS Code branch,
+R8 `main` catches up, R9 rehearsal before Lovable edits again, R10 Lovable dependencies removed
+after the live move.
 
 **Before the real-money test:** the approvals above (1 to 6); G2; production webhook in the
 Stables dashboard; `OPS_ALERT_WEBHOOK_URL` in Production (owner picks the channel; webhook-failure,
@@ -166,7 +182,8 @@ Still to ask: the production country list (#37–39), status webhooks in product
 ```sh
 git checkout vercel-preview-migration
 npm ci
-npm run dev        # http://localhost:8080, with your own .env (sandbox keys only)
+npm run dev        # http://localhost:8080, with your own .env (sandbox keys only; the three
+                   # VITE_SUPABASE_* values for the dev project are required, see .env.example)
 npm test
 npm run lint
 ```
@@ -182,6 +199,11 @@ npm run lint
 
 **Known gotchas**
 
+- `npm run dev` / `npm run build` stop with "LamportPay public configuration is not valid" when a
+  `VITE_SUPABASE_*` value is missing or inconsistent: there is no default since 31 Oct
+  (`src/lib/public-env.ts`). Never add one back.
+- Lovable may change only `.github/lovable-allowed-paths.txt`; keep it and `.github/CODEOWNERS`
+  in step (a test checks every tracked file).
 - The root `AGENTS.md` notes below its "Start here" section were written by Lovable while the
   app ran on Lovable Cloud; where they conflict with `CLAUDE.md`, `CLAUDE.md` wins.
 - Supabase MCP `execute_sql` / `apply_migration` hang on DELETE and DROP; run those by hand.

@@ -1,8 +1,14 @@
 # LamportPay: Lovable and VS Code remediation plan (for approval)
 
-**31 October 2026. Plan only: nothing here has been implemented.** Based on
+**31 October 2026.** Based on
 `docs/LOVABLE-VSCODE-WORKFLOW-AUDIT.md`, `CLAUDE.md` and `docs/STATUS.md` (remote branch
 `vercel-preview-migration` at `1422b62`, `main` at `e1b3e61`).
+
+**Progress (31 Oct, owner "go for step 1").** Done: R0 (verified backup sent to the owner),
+R4 (`73847d7`), R6 files (`d7e9de6`), R5 (`b48d85f`). Waiting for owner approval: R1, R2, R3,
+then R7–R10, and decisions D1–D7. Implemented R6 differs from the draft below in one point: the
+sitemap route, `src/lib/seo.ts` and `public/robots.txt` stay owner-only (a server route and the
+page head), and CODEOWNERS is `* @lamportpay` minus exactly the allowlist, kept equal by a test.
 
 ## 0. Order of work
 
@@ -50,8 +56,8 @@ must be in place before `vercel.json` on `main` becomes valid.
 **Risks and dependencies.** None for the product. The bundle holds code only (no secrets: `.env`
 is not committed). Recording Lovable and GitHub App settings needs the owner's screens.
 
-**Tests.** `git bundle verify` passes; branch heads in the bundle equal the remote heads; commit
-counts match (`main` 141, `vercel-preview-migration` 185).
+**Tests.** `git bundle verify` passes; a mirror restored from the bundle has every branch and tag
+at the same commit as GitHub; `git fsck` is clean. (Done 31 Oct: 10 branches and tag v0.3.0.)
 
 **Rollback.** Not needed; nothing changes.
 
@@ -424,13 +430,14 @@ All on `vercel-preview-migration`, one commit each, full CI, Preview deployed an
 touches `main`, Production, Lovable, the live database, DNS or any setting. You said not to
 implement yet, so these wait for your "go".
 
-1. **R0 backup bundle** (local, sent to you): no repository or setting change.
+1. **R0 backup bundle** (local, sent to you): no repository or setting change. **Done.**
 2. **R4** remove the live Supabase fallback and add the configuration validator, with tests and
-   CI placeholders. Before it is deployed, make sure your local `.env` has the three
+   CI placeholders. **Done (`73847d7`).** Before it is deployed, make sure your local `.env` has the three
    `VITE_SUPABASE_*` values for the dev project.
 3. **R6 files**: `CODEOWNERS`, the Lovable allowlist, the guard script, the CI job and their
-   tests (inert until R3 makes them required).
+   tests (inert until R3 makes them required). **Done (`d7e9de6`).**
 4. **R5 file**: `lockfile.yml` retargeted to `lovable/**` with pinned actions (inert for `main`).
+   **Done (`b48d85f`).**
 5. **Docs**: `docs/LOVABLE-VSCODE-WORKFLOW-AUDIT.md` and this plan are committed (owner OK,
    31 Oct). A pointer to them in `docs/STATUS.md` still needs your OK, as you asked for
    `STATUS.md`.
