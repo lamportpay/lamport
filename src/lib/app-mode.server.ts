@@ -18,13 +18,13 @@ import { LIVE_MODE_CODE_UNLOCKED } from "./app-mode-lock";
 import { MODE_PROFILES, type AppMode, type ModeProfile, type ModeStatus } from "./app-mode";
 import { PaymentError } from "./payments/errors";
 import { DEFAULT_RPC_URLS } from "./solana-rpc";
+import { DEV_SUPABASE_REF, LIVE_SUPABASE_REF } from "./supabase-refs";
 
 type Env = Record<string, string | undefined>;
 
 export const STABLES_SANDBOX_HOST_MARK = "sandbox";
-/** Supabase project refs (not secrets): dev/test and live. */
-export const DEV_SUPABASE_REF = "gdksfksypkcfiohozzsx";
-export const LIVE_SUPABASE_REF = "zmcbnknjatrfwrcfvtzt";
+/** Supabase project refs (not secrets): dev/test and live. Defined in supabase-refs.ts. */
+export { DEV_SUPABASE_REF, LIVE_SUPABASE_REF };
 
 function hostOf(url: string | undefined): string | null {
   if (!url) return null;

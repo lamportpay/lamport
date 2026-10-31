@@ -23,6 +23,10 @@ The notes below were written by Lovable while the app ran on Lovable Cloud. Wher
 with `CLAUDE.md` or `docs/STATUS.md` (hosting, database and sign-in now run on Vercel and a
 separate Supabase project), those files win.
 
+Superseded (31 Oct 2026): the note below about "built-in fallbacks in `vite.config.ts`". There
+are none: a build without the `VITE_SUPABASE_*` values stops (`src/lib/public-env.ts`), because
+the fallback pointed every such build at the live database.
+
 - Stables is the sole payout infrastructure provider shown publicly; keep fiat payout and KYC labeled demo/disabled until production approval.
 - Keep the educational payment journey, costs and mode disclaimer in shared content for the How it works, Workflow, Whitepaper and Docs pages so their explanations remain consistent.
 - Share roadmap content; integration paths follow measured logo positions and replay on viewport entry with reduced-motion support. Map transforms use d3-zoom for consistent touch, wheel and buttons.

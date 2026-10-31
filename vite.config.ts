@@ -5,6 +5,7 @@ import tsConfigPaths from "vite-tsconfig-paths";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { nitro } from "nitro/vite";
 import viteReact from "@vitejs/plugin-react";
+import { PUBLIC_ENV_CONTEXT_VARS, validatePublicEnv } from "./src/lib/public-env";
 
 // rpc-websockets (pulled in by @solana/web3.js) only declares "browser"/"node"
 // export conditions, neither of which the SSR build matches. Resolve it
@@ -45,22 +46,21 @@ const solanaMobileSsrStub = fileURLToPath(
   new URL("./src/lib/solana-mobile-ssr-stub.ts", import.meta.url),
 );
 
-// Public (publishable) backend connection values. `.env` is gitignored, so a
-// build made from a clean checkout (the published site, Vercel, CI) has no
-// VITE_SUPABASE_* values and the browser app crashes with "Missing Supabase
-// environment variable(s)". These are publishable, not secrets; a local or
-// hosting-provided env value always wins over them.
-const PUBLIC_BACKEND_DEFAULTS: Record<string, string> = {
-  VITE_SUPABASE_URL: "https://zmcbnknjatrfwrcfvtzt.supabase.co",
-  VITE_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_9e5G0Zw8rj0IQzv9Oos7Yw_UdccFnBL",
-  VITE_SUPABASE_PROJECT_ID: "zmcbnknjatrfwrcfvtzt",
-};
-
 export default defineConfig(({ command, mode }) => {
-  const loadedEnv = loadEnv(mode, process.cwd(), "VITE_");
-  const viteEnv: Record<string, string> = { ...loadedEnv };
-  for (const [key, value] of Object.entries(PUBLIC_BACKEND_DEFAULTS)) {
-    if (!viteEnv[key]) viteEnv[key] = value;
+  const viteEnv: Record<string, string> = loadEnv(mode, process.cwd(), "VITE_");
+  // The browser's Supabase project has no built-in default (31 Oct 2026). The old
+  // fallback filled missing VITE_SUPABASE_* values with Lovable Cloud's project (the
+  // live database), so a build without them silently pointed at live customer data.
+  // Missing or inconsistent values now stop `vite dev` / `vite build` here; see
+  // src/lib/public-env.ts. Never add a default back.
+  const configProblems = validatePublicEnv({
+    ...loadEnv(mode, process.cwd(), [...PUBLIC_ENV_CONTEXT_VARS]),
+    ...viteEnv,
+  });
+  if (configProblems.length > 0) {
+    throw new Error(
+      `LamportPay public configuration is not valid (vite ${command}):\n- ${configProblems.join("\n- ")}`,
+    );
   }
   const envDefine = Object.fromEntries(
     Object.entries(viteEnv).map(([key, value]) => [`import.meta.env.${key}`, JSON.stringify(value)]),

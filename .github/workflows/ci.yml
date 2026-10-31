@@ -43,6 +43,12 @@ jobs:
         run: npm run test:unit
 
       - name: Production build
+        # vite.config.ts has no Supabase default (src/lib/public-env.ts), so CI builds against
+        # placeholder public values: never a real project, never the live database.
+        env:
+          VITE_SUPABASE_URL: https://ciplaceholder0000000.supabase.co
+          VITE_SUPABASE_PROJECT_ID: ciplaceholder0000000
+          VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_placeholder
         run: npm run build
 
       - name: No server secrets in the client bundle

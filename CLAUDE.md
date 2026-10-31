@@ -88,6 +88,10 @@ Three separate experiences (see `docs/ROADMAP.md`):
   ("LamportPay", the one in `supabase/config.toml`). **Never touch the live database**: the
   original Lovable project `zmcbnknjatrfwrcfvtzt`, or any project other than the dev one.
   Don't read, query, migrate or point `.env` at it.
+- **No Supabase default in the build** (31 Oct 2026): `vite dev` / `vite build` stop unless
+  `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and `VITE_SUPABASE_PROJECT_ID` are set and
+  consistent (`src/lib/public-env.ts`). The live project is refused on a Vercel Preview always,
+  and elsewhere unless `LAMPORTPAY_SHARED_DB=1` (Lovable's own builds). Never add a fallback back.
 - **Migrations:** add a file to `supabase/migrations/` and apply it to the dev project only.
 - **Stables sandbox only** (`sti_test_` keys, `https://api.sandbox.stables.money`) until the
   owner starts the planned production test.
