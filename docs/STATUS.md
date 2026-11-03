@@ -112,6 +112,15 @@ Stables' hosted page; own account or named beneficiary; USDC only for now; minim
 - **Supabase:** the dev project stays in the CTO's account; the owner will buy the paid plan.
 - **Duplicate payment creation:** accepted as low risk (an extra unfunded draft only).
 
+Added on 3 Nov:
+
+- **Limits follow the payout partner:** minimum **15** (Stables' 15 USD-equivalent minimum);
+  maximum **5,000** per payment for now. Stables sets no fixed per-transfer maximum and agrees one
+  with the integrator (Stables' answer, Questions sheet Q5), so 5,000 stands until that figure is
+  agreed. Default in `src/lib/payments/limit-defaults.ts`; `.env` and Admin → Settings can still
+  override it. Any environment that sets `PAYMENT_MAX_*=none` must clear that value for the
+  maximum to apply.
+
 ## 6. Security status
 
 Full list: `docs/security/pre-live-security-checklist.md`. Closed on 29–30 Oct: wallet sign-in

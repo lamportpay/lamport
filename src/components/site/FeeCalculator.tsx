@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, ChevronDown, Info, Loader2 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { percentageModel, splitTotal } from "@/lib/payments/fee-math";
+import { DEFAULT_MAX_MAJOR, DEFAULT_MIN_MAJOR } from "@/lib/payments/limit-defaults";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -24,6 +25,9 @@ const REFRESH_MS = 30_000;
 const STABLES_PLATFORM = 0.0025;
 const MODEL = percentageModel(200n);
 const PRESETS = [100, 250, 500, 1000];
+// LamportPay's default per-payment range (the /pay app uses the server's configured limits).
+const MIN_AMOUNT = Number(DEFAULT_MIN_MAJOR);
+const MAX_AMOUNT = Number(DEFAULT_MAX_MAJOR);
 const fmt = (n: number, d = 2) =>
   n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -93,7 +97,7 @@ export function FeeCalculator() {
   // Value in USDC: SOL is priced live via Jupiter.
   const value = token === "SOL" ? (solPrice ? entered * solPrice : 0) : entered;
   const result = useMemo(
-    () => (value >= 15 && value <= 1_000_000 ? compute(value, cur, rate) : null),
+    () => (value >= MIN_AMOUNT && value <= MAX_AMOUNT ? compute(value, cur, rate) : null),
     [value, cur, rate],
   );
 
@@ -131,7 +135,7 @@ export function FeeCalculator() {
                   const v = e.target.value.replace(/[^0-9.]/g, "");
                   if ((v.match(/\./g) ?? []).length > 1) return;
                   if (v.includes(".") && v.split(".")[1].length > 2) return;
-                  if (Number(v) > 1_000_000) return;
+                  if (Number(v) > MAX_AMOUNT) return;
                   setAmount(v);
                 }}
                 className="w-full min-w-0 bg-transparent text-5xl font-semibold tabular-nums tracking-tight outline-none placeholder:text-muted-foreground/40"

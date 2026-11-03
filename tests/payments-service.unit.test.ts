@@ -424,15 +424,15 @@ describe("payment limits", () => {
     for (const key of ENV_KEYS.filter((k) => k.startsWith("PAYMENT_"))) process.env[key] = "";
   });
 
-  it.each(["14.999999", "1000000.000001", "0"])(
-    "rejects %s USDC before calling Stables (defaults 15 to 1,000,000)",
+  it.each(["14.999999", "5000.000001", "0"])(
+    "rejects %s USDC before calling Stables (defaults 15 to 5,000)",
     async (amount) => {
       await expect(
         service.createPayment(user, { amount, country: "IN", currency: "inr" }),
       ).rejects.toMatchObject({
         status: 400,
         code: "amount_out_of_range",
-        message: "Payments must be between 15 and 1,000,000 USDC.",
+        message: "Payments must be between 15 and 5,000 USDC.",
       });
       expect(api.createQuote).not.toHaveBeenCalled();
     },
@@ -440,7 +440,7 @@ describe("payment limits", () => {
 
   it("accepts both default bounds", async () => {
     await expect(createPayment("15")).resolves.toMatchObject({ status: "PAYMENT_CREATED" });
-    await expect(createPayment("1000000")).resolves.toMatchObject({ status: "PAYMENT_CREATED" });
+    await expect(createPayment("5000")).resolves.toMatchObject({ status: "PAYMENT_CREATED" });
   });
 
   it("reads each stablecoin's limits from the environment", async () => {

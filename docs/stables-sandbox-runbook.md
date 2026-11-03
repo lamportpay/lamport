@@ -17,7 +17,7 @@ disabled; an admin simulates the deposit instead.
    - `CRON_SECRET=` a long random string
    - `SUPABASE_*` pointing at the **dev** project
    - `PAYMENT_MIN_USDC`, `PAYMENT_MAX_USDC`, `PAYMENT_MIN_USDT`, `PAYMENT_MAX_USDT` (defaults
-     100 and 1000000)
+     15 and 5000)
 2. **Database:** every migration in `supabase/migrations` applied to the dev project (the latest
    is `20260928120000_payment_swaps.sql`).
 3. **Admin role:** your user has a row in `user_roles` with `role = 'admin'` (needed for step 5
@@ -274,7 +274,7 @@ npm run webhook:send -- travel-rule <transfer_id>
 ## 8. Other checks
 
 - **Our limits:**
-  - 14.99 USDC is refused: "Payments must be between 15 and 1,000,000 USDC." (LIVE defaults;
+  - 14.99 USDC is refused: "Payments must be between 15 and 5,000 USDC." (LIVE defaults;
     TEST MODE reads "between 15 and 5,000 USDC").
   - Change `PAYMENT_MIN_USDT` in `.env` and restart: the USDT limit follows.
 - **Unknown events:** `npm run webhook:send -- unknown` gives 200, stored as "Ignored
