@@ -97,13 +97,25 @@ Local branches (not pushed; each starts from `57308cd`):
 | --- | --- | --- | --- |
 | `feat/payment-limits-stables` | `5faf705` | Minimum 15 (Stables' minimum) and provisional maximum 5,000 until Stables confirms a maximum in writing; one source `src/lib/payments/limit-defaults.ts` for the server and the homepage calculator; tests and docs | typecheck, lint 0 errors, secret scan, 790/792 unit tests (2 Windows-only); build compiled 2 Nov |
 | `feat/live-ready-wording` | `6dc9965` | Recovery help says "no real money" only in TEST builds; `docs/launch/live-wording.md` (app wording checked, public-page sandbox statements listed for the launch switch) | typecheck, lint 0 errors, secret scan, 789/790 unit tests (1 Windows-only) |
-| `docs/local-state-2026-11-04` | this commit | This section | – |
+| `feat/swap-demo-quote-only` | `0c12ba2` | Swap demonstration quote-only in LIVE: `/api/jupiter/order` and `/execute` answer 403 in LIVE before sign-in or any Jupiter call (`src/lib/jupiter/demo-swap.server.ts`); `SwapPanelIsland` shows the quote-only preview in LIVE builds; TEST, quotes and payment swaps unchanged | typecheck, lint 0 errors, secret scan, 795/796 unit tests (CI selection; 1 Windows-only), 6 new tests |
+| `docs/local-state-2026-11-04` | this branch | This section | – |
 
 Backup (4 Nov), `C:\LamportPay\backups\2026-11-04\` with `BACKUP-MANIFEST.txt` and `SHA256SUMS.txt`:
 full-history bundle of the three branches (86.7 MB, complete history, restore-tested: same SHAs
 and commit counts), a 27 KB bundle of the two feature commits, and a source ZIP per branch
-(tracked files only). C:, D: and E: are partitions of **one** physical disk, so an off-disk copy
-(USB drive or private cloud) and the encrypted `.env` backup are still open (owner).
+(tracked files only). An encrypted `.env` backup (OpenSSL AES-256, password held by the owner) is
+in `C:\LamportPay\backups\private\`. C:, D: and E: are partitions of **one** physical disk, so an
+off-disk copy (USB drive or private cloud) is still open (owner). The old unencrypted `.env` copy
+in `E:\LamportPay-backups\2026-11-02\` is deleted once the owner's decrypt test matches.
+
+Local tooling notes (4 Nov): on this PC run Vitest and tsc directly with Node 22
+(`node node_modules/vitest/vitest.mjs run …`, `node --max-old-space-size=3072
+node_modules/typescript/bin/tsc --noEmit -p tsconfig.json`); through `cmd`/`npx` they crashed
+with low free memory.
+
+Next (local, one branch each): Stables production integration (config, KYC, payouts, webhooks;
+needs Stables' answer on the IP allowlist), Jupiter production, Solana mainnet RPC and wallet
+flows; Hyperliquid only after its scope is approved. LIVE stays locked.
 
 Decisions 3 Nov: minimum 15; maximum 5,000 provisional until Stables confirms in writing; the
 homepage swap demo becomes quote-only in LIVE (no real swap from the demonstration); the 2%
