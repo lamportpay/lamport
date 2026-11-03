@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { ModeGuardError } from "@/lib/app-mode.server";
 import { JupiterError } from "@/lib/jupiter/client.server";
+import { demoSwapExecutionRefusal } from "@/lib/jupiter/demo-swap.server";
 import { SwapOrderError, issueSwapOrder } from "@/lib/jupiter/swap-orders.server";
 import { authenticateUser } from "@/lib/payments/auth.server";
 import { USDC_MINT, isSupportedInputMint } from "@/lib/tokens";
@@ -86,6 +87,10 @@ export const Route = createFileRoute("/api/jupiter/order")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        // Quote-only in LIVE: the demonstration never builds a real swap.
+        const quoteOnly = demoSwapExecutionRefusal();
+        if (quoteOnly) return errorResponse(quoteOnly, 403);
+
         const auth = await requireUser(request);
         if (auth.denied) return auth.denied;
         const userId = auth.userId;
