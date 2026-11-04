@@ -27,7 +27,7 @@ const MODEL = percentageModel(200n);
 const PRESETS = [100, 250, 500, 1000];
 // LamportPay's default per-payment range (the /pay app uses the server's configured limits).
 const MIN_AMOUNT = Number(DEFAULT_MIN_MAJOR);
-const MAX_AMOUNT = Number(DEFAULT_MAX_MAJOR);
+const MAX_AMOUNT = DEFAULT_MAX_MAJOR === null ? Number.POSITIVE_INFINITY : Number(DEFAULT_MAX_MAJOR);
 const fmt = (n: number, d = 2) =>
   n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
 
