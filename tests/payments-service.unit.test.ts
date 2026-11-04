@@ -444,6 +444,9 @@ describe("payment limits", () => {
   });
 
   it("reads each stablecoin's limits from the environment", async () => {
+    // USDT is off unless turned on (USDC-only launch default); this test covers both coins.
+    process.env["PAYMENT_ENABLED_CURRENCIES"] = "usdc,usdt";
+    clearBusinessSettingsCache();
     process.env["PAYMENT_MIN_USDC"] = "10";
     process.env["PAYMENT_MAX_USDC"] = "20";
     process.env["PAYMENT_MIN_USDT"] = "30";

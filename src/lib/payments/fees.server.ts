@@ -5,7 +5,8 @@
  *   LAMPORTPAY_SWAP_FEE_BPS     Jupiter integrator fee on swaps (Jupiter allows 50–255
  *                               and keeps 20% of it)
  *   LAMPORTPAY_REVENUE_WALLET   Solana address that receives LamportPay's fee only
- *   PAYMENT_ENABLED_CURRENCIES  comma list of payment coins (default "usdc,usdt")
+ *   PAYMENT_ENABLED_CURRENCIES  comma list of payment coins (default "usdc": USDC-only launch,
+ *                               decision 2026-09-30; set "usdc,usdt" to turn USDT on)
  * An admin can override each one from the admin dashboard (business_settings,
  * see business-settings.server.ts); the effective value is what payments use.
  *
@@ -105,10 +106,13 @@ export function parseEnabledCurrencies(raw: readonly string[], label: string): P
   return enabled;
 }
 
-/** PAYMENT_ENABLED_CURRENCIES from .env; unset means every coin. */
+/**
+ * PAYMENT_ENABLED_CURRENCIES from .env. Unset means USDC only (the launch policy), so a
+ * missing setting can never turn on a coin that was not approved.
+ */
 export function envEnabledCurrencies(): PaymentCurrency[] {
   const raw = process.env["PAYMENT_ENABLED_CURRENCIES"]?.trim();
-  if (!raw) return [...PAYMENT_CURRENCIES];
+  if (!raw) return ["usdc"];
   return parseEnabledCurrencies(raw.split(","), "PAYMENT_ENABLED_CURRENCIES");
 }
 

@@ -23,6 +23,7 @@ import {
   type JupiterOrder,
 } from "@/lib/jupiter/client.server";
 import { requireRealFundsMode } from "@/lib/app-mode.server";
+import { getBusinessSettings } from "@/lib/business-settings.server";
 import { toMajor } from "@/lib/money";
 import { solReserveLamports, tokenAccountRentLamports } from "@/lib/solana-balances.server";
 import { rpc } from "@/lib/solana-rpc.server";
@@ -177,6 +178,24 @@ export async function orderSwap(
     );
   }
   const wallet = stored.wallet;
+
+  // Never swap into a coin that is turned off now (USDC-only launch, or switched off by an
+  // admin after the payment was created): the current settings decide, before any Stables,
+  // chain or Jupiter call.
+  let enabledCurrencies: PaymentCurrency[];
+  try {
+    enabledCurrencies = (await getBusinessSettings()).enabledCurrencies;
+  } catch (e) {
+    console.error("[swaps] business settings:", e instanceof Error ? e.message : e);
+    throw new PaymentError("Payments are temporarily unavailable.", 503, "settings_unavailable");
+  }
+  if (!enabledCurrencies.includes(coin)) {
+    throw new PaymentError(
+      "This payment's coin is turned off. Start a new payment.",
+      409,
+      "currency_disabled",
+    );
+  }
 
   // Fresh answers from Stables and the chain: the rule, not the client, decides.
   const plan = await replan(payment, wallet, stored.preference, await earlyAccessWaiver(user, wallet));
