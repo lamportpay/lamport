@@ -1,6 +1,6 @@
 # LamportPay: project status and handoff
 
-**As of 30 October 2026, branch `vercel-preview-migration`.** Read this first, then `CLAUDE.md`
+**As of 4 November 2026 (local-first work: section 3, "Local-first work from 2 November 2026").** Read this first, then `CLAUDE.md`
 (the project rules, which win over anything else, this file included). Update this file at the
 end of every work session: what changed, what is left, what needs approval.
 
@@ -77,6 +77,51 @@ Vercel (names in `docs/migration/vercel-preview.md`); local work needs your own 
 Every code commit passed CI (secret scan, typecheck, lint, unit tests (770 on 31 Oct), build,
 browser-bundle scan, dependency audit) and was deployed to the Preview and checked there.
 
+### Local-first work from 2 November 2026
+
+**Decision (3 Nov):** development continues locally on the owner's Windows PC (VS Code + Claude).
+Nothing is pushed to GitHub or deployed to Vercel unless explicitly requested; a Vercel Preview is
+used only with approval when something cannot be tested locally. `lamportpay.com`, DNS, Lovable,
+the production database and Vercel Production stay untouched; LIVE stays locked.
+
+| Item | State (4 Nov) |
+| --- | --- |
+| Working copy | `E:\lamport-main` (exFAT), full history (unshallowed 4 Nov, `git fsck` clean), remote `lamportpay/lamport`, local push guard on |
+| Node | 22.23.4 portable in `C:\LamportPay\tools\node-v22.23.4-win-x64` (system Node 24 untouched) |
+| `.env` | TEST mode; dev Supabase `gdksfksypkcfiohozzsx`; Stables **sandbox** (`sti_test_`); Solana devnet RPC; fee 200 bps, swap fee 0, USDC only; limits empty (code defaults); no live key; mainnet RPC line commented out |
+| Local checks | `NITRO_NO_EXTERNALS=1` needed for `npm run build` on E:; shell-script tests need Git's `sh` on PATH; `analytics-consent` fails on Windows only (path separator) |
+
+Local branches (not pushed; each starts from `57308cd`):
+
+| Branch | Commit | Content | Verified locally |
+| --- | --- | --- | --- |
+| `feat/payment-limits-stables` | `5faf705` | Minimum 15 (Stables' minimum) and provisional maximum 5,000 until Stables confirms a maximum in writing; one source `src/lib/payments/limit-defaults.ts` for the server and the homepage calculator; tests and docs | typecheck, lint 0 errors, secret scan, 790/792 unit tests (2 Windows-only); build compiled 2 Nov |
+| `feat/live-ready-wording` | `6dc9965` | Recovery help says "no real money" only in TEST builds; `docs/launch/live-wording.md` (app wording checked, public-page sandbox statements listed for the launch switch) | typecheck, lint 0 errors, secret scan, 789/790 unit tests (1 Windows-only) |
+| `feat/swap-demo-quote-only` | `0c12ba2` | Swap demonstration quote-only in LIVE: `/api/jupiter/order` and `/execute` answer 403 in LIVE before sign-in or any Jupiter call (`src/lib/jupiter/demo-swap.server.ts`); `SwapPanelIsland` shows the quote-only preview in LIVE builds; TEST, quotes and payment swaps unchanged | typecheck, lint 0 errors, secret scan, 795/796 unit tests (CI selection; 1 Windows-only), 6 new tests |
+| `docs/local-state-2026-11-04` | this branch | This section | – |
+
+Backup (4 Nov), `C:\LamportPay\backups\2026-11-04\` with `BACKUP-MANIFEST.txt` and `SHA256SUMS.txt`:
+full-history bundle of the three branches (86.7 MB, complete history, restore-tested: same SHAs
+and commit counts), a 27 KB bundle of the two feature commits, and a source ZIP per branch
+(tracked files only). An encrypted `.env` backup (OpenSSL AES-256, password held by the owner) is
+in `C:\LamportPay\backups\private\`. C:, D: and E: are partitions of **one** physical disk, so an
+off-disk copy (USB drive or private cloud) is still open (owner). The old unencrypted `.env` copy
+in `E:\LamportPay-backups\2026-11-02\` is deleted once the owner's decrypt test matches.
+
+Local tooling notes (4 Nov): on this PC run Vitest and tsc directly with Node 22
+(`node node_modules/vitest/vitest.mjs run …`, `node --max-old-space-size=3072
+node_modules/typescript/bin/tsc --noEmit -p tsconfig.json`); through `cmd`/`npx` they crashed
+with low free memory.
+
+Next (local, one branch each): Stables production integration (config, KYC, payouts, webhooks;
+needs Stables' answer on the IP allowlist), Jupiter production, Solana mainnet RPC and wallet
+flows; Hyperliquid only after its scope is approved. LIVE stays locked.
+
+Decisions 3 Nov: minimum 15; maximum 5,000 provisional until Stables confirms in writing; the
+homepage swap demo becomes quote-only in LIVE (no real swap from the demonstration); the 2%
+LamportPay fee stays as is, no Stables developer fee until Stables confirms how it works and
+settles in writing.
+
 ## 4. What is built (and where the code is)
 
 | Area | What it does | Code |
@@ -133,6 +178,8 @@ Still open:
 | Item | Who |
 | --- | --- |
 | G2: rotate the keys that were shared in a `.env` file (`docs/security/credential-rotation-2026-10-30.md`) | Owner, then engineering verifies |
+| **Correction (4 Nov):** the rotation note says the shared values are not in the git history. They are: a `.env` was committed in `5898da4` and `b23c674` (10 Oct) and removed in `4762a69` (12 Oct), so the history of the public repository holds the Alchemy key, the Supabase `sb_secret_jgY7…` key and the Stables sandbox `whsec_…` secret. All three are still in the local `.env`. Rotation is the fix (history is not rewritten); the Alchemy key matters most because the same key serves mainnet RPC | Owner rotates, engineering verifies |
+| A Stables **production** key (`sti_live_…`) was pasted into a chat on 3 Nov: revoke it in Stables → API keys and create the production key only when it goes into Vercel Production | Owner |
 | Enforce the CSP after a wallet session on `/pay` shows no violations | Engineering |
 | Leaked-password protection (needs the paid Supabase plan) | Owner |
 | Move Lovable's GitHub sync to the branch `lovable/legacy` (created 31 Oct; plan R2) | Owner, in Lovable |
@@ -207,7 +254,18 @@ rails same day, SWIFT up to 3 days; AUD available in production.
 
 Still to ask: the production country list (#37–39), status webhooks in production (#54),
 `actual_payout` in production (#55), the GBP multiple-of-20 rule (#51), per-corridor limits
-(#53), whether production keys need an IP allowlist, and the legal questions (#23–25, #31–36, #47).
+(#53), and the legal questions (#23–25, #31–36, #47).
+
+Added 3–4 Nov (dashboard and production checklist checked 3 Nov):
+
+- **Maximum per transfer:** Stables sets no fixed maximum and agrees one with the integrator (Q5).
+  We use 5,000 USD provisionally; written confirmation of 5,000, and what a higher maximum needs.
+- **IP allowlist:** the production checklist requires allowlisted server IPs for `sti_live_` keys,
+  and the dashboard says production accepts calls only from allowlisted addresses. Ask whether
+  they accept a Vercel deployment, or which fixed-IP setup they require.
+- **Developer fee:** the dashboard now shows a "Developer fee balance" with "Request payout" (in
+  September Stables called integrator fees upcoming). Ask how it is set per transfer, in which
+  currency and how often it settles. No change until answered in writing.
 
 ## 10. Working on this project
 
