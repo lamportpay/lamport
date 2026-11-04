@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, sep } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ANALYTICS_ID, COOKIE_KEY, analyticsPath, readCookieChoice } from "../src/lib/analytics-consent";
 import { GoogleAnalytics } from "../src/components/site/GoogleAnalytics";
@@ -89,6 +89,8 @@ describe("Google Analytics loads strictly after consent (30 Oct 2026)", () => {
     const files = (dir: string): string[] =>
       readdirSync(dir).flatMap((name) => (statSync(join(dir, name)).isDirectory() ? files(join(dir, name)) : [join(dir, name)]));
     const loaders = files(join(process.cwd(), "src")).filter((path) => /googletagmanager\.com\/gtag|gtag\(['"]consent/.test(readFileSync(path, "utf8")));
-    expect(loaders.map((path) => path.slice(process.cwd().length + 1))).toEqual(["src/components/site/GoogleAnalytics.tsx"]);
+    // Repository-relative paths with "/" on every OS (Windows reports "\"), so the check is the same everywhere.
+    const repoPaths = loaders.map((path) => relative(process.cwd(), path).split(sep).join("/"));
+    expect(repoPaths).toEqual(["src/components/site/GoogleAnalytics.tsx"]);
   });
 });
