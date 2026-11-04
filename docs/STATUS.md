@@ -100,6 +100,16 @@ Local branches (not pushed; each starts from `57308cd`):
 | `feat/swap-demo-quote-only` | `0c12ba2` | Swap demonstration quote-only in LIVE: `/api/jupiter/order` and `/execute` answer 403 in LIVE before sign-in or any Jupiter call (`src/lib/jupiter/demo-swap.server.ts`); `SwapPanelIsland` shows the quote-only preview in LIVE builds; TEST, quotes and payment swaps unchanged | typecheck, lint 0 errors, secret scan, 795/796 unit tests (CI selection; 1 Windows-only), 6 new tests |
 | `docs/local-state-2026-11-04` | this branch | This section | – |
 
+**Consolidated 4 Nov (decision: `vercel-preview-migration` is the one development branch):** all
+four commits merged into local `vercel-preview-migration` with their original SHAs (fast-forward to
+`5faf705`, then merge commits `b3838bc`, `481c08e`, `bd8ed52`; no conflicts). Checks on the
+result: secret scan clean; typecheck; lint 0 errors; 797/798 unit tests (CI selection; the failure
+is the Windows-only `analytics-consent` path check); build OK (`NITRO_NO_EXTERNALS=1`); CI audit
+gate passes (no high or critical; `npm audit` lists 1 low and 8 moderate, several through
+`@solana/web3.js`). The old branches stay until deletion is approved. Not pushed: GitHub sign-in on
+this PC is pending, and the local guard and the repository's ruleset require pull requests into
+this branch. Fixed outbound IP for Stables: `docs/integrations/stables-fixed-ip.md`.
+
 Backup (4 Nov), `C:\LamportPay\backups\2026-11-04\` with `BACKUP-MANIFEST.txt` and `SHA256SUMS.txt`:
 full-history bundle of the three branches (86.7 MB, complete history, restore-tested: same SHAs
 and commit counts), a 27 KB bundle of the two feature commits, and a source ZIP per branch
