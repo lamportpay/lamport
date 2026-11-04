@@ -37,7 +37,7 @@ needed. "TEST" and "LIVE" are the app modes (`src/lib/app-mode.server.ts`).
 | `LAMPORTPAY_SWAP_FEE_BPS` | P | 0 | 0 | 0 | Must be 0 (one fee) |
 | `LAMPORTPAY_REVENUE_WALLET` | P | dev wallet | dev wallet | company wallet | LamportPay's fee only, never customer funds |
 | `PAYMENT_ENABLED_CURRENCIES` | P | `usdc` | `usdc` | `usdc` | Unset = USDC only (4 Nov) |
-| `PAYMENT_MIN_USDC` / `PAYMENT_MAX_USDC` (and `_USDT`) | P | empty | empty | empty or 15 / 5000 | Empty = code defaults 15 / 5,000 |
+| `PAYMENT_MIN_USDC` / `PAYMENT_MAX_USDC` (and `_USDT`) | P | empty | empty | empty | Empty = minimum 15, no LamportPay maximum (Stables decides) |
 | `PAYOUT_COUNTRIES`, `PAYOUT_ESTIMATE_MINUTES` | P | optional | optional | as agreed | Display only |
 | `ADMIN_BOOTSTRAP_EMAIL` | P | optional | optional | owner's email | First admin |
 

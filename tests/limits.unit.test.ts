@@ -8,17 +8,17 @@ afterEach(() => {
 });
 
 describe("payment limits", () => {
-  it("defaults to 15 – 5,000", () => {
+  it("defaults to a 15 minimum and no LamportPay maximum", () => {
     delete process.env["PAYMENT_MIN_USDC"];
     delete process.env["PAYMENT_MAX_USDC"];
     const limits = getPaymentLimits("usdc");
     expect(limits.min).toBe("15");
-    expect(limits.max).toBe("5000");
+    expect(limits.max).toBeNull();
     expect(outsideLimits(14_999_999n, limits)).toBe(true);
     expect(outsideLimits(15_000_000n, limits)).toBe(false);
     expect(outsideLimits(5_000_000_000n, limits)).toBe(false);
-    expect(outsideLimits(5_000_000_001n, limits)).toBe(true);
-    expect(limitsMessage(limits, "USDC")).toBe("Payments must be between 15 and 5,000 USDC.");
+    expect(outsideLimits(1_000_000_000_000_000n, limits)).toBe(false);
+    expect(limitsMessage(limits, "USDC")).toBe("Payments must be at least 15 USDC.");
   });
 
   it("applies the same defaults to USDT", () => {
@@ -26,7 +26,7 @@ describe("payment limits", () => {
     delete process.env["PAYMENT_MAX_USDT"];
     const limits = getPaymentLimits("usdt");
     expect(limits.min).toBe("15");
-    expect(limits.max).toBe("5000");
+    expect(limits.max).toBeNull();
   });
 
   it("an env value still overrides the default maximum", () => {

@@ -162,7 +162,7 @@ Next (local, one branch each): Stables production integration (config, KYC, payo
 needs Stables' answer on the IP allowlist), Jupiter production, Solana mainnet RPC and wallet
 flows; Hyperliquid only after its scope is approved. LIVE stays locked.
 
-Decisions 3 Nov: minimum 15; maximum 5,000 provisional until Stables confirms in writing; the
+Decisions 3 Nov (maximum superseded 4 Nov: no LamportPay maximum, the partner decides): minimum 15; maximum 5,000 provisional until Stables confirms in writing; the
 homepage swap demo becomes quote-only in LIVE (no real swap from the demonstration); the 2%
 LamportPay fee stays as is, no Stables developer fee until Stables confirms how it works and
 settles in writing.
@@ -205,11 +205,11 @@ Stables' hosted page; own account or named beneficiary; USDC only for now; minim
 Added on 3 Nov:
 
 - **Limits follow the payout partner:** minimum **15** (Stables' 15 USD-equivalent minimum);
-  maximum **5,000** per payment for now. Stables sets no fixed per-transfer maximum and agrees one
-  with the integrator (Stables' answer, Questions sheet Q5), so 5,000 stands until that figure is
-  agreed. Default in `src/lib/payments/limit-defaults.ts`; `.env` and Admin → Settings can still
-  override it. Any environment that sets `PAYMENT_MAX_*=none` must clear that value for the
-  maximum to apply.
+  **no LamportPay maximum** (decision 4 Nov, replacing the provisional 5,000 of 3 Nov): the
+  partner decides how much one transfer can be, and Stables applies its own per-customer and
+  per-corridor limits at quote time. Defaults in `src/lib/payments/limit-defaults.ts`; `.env` and
+  Admin → Settings can still set a maximum if one is ever wanted. TEST MODE keeps its own
+  sandbox profile (15–5,000 USDC, `src/lib/app-mode.ts`), which never applies to real payments.
 
 ## 6. Security status
 
@@ -303,14 +303,21 @@ Still to ask: the production country list (#37–39), status webhooks in product
 
 Added 3–4 Nov (dashboard and production checklist checked 3 Nov):
 
-- **Maximum per transfer:** Stables sets no fixed maximum and agrees one with the integrator (Q5).
-  We use 5,000 USD provisionally; written confirmation of 5,000, and what a higher maximum needs.
+- **Maximum per transfer:** LamportPay sets none (4 Nov); ask which per-transfer and
+  per-customer maximums Stables applies.
 - **IP allowlist:** the production checklist requires allowlisted server IPs for `sti_live_` keys,
-  and the dashboard says production accepts calls only from allowlisted addresses. Ask whether
-  they accept a Vercel deployment, or which fixed-IP setup they require.
+  and the dashboard says production accepts calls only from allowlisted addresses. Plan (4 Nov):
+  one free Oracle Cloud "Always Free" server with a reserved IPv4 as the `STABLES_PROXY_URL`
+  proxy (Vercel Static IPs at $100/month rejected on cost); ask Stables to allowlist that one IP
+  and whether the allowlist also concerns webhooks.
 - **Developer fee:** the dashboard now shows a "Developer fee balance" with "Request payout" (in
   September Stables called integrator fees upcoming). Ask how it is set per transfer, in which
   currency and how often it settles. No change until answered in writing.
+
+Also decided 4 Nov: GitHub (code, full history) and Google Drive are the off-disk backup (no USB
+step); the old `.env` backup files were deleted (test keys can be re-created; live keys will live
+in Vercel). Both GitHub rulesets ("Protect main", "Protect the integration branch") are active
+on GitHub, verified 4 Nov.
 
 ## 10. Working on this project
 
