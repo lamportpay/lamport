@@ -106,9 +106,16 @@ four commits merged into local `vercel-preview-migration` with their original SH
 result: secret scan clean; typecheck; lint 0 errors; 797/798 unit tests (CI selection; the failure
 is the Windows-only `analytics-consent` path check); build OK (`NITRO_NO_EXTERNALS=1`); CI audit
 gate passes (no high or critical; `npm audit` lists 1 low and 8 moderate, several through
-`@solana/web3.js`). The old branches stay until deletion is approved. Not pushed: GitHub sign-in on
-this PC is pending, and the local guard and the repository's ruleset require pull requests into
-this branch. Fixed outbound IP for Stables: `docs/integrations/stables-fixed-ip.md`.
+`@solana/web3.js`). The old branches stay until deletion is approved. Pushed 4 Nov as review branch
+`review/consolidate-2026-11-04` (`a2a8de4`), PR #2 into this branch; GitHub CI green (every step,
+including all unit tests on Linux); merged with a merge commit: GitHub `vercel-preview-migration` =
+`3746062`, `main` unchanged at `e1b3e61`. Vercel built `3746062` successfully (commit status
+"Deployment has completed"); the dashboard did not render the environment and URL in the session
+used, so Preview vs Production is by design (the build guard allows Production only from `main`)
+but not yet confirmed on screen. The repository rulesets are **not active on GitHub** (none
+listed); only the local guard enforces pull requests. Fixed outbound IP for Stables:
+`docs/integrations/stables-fixed-ip.md` (decision 4 Nov: own small proxy server with one static
+IPv4, to be approved before anything is created).
 
 Backup (4 Nov), `C:\LamportPay\backups\2026-11-04\` with `BACKUP-MANIFEST.txt` and `SHA256SUMS.txt`:
 full-history bundle of the three branches (86.7 MB, complete history, restore-tested: same SHAs
