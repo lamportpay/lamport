@@ -31,12 +31,15 @@ stop safely (no fallback to a direct, unallowlisted call).
 If a managed service is preferred over running a server: Vercel Static IPs (needs Pro; two shared
 IPs per region, both allowlisted), after Stables confirms that two IPs are acceptable.
 
-## Code change once an option is approved (not implemented yet)
+## Code (implemented 4 Nov; the proxy server itself is not created)
 
-Route only the Stables client through the proxy: a server-only `STABLES_PROXY_URL` (secret,
-includes the proxy credentials), used for `fetch` in `client.server.ts` alone; LIVE refuses to run
-without it once required. Jupiter, Solana RPC and Supabase traffic stay direct. Tests: the proxy is
-used only for Stables, never for other hosts, and an unreachable proxy fails closed.
+`STABLES_PROXY_URL` (server-only secret; may hold proxy credentials) routes the Stables client,
+and nothing else, through the proxy (`src/lib/stables/proxy.server.ts`, `undici` ProxyAgent).
+Unset means direct calls, so local TEST work is unchanged. An invalid value leaves Stables
+unconfigured with a message that never repeats the value. Jupiter, Solana RPC and Supabase stay
+direct. Tests (`tests/stables-proxy.unit.test.ts`): proxied calls never go direct, unproxied calls
+never use the proxy, and an unreachable proxy fails the call with no direct fallback. Not yet
+done: making the proxy mandatory in LIVE (to add once the server exists and is verified).
 
 ## Questions for Stables
 
