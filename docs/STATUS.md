@@ -130,8 +130,20 @@ IPv4, to be approved before anything is created).
 Jupiter Mainnet gap check: fee validation (swap fee 0; 50–255 bps bounds), single-use expiring
 orders, never-twice relay, signer/transaction checks, 15 s timeouts and 502/503 split were already
 in place and tested; added the USDC-only default and the swap-time coin check above. No real swap
-or broadcast was made. Not verified: the Vercel Preview environment and URL for `3746062` (the
-dashboard did not load in the browser session; commit status says the deployment completed).
+or broadcast was made.
+
+Pushed as PR #3 (CI green, including the Linux production build), merged with a merge commit:
+GitHub `vercel-preview-migration` = `9ba5899`; batch branch deleted; `main` unchanged at `e1b3e61`.
+
+**Vercel, verified on the deployment pages (4 Nov, Hobby plan, team `lamportpay-7634`, project
+`lamport`):** `3746062` → Ready, Environment **Preview**, source `vercel-preview-migration`;
+`9ba5899` → Ready, Environment **Preview**, same source; "Assigning Custom Domains" skipped (no
+change to lamportpay.com). Stable branch Preview URL:
+`https://lamport-git-vercel-preview-migration-lamportpay-7634.vercel.app` (Vercel login required);
+`9ba5899` deployment URL: `https://lamport-obuyxjy6n-lamportpay-7634.vercel.app`.
+
+GitHub account on this PC (`GhazanfarGw`): push, not admin or maintain, so the rulesets
+(`docs/security/github-branch-protection.md`) need an organisation admin to import.
 
 Backup (4 Nov), `C:\LamportPay\backups\2026-11-04\` with `BACKUP-MANIFEST.txt` and `SHA256SUMS.txt`:
 full-history bundle of the three branches (86.7 MB, complete history, restore-tested: same SHAs
