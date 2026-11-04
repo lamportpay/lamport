@@ -235,7 +235,15 @@ describe("1. TEST MODE cannot call production endpoints", () => {
     const stored = resolveBusinessSettings(null);
     expect(withModeLimits(stored, "live")).toBe(stored);
     expect(withModeLimits(stored, "test").paymentLimits.usdc).toEqual({ min: "15", max: "5000" });
-    expect(stored.paymentLimits.usdc).not.toEqual({ min: "15", max: "5000" });
+    // A LIVE maximum different from the TEST profile stays as configured in LIVE
+    // and is replaced in TEST (independent of the code defaults).
+    const custom = {
+      ...stored,
+      paymentLimits: { ...stored.paymentLimits, usdc: { min: "20", max: "2000" } },
+    };
+    expect(withModeLimits(custom, "live")).toBe(custom);
+    expect(withModeLimits(custom, "live").paymentLimits.usdc).toEqual({ min: "20", max: "2000" });
+    expect(withModeLimits(custom, "test").paymentLimits.usdc).toEqual({ min: "15", max: "5000" });
   });
 
   it("a LIVE request that fails its gates never reaches Jupiter either", async () => {

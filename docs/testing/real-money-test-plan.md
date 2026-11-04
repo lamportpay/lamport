@@ -21,7 +21,7 @@ user wallet → (Jupiter swap, only if the wallet lacks the settlement coin) →
 | A4 | Corridor confirmed for the test customer (country, currency, bank) and that customer is eligible | Stables | Preview quote succeeds |
 | A5 | Test customer fully KYC-verified on production (base level), payout account in the customer's own name | Test user | Stables customer status |
 | A6 | Fee configuration decided and live: LamportPay fee and the Stables `integrator_fee` mechanism (see open question F2) | Business + Stables | Written decision |
-| A7 | Production limits confirmed: `PAYMENT_MIN_*` = 15 (owner decision 7 Oct 2026, Stables' 15 USD minimum), `PAYMENT_MAX_*` = 1,000,000 or `none` | Business | Env values |
+| A7 | Production limits confirmed: `PAYMENT_MIN_*` = 15 (owner decision 7 Oct 2026, Stables' 15 USD minimum), `PAYMENT_MAX_*` = 5,000 for now (decision 3 Nov 2026; empty = code default), until a maximum is agreed with Stables | Business | Env values |
 | A8 | Legal/compliance sign-off for operating the flow in the test corridor | Legal | Written sign-off |
 | A9 | Stables' answers on: `transfer.updated.status_transitioned` in production, `actual_payout`, deposit address expiry, Travel Rule holds for self-custody wallets | Stables | Slack/email thread |
 | A10 | Production webhook endpoint reachable and verified with Stables' test message; reconcile cron schedule set (`RECONCILE_CRON_SCHEDULE`) | Engineering | Delivery log line |
@@ -29,7 +29,7 @@ user wallet → (Jupiter swap, only if the wallet lacks the settlement coin) →
 
 ## B. Transaction test
 
-Amount: the configured minimum (**100 USDC**) unless Stables or the business approves a lower
+Amount: the configured minimum (**15 USDC**) unless Stables or the business approves a lower
 production-only test amount. Do not change `PAYMENT_MIN_*` for the test without explicit approval.
 
 Run 1: wallet already holds USDC (no swap). Run 2 (only after run 1 reconciles): wallet holds SOL

@@ -26,9 +26,9 @@ beforeEach(() => {
 });
 
 describe("payment limits in business settings", () => {
-  it("defaults to .env (15 minimum, 1,000,000 maximum)", () => {
+  it("defaults to .env (15 minimum, 5,000 maximum)", () => {
     const s = resolveBusinessSettings(null);
-    expect(s.paymentLimits.usdc).toEqual({ min: "15", max: "1000000" });
+    expect(s.paymentLimits.usdc).toEqual({ min: "15", max: "5000" });
     expect(s.sources.paymentLimits.usdc).toBe("env");
   });
 
@@ -45,12 +45,12 @@ describe("payment limits in business settings", () => {
     const s = await getBusinessSettings();
     expect(s.paymentLimits.usdc).toEqual({ min: "250", max: null });
     expect(s.sources.paymentLimits).toEqual({ usdc: "admin", usdt: "env" });
-    expect(s.paymentLimits.usdt).toEqual({ min: "15", max: "1000000" });
+    expect(s.paymentLimits.usdt).toEqual({ min: "15", max: "5000" });
 
     await updateBusinessSettings({ paymentLimits: { usdc: null } }, ADMIN);
     expect((await getBusinessSettings()).paymentLimits.usdc).toEqual({
       min: "15",
-      max: "1000000",
+      max: "5000",
     });
   });
 
@@ -72,6 +72,6 @@ describe("payment limits in business settings", () => {
     process.env["PAYMENT_MAX_USDC"] = "150";
     const s = resolveBusinessSettings(null);
     expect(s.paymentLimits.usdc).toBeNull();
-    expect(s.paymentLimits.usdt).toEqual({ min: "15", max: "1000000" });
+    expect(s.paymentLimits.usdt).toEqual({ min: "15", max: "5000" });
   });
 });
