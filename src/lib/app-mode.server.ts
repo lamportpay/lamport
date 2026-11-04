@@ -108,6 +108,12 @@ function liveBlockers(env: Env, codeUnlocked: boolean): string[] {
   if (!key) blockers.push("No Stables API key is set.");
   else if (key.startsWith("sti_test_"))
     blockers.push("A Stables TEST key cannot be used in live mode.");
+  // Stables accepts production calls only from an allowlisted IP; Vercel's outbound IPs
+  // change, so LIVE needs the fixed-IP proxy (decision 2026-11-04; values never reported).
+  if (!env["STABLES_PROXY_URL"]?.trim())
+    blockers.push("The fixed-IP proxy for Stables (STABLES_PROXY_URL) is not set.");
+  if (!env["STABLES_WEBHOOK_SECRET"]?.trim())
+    blockers.push("The Stables webhook signing secret (STABLES_WEBHOOK_SECRET) is not set.");
   const mainnetRpc = env["SOLANA_RPC_URL"]?.trim();
   if (!mainnetRpc) blockers.push("A dedicated Solana mainnet RPC (SOLANA_RPC_URL) is not set.");
   else if (looksTestCluster(mainnetRpc)) blockers.push("SOLANA_RPC_URL points at a test cluster.");

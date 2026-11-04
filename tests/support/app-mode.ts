@@ -13,6 +13,8 @@ export const LIVE_ENV = {
   SUPABASE_URL: "https://prodfixture.supabase.co",
   STABLES_API_KEY: "sti_live_fixture",
   STABLES_API_URL: "https://api.stables.money",
+  STABLES_PROXY_URL: "http://proxy.fixture.example:3128",
+  STABLES_WEBHOOK_SECRET: "whsec_fixture",
 } as const;
 
 export const TEST_ENV = {

@@ -142,25 +142,35 @@ change to lamportpay.com). Stable branch Preview URL:
 `https://lamport-git-vercel-preview-migration-lamportpay-7634.vercel.app` (Vercel login required);
 `9ba5899` deployment URL: `https://lamport-obuyxjy6n-lamportpay-7634.vercel.app`.
 
-GitHub account on this PC (`GhazanfarGw`): push, not admin or maintain, so the rulesets
-(`docs/security/github-branch-protection.md`) need an organisation admin to import.
+GitHub account on this PC (`GhazanfarGw`): push, not admin or maintain; an organisation admin
+imported both rulesets on 4 Nov (verified active, `docs/security/github-branch-protection.md`).
+
+**5 Nov:** PR #5 merged (`55ed391`): no LamportPay maximum per payment, Stables decides. Next
+batch: LIVE now also refuses to start without `STABLES_PROXY_URL` (the Stables fixed-IP proxy)
+and `STABLES_WEBHOOK_SECRET`; neither value appears in any report (test added; 811/811 unit
+tests on Windows). Solana mainnet RPC review: TEST cannot reach mainnet and LIVE cannot reach a
+test cluster, LIVE never falls back to a public endpoint, 8 s timeout, LIVE blocked without
+`SOLANA_RPC_URL`; possible later hardening: confirm the cluster by the RPC's genesis hash rather
+than the host name. Cutover checklist and Windows guide brought up to date (Oracle proxy plan,
+no maximum, active rulesets, merge commits, `E:\lamport-main`). Oracle account: sign-up started
+by the owner, card verification still to finish; server not created yet.
 
 Backup (4 Nov), `C:\LamportPay\backups\2026-11-04\` with `BACKUP-MANIFEST.txt` and `SHA256SUMS.txt`:
 full-history bundle of the three branches (86.7 MB, complete history, restore-tested: same SHAs
 and commit counts), a 27 KB bundle of the two feature commits, and a source ZIP per branch
-(tracked files only). An encrypted `.env` backup (OpenSSL AES-256, password held by the owner) is
-in `C:\LamportPay\backups\private\`. C:, D: and E: are partitions of **one** physical disk, so an
-off-disk copy (USB drive or private cloud) is still open (owner). The old unencrypted `.env` copy
-in `E:\LamportPay-backups\2026-11-02\` is deleted once the owner's decrypt test matches.
+(tracked files only). Superseded on 4 Nov: GitHub (full history) and Google Drive are the
+off-disk backup; every `.env` backup copy was deleted (encrypted and unencrypted), because test
+keys can be re-created and live keys live only in Vercel.
 
 Local tooling notes (4 Nov): on this PC run Vitest and tsc directly with Node 22
 (`node node_modules/vitest/vitest.mjs run …`, `node --max-old-space-size=3072
 node_modules/typescript/bin/tsc --noEmit -p tsconfig.json`); through `cmd`/`npx` they crashed
 with low free memory.
 
-Next (local, one branch each): Stables production integration (config, KYC, payouts, webhooks;
-needs Stables' answer on the IP allowlist), Jupiter production, Solana mainnet RPC and wallet
-flows; Hyperliquid only after its scope is approved. LIVE stays locked.
+Next (one pull request per batch into this branch): the Oracle proxy server once the owner's
+account is verified (then the IP goes to Stables); Stables production go-live items that need
+the production key, database and proxy; Hyperliquid beyond Testnet reads only after its scope is
+approved. LIVE stays locked.
 
 Decisions 3 Nov (maximum superseded 4 Nov: no LamportPay maximum, the partner decides): minimum 15; maximum 5,000 provisional until Stables confirms in writing; the
 homepage swap demo becomes quote-only in LIVE (no real swap from the demonstration); the 2%

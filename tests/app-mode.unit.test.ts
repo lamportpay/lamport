@@ -216,7 +216,9 @@ describe("1. TEST MODE cannot call production endpoints", () => {
       const est = await estimateFor(ok);
       // Within the limit: Stables (sandbox) is asked to price it.
       expect(stablesCalls()).toBe(before + 1);
-      expect(est.payout.status === "refused" ? est.payout.reason : "").not.toMatch(/between 15 and/);
+      expect(est.payout.status === "refused" ? est.payout.reason : "").not.toMatch(
+        /between 15 and/,
+      );
     }
     for (const over of ["14.99", "5000.01"]) {
       const before = stablesCalls();
@@ -315,7 +317,6 @@ describe("1. TEST MODE cannot call production endpoints", () => {
     expect(currentMode().ok).toBe(false);
     vi.stubEnv("LAMPORTPAY_SHARED_DB", "1");
     expect(currentMode().ok).toBe(true);
-
   });
 
   it("blocks on an unknown mode value instead of guessing", () => {
@@ -519,6 +520,22 @@ describe("5. LIVE MODE stays disabled until configured AND approved", () => {
     const s = evaluateMode(noApproval, true);
     expect(s.ok).toBe(false);
     expect(s.problems.join(" ")).toMatch(/approval/);
+  });
+
+  it("needs the Stables fixed-IP proxy and webhook secret (4 Nov), without reporting values", () => {
+    const { STABLES_PROXY_URL: _proxy, ...noProxy } = LIVE_ENV;
+    const p = evaluateMode(noProxy, true);
+    expect(p).toMatchObject({ ok: false, liveAvailable: false });
+    expect(p.liveBlockers.join(" ")).toMatch(/STABLES_PROXY_URL/);
+
+    const { STABLES_WEBHOOK_SECRET: _secret, ...noSecret } = LIVE_ENV;
+    const w = evaluateMode(noSecret, true);
+    expect(w).toMatchObject({ ok: false, liveAvailable: false });
+    expect(w.liveBlockers.join(" ")).toMatch(/STABLES_WEBHOOK_SECRET/);
+
+    const all = evaluateMode({ ...LIVE_ENV }, true).liveBlockers.join(" ");
+    expect(all).not.toContain(LIVE_ENV.STABLES_PROXY_URL);
+    expect(all).not.toContain(LIVE_ENV.STABLES_WEBHOOK_SECRET);
   });
 
   it("is available only with lock open + approval + full production config", () => {
