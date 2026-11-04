@@ -20,7 +20,8 @@ approval at that moment; "Owner" = only the owner can do it (account access or s
       URLs are `https://lamportpay.com/...` on both (`src/lib/seo.ts`); the sitemap gains
       `/privacy` and `/terms`; the Google Search Console verification tag is kept; Google Tag
       Manager is removed (owner-approved G1-3) and GA4 loads after consent.
-- [ ] Owner: import the two rulesets (`.github/rulesets/README.md`).
+- [x] Owner: import the two rulesets (`.github/rulesets/README.md`). Done; both active on GitHub,
+      verified 4 Nov.
 - [ ] Owner: in Lovable, switch the GitHub branch to `lovable/legacy`.
 
 ## Phase B: production database (separate from development)
@@ -37,7 +38,8 @@ approval at that moment; "Owner" = only the owner can do it (account access or s
 
 - [x] Non-secret settings (31 Oct): `LAMPORTPAY_MODE` / `VITE_LAMPORTPAY_MODE` = live (locked in
       code), `PAYMENT_ENABLED_CURRENCIES` = usdc, `LAMPORTPAY_FEE_BPS` = 200,
-      `LAMPORTPAY_SWAP_FEE_BPS` = 0, `PAYMENT_MIN_USDC` = 15.
+      `LAMPORTPAY_SWAP_FEE_BPS` = 0, `PAYMENT_MIN_USDC` = 15. No `PAYMENT_MAX_*` (decision 4 Nov:
+      no LamportPay maximum, Stables decides); leave it unset in Production.
 - [ ] Engineering after B: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`,
       `VITE_SUPABASE_PROJECT_ID`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_PROJECT_ID`
       (production project), `STABLES_API_URL` = `https://api.stables.money`,
@@ -46,13 +48,21 @@ approval at that moment; "Owner" = only the owner can do it (account access or s
       `SUPABASE_SERVICE_ROLE_KEY`, `STABLES_API_KEY` (`sti_live_`), `STABLES_WEBHOOK_SECRET`,
       `SOLANA_RPC_URL` (Alchemy mainnet), `CRON_SECRET`, `LAMPORTPAY_REVENUE_WALLET` (the company
       wallet, unchanged), optional `JUPITER_API_KEY`, `OPS_ALERT_WEBHOOK_URL`.
-- [ ] Owner: tell engineering whether Stables' production key needs an IP allowlist (if yes:
-      Vercel Pro static IPs or a fixed-IP proxy).
+- [x] Stables' production key needs an IP allowlist (production checklist and dashboard, 3 Nov).
+      Decision 4 Nov: one free Oracle Cloud "Always Free" server with a reserved IPv4 as the
+      proxy (`docs/integrations/stables-fixed-ip.md`; Vercel Static IPs rejected on cost).
+- [ ] Owner: finish the Oracle account (card verification), then engineering creates the server,
+      verifies its outbound IP and proxy rules, and the owner sends the IP to Stables.
+- [ ] Owner: `STABLES_PROXY_URL` (secret) in Vercel Production. LIVE refuses to start without it
+      and without `STABLES_WEBHOOK_SECRET` (gates added 5 Nov). Full list of names and where each
+      goes: `docs/ENVIRONMENT-CHECKLIST.md`.
 
 ## Phase D: release to `main` and a verified Production deployment (lamportpay.com unchanged)
 
-- [ ] **Approval:** pull request `vercel-preview-migration` → `main`; merge after CI. Merging
-      deploys nothing (`vercel.json`). Close the superseded PR #1.
+- [ ] **Approval:** pull request `vercel-preview-migration` → `main`; merge after CI and a code
+      owner's review (ruleset "Protect main"), with a **merge commit**, not squash, so both branches
+      keep the same history and later releases don't conflict. Merging deploys nothing
+      (`vercel.json`). Close the superseded PR #1.
 - [ ] **Approval:** create the Production deployment of `main` (Vercel → Deployments → Create
       Deployment → branch `main`, or by API). It is reachable only at the Vercel Production URL
       behind Vercel login; lamportpay.com still serves Lovable. LIVE stays locked.

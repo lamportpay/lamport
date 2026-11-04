@@ -3,6 +3,18 @@
 Written 31 October 2026 and checked against the repository. All commands are **PowerShell**
 (Windows Terminal or the VS Code terminal). Run them in the order shown.
 
+> **How the owner's PC is actually set up (5 Nov 2026).** The working copy is
+> `E:\lamport-main` (full Git history, push guard on). Node 22 is a portable copy in
+> `C:\LamportPay\tools\node-v22.23.4-win-x64`; put it first on `PATH` in each terminal with
+> `$env:Path = "C:\LamportPay\tools\node-v22.23.4-win-x64;" + $env:Path` (the PC's own Node 24
+> stays untouched). Backups: GitHub holds the code with its full history, plus Google Drive; no
+> USB copy (decision 4 Nov). `.env` is not backed up anywhere: test keys can be re-created in the
+> providers' dashboards and live keys are entered only in Vercel. Work reaches
+> `vercel-preview-migration` as one pull request per batch, merged with a **merge commit** once CI
+> is green (section 6). On an exFAT drive like `E:` the build needs `$env:NITRO_NO_EXTERNALS = "1"`,
+> and with little free memory run the checks directly: `node node_modules/vitest/vitest.mjs run`
+> and `node --max-old-space-size=3072 node_modules/typescript/bin/tsc --noEmit -p tsconfig.json`.
+
 | What | Value |
 | --- | --- |
 | Repository | `https://github.com/lamportpay/lamport` (public) |
@@ -279,9 +291,11 @@ git commit -m "Short summary of the change"
 git push -u origin feat/short-description
 gh pr create --base vercel-preview-migration --head feat/short-description --title "Short summary" --body "What changed and why"
 
-# Watch CI; merge once it is green and you have reviewed the diff
+# Watch CI; merge once it is green and you have reviewed the diff.
+# Merge commit (not squash): the original commits keep their SHAs, so this branch and main
+# share the same commits and later releases don't conflict.
 gh pr checks --watch
-gh pr merge --squash --delete-branch
+gh pr merge --merge --delete-branch
 
 # Back to the updated integration branch
 git switch vercel-preview-migration
@@ -290,7 +304,7 @@ git pull --ff-only origin vercel-preview-migration
 
 Without the GitHub CLI, open
 `https://github.com/lamportpay/lamport/compare/vercel-preview-migration...feat/short-description`
-and press **Create pull request**, then **Squash and merge** when CI is green.
+and press **Create pull request**, then **Create a merge commit** when CI is green.
 
 Keep a long-running branch current: `git fetch origin` then
 `git merge origin/vercel-preview-migration`. Never `git push --force` to a shared branch.
