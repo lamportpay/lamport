@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Loader2, Sparkles, X } from "lucide-react";
 
 import { getRecoverySteps } from "@/lib/ai/recovery.functions";
+import { clientBuildMode } from "@/lib/app-mode";
 import type { LocalHistoryItem } from "@/lib/payments/local-history";
 
 export function RecoveryHelper({ p, onClose }: { p: LocalHistoryItem; onClose: () => void }) {
@@ -62,7 +63,11 @@ export function RecoveryHelper({ p, onClose }: { p: LocalHistoryItem; onClose: (
           <input className={`${field} mt-1`} maxLength={600} value={error} onChange={(e) => setError(e.target.value)} placeholder="none" />
         </label>
       </div>
-      <p className="text-[11px] text-muted-foreground">Never share your seed phrase or private key. Demo payment — no real money moves.</p>
+      <p className="text-[11px] text-muted-foreground">
+        Never share your seed phrase or private key.
+        {/* Only a TEST build is guaranteed to move no real money; LIVE payments are real. */}
+        {clientBuildMode() === "test" ? " Demo payment — no real money moves." : null}
+      </p>
       <button
         type="button"
         onClick={ask}
