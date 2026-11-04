@@ -117,6 +117,22 @@ listed); only the local guard enforces pull requests. Fixed outbound IP for Stab
 `docs/integrations/stables-fixed-ip.md` (decision 4 Nov: own small proxy server with one static
 IPv4, to be approved before anything is created).
 
+**Later on 4 Nov (local commits on `vercel-preview-migration`, after `3746062`):**
+
+| Commit | Change | Evidence |
+| --- | --- | --- |
+| `7ebd822` | `analytics-consent` test compares repo paths with `/` on every OS (the Windows failure was the test's path separator, not the app) | Passes on Windows; still fails when a second gtag loader exists (probe file, removed) |
+| `d85e1e1` | USDC only when `PAYMENT_ENABLED_CURRENCIES` is unset; swaps re-check the coin before any Stables/chain/Jupiter call (409 `currency_disabled`) | Unit tests; suites covering USDT turn it on explicitly |
+| `a0aacb4` | Hyperliquid reads Testnet only (`api.hyperliquid-testnet.xyz/info`); new read-only order book and spot balances; guard refuses Mainnet and `/exchange` | Unit tests; answer shapes checked against the live testnet API (read-only calls) |
+| `c90ea7a` | Optional `STABLES_PROXY_URL` (Stables calls only, fails closed); `undici` declared at the locked 7.30.1 | Unit tests with a mocked transport; no proxy exists yet |
+| this commit | `docs/ENVIRONMENT-CHECKLIST.md`, `docs/security/github-branch-protection.md`, this section | – |
+
+Jupiter Mainnet gap check: fee validation (swap fee 0; 50–255 bps bounds), single-use expiring
+orders, never-twice relay, signer/transaction checks, 15 s timeouts and 502/503 split were already
+in place and tested; added the USDC-only default and the swap-time coin check above. No real swap
+or broadcast was made. Not verified: the Vercel Preview environment and URL for `3746062` (the
+dashboard did not load in the browser session; commit status says the deployment completed).
+
 Backup (4 Nov), `C:\LamportPay\backups\2026-11-04\` with `BACKUP-MANIFEST.txt` and `SHA256SUMS.txt`:
 full-history bundle of the three branches (86.7 MB, complete history, restore-tested: same SHAs
 and commit counts), a 27 KB bundle of the two feature commits, and a source ZIP per branch
