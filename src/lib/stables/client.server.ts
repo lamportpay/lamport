@@ -10,6 +10,7 @@ import { createHash, randomUUID } from "node:crypto";
 
 import { assertEndpointAllowed } from "@/lib/app-mode.server";
 import type { StablesConfig } from "./config.server";
+import { fetchViaProxy } from "./proxy.server";
 import type {
   CreateQuoteRequest,
   CreateTransferRequest,
@@ -84,12 +85,17 @@ async function request<T>(
 
     let response: Response;
     try {
-      response = await fetch(`${config.apiUrl}${path}`, {
+      const init: RequestInit = {
         method,
         headers,
         body: options.body === undefined ? undefined : JSON.stringify(options.body),
         signal: AbortSignal.timeout(TIMEOUT_MS),
-      });
+      };
+      // Through the fixed-IP proxy when configured (Stables' IP allowlist); never a
+      // direct fallback when the proxy fails.
+      response = config.proxyUrl
+        ? await fetchViaProxy(config.proxyUrl, `${config.apiUrl}${path}`, init)
+        : await fetch(`${config.apiUrl}${path}`, init);
     } catch (e) {
       lastError = new StablesError(
         e instanceof Error && e.name === "TimeoutError"

@@ -50,15 +50,21 @@ afterEach(() => {
 });
 
 describe("resolveBusinessSettings", () => {
-  it("falls back to .env, and to no fee and both coins when .env is empty", () => {
+  it("falls back to .env, and to no fee and USDC only when .env is empty", () => {
     const s = resolveBusinessSettings(null);
     expect(s).toMatchObject({
       conversionFeeBps: 0,
       swapFeeBps: 0,
       revenueWallet: null,
-      enabledCurrencies: ["usdc", "usdt"],
+      // USDC-only launch (decision 2026-09-30): an unset coin list never turns USDT on.
+      enabledCurrencies: ["usdc"],
     });
     expect(s.sources.conversionFeeBps).toBe("env");
+  });
+
+  it("still turns USDT on when .env lists it explicitly", () => {
+    process.env["PAYMENT_ENABLED_CURRENCIES"] = "usdc,usdt";
+    expect(resolveBusinessSettings(null).enabledCurrencies).toEqual(["usdc", "usdt"]);
   });
 
   it("reads USDC-only and the one 2% LamportPay fee from .env", () => {

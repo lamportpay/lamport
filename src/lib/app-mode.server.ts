@@ -231,17 +231,21 @@ export function endpointAllowed(
     return { ok: true };
   }
   if (kind === "hyperliquid_info") {
-    // Read-only market data only, in every mode: the public info endpoint and
-    // nothing else. The exchange endpoint (orders, transfers, withdrawals) is
-    // never called; the Hyperliquid route is not enabled (src/lib/hyperliquid).
+    // Read-only TESTNET reads only, in every mode (decision 2026-11-04): the
+    // testnet's public info endpoint and nothing else. Mainnet and the exchange
+    // endpoint (orders, transfers, withdrawals) are never called; the
+    // Hyperliquid route is not enabled (src/lib/hyperliquid).
     let path = "";
     try {
       path = new URL(url).pathname;
     } catch {
       // Unparseable URL: refused below.
     }
-    if (host !== "api.hyperliquid.xyz" || path !== "/info")
-      return { ok: false, reason: "Only Hyperliquid's read-only info endpoint may be called." };
+    if (host !== "api.hyperliquid-testnet.xyz" || path !== "/info")
+      return {
+        ok: false,
+        reason: "Only Hyperliquid's read-only testnet info endpoint may be called.",
+      };
     return { ok: true };
   }
   if (isJupiterKind(kind)) {

@@ -6,6 +6,8 @@ import {
   HyperliquidError,
   findUsdcPair,
   getAllMids,
+  getL2Book,
+  getSpotBalances,
   getSpotMeta,
   indicativeUsdcValue,
   usdcMinorFor,
@@ -49,12 +51,21 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-describe("Hyperliquid mode guard: read-only info endpoint only", () => {
-  it("allows only POST /info on api.hyperliquid.xyz, in both modes", () => {
+describe("Hyperliquid mode guard: read-only TESTNET info endpoint only", () => {
+  it("allows only POST /info on api.hyperliquid-testnet.xyz, in both modes", () => {
+    expect(HYPERLIQUID_INFO_URL).toBe("https://api.hyperliquid-testnet.xyz/info");
     for (const mode of ["test", "live"] as const) {
       expect(endpointAllowed(mode, "hyperliquid_info", HYPERLIQUID_INFO_URL).ok).toBe(true);
+      // No Mainnet dependency: Mainnet info and every exchange (order) endpoint are refused.
+      expect(endpointAllowed(mode, "hyperliquid_info", "https://api.hyperliquid.xyz/info").ok).toBe(
+        false,
+      );
       expect(
         endpointAllowed(mode, "hyperliquid_info", "https://api.hyperliquid.xyz/exchange").ok,
+      ).toBe(false);
+      expect(
+        endpointAllowed(mode, "hyperliquid_info", "https://api.hyperliquid-testnet.xyz/exchange")
+          .ok,
       ).toBe(false);
       expect(endpointAllowed(mode, "hyperliquid_info", "https://evil.example/info").ok).toBe(false);
       expect(endpointAllowed(mode, "hyperliquid_info", "not a url").ok).toBe(false);
@@ -115,5 +126,79 @@ describe("Hyperliquid info client", () => {
       }),
     );
     await expect(getAllMids()).rejects.toMatchObject({ status: 503 });
+  });
+});
+
+// Shapes as returned by the testnet info endpoint on 4 Nov 2026 (values made up).
+const L2_BOOK = {
+  coin: "PURR/USDC",
+  time: 1793801827227,
+  levels: [[{ px: "4.5342", sz: "100000.0", n: 1 }], [{ px: "4.6001", sz: "250.5", n: 3 }]],
+};
+const SPOT_STATE = {
+  balances: [
+    { coin: "USDC", token: 0, total: "12.5", hold: "0.0", entryNtl: "0.0" },
+    { coin: "PURR", token: 1, total: "3", hold: "1.5", entryNtl: "0.7" },
+  ],
+};
+const ACCOUNT = "0x00000000000000000000000000000000000000aa";
+
+describe("Hyperliquid testnet order book and account reads", () => {
+  it("reads an order book with both sides", async () => {
+    const fetchMock = mockInfo({ l2Book: L2_BOOK });
+    const book = await getL2Book("PURR/USDC");
+    expect(book).toEqual({
+      coin: "PURR/USDC",
+      time: 1793801827227,
+      bids: [{ px: "4.5342", sz: "100000.0", n: 1 }],
+      asks: [{ px: "4.6001", sz: "250.5", n: 3 }],
+    });
+    const [url, init] = fetchMock.mock.calls[0]!;
+    expect(url).toBe("https://api.hyperliquid-testnet.xyz/info");
+    expect(JSON.parse(String(init.body))).toEqual({ type: "l2Book", coin: "PURR/USDC" });
+  });
+
+  it("reads spot balances for a valid address, keeping only the known fields", async () => {
+    const fetchMock = mockInfo({ spotClearinghouseState: SPOT_STATE });
+    await expect(getSpotBalances(ACCOUNT)).resolves.toEqual([
+      { coin: "USDC", token: 0, total: "12.5", hold: "0.0" },
+      { coin: "PURR", token: 1, total: "3", hold: "1.5" },
+    ]);
+    expect(JSON.parse(String(fetchMock.mock.calls[0]![1].body))).toEqual({
+      type: "spotClearinghouseState",
+      user: ACCOUNT,
+    });
+  });
+
+  it("refuses bad input before any network call", async () => {
+    const fetchMock = mockInfo({});
+    for (const bad of ["not-an-address", "0x123", `${ACCOUNT}00`, ""]) {
+      await expect(getSpotBalances(bad)).rejects.toMatchObject({ status: 400 });
+    }
+    for (const bad of ["", "PURR/USDC/X", "../exchange", "@"]) {
+      await expect(getL2Book(bad)).rejects.toMatchObject({ status: 400 });
+    }
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("refuses malformed answers instead of guessing", async () => {
+    mockInfo({
+      l2Book: { coin: "PURR/USDC", time: 1, levels: [[{ px: "x", sz: "1", n: 1 }], []] },
+    });
+    await expect(getL2Book("PURR/USDC")).rejects.toBeInstanceOf(HyperliquidError);
+    mockInfo({ l2Book: { coin: "PURR/USDC", time: 1, levels: [[]] } });
+    await expect(getL2Book("PURR/USDC")).rejects.toMatchObject({ status: 502 });
+    mockInfo({
+      spotClearinghouseState: { balances: [{ coin: "USDC", token: 0, total: "-1", hold: "0" }] },
+    });
+    await expect(getSpotBalances(ACCOUNT)).rejects.toMatchObject({ status: 502 });
+  });
+
+  it("maps a Hyperliquid error status to a temporary failure", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("bad", { status: 422 })),
+    );
+    await expect(getSpotBalances(ACCOUNT)).rejects.toMatchObject({ status: 503 });
   });
 });

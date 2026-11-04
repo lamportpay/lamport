@@ -1,6 +1,11 @@
 /**
- * Hyperliquid, read only: spot market data from the public info endpoint
- * (POST https://api.hyperliquid.xyz/info, no key, no signature).
+ * Hyperliquid TESTNET, read only (decision 2026-11-04: Testnet for all reads, no
+ * Mainnet dependency): spot metadata, mid prices, order books and spot account
+ * balances from the public testnet info endpoint
+ * (POST https://api.hyperliquid-testnet.xyz/info, no key, no signature).
+ * Testnet prices are test-market prices, not real prices.
+ *
+ * Earlier design note, kept for history:
  *
  * Scope (29 Oct 2026): the "major digital assets → Hyperliquid → USDC" route
  * is in progress and not enabled. This module only reads spot metadata and mid
@@ -8,13 +13,15 @@
  * never calls the exchange endpoint (orders, transfers and withdrawals are
  * signed actions there) and nothing in the app routes to it yet. The mode
  * guard allows the info path only (app-mode.server.ts, "hyperliquid_info").
- *
- * Like Jupiter quotes, prices are mainnet market data in both modes: the
- * testnet's books are not real prices, and reading a price moves nothing.
+ * (Until 4 Nov this read Mainnet market data; it now reads the testnet only.)
  */
 import { assertEndpointAllowed } from "@/lib/app-mode.server";
 
-export const HYPERLIQUID_INFO_URL = "https://api.hyperliquid.xyz/info";
+export const HYPERLIQUID_INFO_URL = "https://api.hyperliquid-testnet.xyz/info";
+/** A Hyperliquid account address: 0x followed by 40 hex digits. */
+const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
+/** Coin keys Hyperliquid accepts for books: "PURR/USDC", "@123" or a perp name. */
+const COIN = /^(?:@\d{1,6}|[A-Za-z0-9]{1,20}(?:\/[A-Za-z0-9]{1,20})?)$/;
 const TIMEOUT_MS = 10_000;
 /** USDC has 6 decimals (src/lib/money.ts). */
 const USDC_EXPONENT = 6;
@@ -45,7 +52,7 @@ export type IndicativeQuote =
       mid: string;
       /** amount × mid in USDC minor units, rounded down. Indicative only: no order exists. */
       usdcMinor: bigint;
-      source: "hyperliquid_spot_mid";
+      source: "hyperliquid_testnet_spot_mid";
     }
   | { status: "unavailable"; reason: string };
 
@@ -169,6 +176,76 @@ export async function indicativeUsdcValue(
     amount,
     mid,
     usdcMinor: usdcMinorFor(amount, mid),
-    source: "hyperliquid_spot_mid",
+    source: "hyperliquid_testnet_spot_mid",
   };
+}
+
+export type BookLevel = { px: string; sz: string; n: number };
+export type L2Book = { coin: string; time: number; bids: BookLevel[]; asks: BookLevel[] };
+
+function parseLevels(side: unknown): BookLevel[] {
+  if (!Array.isArray(side)) throw new HyperliquidError("Unexpected l2Book answer.", 502);
+  return side.map((l: { px?: unknown; sz?: unknown; n?: unknown }) => {
+    if (
+      typeof l?.px !== "string" ||
+      !DECIMAL.test(l.px) ||
+      typeof l.sz !== "string" ||
+      !DECIMAL.test(l.sz) ||
+      !isInt(l.n)
+    ) {
+      throw new HyperliquidError("Unexpected l2Book level.", 502);
+    }
+    return { px: l.px, sz: l.sz, n: l.n };
+  });
+}
+
+/** Order book (bids, asks) for a coin key such as "PURR/USDC" or "@123". Read only. */
+export async function getL2Book(coin: string): Promise<L2Book> {
+  if (!COIN.test(coin)) throw new HyperliquidError("Unknown market.", 400);
+  const raw = (await postInfo({ type: "l2Book", coin })) as {
+    coin?: unknown;
+    time?: unknown;
+    levels?: unknown;
+  };
+  if (!raw || typeof raw.coin !== "string" || !isInt(raw.time) || !Array.isArray(raw.levels)) {
+    throw new HyperliquidError("Unexpected l2Book answer.", 502);
+  }
+  if (raw.levels.length !== 2) throw new HyperliquidError("Unexpected l2Book answer.", 502);
+  return {
+    coin: raw.coin,
+    time: raw.time,
+    bids: parseLevels(raw.levels[0]),
+    asks: parseLevels(raw.levels[1]),
+  };
+}
+
+export type SpotBalance = { coin: string; token: number; total: string; hold: string };
+
+/**
+ * Spot balances of a testnet account (public data; no key, nothing signed).
+ * The address is validated here, so a malformed one never reaches Hyperliquid.
+ */
+export async function getSpotBalances(user: string): Promise<SpotBalance[]> {
+  if (!ADDRESS.test(user)) throw new HyperliquidError("Invalid account address.", 400);
+  const raw = (await postInfo({ type: "spotClearinghouseState", user })) as {
+    balances?: unknown;
+  };
+  if (!raw || !Array.isArray(raw.balances)) {
+    throw new HyperliquidError("Unexpected spotClearinghouseState answer.", 502);
+  }
+  return raw.balances.map(
+    (b: { coin?: unknown; token?: unknown; total?: unknown; hold?: unknown }) => {
+      if (
+        typeof b?.coin !== "string" ||
+        !isInt(b.token) ||
+        typeof b.total !== "string" ||
+        !DECIMAL.test(b.total) ||
+        typeof b.hold !== "string" ||
+        !DECIMAL.test(b.hold)
+      ) {
+        throw new HyperliquidError("Unexpected spot balance.", 502);
+      }
+      return { coin: b.coin, token: b.token, total: b.total, hold: b.hold };
+    },
+  );
 }

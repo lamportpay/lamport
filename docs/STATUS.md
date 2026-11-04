@@ -106,9 +106,32 @@ four commits merged into local `vercel-preview-migration` with their original SH
 result: secret scan clean; typecheck; lint 0 errors; 797/798 unit tests (CI selection; the failure
 is the Windows-only `analytics-consent` path check); build OK (`NITRO_NO_EXTERNALS=1`); CI audit
 gate passes (no high or critical; `npm audit` lists 1 low and 8 moderate, several through
-`@solana/web3.js`). The old branches stay until deletion is approved. Not pushed: GitHub sign-in on
-this PC is pending, and the local guard and the repository's ruleset require pull requests into
-this branch. Fixed outbound IP for Stables: `docs/integrations/stables-fixed-ip.md`.
+`@solana/web3.js`). The old branches stay until deletion is approved. Pushed 4 Nov as review branch
+`review/consolidate-2026-11-04` (`a2a8de4`), PR #2 into this branch; GitHub CI green (every step,
+including all unit tests on Linux); merged with a merge commit: GitHub `vercel-preview-migration` =
+`3746062`, `main` unchanged at `e1b3e61`. Vercel built `3746062` successfully (commit status
+"Deployment has completed"); the dashboard did not render the environment and URL in the session
+used, so Preview vs Production is by design (the build guard allows Production only from `main`)
+but not yet confirmed on screen. The repository rulesets are **not active on GitHub** (none
+listed); only the local guard enforces pull requests. Fixed outbound IP for Stables:
+`docs/integrations/stables-fixed-ip.md` (decision 4 Nov: own small proxy server with one static
+IPv4, to be approved before anything is created).
+
+**Later on 4 Nov (local commits on `vercel-preview-migration`, after `3746062`):**
+
+| Commit | Change | Evidence |
+| --- | --- | --- |
+| `7ebd822` | `analytics-consent` test compares repo paths with `/` on every OS (the Windows failure was the test's path separator, not the app) | Passes on Windows; still fails when a second gtag loader exists (probe file, removed) |
+| `d85e1e1` | USDC only when `PAYMENT_ENABLED_CURRENCIES` is unset; swaps re-check the coin before any Stables/chain/Jupiter call (409 `currency_disabled`) | Unit tests; suites covering USDT turn it on explicitly |
+| `a0aacb4` | Hyperliquid reads Testnet only (`api.hyperliquid-testnet.xyz/info`); new read-only order book and spot balances; guard refuses Mainnet and `/exchange` | Unit tests; answer shapes checked against the live testnet API (read-only calls) |
+| `c90ea7a` | Optional `STABLES_PROXY_URL` (Stables calls only, fails closed); `undici` declared at the locked 7.30.1 | Unit tests with a mocked transport; no proxy exists yet |
+| this commit | `docs/ENVIRONMENT-CHECKLIST.md`, `docs/security/github-branch-protection.md`, this section | – |
+
+Jupiter Mainnet gap check: fee validation (swap fee 0; 50–255 bps bounds), single-use expiring
+orders, never-twice relay, signer/transaction checks, 15 s timeouts and 502/503 split were already
+in place and tested; added the USDC-only default and the swap-time coin check above. No real swap
+or broadcast was made. Not verified: the Vercel Preview environment and URL for `3746062` (the
+dashboard did not load in the browser session; commit status says the deployment completed).
 
 Backup (4 Nov), `C:\LamportPay\backups\2026-11-04\` with `BACKUP-MANIFEST.txt` and `SHA256SUMS.txt`:
 full-history bundle of the three branches (86.7 MB, complete history, restore-tested: same SHAs
