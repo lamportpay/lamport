@@ -198,7 +198,8 @@ export type EndpointKind =
   | "jupiter_quote"
   | "jupiter_order"
   | "jupiter_execute"
-  | "hyperliquid_info";
+  | "hyperliquid_info"
+  | "hyperliquid_exchange";
 
 export class ModeGuardError extends Error {
   constructor(
@@ -238,9 +239,9 @@ export function endpointAllowed(
   }
   if (kind === "hyperliquid_info") {
     // Read-only TESTNET reads only, in every mode (decision 2026-11-04): the
-    // testnet's public info endpoint and nothing else. Mainnet and the exchange
-    // endpoint (orders, transfers, withdrawals) are never called; the
-    // Hyperliquid route is not enabled (src/lib/hyperliquid).
+    // testnet's public info endpoint and nothing else. Mainnet is never
+    // called; the testnet exchange endpoint is the separate
+    // "hyperliquid_exchange" kind below (TEST MODE only).
     let path = "";
     try {
       path = new URL(url).pathname;
@@ -251,6 +252,26 @@ export function endpointAllowed(
       return {
         ok: false,
         reason: "Only Hyperliquid's read-only testnet info endpoint may be called.",
+      };
+    return { ok: true };
+  }
+  if (kind === "hyperliquid_exchange") {
+    // TESTNET orders signed in the customer's own browser (owner decision
+    // 2026-11-07): TEST MODE only, the testnet exchange path only. The server
+    // relays an already-signed action; it holds no key and cannot sign. LIVE
+    // MODE and Hyperliquid mainnet are never called.
+    let path = "";
+    try {
+      path = new URL(url).pathname;
+    } catch {
+      // Unparseable URL: refused below.
+    }
+    if (mode !== "test")
+      return { ok: false, reason: "Hyperliquid test trading is available in TEST MODE only." };
+    if (host !== "api.hyperliquid-testnet.xyz" || path !== "/exchange")
+      return {
+        ok: false,
+        reason: "Only Hyperliquid's testnet exchange endpoint may be called.",
       };
     return { ok: true };
   }
@@ -285,7 +306,11 @@ export function assertEndpointAllowed(
   let verdict = endpointAllowed(status.mode, kind, url, opts);
   // A mode whose configuration fails its checks (e.g. LIVE requested but not
   // approved) never reaches Jupiter, not even for a quote.
-  if (verdict.ok && (isJupiterKind(kind) || kind === "hyperliquid_info") && !status.ok) {
+  if (
+    verdict.ok &&
+    (isJupiterKind(kind) || kind === "hyperliquid_info" || kind === "hyperliquid_exchange") &&
+    !status.ok
+  ) {
     verdict = {
       ok: false,
       reason: `${status.mode.toUpperCase()} MODE is blocked by its configuration: ${isJupiterKind(kind) ? "Jupiter" : "Hyperliquid"} is not called.`,

@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { pageSeo } from "@/lib/seo";
+import { useLaunchStage } from "@/lib/launch-stage";
 import { WORLD_MAP_PATHS, WORLD_MAP_VIEWBOX } from "@/lib/world-map";
 import markUrl from "@/assets/lamportpay-mark.png";
 
@@ -77,6 +78,7 @@ const MAP_MARKERS = [
 ] as const;
 
 function PayoutMap() {
+  const live = useLaunchStage() === "live";
   return (
     <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-[image:var(--gradient-hero)] p-6 md:p-8 text-white shadow-[var(--shadow-soft)]">
       <div className="relative">
@@ -141,7 +143,8 @@ function PayoutMap() {
 
         <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-white/85">
           <span className="inline-flex items-center gap-1.5">
-            <span className="size-2 rounded-full bg-emerald-300" /> Supported (sandbox)
+            <span className="size-2 rounded-full bg-emerald-300" />{" "}
+            {live ? "Supported" : "Supported (sandbox)"}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="size-2 rounded-full bg-amber-300" /> Planned

@@ -18,17 +18,19 @@ import {
 import { SiteLayout } from "@/components/site/Layout";
 import { Button } from "@/components/ui/button";
 import { HomeDifference } from "@/components/site/HomeDifference";
-import { PAYMENT_JOURNEY, PAYMENT_COSTS } from "@/content/payment-flow";
+import { paymentFlowCopy } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
+import { stageFromMatches, useLaunchStage } from "@/lib/launch-stage";
 import { ScrollJourney } from "@/components/site/ScrollJourney";
 
 export const Route = createFileRoute("/how-it-works")({
-  head: () =>
+  head: ({ matches }) =>
     pageSeo({
       path: "/how-it-works",
       title: "How LamportPay Works — Wallet to Bank, Step by Step",
-      description:
-        "Follow LamportPay’s quote-first payment journey: wallet sign-in, bank details, Stables hosted verification, wallet approval and a simulated payout receipt.",
+      description: `Follow LamportPay’s quote-first payment journey: wallet sign-in, bank details, Stables hosted verification, wallet approval and ${
+        stageFromMatches(matches) === "live" ? "a payout receipt" : "a simulated payout receipt"
+      }.`,
     }),
   component: HowItWorks,
 });
@@ -67,6 +69,9 @@ const protections = [
 ];
 
 function HowItWorks() {
+  const stage = useLaunchStage();
+  const live = stage === "live";
+  const { journey: PAYMENT_JOURNEY, costs: PAYMENT_COSTS } = paymentFlowCopy(stage);
   return (
     <SiteLayout>
       <main className="mx-auto max-w-6xl px-5 pb-16 pt-12 md:pb-24 md:pt-20">
@@ -78,12 +83,13 @@ function HowItWorks() {
           <p className="mt-4 text-xl font-medium">Crypto in. Local money out.</p>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
             A wallet-first payment journey: get a quote, check the destination, review the costs and
-            approve in your wallet. Explore the full experience today in sandbox mode.
+            approve in your wallet.
+            {live ? "" : " Explore the full experience today in sandbox mode."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <Link to="/pay">
-                Open sandbox <ArrowRight aria-hidden="true" />
+                {live ? "Open App" : "Open sandbox"} <ArrowRight aria-hidden="true" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
@@ -160,9 +166,9 @@ function HowItWorks() {
             ))}
           </div>
           <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-            In an approved production flow, your wallet would send supported stablecoins directly to
-            a single-use deposit address supplied by Stables. That real-funds path is currently
-            DISABLED.
+            {live
+              ? "Your wallet sends USDC directly to a single-use deposit address supplied by Stables, and LamportPay's fee goes to LamportPay in the same transaction you sign. LamportPay never holds your funds."
+              : "In an approved production flow, your wallet would send supported stablecoins directly to a single-use deposit address supplied by Stables. That real-funds path is currently DISABLED."}
           </p>
         </section>
 
