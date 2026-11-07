@@ -186,6 +186,71 @@ export async function buildUsdcTransferTransaction(input: {
   };
 }
 
+const MEMO_PROGRAM = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
+
+/**
+ * TEST MODE "Pay Now" transaction (devnet only): a memo naming the payment,
+ * signed by the payer, plus — when the payment carries a LamportPay fee — a
+ * real transfer of exactly `fee.amountMinor` devnet test USDC from the payer to
+ * the revenue wallet's token account (created if missing; payer pays rent).
+ * Nothing goes to the Stables deposit address: the sandbox simulates that
+ * deposit. Unsigned; the user's wallet signs and sends it.
+ */
+export async function buildTestPaymentTransaction(input: {
+  payer: string;
+  memo: string;
+  mint: string;
+  decimals: number;
+  fee: { recipient: string; amountMinor: bigint } | null;
+}): Promise<{ transaction: string; lastValidBlockHeight: number }> {
+  const payer = new PublicKey(input.payer);
+  const fee = input.fee && input.fee.amountMinor > 0n ? input.fee : null;
+  if (input.fee && input.fee.amountMinor < 0n) throw new Error("Fee cannot be negative.");
+  if (fee && fee.recipient === input.payer) {
+    throw new Error("The revenue wallet cannot pay its own fee.");
+  }
+  const blockhash = await rpc<{ value: { blockhash: string; lastValidBlockHeight: number } }>(
+    "devnet",
+    "getLatestBlockhash",
+    [{ commitment: "confirmed" }],
+  );
+  if (!blockhash.ok) throw new Error(blockhash.error);
+
+  const tx = new Transaction({
+    feePayer: payer,
+    blockhash: blockhash.result.value.blockhash,
+    lastValidBlockHeight: blockhash.result.value.lastValidBlockHeight,
+  }).add(
+    new TransactionInstruction({
+      programId: MEMO_PROGRAM,
+      keys: [{ pubkey: payer, isSigner: true, isWritable: false }],
+      data: Buffer.from(input.memo, "utf8"),
+    }),
+  );
+  if (fee) {
+    const mint = new PublicKey(input.mint);
+    const feeOwner = new PublicKey(fee.recipient);
+    const feeAccount = tokenAta(feeOwner, mint);
+    tx.add(
+      createAtaIdempotent(payer, feeAccount, feeOwner, mint),
+      transferChecked(
+        tokenAta(payer, mint),
+        mint,
+        feeAccount,
+        payer,
+        fee.amountMinor,
+        input.decimals,
+      ),
+    );
+  }
+  return {
+    transaction: tx
+      .serialize({ requireAllSignatures: false, verifySignatures: false })
+      .toString("base64"),
+    lastValidBlockHeight: blockhash.result.value.lastValidBlockHeight,
+  };
+}
+
 export type DepositVerification =
   | { status: "pending" }
   /**

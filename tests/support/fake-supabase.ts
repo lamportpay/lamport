@@ -46,6 +46,9 @@ const DEFAULTS: Record<string, () => Row> = {
     platform_fee_minor: null,
     platform_fee_wallet: null,
     platform_fee_received_minor: null,
+    platform_fee_network: null,
+    platform_fee_signature: null,
+    platform_fee_received_at: null,
     pricing_snapshot: null,
     reconciled_at: null,
     travel_rule_reference: null,
@@ -65,7 +68,13 @@ const DEFAULTS: Record<string, () => Row> = {
     updated_at: now(),
     updated_by: null,
   }),
-  payment_fee_ledger: () => ({ component: "", bps: null, reference: null, created_at: now() }),
+  payment_fee_ledger: () => ({
+    component: "",
+    bps: null,
+    reference: null,
+    network: null,
+    created_at: now(),
+  }),
   payment_events: () => ({ detail: null, from_status: null, to_status: null, created_at: now() }),
   stables_customers: () => ({
     verification_status: null,
@@ -133,7 +142,7 @@ const DEFAULTS: Record<string, () => Row> = {
 };
 
 const UNIQUE: Record<string, string[]> = {
-  payments: ["id", "transfer_id", "funding_signature"],
+  payments: ["id", "transfer_id", "funding_signature", "platform_fee_signature"],
   payment_events: ["id"],
   stables_customers: ["user_id", "stables_customer_id"],
   stables_webhook_events: ["event_id"],

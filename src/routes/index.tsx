@@ -15,19 +15,23 @@ import { FeeCalculator } from "@/components/site/FeeCalculator";
 import { HeroRibbon } from "@/components/site/HeroRibbon";
 import { HomeCtaBanner } from "@/components/site/HomeCtaBanner";
 import { pageSeo } from "@/lib/seo";
+import { stageFromMatches, useLaunchStage } from "@/lib/launch-stage";
 
 export const Route = createFileRoute("/")({
-  head: () =>
+  head: ({ matches }) =>
     pageSeo({
       path: "/",
       title: "LamportPay — Crypto in. Local money out.",
       description:
-        "Explore LamportPay’s non-custodial payment journey: Solana wallets, Jupiter swap quotes, USDC settlement and Stables bank-payout sandbox.",
+        stageFromMatches(matches) === "live"
+          ? "Convert crypto in your own Solana wallet into local currency paid to a bank account. Non-custodial: a clear quote, your signature, one journey."
+          : "Explore LamportPay’s non-custodial payment journey: Solana wallets, Jupiter swap quotes, USDC settlement and Stables bank-payout sandbox.",
     }),
   component: Index,
 });
 
 function Index() {
+  const live = useLaunchStage() === "live";
   return (
     <div className="commercial-home">
       <SiteLayout>
@@ -74,7 +78,9 @@ function Index() {
                   </Button>
                 </div>
                 <p className="mx-auto mt-5 max-w-lg text-xs leading-relaxed text-home-ink">
-                  Your keys stay yours. No real funds move in the sandbox build.
+                  {live
+                    ? "Your keys stay yours. You approve every payment in your own wallet."
+                    : "Your keys stay yours. No real funds move in the sandbox build."}
                 </p>
               </div>
             </div>

@@ -489,9 +489,11 @@ function statusSteps(p: PaymentView): TimelineStep[] {
   });
   if (p.platformFee) {
     const settled = p.platformFee.settled;
-    // TEST MODE: Pay Now signs a devnet memo that moves no funds and the deposit is simulated,
-    // so no fee is ever transferred. Show that plainly instead of leaving the step "pending".
-    const testNoFunds = settled !== true && !p.funding && !!(p.testPayment || p.simulatedDeposit);
+    const devnetFee = p.platformFee.network === "solana-devnet";
+    // TEST MODE payments made before 5 Nov signed a memo that moved no funds, so
+    // no fee was transferred. Show that plainly instead of leaving the step "pending".
+    const testNoFunds =
+      settled === null && !p.funding && !!(p.testPayment || p.simulatedDeposit);
     steps.push({
       key: "fee",
       label: "LamportPay fee settled",
@@ -501,6 +503,12 @@ function statusSteps(p: PaymentView): TimelineStep[] {
           "Not included in the transaction"
         ) : testNoFunds ? (
           "Devnet / sandbox: no funds moved, so no fee was charged"
+        ) : devnetFee && settled && p.testPayment ? (
+          <TxLink
+            signature={p.testPayment.signature}
+            href={p.testPayment.explorerUrl}
+            label="Paid in devnet test USDC (same transaction)"
+          />
         ) : p.funding && settled ? (
           <TxLink signature={p.funding.signature} label="Same transaction" />
         ) : undefined,

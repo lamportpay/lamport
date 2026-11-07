@@ -64,10 +64,14 @@ export function DashboardContent({ data: d }: { data: AdminDashboardData }) {
             }
           />
           <StatCard
-            label="Revenue received · USDC"
+            label="Revenue collected (mainnet) · USDC"
             value={formatMinor(BigInt(d.revenue.receivedMinor), "usdc")}
             icon={Coins}
-            hint={`${formatMinor(BigInt(d.revenue.received24hMinor), "usdc")} USDC · last 24 hours`}
+            hint={`${formatMinor(BigInt(d.revenue.received24hMinor), "usdc")} USDC · last 24 hours${
+              BigInt(d.revenue.testReceivedMinor) > 0n
+                ? ` · devnet test fees ${formatMinor(BigInt(d.revenue.testReceivedMinor), "usdc")} (not revenue)`
+                : ""
+            }`}
           />
           <StatCard
             label="Attention indicators"

@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLaunchStage } from "@/lib/launch-stage";
 
 type Status = "LIVE" | "SANDBOX" | "IN DEVELOPMENT" | "PLANNED";
 type Partner = { name: string; status: Status; role: string; logo?: string; icon?: LucideIcon };
@@ -92,6 +93,8 @@ function LogoRow({ title, items, reverse }: { title: string; items: { name: stri
 
 function Card({ p, hidden }: { p: Partner; hidden?: boolean }) {
   const Icon = p.icon;
+  // Once LIVE is active, the sandbox partner (Stables) runs in production.
+  const status: Status = useLaunchStage() === "live" && p.status === "SANDBOX" ? "LIVE" : p.status;
   return (
     <li aria-hidden={hidden || undefined} className="tech-eco-card">
       <div className="flex items-center gap-3">
@@ -104,8 +107,8 @@ function Card({ p, hidden }: { p: Partner; hidden?: boolean }) {
         </span>
         <div className="min-w-0">
           <h3 className="truncate text-sm font-semibold text-foreground">{p.name}</h3>
-          <span className={cn("mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide", TONE[p.status])}>
-            {p.status}
+          <span className={cn("mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide", TONE[status])}>
+            {status}
           </span>
         </div>
       </div>

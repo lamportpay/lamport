@@ -5,8 +5,22 @@
 
 export type StablesAmount = { amount: string; currency: string };
 
+/**
+ * Fee lines Stables documents on quotes and transfers (docs checked 5 Nov 2026).
+ * `developer_fee` / `integrator_fee` are reported only: no request field sets
+ * them, and every sandbox quote so far had `integrator_fee` 0. Every line the
+ * API returns is stored as-is (service.server.ts `storedFees`).
+ */
 export type StablesFeeKind =
-  "fx_fee" | "integrator_fee" | "platform_fee" | "payment_method_fee" | "network_fee" | "total_fee";
+  | "fx_fee"
+  | "integrator_fee"
+  | "developer_fee"
+  | "platform_fee"
+  | "processing_fee"
+  | "withdrawal_fee"
+  | "payment_method_fee"
+  | "network_fee"
+  | "total_fee";
 
 export type StablesFees = Partial<Record<StablesFeeKind, StablesAmount>>;
 

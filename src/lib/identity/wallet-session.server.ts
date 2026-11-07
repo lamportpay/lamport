@@ -136,9 +136,20 @@ export async function walletSignIn(input: {
 
   if (userId) {
     const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId);
-    if (error || !data.user?.email) throw new WalletSignInError("Could not sign in right now.", 503);
-    email = data.user.email;
-    if (data.user.app_metadata?.["wallet_solana"] !== address) {
+    if (error || !data.user) throw new WalletSignInError("Could not sign in right now.", 503);
+    email = data.user.email || null;
+    if (!email) {
+      // Accounts made by the backend's built-in wallet provider (before 28 Oct 2026)
+      // have no email, and the one-time sign-in link needs one. Give the same account
+      // (same id, so its KYC and payments stay) the wallet's placeholder address.
+      email = placeholderEmail(publicKey);
+      const { error: emailError } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+        email,
+        email_confirm: true,
+        app_metadata: { ...data.user.app_metadata, wallet_solana: address },
+      });
+      if (emailError) throw new WalletSignInError("Could not sign in right now.", 503);
+    } else if (data.user.app_metadata?.["wallet_solana"] !== address) {
       await supabaseAdmin.auth.admin.updateUserById(userId, {
         app_metadata: { ...data.user.app_metadata, wallet_solana: address },
       });
@@ -156,7 +167,12 @@ export async function walletSignIn(input: {
     userId = created.data.user.id;
     const { error: insertError } = await supabaseAdmin
       .from("user_wallets")
-      .insert({ user_id: userId, chain: "solana", address, last_authenticated_at: new Date().toISOString() });
+      .insert({
+        user_id: userId,
+        chain: "solana",
+        address,
+        last_authenticated_at: new Date().toISOString(),
+      });
     if (insertError) throw new WalletSignInError("Could not link your wallet right now.", 503);
     await supabaseAdmin
       .from("identity_events")

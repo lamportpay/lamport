@@ -6,21 +6,23 @@ import { pageSeo, breadcrumbSchema } from "@/lib/seo";
 import { AboutPartners } from "@/components/site/AboutPartners";
 import { COMPANY } from "@/lib/company-profile";
 import { TEAM } from "@/lib/team";
+import { stageFromMatches, useLaunchStage } from "@/lib/launch-stage";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
+  head: ({ matches }) => ({
     ...pageSeo({
       path: "/about",
       title: "Lamport Pay Ltd — Company profile & founder Zoaib Ali",
-      description:
-        "Lamport Pay Ltd (11464834): incorporated 16 July 2018, registered in London, led by founder and CEO Zoaib Ali. Explore the company and its sandbox payment platform.",
+      description: `Lamport Pay Ltd (11464834): incorporated 16 July 2018, registered in London, led by founder and CEO Zoaib Ali. Explore the company and its ${
+        stageFromMatches(matches) === "live" ? "payment" : "sandbox payment"
+      } platform.`,
     }),
     scripts: [{ type: "application/ld+json", children: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Company profile", path: "/about" }])) }],
   }),
   component: About,
 });
 
-const values = [
+const baseValues = [
   {
     icon: Wallet,
     title: "Non-custodial by design",
@@ -47,7 +49,7 @@ const values = [
   },
 ];
 
-const facts = [
+const baseFacts = [
   { label: "Brand", value: "LamportPay" },
   { label: "Legal entity", value: "Lamport Pay Ltd" },
   { label: "Company number", value: COMPANY.number },
@@ -62,7 +64,20 @@ const facts = [
   { label: "Stage", value: "Sandbox" },
 ];
 
+/** LIVE wording (shown only once LIVE is active, docs/launch/live-wording.md). */
+const LIVE_TEXT: Record<string, string> = {
+  "Local money, globally":
+    "Our goal is simple: crypto in, local money out — paid to bank accounts in the countries our licensed payout partner supports.",
+};
+
 function About() {
+  const live = useLaunchStage() === "live";
+  const values = live
+    ? baseValues.map((v) => ({ ...v, detail: LIVE_TEXT[v.title] ?? v.detail }))
+    : baseValues;
+  const facts = live
+    ? baseFacts.map((f) => (f.label === "Stage" ? { ...f, value: "Live" } : f))
+    : baseFacts;
   const founder = TEAM.find((member) => member.slug === "zoaib-ali");
   return (
     <SiteLayout>
@@ -145,9 +160,9 @@ function About() {
             <div>
               <h2 className="text-2xl font-semibold">Where we are</h2>
               <p className="mt-3 text-muted-foreground leading-relaxed">
-                LamportPay is in a controlled sandbox phase. Wallet sign-in and live swap quotes work
-                today; bank payouts and identity checks run in our partner's sandbox until
-                production approval. Our next step is a dedicated security phase — an independent audit and hardening — before a controlled mainnet launch; see the public roadmap.
+                {live
+                  ? "LamportPay is live. You pay from your own wallet; identity checks and bank payouts are handled by our licensed payout partner. We keep hardening security and adding countries step by step; see the public roadmap."
+                  : "LamportPay is in a controlled sandbox phase. Wallet sign-in and live swap quotes work today; bank payouts and identity checks run in our partner's sandbox until production approval. Our next step is a dedicated security phase — an independent audit and hardening — before a controlled mainnet launch; see the public roadmap."}
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <Button asChild>

@@ -27,7 +27,7 @@ export const PAYMENT_JOURNEY = [
   {
     title: "Sign",
     detail:
-      "Approve in your wallet. In the sandbox build, you sign a test-network memo transaction that moves no funds—not a mainnet deposit or swap.",
+      "Approve in your wallet. In the sandbox build, you sign one devnet transaction: a memo naming the payment and the LamportPay fee in devnet test USDC. No real money moves—not a mainnet deposit or swap.",
   },
   {
     title: "Processing",
@@ -72,7 +72,7 @@ export const VERIFICATION_JOURNEY = [
     label: "PRODUCTION PAYOUT DISABLED",
     summary: "Verified sender, checked recipient, then wallet approval.",
     detail:
-      "The server requires an eligible verified Stables customer before preparing a transfer. Own-account holder details come from the verified record; beneficiary payouts require recipient details and purpose. Wallet ownership alone never authorizes a bank payout. In the sandbox build, approval is a test-network memo that moves no funds.",
+      "The server requires an eligible verified Stables customer before preparing a transfer. Own-account holder details come from the verified record; beneficiary payouts require recipient details and purpose. Wallet ownership alone never authorizes a bank payout. In the sandbox build, approval is a devnet transaction that moves only test tokens.",
   },
 ] as const;
 
@@ -92,3 +92,55 @@ export const PAYMENT_COSTS = [
       "Any Jupiter swap costs, price impact and Solana network fees are separate. The sandbox build does not execute mainnet swaps or move payment funds.",
   },
 ];
+
+// ---------------------------------------------------------------------------
+// LIVE wording (docs/launch/live-wording.md). Shown only once LIVE is active
+// (useLaunchStage); the exports above stay the TEST / sandbox wording.
+
+const LIVE_JOURNEY_DETAIL: Record<string, string> = {
+  Sign: "Approve in your wallet. One transaction sends the exact deposit to the single-use address from Stables and LamportPay's fee to LamportPay. Nothing leaves your wallet without your signature.",
+  Processing:
+    "Stables collects the deposit, converts it and sends the local-currency payout. The app follows the transfer status Stables reports.",
+  Complete:
+    "When Stables reports completion, the timeline and receipt update with the payout details.",
+};
+
+const LIVE_VERIFICATION: Record<string, { label?: string; detail?: string }> = {
+  "Complete hosted identity checks": { label: "LIVE · KYC" },
+  "Check eligibility before transfer": {
+    label: "LIVE · CHECKS BEFORE PAYOUT",
+    detail:
+      "The server requires an eligible verified Stables customer before preparing a transfer. Own-account holder details come from the verified record; beneficiary payouts require recipient details and purpose. Wallet ownership alone never authorizes a bank payout.",
+  },
+};
+
+const LIVE_COSTS_DETAIL: Record<string, string> = {
+  "Swap & network costs":
+    "Any Jupiter swap costs, price impact and Solana network fees are separate and paid in your own wallet.",
+};
+
+export type PaymentFlowCopy = {
+  journey: { title: string; detail: string }[];
+  safety: string;
+  verification: { title: string; label: string; summary: string; detail: string }[];
+  costs: { title: string; detail: string }[];
+};
+
+/** The payment-flow wording for a stage ("test" = the exports above). */
+export function paymentFlowCopy(stage: "test" | "live"): PaymentFlowCopy {
+  if (stage === "test") {
+    return {
+      journey: PAYMENT_JOURNEY,
+      safety: PAYMENT_SAFETY,
+      verification: [...VERIFICATION_JOURNEY],
+      costs: PAYMENT_COSTS,
+    };
+  }
+  return {
+    journey: PAYMENT_JOURNEY.map((s) => ({ ...s, detail: LIVE_JOURNEY_DETAIL[s.title] ?? s.detail })),
+    safety:
+      "LIVE: real payments. Funds go from your own wallet straight to the payout partner's single-use deposit address; LamportPay never holds them. Identity checks and bank payouts are handled by Stables.",
+    verification: VERIFICATION_JOURNEY.map((s) => ({ ...s, ...LIVE_VERIFICATION[s.title] })),
+    costs: PAYMENT_COSTS.map((c) => ({ ...c, detail: LIVE_COSTS_DETAIL[c.title] ?? c.detail })),
+  };
+}

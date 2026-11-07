@@ -1,20 +1,28 @@
 import "@/lib/buffer-polyfill";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import {
-  PublicKey,
-  TransactionInstruction,
-  TransactionMessage,
-  VersionedTransaction,
-} from "@solana/web3.js";
+import { Transaction } from "@solana/web3.js";
 import { Loader2, ShieldCheck } from "lucide-react";
 
 import { PaymentApiError, paymentApi } from "@/lib/payments/api-client";
-import { MEMO_PROGRAM_ID, testPaymentMemo } from "@/lib/payments/test-payment";
 import type { PaymentView } from "@/lib/payments/view";
 import { walletActionErrorMessage } from "@/lib/wallet-sign-in";
 
-const MEMO_PROGRAM = new PublicKey(MEMO_PROGRAM_ID);
+/** The server-built devnet transaction (memo + LamportPay fee in devnet test USDC). */
+type TestTransaction = {
+  transaction: string;
+  lastValidBlockHeight: number;
+  cluster: "devnet";
+  currency: string;
+  platformFee: string;
+};
+
+function fromBase64(value: string): Uint8Array {
+  const bin = atob(value);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
 
 export type TestPayPanelProps = {
   paymentId: string;
@@ -78,6 +86,8 @@ export function TestPayPanel({
   const { connection } = useConnection();
   const [busy, setBusy] = useState<"prepare" | "sign" | "detect" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // The LamportPay fee this devnet transaction moves (devnet test USDC), for the note.
+  const [fee, setFee] = useState<string | null>(null);
   // TEST MODE: the partner's sandbox refused this amount; offer one that it accepts.
   const [retry, setRetry] = useState<{ amount: string; country: string } | null>(null);
   const running = useRef(false);
@@ -98,25 +108,26 @@ export function TestPayPanel({
         setBusy("prepare");
         await prepare();
       }
-      setBusy("sign");
-      // One memo instruction in a v0 transaction, signed and paid by the user's wallet.
-      const memo = new TransactionInstruction({
-        programId: MEMO_PROGRAM,
-        keys: [{ pubkey: publicKey, isSigner: true, isWritable: false }],
-        data: new TextEncoder().encode(testPaymentMemo(paymentId)) as Buffer,
-      });
-      const latest = await connection.getLatestBlockhash("confirmed");
-      const tx = new VersionedTransaction(
-        new TransactionMessage({
-          payerKey: publicKey,
-          recentBlockhash: latest.blockhash,
-          instructions: [memo],
-        }).compileToV0Message(),
+      // The server builds the devnet transaction: a memo naming this payment plus
+      // LamportPay's fee in devnet test USDC to the revenue wallet.
+      const { data } = await paymentApi<TestTransaction>(
+        `/api/payments/${paymentId}/test-payment-transaction`,
+        { method: "POST", body: { payer: publicKey.toBase58() } },
       );
+      setFee(Number(data.platformFee) > 0 ? `${data.platformFee} ${data.currency.toUpperCase()}` : null);
+      setBusy("sign");
+      const tx = Transaction.from(fromBase64(data.transaction));
       const signature = await sendTransaction(tx, connection);
 
       setBusy("detect");
-      await connection.confirmTransaction({ signature, ...latest }, "confirmed");
+      await connection.confirmTransaction(
+        {
+          signature,
+          blockhash: tx.recentBlockhash ?? "",
+          lastValidBlockHeight: data.lastValidBlockHeight,
+        },
+        "confirmed",
+      );
       onPaid(await confirmTestPayment(paymentId, signature));
     } catch (e) {
       setError(
@@ -157,9 +168,9 @@ export function TestPayPanel({
       {busy === "sign" && (
         <p className="flex items-start gap-2 text-xs text-muted-foreground" role="status">
           <ShieldCheck className="w-4 h-4 shrink-0 text-primary" />
-          Review and approve this transaction in your wallet. It is a Solana devnet
-          transaction that moves no funds — only a tiny devnet network fee. Never share your seed
-          phrase.
+          {fee
+            ? `Review and approve this Solana devnet transaction in your wallet. It sends the ${fee} LamportPay fee in devnet test tokens (no real value) to LamportPay's revenue wallet; the payout deposit is simulated by the sandbox. Never share your seed phrase.`
+            : "Review and approve this transaction in your wallet. It is a Solana devnet transaction that moves no funds — only a tiny devnet network fee. Never share your seed phrase."}
         </p>
       )}
       {!connected && (

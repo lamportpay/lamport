@@ -113,6 +113,10 @@ export const USER_LIMITS = {
   transfer: { bucket: "payment-transfer", perMinute: 10 },
   funding: { bucket: "payment-funding", perMinute: 20 },
   kyc: { bucket: "kyc", perMinute: 10 },
+  /** Hyperliquid TESTNET panel reads (markets, account, check runs). */
+  hyperliquidRead: { bucket: "hyperliquid-read", perMinute: 30 },
+  /** Hyperliquid TESTNET signed actions relayed (approve, order, cancel). */
+  hyperliquidAction: { bucket: "hyperliquid-action", perMinute: 20 },
 } as const;
 
 export type UserLimit = { bucket: string; perMinute: number };

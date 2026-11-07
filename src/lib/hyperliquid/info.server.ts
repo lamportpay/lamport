@@ -37,7 +37,8 @@ export class HyperliquidError extends Error {
   }
 }
 
-export type SpotToken = { name: string; index: number };
+/** szDecimals: size decimals for orders (absent when Hyperliquid omits it). */
+export type SpotToken = { name: string; index: number; szDecimals?: number };
 export type SpotPair = { name: string; index: number; tokens: [number, number] };
 export type SpotMeta = { tokens: SpotToken[]; universe: SpotPair[] };
 
@@ -87,11 +88,13 @@ export async function getSpotMeta(): Promise<SpotMeta> {
   if (!raw || !Array.isArray(raw.tokens) || !Array.isArray(raw.universe)) {
     throw new HyperliquidError("Unexpected spotMeta answer.", 502);
   }
-  const tokens = raw.tokens.map((t: { name?: unknown; index?: unknown }) => {
+  const tokens = raw.tokens.map((t: { name?: unknown; index?: unknown; szDecimals?: unknown }) => {
     if (typeof t?.name !== "string" || !isInt(t.index)) {
       throw new HyperliquidError("Unexpected spotMeta token.", 502);
     }
-    return { name: t.name, index: t.index };
+    return isInt(t.szDecimals) && t.szDecimals <= 8
+      ? { name: t.name, index: t.index, szDecimals: t.szDecimals }
+      : { name: t.name, index: t.index };
   });
   const universe = raw.universe.map((p: { name?: unknown; index?: unknown; tokens?: unknown }) => {
     const pair = p?.tokens;
@@ -248,4 +251,131 @@ export async function getSpotBalances(user: string): Promise<SpotBalance[]> {
       return { coin: b.coin, token: b.token, total: b.total, hold: b.hold };
     },
   );
+}
+
+// ------------------------------------------------ account activity (7 Nov) ---
+
+const str = (v: unknown): v is string => typeof v === "string";
+const dec = (v: unknown): v is string => str(v) && DECIMAL.test(v);
+
+export type OpenOrder = {
+  coin: string;
+  side: "buy" | "sell";
+  limitPx: string;
+  sz: string;
+  oid: number;
+  timestamp: number;
+};
+
+/** Resting orders of a testnet account (public data). */
+export async function getOpenOrders(user: string): Promise<OpenOrder[]> {
+  if (!ADDRESS.test(user)) throw new HyperliquidError("Invalid account address.", 400);
+  const raw = await postInfo({ type: "openOrders", user });
+  if (!Array.isArray(raw)) throw new HyperliquidError("Unexpected openOrders answer.", 502);
+  return raw.map((o: Record<string, unknown>) => {
+    if (
+      !str(o?.coin) ||
+      (o.side !== "A" && o.side !== "B") ||
+      !dec(o.limitPx) ||
+      !dec(o.sz) ||
+      !isInt(o.oid) ||
+      !isInt(o.timestamp)
+    ) {
+      throw new HyperliquidError("Unexpected open order.", 502);
+    }
+    return {
+      coin: o.coin,
+      side: o.side === "B" ? "buy" : "sell",
+      limitPx: o.limitPx,
+      sz: o.sz,
+      oid: o.oid,
+      timestamp: o.timestamp,
+    };
+  });
+}
+
+export type Fill = {
+  coin: string;
+  side: "buy" | "sell";
+  px: string;
+  sz: string;
+  fee: string;
+  feeToken: string | null;
+  oid: number;
+  time: number;
+  hash: string;
+};
+
+/** Most recent fills (trades) of a testnet account, newest first, at most `limit`. */
+export async function getUserFills(user: string, limit = 50): Promise<Fill[]> {
+  if (!ADDRESS.test(user)) throw new HyperliquidError("Invalid account address.", 400);
+  const raw = await postInfo({ type: "userFills", user });
+  if (!Array.isArray(raw)) throw new HyperliquidError("Unexpected userFills answer.", 502);
+  return raw
+    .map((f: Record<string, unknown>) => {
+      if (
+        !str(f?.coin) ||
+        (f.side !== "A" && f.side !== "B") ||
+        !dec(f.px) ||
+        !dec(f.sz) ||
+        !isInt(f.oid) ||
+        !isInt(f.time) ||
+        !str(f.hash)
+      ) {
+        throw new HyperliquidError("Unexpected fill.", 502);
+      }
+      const fee = str(f.fee) && /^-?\d+(?:\.\d+)?$/.test(f.fee) ? f.fee : "0";
+      return {
+        coin: f.coin,
+        side: (f.side === "B" ? "buy" : "sell") as Fill["side"],
+        px: f.px,
+        sz: f.sz,
+        fee,
+        feeToken: str(f.feeToken) ? f.feeToken : null,
+        oid: f.oid,
+        time: f.time,
+        hash: f.hash,
+      };
+    })
+    .sort((a, b) => b.time - a.time)
+    .slice(0, limit);
+}
+
+export type LedgerUpdate = {
+  time: number;
+  hash: string;
+  type: string;
+  /** Plain fields of the update (token, amount, usdc, destination, …), strings only. */
+  details: Record<string, string>;
+};
+
+/**
+ * Deposits, transfers and other non-funding balance changes of a testnet
+ * account since `startTime` (ms), newest first, at most `limit`.
+ */
+export async function getLedgerUpdates(
+  user: string,
+  startTime: number,
+  limit = 50,
+): Promise<LedgerUpdate[]> {
+  if (!ADDRESS.test(user)) throw new HyperliquidError("Invalid account address.", 400);
+  if (!isInt(startTime)) throw new HyperliquidError("Invalid start time.", 400);
+  const raw = await postInfo({ type: "userNonFundingLedgerUpdates", user, startTime });
+  if (!Array.isArray(raw)) throw new HyperliquidError("Unexpected ledger answer.", 502);
+  return raw
+    .map((u: { time?: unknown; hash?: unknown; delta?: unknown }) => {
+      const delta = u?.delta as Record<string, unknown> | undefined;
+      if (!isInt(u?.time) || !str(u.hash) || !delta || !str(delta.type)) {
+        throw new HyperliquidError("Unexpected ledger update.", 502);
+      }
+      const details: Record<string, string> = {};
+      for (const [k, v] of Object.entries(delta)) {
+        if (k === "type") continue;
+        if (str(v) && v.length <= 80) details[k] = v;
+        else if (typeof v === "number" || typeof v === "boolean") details[k] = String(v);
+      }
+      return { time: u.time, hash: u.hash, type: delta.type, details };
+    })
+    .sort((a, b) => b.time - a.time)
+    .slice(0, limit);
 }
