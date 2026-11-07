@@ -47,3 +47,39 @@ Open points for the LIVE wording:
   confirmation.
 - Marketing wording names LamportPay's own system; partner details belong in the compliance pages
   (marketing decision 29 Oct).
+
+## 3. The switch (implemented 6 Nov 2026)
+
+`getLaunchStage()` (`src/lib/launch-stage.functions.ts`) answers "live" only when the server runs
+LIVE MODE and every LIVE requirement is met (`mode === "live" && ok && liveAvailable`); anything
+else is "test". The root route loads it once per page load; components read it with
+`useLaunchStage()` and route heads with `stageFromMatches(matches)` (`src/lib/launch-stage.ts`).
+A LIVE build that is still locked therefore keeps today's wording.
+
+Switched (TEST text unchanged; LIVE text below is a draft for owner/marketing review):
+
+| Place | LIVE behaviour |
+| --- | --- |
+| `__root.tsx`, `index.tsx` descriptions and hero note | No "sandbox"; "you approve every payment in your own wallet" |
+| `LaunchPopup` ("Mainnet launch coming soon") | Not shown |
+| `about.tsx` | Stage "Live"; "Where we are" and goal text without sandbox |
+| `how-it-works.tsx` | "Open App"; real deposit path described; journey and costs from `paymentFlowCopy("live")` |
+| `contact.tsx` map legend | "Supported" |
+| `HomeCapabilities`, `TechnologyEcosystem`, `MultiAssetFlow`, `HomeRegionalNetwork` | Sandbox pills become LIVE; sandbox sentences dropped |
+| `HomeBankNetwork`, `SupportedCorridors` | No sandbox / DISABLED labels; corridors "open for bank payouts through our payout partner" |
+| `VerificationJourney`, `PaymentFlowStatus`, `content/payment-flow.ts` | LIVE labels and LIVE journey / safety / cost text |
+| `/pay` TEST notice | Now says the devnet transaction moves test tokens, including the fee |
+
+Test: `tests/live-wording.unit.test.ts` renders the switched components in both stages.
+
+Still to do (need owner, legal or marketing review before LIVE, not changed here):
+
+- `compliance.tsx` (KYC and payouts "DISABLED", regulatory statements) — legal wording.
+- `docs.tsx`, `whitepaper.tsx`, `workflow.tsx` — product documentation status lines.
+- Corridor list: show only corridors with a completed production payout or Stables' written
+  confirmation (`SupportedCorridors`, `contact.tsx` map, `HomeBankNetwork` banks).
+- Homepage demo widgets (`LiveSwapTheater`, `SwapRoutePreview`, `WorldPulse`, `VerifiedUsers`,
+  `LiveRates`, `CitiesNeverSleep`, `TransferSimulator`, `VisionRoadmapEcosystem`): keep, relabel or
+  remove in LIVE (the swap demo is already quote-only in LIVE).
+- Content data (`content/roadmap*.ts`, `integrations.ts`, `integration-status.ts`, `news.ts`, blog
+  posts): dated or roadmap statements; review which become false at launch.

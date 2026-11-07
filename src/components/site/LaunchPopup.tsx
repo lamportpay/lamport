@@ -4,11 +4,17 @@ import { Rocket, ShieldCheck, Sparkles, Gift, ArrowRight, Wallet } from "lucide-
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { requestWalletConnect, useAppWallet } from "@/lib/wallet-state";
+import { useLaunchStage } from "@/lib/launch-stage";
 import markUrl from "@/assets/lamportpay-mark.png";
 
 const KEY = "lp-launch-popup-seen-v1";
 
+/** The pre-launch popup ("mainnet launch coming soon"); not shown once LIVE is active. */
 export function LaunchPopup() {
+  return useLaunchStage() === "live" ? null : <PreLaunchPopup />;
+}
+
+function PreLaunchPopup() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<"intro" | "form" | "done">("intro");
   const [busy, setBusy] = useState(false);

@@ -299,6 +299,42 @@ export async function recordFunding(
   return { status: "recorded", payment: data };
 }
 
+export type FeeReceiptWrite = "recorded" | "already_recorded" | "signature_taken";
+
+/**
+ * Store the on-chain fee receipt of a payment once (TEST MODE devnet fee; LIVE
+ * writes it with the funding in `recordFunding`). The row is only updated while
+ * it has no receipt, the signature is unique across payments, and the database
+ * refuses any later change, so a retry or a duplicate never counts twice.
+ */
+export async function recordFeeReceipt(
+  paymentId: string,
+  receipt: {
+    receivedMinor: bigint;
+    network: "solana" | "solana-devnet";
+    signature: string;
+    receivedAt: string;
+  },
+): Promise<FeeReceiptWrite> {
+  const { data, error } = await supabaseAdmin
+    .from("payments")
+    .update({
+      platform_fee_received_minor: Number(receipt.receivedMinor),
+      platform_fee_network: receipt.network,
+      platform_fee_signature: receipt.signature,
+      platform_fee_received_at: receipt.receivedAt,
+    })
+    .eq("id", paymentId)
+    .is("platform_fee_received_at", null)
+    .select("id")
+    .maybeSingle();
+  if (error) {
+    if (error.code === UNIQUE_VIOLATION) return "signature_taken";
+    fail("Record fee receipt", error);
+  }
+  return data ? "recorded" : "already_recorded";
+}
+
 /** Store the settled payout once; returns false if it was already recorded. */
 export async function recordActualPayout(
   paymentId: string,

@@ -1658,6 +1658,8 @@ describe("LamportPay fee (non-custodial split)", () => {
       amount: "1.530613",
       currency: "usdc",
       settled: null,
+      network: null,
+      signature: null,
     });
     expect(quoted.totalToPay).toMatchObject({ amount: "76.530613", currency: "usdc" });
     expect(JSON.stringify(quoted)).not.toContain(REVENUE);
@@ -2199,6 +2201,170 @@ describe("TEST MODE Pay Now (devnet memo transaction)", () => {
       code: "test_mode_only",
     });
     expect(rpcMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("TEST MODE devnet fee leg (5 Nov 2026)", () => {
+  const MEMO = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr";
+  const DEVNET_USDC = "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU";
+  const REVENUE = "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU";
+  const ADMIN = "00000000-0000-4000-8000-000000000001";
+
+  const bal = (accountIndex: number, owner: string, amount: bigint) => ({
+    accountIndex,
+    mint: DEVNET_USDC,
+    owner,
+    uiTokenAmount: { amount: amount.toString(), decimals: 6, uiAmount: null },
+  });
+
+  /** A confirmed devnet transaction: the memo, and `paid` moved from the signer to the revenue wallet. */
+  function feeTx(signer: string, memo: string, paid: bigint, extraToRevenue = 0n) {
+    const start = 100_000_000n;
+    return {
+      ok: true as const,
+      result: {
+        blockTime: Math.floor(Date.now() / 1000),
+        meta: {
+          err: null,
+          preTokenBalances: [bal(1, signer, start), bal(2, REVENUE, 0n)],
+          postTokenBalances: [bal(1, signer, start - paid), bal(2, REVENUE, paid + extraToRevenue)],
+        },
+        transaction: {
+          message: {
+            accountKeys: [{ pubkey: signer, signer: true }],
+            instructions: [{ programId: MEMO, program: "spl-memo", parsed: memo }],
+          },
+        },
+      },
+    };
+  }
+
+  async function awaitingWithFee() {
+    await updateBusinessSettings({ conversionFeeBps: 200, revenueWallet: REVENUE }, ADMIN);
+    const { id } = await paymentAwaitingFunds("75");
+    Object.assign(process.env, {
+      LAMPORTPAY_MODE: "test",
+      STABLES_API_KEY: "sti_test_fixture",
+      STABLES_API_URL: "https://api.sandbox.stables.money",
+    });
+    api.simulateTransferDeposit.mockResolvedValue({
+      transfer_id: "tr_1",
+      simulation_id: "sim_1",
+      scenario: "success",
+      deposit_status: "received",
+    });
+    const wallet = newWallet();
+    wallets.readWalletHoldings.mockResolvedValue(holdings(wallet));
+    const fee = BigInt(paymentRow(id)["platform_fee_minor"] as number);
+    return { id, wallet, fee, payer: { ...user, wallets: [wallet] } };
+  }
+
+  const mod = () => import("@/lib/payments/test-payment.server");
+  const ledgerRows = (id: string) =>
+    db
+      .table("payment_fee_ledger")
+      .filter((r) => r["payment_id"] === id && r["entry_type"] === "received");
+
+  it("records the fee the revenue wallet actually received, once, as devnet (never revenue)", async () => {
+    const { id, wallet, fee, payer } = await awaitingWithFee();
+    expect(fee).toBe(1_530_613n); // 2% of the total for 75 USDC to the partner
+    const sig = fakeSignature();
+    rpcMock.mockResolvedValue(feeTx(wallet, `LamportPay TEST payment ${id}`, fee) as never);
+
+    const view = await (await mod()).confirmTestPayment(payer, id, sig);
+    expect(view.platformFee).toMatchObject({
+      settled: true,
+      network: "solana-devnet",
+      signature: sig,
+    });
+    const row = paymentRow(id);
+    expect(row).toMatchObject({
+      platform_fee_received_minor: 1_530_613,
+      platform_fee_network: "solana-devnet",
+      platform_fee_signature: sig,
+      payer_wallet: wallet,
+      funding_verified_at: null,
+    });
+    expect(row["platform_fee_received_at"]).toBeTruthy();
+    expect(ledgerRows(id)).toHaveLength(1);
+    expect(ledgerRows(id)[0]).toMatchObject({
+      amount_minor: 1_530_613,
+      network: "solana-devnet",
+      reference: sig,
+    });
+
+    // Retried with the same signature: still one receipt, one ledger row, one simulation.
+    await (await mod()).confirmTestPayment(payer, id, sig);
+    expect(ledgerRows(id)).toHaveLength(1);
+    expect(api.simulateTransferDeposit).toHaveBeenCalledTimes(1);
+
+    const status = await import("@/lib/payments/revenue-status");
+    const stored = paymentRow(id) as unknown as Parameters<typeof status.revenueStatus>[0];
+    expect(status.revenueStatus(stored)).toBe("collected");
+    expect(status.revenueMinor(stored)).toBe(0n); // devnet is not revenue
+    expect(status.testFeeMinor(stored)).toBe(1_530_613n);
+  });
+
+  it("records a missing fee (memo only) as 0 received and flags it, without blocking the payout", async () => {
+    const { id, wallet, payer } = await awaitingWithFee();
+    rpcMock.mockResolvedValue(feeTx(wallet, `LamportPay TEST payment ${id}`, 0n) as never);
+    const view = await (await mod()).confirmTestPayment(payer, id, fakeSignature());
+    expect(view.platformFee).toMatchObject({ settled: false, network: "solana-devnet" });
+    expect(paymentRow(id)["platform_fee_received_minor"]).toBe(0);
+    const events = db.table("payment_events").filter((e) => e["payment_id"] === id);
+    expect(events.some((e) => e["kind"] === "platform_fee_mismatch")).toBe(true);
+    expect(api.simulateTransferDeposit).toHaveBeenCalledTimes(1);
+  });
+
+  it("counts only what left the payer's wallet (no third-party top-up)", async () => {
+    const { feePaidBy } = await mod();
+    const payer = newWallet();
+    const meta = feeTx(payer, "m", 3_000_000n, 2_000_000n).result.meta;
+    expect(feePaidBy(meta, DEVNET_USDC, payer, REVENUE)).toBe(3_000_000n);
+    expect(feePaidBy(meta, DEVNET_USDC, REVENUE, REVENUE)).toBe(0n);
+    expect(feePaidBy(meta, "OtherMint1111111111111111111111111111111111", payer, REVENUE)).toBe(0n);
+  });
+
+  it("builds the devnet transaction server-side: memo + exact fee to the revenue wallet", async () => {
+    const { id, wallet, fee, payer } = await awaitingWithFee();
+    mockBlockhash();
+    const built = await (await mod()).prepareTestPaymentTransaction(payer, id, wallet);
+    expect(rpcMock.mock.calls.at(-1)![0]).toBe("devnet");
+    expect(built).toMatchObject({ cluster: "devnet", currency: "usdc", platformFee: "1.530613" });
+
+    const { PublicKey, Transaction } = await import("@solana/web3.js");
+    const tx = Transaction.from(Buffer.from(built.transaction, "base64"));
+    expect(tx.feePayer?.toBase58()).toBe(wallet);
+    expect(tx.instructions).toHaveLength(3);
+    const [memo, createAta, transfer] = tx.instructions;
+    expect(memo!.programId.toBase58()).toBe(MEMO);
+    expect(Buffer.from(memo!.data).toString("utf8")).toBe(`LamportPay TEST payment ${id}`);
+    const [revenueAta] = PublicKey.findProgramAddressSync(
+      [
+        new PublicKey(REVENUE).toBuffer(),
+        new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").toBuffer(),
+        new PublicKey(DEVNET_USDC).toBuffer(),
+      ],
+      new PublicKey("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"),
+    );
+    expect(createAta!.keys[1]!.pubkey.toBase58()).toBe(revenueAta.toBase58());
+    expect(transfer!.keys[1]!.pubkey.toBase58()).toBe(DEVNET_USDC);
+    expect(transfer!.keys[2]!.pubkey.toBase58()).toBe(revenueAta.toBase58());
+    expect(Buffer.from(transfer!.data).readBigUInt64LE(1)).toBe(fee);
+  });
+
+  it("refuses the revenue wallet as the payer, another user's wallet, and LIVE MODE", async () => {
+    const { id, payer } = await awaitingWithFee();
+    await expect(
+      (await mod()).prepareTestPaymentTransaction({ ...user, wallets: [REVENUE] }, id, REVENUE),
+    ).rejects.toMatchObject({ code: "revenue_wallet_payer" });
+    await expect(
+      (await mod()).prepareTestPaymentTransaction(payer, id, newWallet()),
+    ).rejects.toMatchObject({ code: "wrong_wallet" });
+    Object.assign(process.env, LIVE_ENV);
+    await expect(
+      (await mod()).prepareTestPaymentTransaction(payer, id, payer.wallets[0]!),
+    ).rejects.toMatchObject({ code: "test_mode_only" });
   });
 });
 

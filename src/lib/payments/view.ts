@@ -49,6 +49,10 @@ export type PaymentView = {
      * null until funding is verified. The destination is never exposed.
      */
     settled: boolean | null;
+    /** Where the fee was seen: mainnet ("solana") or devnet test tokens; null until then. */
+    network: "solana" | "solana-devnet" | null;
+    /** The transaction that carried the fee, once verified. */
+    signature: string | null;
   } | null;
   /**
    * Set when this payment's LamportPay fee was waived (early access: one of the
@@ -278,6 +282,9 @@ type Row = {
   platform_fee_bps?: number | null;
   platform_fee_minor?: number | null;
   platform_fee_received_minor?: number | null;
+  platform_fee_received_at?: string | null;
+  platform_fee_network?: string | null;
+  platform_fee_signature?: string | null;
   platform_fee_rule?: string | null;
   /** Why this payment's fee is zero (early access), and the place in line. */
   platform_fee_waiver?: string | null;
@@ -565,9 +572,15 @@ export function toPaymentView(
             amountMinor: feeMinor.toString(),
             amount: toMajor(feeMinor, depositCurrency),
             currency: depositCurrency,
-            settled: row.funding_verified_at
-              ? BigInt(row.platform_fee_received_minor ?? 0) >= feeMinor
-              : null,
+            // Settled once the fee was verified on-chain (LIVE: mainnet funding;
+            // TEST: the devnet fee leg), from what the revenue wallet received.
+            settled:
+              row.platform_fee_received_at || row.funding_verified_at
+                ? BigInt(row.platform_fee_received_minor ?? 0) >= feeMinor
+                : null,
+            network: (row.platform_fee_network ?? (row.funding_verified_at ? "solana" : null)) as
+              "solana" | "solana-devnet" | null,
+            signature: row.platform_fee_signature ?? null,
           }
         : null,
     feeWaiver:

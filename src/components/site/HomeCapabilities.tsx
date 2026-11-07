@@ -9,6 +9,8 @@
 
 import type { ReactNode } from "react";
 
+import { useLaunchStage } from "@/lib/launch-stage";
+
 type Capability = {
   key: string;
   label: string;
@@ -157,7 +159,31 @@ function CapabilityItem({ item, index = 0 }: { item: Capability; index?: number 
   );
 }
 
+/**
+ * Once LIVE is active (useLaunchStage), the sandbox steps are real: identity checks and
+ * bank payouts run in the payout partner's production, so they read "Live" and lose
+ * their sandbox sentences. Everything else keeps its status.
+ */
+const LIVE_TITLES: Record<string, string> = {
+  identity: "Identity verification runs on the payout partner's hosted page.",
+  conversion:
+    "Solana / SPL assets → Jupiter → USDC: live quotes, swapped in your own wallet. Major digital assets → Hyperliquid → USDC: in progress, not enabled for deposits.",
+  "usdc-settlement":
+    "USDC is the settlement asset for the selected route. Direct USDC skips conversion.",
+  "bank-out": "USDC enters the Stables payout process for local-currency delivery to a bank account.",
+};
+
+function forStage(item: Capability, live: boolean): Capability {
+  if (!live) return item;
+  return {
+    ...item,
+    status: item.status === "demo" ? "live" : item.status,
+    title: LIVE_TITLES[item.key] ?? item.title,
+  };
+}
+
 export function HomeCapabilities() {
+  const live = useLaunchStage() === "live";
   return (
     <section aria-labelledby="home-capabilities-heading" className="home-capabilities home-section">
       {/* Shared gradient for the hexagon strokes; referenced by id from every icon. */}
@@ -180,15 +206,21 @@ export function HomeCapabilities() {
         </div>
 
         <ul className="home-cap-grid" role="list" tabIndex={0} aria-label="What LamportPay does">
-          {[...CAPABILITIES, FEE_FEATURE].map((item, i) => <CapabilityItem key={item.key} item={item} index={i} />)}
+          {[...CAPABILITIES, FEE_FEATURE].map((item, i) => (
+            <CapabilityItem key={item.key} item={forStage(item, live)} index={i} />
+          ))}
         </ul>
 
 
         <p className="home-cap-note">
           <span>Live means the step works today</span>
           <span className="home-cap-note-sep" aria-hidden="true">·</span>
-          <span>Sandbox means it runs in a test environment, where no real money moves</span>
-          <span className="home-cap-note-sep" aria-hidden="true">·</span>
+          {!live && (
+            <>
+              <span>Sandbox means it runs in a test environment, where no real money moves</span>
+              <span className="home-cap-note-sep" aria-hidden="true">·</span>
+            </>
+          )}
           <span>In progress means it is not finished</span>
         </p>
       </div>

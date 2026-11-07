@@ -6,6 +6,7 @@ import type { Topology, GeometryCollection } from "topojson-specification";
 import world from "world-atlas/countries-110m.json";
 import { ArrowLeftRight, Database, Globe2, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLaunchStage } from "@/lib/launch-stage";
 import lamportMark from "@/assets/lamportpay-mark.png";
 
 /**
@@ -41,6 +42,7 @@ function arc(a: [number, number], b: [number, number]) {
 }
 
 export function HomeRegionalNetwork() {
+  const live = useLaunchStage() === "live";
   const ref = useRef<HTMLElement>(null);
   const [seen, setSeen] = useState(false);
   const [currencyCycle, setCurrencyCycle] = useState(0);
@@ -162,7 +164,8 @@ export function HomeRegionalNetwork() {
         </div>
 
         <p className="mx-auto mt-4 max-w-2xl text-center text-xs leading-relaxed text-muted-foreground">
-          Currency examples, not a complete list. Region-wide coverage is our expansion goal; availability depends on each partner and corridor. Current bank payouts remain sandbox-only.
+          Currency examples, not a complete list. Region-wide coverage is our expansion goal; availability depends on each partner and corridor.
+          {live ? "" : " Current bank payouts remain sandbox-only."}
         </p>
 
         <div className={cn("mt-14 text-center", rv)} style={delay(3)}>
@@ -185,7 +188,11 @@ export function HomeRegionalNetwork() {
         </p>
         <p className="mx-auto mt-5 flex w-fit flex-wrap items-center justify-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-xs text-muted-foreground">
           <span className="font-semibold text-foreground">Current payout infrastructure:</span> Stables
-          <span className="home-cap-status home-cap-status--sandbox rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[10px] font-bold text-warning-foreground">SANDBOX</span>
+          {live ? (
+            <span className="home-cap-status home-cap-status--live rounded-full border border-success/40 bg-success/10 px-2 py-0.5 text-[10px] font-bold text-success">LIVE</span>
+          ) : (
+            <span className="home-cap-status home-cap-status--sandbox rounded-full border border-warning/40 bg-warning/10 px-2 py-0.5 text-[10px] font-bold text-warning-foreground">SANDBOX</span>
+          )}
         </p>
       </div>
     </section>

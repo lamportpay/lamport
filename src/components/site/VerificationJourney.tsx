@@ -8,11 +8,13 @@ import {
   UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { VERIFICATION_JOURNEY } from "@/content/payment-flow";
+import { paymentFlowCopy } from "@/content/payment-flow";
+import { useLaunchStage } from "@/lib/launch-stage";
 
 const icons = [KeyRound, Fingerprint, UserCheck, ShieldCheck];
 
 export function VerificationJourney({ compact = false }: { compact?: boolean }) {
+  const live = useLaunchStage() === "live";
   return (
     <section
       id="verification"
@@ -50,14 +52,24 @@ export function VerificationJourney({ compact = false }: { compact?: boolean }) 
               status; Stables provides the single-use deposit address and payout infrastructure.
             </p>
           </div>
-          <div>
-            <h3 className="text-sm font-semibold">A sandbox completion is not production KYC.</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              The app can retain verification from a completed payment, avoiding repeat prompts.
-              Current completions are sandbox records only; production identity verification and
-              real fiat payouts remain DISABLED.
-            </p>
-          </div>
+          {live ? (
+            <div>
+              <h3 className="text-sm font-semibold">Verified once, ready next time.</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                The app can retain verification from a completed payment, avoiding repeat prompts.
+                Stables decides eligibility for every payout.
+              </p>
+            </div>
+          ) : (
+            <div>
+              <h3 className="text-sm font-semibold">A sandbox completion is not production KYC.</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                The app can retain verification from a completed payment, avoiding repeat prompts.
+                Current completions are sandbox records only; production identity verification and
+                real fiat payouts remain DISABLED.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </section>
@@ -74,6 +86,7 @@ const LEAVES = [
 
 /** Animated tree: a user travels down the trunk, each step lights a branch. */
 function VerificationFlow({ compact }: { compact: boolean }) {
+  const VERIFICATION_JOURNEY = paymentFlowCopy(useLaunchStage()).verification;
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [active, setActive] = useState(0);

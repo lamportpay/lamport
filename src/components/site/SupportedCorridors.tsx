@@ -10,6 +10,7 @@ import world from "world-atlas/countries-110m.json";
 import { Minus, Plus, RotateCcw } from "lucide-react";
 import { Flag } from "@/components/app/Flag";
 import { Button } from "@/components/ui/button";
+import { useLaunchStage } from "@/lib/launch-stage";
 
 /**
  * Interactive payout-reach world map (Natural Earth 110m countries).
@@ -40,6 +41,7 @@ const path = geoPath(projection);
 type Country = Feature<Geometry, { name: string }>;
 
 export function SupportedCorridors() {
+  const live = useLaunchStage() === "live";
   const countries = useMemo(() => {
     const topo = world as unknown as Topology<{ countries: GeometryCollection<{ name: string }> }>;
     const fc = feature(topo, topo.objects.countries) as unknown as FeatureCollection<Geometry, { name: string }>;
@@ -124,10 +126,13 @@ export function SupportedCorridors() {
       <div className="home-container">
         <div className="mx-auto max-w-2xl text-center">
           <p className="home-eyebrow">Global payout reach</p>
-          <h2 className="home-heading">Four corridors, verified end to end.</h2>
+          <h2 className="home-heading">
+            {live ? "Bank payouts in four countries." : "Four corridors, verified end to end."}
+          </h2>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Click any country to zoom in. Highlighted countries completed sandbox bank payouts today;
-            Nigeria and Pakistan are planned.
+            {live
+              ? "Click any country to zoom in. Highlighted countries are open for bank payouts through our payout partner; Nigeria and Pakistan are planned."
+              : "Click any country to zoom in. Highlighted countries completed sandbox bank payouts today; Nigeria and Pakistan are planned."}
           </p>
         </div>
 
@@ -217,7 +222,7 @@ export function SupportedCorridors() {
                 <p className="text-xs text-muted-foreground">
                   {sel
                     ? sel.status === "supported"
-                      ? `${sel.symbol} ${sel.currency} · Sandbox payouts verified`
+                      ? `${sel.symbol} ${sel.currency} · ${live ? "Bank payouts available" : "Sandbox payouts verified"}`
                       : `${sel.symbol} ${sel.currency} · Planned corridor`
                     : "Not yet supported"}
                 </p>
@@ -227,8 +232,14 @@ export function SupportedCorridors() {
         </div>
 
         <p className="mx-auto mt-6 max-w-xl text-center text-xs leading-relaxed text-muted-foreground">
-          <span className="font-semibold">SANDBOX</span> · Corridor status reflects
-          sandbox test completions. Production bank payouts remain disabled until approval.
+          {live ? (
+            "Availability depends on our payout partner's checks for each payment; the app shows the destinations open to you."
+          ) : (
+            <>
+              <span className="font-semibold">SANDBOX</span> · Corridor status reflects sandbox
+              test completions. Production bank payouts remain disabled until approval.
+            </>
+          )}
         </p>
       </div>
     </section>
