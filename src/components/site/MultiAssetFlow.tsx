@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Bitcoin, ScanSearch, ShieldCheck, Landmark, Banknote, Pause, Play, Layers, Info, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLaunchStage } from '@/lib/launch-stage';
 
 function Status({ children, tone = 'planned' }: { children: string; tone?: 'live' | 'sandbox' | 'planned' }) {
-  return <span className={`maf-badge maf-badge-${tone}`}>{children}</span>;
+  // Once LIVE is active, the sandbox steps (KYC, payout) run in production.
+  const live = useLaunchStage() === 'live' && tone === 'sandbox';
+  return <span className={`maf-badge maf-badge-${live ? 'live' : tone}`}>{live ? 'LIVE' : children}</span>;
 }
 function Heading({ number, children }: { number: string; children: React.ReactNode }) {
   return <h3 className="maf-card-heading"><span className="maf-number">{number}</span>{children}</h3>;
@@ -17,6 +20,7 @@ const ASSETS = [
 ];
 
 export function MultiAssetFlow() {
+  const live = useLaunchStage() === 'live';
   const canvas = useRef<HTMLDivElement>(null);
   const [paths, setPaths] = useState<{ d: string; failed?: boolean }[]>([]);
   const [paused, setPaused] = useState(false);
@@ -89,7 +93,9 @@ export function MultiAssetFlow() {
           <div data-flow="8" className="maf-card maf-bank maf-output"><Heading number="08">Recipient Bank Account</Heading><Landmark className="maf-output-logo text-primary" /><p>Local fiat payout to the recipient</p><Status tone="sandbox">SANDBOX</Status></div>
         </div>
       </div>
-      <div className="maf-disclosure"><Info className="h-5 w-5 shrink-0 text-primary" /><p>Solana / SPL assets use the live Jupiter route. Additional asset and liquidity routes are planned; Hyperliquid trading and transfers remain disabled. Identity checks and bank payouts are sandbox-only. The refund path is illustrative: automatic refunds are not switched on, and no funds move in this sandbox journey.</p></div>
+      <div className="maf-disclosure"><Info className="h-5 w-5 shrink-0 text-primary" /><p>{live
+            ? 'Solana / SPL assets use the live Jupiter route. Additional asset and liquidity routes are planned; Hyperliquid trading and transfers remain disabled. Identity checks and bank payouts run with our payout partner. The refund path is illustrative: automatic refunds are not switched on.'
+            : 'Solana / SPL assets use the live Jupiter route. Additional asset and liquidity routes are planned; Hyperliquid trading and transfers remain disabled. Identity checks and bank payouts are sandbox-only. The refund path is illustrative: automatic refunds are not switched on, and no funds move in this sandbox journey.'}</p></div>
     </div>
   </section>;
 }

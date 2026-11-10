@@ -38,6 +38,11 @@ const DEFAULTS: Record<string, () => Row> = {
     funding_signature: null,
     funding_payer: null,
     funding_verified_at: null,
+    funding_pending_signature: null,
+    funding_pending_at: null,
+    funding_pending_last_valid_block_height: null,
+    funding_build_blockhash: null,
+    funding_build_last_valid_block_height: null,
     failure_reason: null,
     actual_payout_minor: null,
     actual_payout_currency: null,
@@ -46,6 +51,9 @@ const DEFAULTS: Record<string, () => Row> = {
     platform_fee_minor: null,
     platform_fee_wallet: null,
     platform_fee_received_minor: null,
+    platform_fee_network: null,
+    platform_fee_signature: null,
+    platform_fee_received_at: null,
     pricing_snapshot: null,
     reconciled_at: null,
     travel_rule_reference: null,
@@ -65,7 +73,13 @@ const DEFAULTS: Record<string, () => Row> = {
     updated_at: now(),
     updated_by: null,
   }),
-  payment_fee_ledger: () => ({ component: "", bps: null, reference: null, created_at: now() }),
+  payment_fee_ledger: () => ({
+    component: "",
+    bps: null,
+    reference: null,
+    network: null,
+    created_at: now(),
+  }),
   payment_events: () => ({ detail: null, from_status: null, to_status: null, created_at: now() }),
   stables_customers: () => ({
     verification_status: null,
@@ -115,13 +129,29 @@ const DEFAULTS: Record<string, () => Row> = {
     detail: {},
     created_at: now(),
   }),
+  payment_cases: () => ({
+    id: randomUUID(),
+    status: "refund_required",
+    created_at: now(),
+    updated_at: now(),
+  }),
+  ops_alerts: () => ({
+    detail: {},
+    opened_at: now(),
+    last_seen_at: now(),
+    resolved_at: null,
+    notified_at: null,
+    notified_severity: null,
+    notify_count: 0,
+  }),
 };
 
 const UNIQUE: Record<string, string[]> = {
-  payments: ["id", "transfer_id", "funding_signature"],
+  payments: ["id", "transfer_id", "funding_signature", "platform_fee_signature"],
   payment_events: ["id"],
   stables_customers: ["user_id", "stables_customer_id"],
   stables_webhook_events: ["event_id"],
+  ops_alerts: ["key"],
   payment_swaps: ["id", "jupiter_request_id", "signature"],
   jupiter_swap_orders: ["id", "jupiter_request_id", "signature"],
 };
@@ -167,6 +197,10 @@ class Query implements PromiseLike<Result> {
   }
   eq(column: string, value: unknown) {
     this.filters.push((r) => r[column] === value);
+    return this;
+  }
+  neq(column: string, value: unknown) {
+    this.filters.push((r) => r[column] !== value);
     return this;
   }
   in(column: string, values: unknown[]) {

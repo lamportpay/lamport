@@ -5,9 +5,10 @@
  *   "test"). Nothing the browser sends can change it.
  * - Each mode must use its own configuration. A mismatch BLOCKS payments
  *   (503 mode_blocked); the server never silently falls back to the other mode.
- * - LIVE MODE needs three things: the code lock opened (app-mode-lock.ts), an
- *   owner approval recorded in the environment, and a complete production
- *   configuration. Until then it is unavailable.
+ * - LIVE MODE needs four things: the code lock opened (app-mode-lock.ts), an
+ *   owner approval recorded in the environment, a complete production
+ *   configuration, and the Production deployment (VERCEL_ENV=production; a
+ *   Preview or local build refuses LIVE). Until then it is unavailable.
  * - Endpoint guard: in TEST MODE no production payment endpoint is ever called
  *   (Stables production, Solana mainnet RPC, Jupiter swap orders/execution).
  *   Jupiter is mainnet-only: TEST MODE may read its price quotes (no wallet, no
@@ -18,13 +19,14 @@ import { LIVE_MODE_CODE_UNLOCKED } from "./app-mode-lock";
 import { MODE_PROFILES, type AppMode, type ModeProfile, type ModeStatus } from "./app-mode";
 import { PaymentError } from "./payments/errors";
 import { DEFAULT_RPC_URLS } from "./solana-rpc";
+import { priorityFeeConfig } from "./solana-priority-fee";
+import { DEV_SUPABASE_REF, LIVE_SUPABASE_REF } from "./supabase-refs";
 
 type Env = Record<string, string | undefined>;
 
 export const STABLES_SANDBOX_HOST_MARK = "sandbox";
-/** Supabase project refs (not secrets): dev/test and live. */
-export const DEV_SUPABASE_REF = "gdksfksypkcfiohozzsx";
-export const LIVE_SUPABASE_REF = "zmcbnknjatrfwrcfvtzt";
+/** Supabase project refs (not secrets): dev/test and live. Defined in supabase-refs.ts. */
+export { DEV_SUPABASE_REF, LIVE_SUPABASE_REF };
 
 function hostOf(url: string | undefined): string | null {
   if (!url) return null;
@@ -98,6 +100,13 @@ function liveBlockers(env: Env, codeUnlocked: boolean): string[] {
   if (!codeUnlocked) {
     blockers.push("Live mode is locked in the code until the owner approves going live.");
   }
+  // LIVE runs only on the Production deployment (Batch 1, 9 Nov 2026): a Preview
+  // or a local build refuses LIVE even when it is given production-like values,
+  // so a mis-scoped variable can never turn a Preview into a real-money app.
+  // Vercel sets VERCEL_ENV itself ("production" | "preview" | "development").
+  if (env["VERCEL_ENV"]?.trim() !== "production") {
+    blockers.push("Live mode runs only on the Production deployment (VERCEL_ENV=production).");
+  }
   const approvedBy = env["LAMPORTPAY_LIVE_APPROVED_BY"]?.trim();
   const approvedAt = env["LAMPORTPAY_LIVE_APPROVED_AT"]?.trim();
   if (!approvedBy || !approvedAt || Number.isNaN(Date.parse(approvedAt))) {
@@ -108,6 +117,15 @@ function liveBlockers(env: Env, codeUnlocked: boolean): string[] {
   if (!key) blockers.push("No Stables API key is set.");
   else if (key.startsWith("sti_test_"))
     blockers.push("A Stables TEST key cannot be used in live mode.");
+  // Stables accepts production calls only from an allowlisted IP; Vercel's outbound IPs
+  // change, so LIVE needs the fixed-IP proxy (decision 2026-11-04; values never reported).
+  if (!env["STABLES_PROXY_URL"]?.trim())
+    blockers.push("The fixed-IP proxy for Stables (STABLES_PROXY_URL) is not set.");
+  if (!env["STABLES_WEBHOOK_SECRET"]?.trim())
+    blockers.push("The Stables webhook signing secret (STABLES_WEBHOOK_SECRET) is not set.");
+  // The funding transaction's compute budget must be valid (never guessed).
+  const budget = priorityFeeConfig(env);
+  if (!budget.ok) blockers.push(`Solana priority fee configuration: ${budget.error}`);
   const mainnetRpc = env["SOLANA_RPC_URL"]?.trim();
   if (!mainnetRpc) blockers.push("A dedicated Solana mainnet RPC (SOLANA_RPC_URL) is not set.");
   else if (looksTestCluster(mainnetRpc)) blockers.push("SOLANA_RPC_URL points at a test cluster.");
@@ -187,7 +205,13 @@ export function requireRealFundsMode(status: ModeStatus = currentMode()): void {
 }
 
 export type EndpointKind =
-  "stables" | "solana_rpc" | "jupiter_quote" | "jupiter_order" | "jupiter_execute";
+  | "stables"
+  | "solana_rpc"
+  | "jupiter_quote"
+  | "jupiter_order"
+  | "jupiter_execute"
+  | "hyperliquid_info"
+  | "hyperliquid_exchange";
 
 export class ModeGuardError extends Error {
   constructor(
@@ -225,6 +249,44 @@ export function endpointAllowed(
       return { ok: false, reason: "LIVE MODE: Solana test clusters are blocked." };
     return { ok: true };
   }
+  if (kind === "hyperliquid_info") {
+    // Read-only TESTNET reads only, in every mode (decision 2026-11-04): the
+    // testnet's public info endpoint and nothing else. Mainnet is never
+    // called; the testnet exchange endpoint is the separate
+    // "hyperliquid_exchange" kind below (TEST MODE only).
+    let path = "";
+    try {
+      path = new URL(url).pathname;
+    } catch {
+      // Unparseable URL: refused below.
+    }
+    if (host !== "api.hyperliquid-testnet.xyz" || path !== "/info")
+      return {
+        ok: false,
+        reason: "Only Hyperliquid's read-only testnet info endpoint may be called.",
+      };
+    return { ok: true };
+  }
+  if (kind === "hyperliquid_exchange") {
+    // TESTNET orders signed in the customer's own browser (owner decision
+    // 2026-11-07): TEST MODE only, the testnet exchange path only. The server
+    // relays an already-signed action; it holds no key and cannot sign. LIVE
+    // MODE and Hyperliquid mainnet are never called.
+    let path = "";
+    try {
+      path = new URL(url).pathname;
+    } catch {
+      // Unparseable URL: refused below.
+    }
+    if (mode !== "test")
+      return { ok: false, reason: "Hyperliquid test trading is available in TEST MODE only." };
+    if (host !== "api.hyperliquid-testnet.xyz" || path !== "/exchange")
+      return {
+        ok: false,
+        reason: "Only Hyperliquid's testnet exchange endpoint may be called.",
+      };
+    return { ok: true };
+  }
   if (isJupiterKind(kind)) {
     // Jupiter has no devnet: every Jupiter call is a mainnet call. TEST MODE
     // allows only the read-only price quote (no wallet, no transaction: nothing
@@ -256,10 +318,14 @@ export function assertEndpointAllowed(
   let verdict = endpointAllowed(status.mode, kind, url, opts);
   // A mode whose configuration fails its checks (e.g. LIVE requested but not
   // approved) never reaches Jupiter, not even for a quote.
-  if (verdict.ok && isJupiterKind(kind) && !status.ok) {
+  if (
+    verdict.ok &&
+    (isJupiterKind(kind) || kind === "hyperliquid_info" || kind === "hyperliquid_exchange") &&
+    !status.ok
+  ) {
     verdict = {
       ok: false,
-      reason: `${status.mode.toUpperCase()} MODE is blocked by its configuration: Jupiter is not called.`,
+      reason: `${status.mode.toUpperCase()} MODE is blocked by its configuration: ${isJupiterKind(kind) ? "Jupiter" : "Hyperliquid"} is not called.`,
     };
   }
   if (!verdict.ok) {

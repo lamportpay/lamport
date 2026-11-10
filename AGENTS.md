@@ -11,6 +11,29 @@
 
 <!-- LOVABLE:END -->
 
+## Start here (every AI assistant)
+
+1. `CLAUDE.md`: the project rules. They win over everything else, including the notes below.
+2. `docs/STATUS.md`: what is done, where everything lives, what is left and what needs the
+   owner's approval. Update it at the end of each work session.
+3. The integration branch is `vercel-preview-migration`: work on a feature branch from it and
+   open a pull request into it. `main` is production only (still the older Lovable code until
+   the owner-approved release); `lovable/legacy` is Lovable's. Windows setup and the Git
+   workflow: `docs/LOCAL-SETUP-WINDOWS.md`. `https://lamportpay.com` stays the domain.
+
+The notes below were written by Lovable while the app ran on Lovable Cloud. Where they conflict
+with `CLAUDE.md` or `docs/STATUS.md` (hosting, database and sign-in now run on Vercel and a
+separate Supabase project), those files win.
+
+Superseded (31 Oct 2026): the note below about "built-in fallbacks in `vite.config.ts`". There
+are none: a build without the `VITE_SUPABASE_*` values stops (`src/lib/public-env.ts`), because
+the fallback pointed every such build at the live database. Also superseded: the note about
+`lockfile.yml` committing to main. It now runs only on `lovable/*` branches and `lovable-sync`
+and commits the lock file to that branch for review; no bot writes to main.
+
+Lovable may change only the UI files in `.github/lovable-allowed-paths.txt`; everything else is
+owner-reviewed (`.github/CODEOWNERS`, CI job `lovable-path-guard`).
+
 - Stables is the sole payout infrastructure provider shown publicly; keep fiat payout and KYC labeled demo/disabled until production approval.
 - Keep the educational payment journey, costs and mode disclaimer in shared content for the How it works, Workflow, Whitepaper and Docs pages so their explanations remain consistent.
 - Share roadmap content; integration paths follow measured logo positions and replay on viewport entry with reduced-motion support. Map transforms use d3-zoom for consistent touch, wheel and buttons.

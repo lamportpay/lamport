@@ -49,6 +49,10 @@ export type PaymentView = {
      * null until funding is verified. The destination is never exposed.
      */
     settled: boolean | null;
+    /** Where the fee was seen: mainnet ("solana") or devnet test tokens; null until then. */
+    network: "solana" | "solana-devnet" | null;
+    /** The transaction that carried the fee, once verified. */
+    signature: string | null;
   } | null;
   /**
    * Set when this payment's LamportPay fee was waived (early access: one of the
@@ -68,6 +72,11 @@ export type PaymentView = {
     amount: string;
   } | null;
   funding: { signature: string; payer: string | null; verifiedAt: string | null } | null;
+  /**
+   * A funding transaction the wallet already sent that is not verified yet:
+   * the page offers "Check again" instead of another payment. Null once funded.
+   */
+  fundingPending: { signature: string; since: string } | null;
   /** Wallet the stablecoin must come from (set when the funding transaction is prepared). */
   payerWallet: string | null;
   /** What Stables actually paid out, once the transfer completed. */
@@ -278,6 +287,9 @@ type Row = {
   platform_fee_bps?: number | null;
   platform_fee_minor?: number | null;
   platform_fee_received_minor?: number | null;
+  platform_fee_received_at?: string | null;
+  platform_fee_network?: string | null;
+  platform_fee_signature?: string | null;
   platform_fee_rule?: string | null;
   /** Why this payment's fee is zero (early access), and the place in line. */
   platform_fee_waiver?: string | null;
@@ -293,6 +305,8 @@ type Row = {
   funding_signature: string | null;
   funding_payer: string | null;
   funding_verified_at: string | null;
+  funding_pending_signature?: string | null;
+  funding_pending_at?: string | null;
   payer_wallet: string | null;
   actual_payout_minor: number | null;
   actual_payout_currency: string | null;
@@ -565,9 +579,15 @@ export function toPaymentView(
             amountMinor: feeMinor.toString(),
             amount: toMajor(feeMinor, depositCurrency),
             currency: depositCurrency,
-            settled: row.funding_verified_at
-              ? BigInt(row.platform_fee_received_minor ?? 0) >= feeMinor
-              : null,
+            // Settled once the fee was verified on-chain (LIVE: mainnet funding;
+            // TEST: the devnet fee leg), from what the revenue wallet received.
+            settled:
+              row.platform_fee_received_at || row.funding_verified_at
+                ? BigInt(row.platform_fee_received_minor ?? 0) >= feeMinor
+                : null,
+            network: (row.platform_fee_network ?? (row.funding_verified_at ? "solana" : null)) as
+              "solana" | "solana-devnet" | null,
+            signature: row.platform_fee_signature ?? null,
           }
         : null,
     feeWaiver:
@@ -598,6 +618,10 @@ export function toPaymentView(
           verifiedAt: row.funding_verified_at,
         }
       : null,
+    fundingPending:
+      !row.funding_signature && row.funding_pending_signature && row.funding_pending_at
+        ? { signature: row.funding_pending_signature, since: row.funding_pending_at }
+        : null,
     payerWallet: row.payer_wallet,
     actualPayout:
       row.actual_payout_minor !== null && row.actual_payout_currency

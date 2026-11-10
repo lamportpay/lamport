@@ -1932,7 +1932,8 @@ function SandboxNotice() {
       role="note"
       className="rounded-lg border border-[color:var(--warning)]/40 bg-[color:var(--warning)]/10 px-3 py-2 text-xs font-medium"
     >
-      Sandbox transaction — no real money moves.
+      Test payment on Solana devnet — only devnet test tokens move (the LamportPay fee too). No
+      real money.
     </p>
   );
 }
@@ -3346,12 +3347,14 @@ function DepositCard({ payment, onFunded }: { payment: PaymentView; onFunded: ()
           currency={coin}
           depositAddress={deposit.address}
           platformFee={payment.platformFee?.amount ?? null}
+          pendingSignature={payment.fundingPending?.signature ?? null}
           onFunded={onFunded}
         />
       )}
 
-      {/* With a fee, only a transaction the wallet button prepared can be verified here. */}
-      {(!walletOnly || payment.payerWallet) && (
+      {/* With a fee, only a transaction the wallet button prepared can be verified here.
+          Hidden while a sent transaction is pending: Check again verifies that one. */}
+      {(!walletOnly || payment.payerWallet) && !payment.fundingPending && (
         <details className="rounded-2xl border border-border/60 p-4">
           <summary className="text-sm font-semibold cursor-pointer">
             {walletOnly ? "Sent it, but this page didn't confirm?" : "Sent it from another wallet?"}

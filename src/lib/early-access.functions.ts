@@ -2,6 +2,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { isAdminSession } from "@/lib/admin-guard";
 import { FEE_WAIVER_REASON } from "@/lib/early-access";
 
 export type EarlyAccessRow = {
@@ -22,11 +23,7 @@ export type EarlyAccessAdmin = {
 export const listEarlyAccessAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<EarlyAccessAdmin> => {
-    const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) throw new Error("Admin role required.");
     const { data, error } = await context.supabase
       .from("early_access_signups")

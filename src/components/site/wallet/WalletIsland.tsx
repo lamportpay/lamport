@@ -1,6 +1,9 @@
 import { Component, lazy, Suspense, useState, type ReactElement, type ReactNode } from "react";
 import { ClientOnly } from "@tanstack/react-router";
 
+import { clientBuildMode } from "@/lib/app-mode";
+import { SwapRoutePreviewCard } from "@/components/site/SwapRoutePreview";
+
 import type { FundingPanelProps } from "./FundingPanel";
 import type { TestPayPanelProps } from "./TestPayPanel";
 import type { PaymentSwapPanelProps } from "./PaymentWallet";
@@ -212,6 +215,9 @@ export function SwapPanelIsland({
 }: {
   onExecuted?: (execution: SwapExecution) => void;
 }) {
+  // Quote-only in LIVE builds (decision 2026-11-03): show the route preview, never the
+  // panel that signs a swap. The server refuses order/execute in LIVE as well.
+  if (clientBuildMode() === "live") return <SwapRoutePreviewCard />;
   return (
     <Island fallback={<WalletFallbackCard />}>
       <Swap onExecuted={onExecuted} />

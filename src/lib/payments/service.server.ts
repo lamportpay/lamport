@@ -22,8 +22,11 @@ import { readWalletHoldings, solReserveLamports } from "@/lib/solana-balances.se
 import { isLikelySignature } from "@/lib/solana-rpc";
 import {
   buildUsdcTransferTransaction,
+  currentBlockHeight,
   isValidPublicKey,
+  pendingSignatureState,
   verifyUsdcDeposit,
+  type PendingSignatureState,
 } from "@/lib/solana-usdc.server";
 import * as stables from "@/lib/stables/client.server";
 import { StablesError, idempotencyKey } from "@/lib/stables/client.server";
@@ -73,6 +76,7 @@ import {
 import {
   ACTIVE_TRANSFER_STATES,
   checkTransition,
+  isTerminal,
   isTransferState,
   liftsTravelRuleHold,
   normalizeTransferStatus,
@@ -992,7 +996,7 @@ async function platformFeeFor(
 }
 
 /** What the payer sends in total: the Stables deposit plus LamportPay's fee. */
-function platformFeeOf(payment: PaymentRow): { minor: bigint; wallet: string | null } {
+export function platformFeeOf(payment: PaymentRow): { minor: bigint; wallet: string | null } {
   const minor = BigInt(payment.platform_fee_minor ?? 0);
   if (minor > 0n && !payment.platform_fee_wallet) {
     throw new Error(`Payment ${payment.id} has a platform fee but no revenue wallet.`);
@@ -1921,6 +1925,141 @@ async function requireFundsFor(payment: PaymentRow, payer: string): Promise<void
   }
 }
 
+// ------------------------------------- double-payment protection (9 Nov 2026)
+//
+// The wallet signs and sends the funding transaction. Its signature is stored
+// as pending as soon as the browser reports it (verifyFunding). While a pending
+// signature may still land, no new funding transaction is built and no other
+// signature is accepted for the payment; "Check again" verifies the pending one.
+// A pending signature is released only when Solana shows it failed (at
+// confirmed or finalized commitment) or it stayed unseen past the point where
+// any transaction sent before it was recorded could still land. It never marks
+// a payment funded. See docs/security/double-payment-protection.md.
+
+function fundingPendingError(signature: string): PaymentError {
+  return new PaymentError(
+    "Your payment was already sent and is waiting for confirmation on Solana. Use Check again; do not send it again.",
+    409,
+    "funding_pending",
+    { pendingSignature: signature },
+  );
+}
+
+/** Where `payment`'s pending signature stands on Solana; 503 when Solana cannot be read. */
+async function pendingStateOf(payment: PaymentRow): Promise<PendingSignatureState> {
+  const signature = payment.funding_pending_signature!;
+  const stored = payment.funding_pending_last_valid_block_height ?? null;
+  let checked: Awaited<ReturnType<typeof pendingSignatureState>>;
+  try {
+    checked = await pendingSignatureState({ signature, expiryHeight: stored });
+  } catch {
+    throw new PaymentError(
+      "We couldn't check your earlier transaction on Solana. Try again shortly.",
+      503,
+      "funding_status_unavailable",
+    );
+  }
+  // First check of this signature: keep the expiry bound it was given.
+  if (stored === null && checked.expiryHeight !== null) {
+    await ledger.setPendingExpiryHeight(payment.id, signature, checked.expiryHeight);
+  }
+  return checked.state;
+}
+
+/**
+ * A second signature arrived while an earlier one may still land. Funds may
+ * have moved twice, so it is kept on the timeline for reconciliation.
+ */
+async function recordRefusedSignature(paymentId: string, signature: string, pending: string) {
+  await ledger.recordEvent(paymentId, "funding_signature_refused", "api", {
+    detail: { signature, pendingSignature: pending },
+  });
+}
+
+/** Release a pending signature that can no longer move funds, with a timeline event. */
+async function releasePendingFunding(
+  paymentId: string,
+  signature: string,
+  reason: "failed" | "expired" | "rejected_no_funds",
+): Promise<void> {
+  // An expired transaction can never land; a failed or empty one was processed,
+  // so its identical copy would be refused: start fresh in both cases except
+  // expiry, where the prepared transaction's own window decides.
+  if (await ledger.clearPendingFunding(paymentId, signature, reason !== "expired")) {
+    await ledger.recordEvent(paymentId, "funding_pending_cleared", "api", {
+      detail: { signature, reason },
+    });
+  }
+}
+
+/**
+ * Before a new funding attempt: refuse while the earlier signature may still
+ * land; release it when it failed or expired. Returns the current row.
+ */
+async function settlePendingBeforeNewAttempt(payment: PaymentRow): Promise<PaymentRow> {
+  const pending = payment.funding_pending_signature;
+  if (!pending) return payment;
+  const state = await pendingStateOf(payment);
+  if (state === "landed" || state === "in_flight") throw fundingPendingError(pending);
+  await releasePendingFunding(payment.id, pending, state);
+  return (await ledger.getPayment(payment.id)) ?? payment;
+}
+
+/** Blocks after a prepared transaction's last valid height while it may still be seen (RPC lag). */
+const BUILD_LEASE_LAG_BLOCKS = 10;
+/** A prepared transaction with fewer blocks left than this is not handed out again (no time to sign). */
+const BUILD_MIN_SIGN_BLOCKS = 20;
+/** Average Solana block time used only for the "try again in N seconds" hint. */
+const BLOCK_SECONDS = 0.4;
+
+/**
+ * Two-window protection (Batch 1 review, 10 Nov 2026). The transaction prepared
+ * last for this payment is remembered by its blockhash. While it can still land:
+ * - the same wallet gets exactly the same transaction again (same blockhash and
+ *   instructions, so the same signature: Solana processes it once even if two
+ *   windows send it);
+ * - another wallet is refused;
+ * - close to its expiry nothing is handed out; the customer waits a few seconds.
+ * Returns the blockhash to reuse, or null to fetch a new one.
+ */
+async function activeFundingBuild(
+  payment: PaymentRow,
+  payer: string,
+): Promise<{ blockhash: string; lastValidBlockHeight: number } | null> {
+  const blockhash = payment.funding_build_blockhash ?? null;
+  const lastValid = payment.funding_build_last_valid_block_height ?? null;
+  if (!blockhash || lastValid === null) return null;
+  let height: number;
+  try {
+    height = await currentBlockHeight();
+  } catch {
+    throw new PaymentError(
+      "We couldn't check your earlier payment request on Solana. Try again shortly.",
+      503,
+      "funding_status_unavailable",
+    );
+  }
+  if (height > lastValid + BUILD_LEASE_LAG_BLOCKS) return null; // expired: a new one is safe
+  const waitSeconds = Math.max(5, Math.ceil((lastValid + BUILD_LEASE_LAG_BLOCKS - height + 1) * BLOCK_SECONDS));
+  if (payment.payer_wallet && payment.payer_wallet !== payer) {
+    throw new PaymentError(
+      `A payment from ${shortAddress(payment.payer_wallet)} is waiting for approval in another window. Approve or reject it there, or try again in about ${waitSeconds} seconds.`,
+      409,
+      "funding_in_progress",
+      { retryAfterSeconds: waitSeconds },
+    );
+  }
+  if (lastValid - height < BUILD_MIN_SIGN_BLOCKS) {
+    throw new PaymentError(
+      `Your previous payment request is about to expire. Try again in about ${waitSeconds} seconds.`,
+      409,
+      "funding_prepare_wait",
+      { retryAfterSeconds: waitSeconds },
+    );
+  }
+  return { blockhash, lastValidBlockHeight: lastValid };
+}
+
 /**
  * Unsigned USDC or USDT transfer (the payment's stablecoin) to the deposit
  * address, for the user's wallet to sign and send. The wallet it is built for
@@ -1937,12 +2076,14 @@ export async function buildFundingTransaction(
   if (!FUNDABLE.includes(ledger.paymentState(payment))) {
     throw new PaymentError(`This payment cannot be funded while it is ${payment.status}.`, 409);
   }
-  if (!payment.deposit_address || payment.deposit_amount_minor === null) {
-    throw new PaymentError("This payment has no usable deposit instructions.", 409);
-  }
   if (payment.funding_signature) throw new PaymentError("This payment is already funded.", 409);
   if (!isValidPublicKey(payer)) throw new PaymentError("Invalid wallet address.", 400);
   assertLinkedWallet(user, payer);
+  // An earlier transaction that may still land blocks a second one.
+  payment = await settlePendingBeforeNewAttempt(payment);
+  if (!payment.deposit_address || payment.deposit_amount_minor === null) {
+    throw new PaymentError("This payment has no usable deposit instructions.", 409);
+  }
   // After a swap, the coins are in the wallet that swapped: pay from that one.
   const swapped = (await ledger.listSwaps(payment.id)).find((s) => s.status === "landed");
   if (swapped && swapped.taker !== payer) {
@@ -1959,6 +2100,9 @@ export async function buildFundingTransaction(
 
   const currency = depositCurrencyOf(payment);
   const fee = platformFeeOf(payment);
+  // Two windows: while the transaction prepared earlier can still land, hand
+  // out exactly the same transaction (same blockhash) instead of a new one.
+  const reuse = await activeFundingBuild(payment, payer);
   const built = await buildUsdcTransferTransaction({
     payer,
     recipient: depositAddress,
@@ -1967,11 +2111,24 @@ export async function buildFundingTransaction(
     // LamportPay's own fee: a second transfer in the same user-signed
     // transaction, never out of the Stables deposit.
     ...(fee.wallet && { fee: { recipient: fee.wallet, amountMinor: fee.minor } }),
+    ...(reuse && { blockhash: reuse }),
   });
-  if (!(await ledger.setPayerWallet(payment.id, payer))) {
+  if (
+    !(await ledger.setPayerWallet(payment.id, payer, {
+      blockhash: built.blockhash,
+      lastValidBlockHeight: built.lastValidBlockHeight,
+    }))
+  ) {
+    // Funded, or a signature was reported while this one was being built.
+    const latest = await ledger.getPayment(payment.id);
+    if (!latest?.funding_signature && latest?.funding_pending_signature) {
+      throw fundingPendingError(latest.funding_pending_signature);
+    }
     throw new PaymentError("This payment is already funded.", 409);
   }
-  await ledger.recordEvent(payment.id, "funding_transaction_built", "api", { detail: { payer } });
+  await ledger.recordEvent(payment.id, "funding_transaction_built", "api", {
+    detail: { payer, reused: Boolean(reuse) },
+  });
   // The revenue wallet is in the transaction the wallet shows; it is not
   // repeated here for display.
   return {
@@ -2033,6 +2190,48 @@ export async function verifyFunding(
     throw new PaymentError("That transaction already funded another payment.", 409);
   }
 
+  // Persist the wallet-returned signature as pending before anything else, so a
+  // reload or a failed confirmation can never lead to a second payment. A
+  // different earlier signature that may still land blocks this one.
+  if (payment.funding_pending_signature !== signature) {
+    if (payment.funding_pending_signature) {
+      try {
+        await settlePendingBeforeNewAttempt(payment);
+      } catch (e) {
+        if (e instanceof PaymentError && e.code === "funding_pending") {
+          await recordRefusedSignature(payment.id, signature, payment.funding_pending_signature);
+        }
+        throw e;
+      }
+    }
+    // The expiry bound is set on the first on-chain check (after this write),
+    // so recording never waits on Solana.
+    const write = await ledger.recordPendingFunding(payment.id, {
+      signature,
+      at: new Date().toISOString(),
+    });
+    if (write === "busy") {
+      // Another request changed the payment meanwhile: re-read and decide.
+      const latest = await ownedPayment(user, paymentId);
+      if (latest.funding_signature === signature)
+        return { pending: false, payment: await viewOf(latest) };
+      if (latest.funding_signature)
+        throw new PaymentError("A different transaction already funded this payment.", 409);
+      if (!latest.funding_pending_signature) {
+        // Released between the write and this read: nothing recorded; ask for a retry.
+        throw new PaymentError("The payment changed while it was being checked. Try again.", 409);
+      }
+      if (latest.funding_pending_signature !== signature) {
+        await recordRefusedSignature(payment.id, signature, latest.funding_pending_signature);
+        throw fundingPendingError(latest.funding_pending_signature);
+      }
+    } else {
+      await ledger.recordEvent(payment.id, "funding_signature_received", "api", {
+        detail: { signature, payer },
+      });
+    }
+  }
+
   const fee = platformFeeOf(payment);
   const result = await verifyUsdcDeposit({
     signature,
@@ -2042,8 +2241,37 @@ export async function verifyFunding(
     mint: PAYMENT_CURRENCY_MINTS[currency],
     ...(fee.wallet && { feeOwner: fee.wallet }),
   });
-  if (result.status === "pending") return { pending: true };
+  if (result.status === "pending") {
+    // Not finalized yet. If Solana never saw it and it can no longer land, or
+    // it failed, release it so the customer can pay again; otherwise keep waiting.
+    const row = await ledger.getPayment(payment.id);
+    if (row?.funding_pending_signature === signature) {
+      const state = await pendingStateOf(row);
+      if (state === "expired") {
+        await releasePendingFunding(payment.id, signature, "expired");
+        throw new PaymentError(
+          "Solana never processed this transaction and it has expired. No funds moved; you can send the payment again.",
+          409,
+          "funding_expired",
+        );
+      }
+      if (state === "failed") {
+        await releasePendingFunding(payment.id, signature, "failed");
+        throw new PaymentError(
+          "This transaction failed on Solana. No funds moved; you can send the payment again.",
+          422,
+          "funding_rejected",
+        );
+      }
+    }
+    return { pending: true };
+  }
   if (result.status === "failed") {
+    // Nothing reached the deposit address: the customer may pay again. If funds
+    // did arrive, the pending signature stays so no second payment is built.
+    if (result.receivedMinor === 0n) {
+      await releasePendingFunding(payment.id, signature, "rejected_no_funds");
+    }
     // `received_minor` > 0: funds reached Stables' deposit address anyway (a
     // wrong amount, or the right amount from another wallet). The payment page
     // then warns the user not to send again; what Stables does with it drives
@@ -2060,14 +2288,25 @@ export async function verifyFunding(
     throw new PaymentError(result.reason, 422, "funding_rejected");
   }
 
+  const verifiedAt = new Date().toISOString();
   const write = await ledger.recordFunding(
     payment.id,
     {
       funding_signature: signature,
       funding_payer: result.payer,
       payer_wallet: result.payer,
-      funding_verified_at: new Date().toISOString(),
-      ...(fee.wallet && { platform_fee_received_minor: Number(result.feeReceivedMinor) }),
+      funding_verified_at: verifiedAt,
+      // Verified: the pending marker has done its job.
+      funding_pending_signature: null,
+      funding_pending_at: null,
+      funding_pending_last_valid_block_height: null,
+      // The fee receipt (mainnet: revenue), written once with the funding.
+      ...(fee.wallet && {
+        platform_fee_received_minor: Number(result.feeReceivedMinor),
+        platform_fee_network: "solana",
+        platform_fee_signature: signature,
+        platform_fee_received_at: verifiedAt,
+      }),
     },
     {
       kind: "funding_verified",
@@ -2095,7 +2334,7 @@ export async function verifyFunding(
   }
   if (fee.wallet) {
     await appendFeeLedger([
-      receivedFeeEntry(payment.id, result.feeReceivedMinor, currency, signature),
+      receivedFeeEntry(payment.id, result.feeReceivedMinor, currency, signature, "solana"),
     ]);
   }
   // The Stables deposit is what the payout depends on, so it drives the state.
@@ -2408,20 +2647,69 @@ export async function handleStablesEvent(event: StablesWebhookEvent): Promise<Ev
     const payment = await paymentForTransferEvent(object, transferId);
     if (!payment) return { processed: false, note: "No payment for this transfer yet." };
 
-    // event_object.status is the authoritative current state.
-    const status = normalizeTransferStatus(object["status"] ?? event.event_object_status);
-    if (!status) return { processed: true, note: "Event carries no transfer state." };
+    const claimed = normalizeTransferStatus(object["status"] ?? event.event_object_status);
+    if (!claimed) return { processed: true, note: "Event carries no transfer state." };
+
+    // A terminal state cannot be undone (transitions only move forward), so it
+    // is confirmed with Stables before it is applied: a delivery signed with a
+    // leaked webhook secret must not complete or fail a payment on its own.
+    // Non-terminal states are applied from the signed event as before.
+    let status: TransferState = claimed;
+    let actualPayout: unknown = object["actual_payout"];
+    if (isTerminal(claimed)) {
+      const config = getStablesConfig();
+      if (!config.configured) return { processed: false, note: "Stables is not configured." };
+      let transfer: StablesTransfer;
+      try {
+        transfer = await stables.getTransfer(config, payment.transfer_id ?? transferId ?? "");
+      } catch (error) {
+        console.error(`[stables-webhook] could not confirm ${claimed} for ${payment.id}`, error);
+        // Left unprocessed: the reconciliation job retries the stored event.
+        return { processed: false, note: "Terminal status not confirmed with Stables yet." };
+      }
+      const echoed = transfer.metadata?.["payment_id"];
+      if (echoed && echoed !== payment.id) {
+        console.error(
+          `[stables-webhook] transfer ${transfer.id} echoes payment_id ${echoed}, not ${payment.id}`,
+        );
+        return { processed: true, note: "Transfer belongs to another payment." };
+      }
+      const confirmed = normalizeTransferStatus(transfer.status);
+      if (!confirmed) return { processed: true, note: "Stables reports no transfer state." };
+      if (confirmed !== claimed) {
+        console.warn(
+          JSON.stringify({
+            event: "webhook_status_mismatch",
+            event_id: event.event_id,
+            transfer_id: transfer.id,
+            claimed,
+            confirmed,
+          }),
+        );
+      }
+      // Stables' answer is authoritative (owner decision D-7, 30 Oct 2026); it still only
+      // moves the payment forward.
+      status = confirmed;
+      actualPayout = transfer.actual_payout ?? null;
+    }
 
     const stablesAt = eventTime(event);
     const result = await ledger.transitionPayment(payment.id, status, {
       source: "webhook",
-      detail: { event_id: event.event_id, event_type: event.event_type, stables_at: stablesAt },
+      detail: {
+        event_id: event.event_id,
+        event_type: event.event_type,
+        stables_at: stablesAt,
+        ...(status !== claimed && { claimed_status: claimed }),
+      },
     });
     if (result.applied) await liftTravelRuleHold(result.payment, stablesAt, "webhook");
     if (ledger.paymentState(result.payment) === "COMPLETED") {
-      await settlePayout(result.payment, object["actual_payout"], "webhook");
+      await settlePayout(result.payment, actualPayout, "webhook");
     }
-    return { processed: true, ...(!result.applied && { note: result.reason }) };
+    const mismatch = status !== claimed && `Stables reports ${status}, not ${claimed}.`;
+    const note = mismatch || (!result.applied && result.reason);
+    return { processed: true, ...(note && { note }) };
   }
 
   return { processed: true, note: `Ignored ${event.event_type}.` };

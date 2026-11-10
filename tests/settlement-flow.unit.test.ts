@@ -47,6 +47,7 @@ vi.mock("@/lib/jupiter/client.server", async (importOriginal) => {
 });
 
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { clearBusinessSettingsCache } from "@/lib/business-settings.server";
 import * as jupiter from "@/lib/jupiter/client.server";
 import type { JupiterOrder } from "@/lib/jupiter/client.server";
 import * as service from "@/lib/payments/service.server";
@@ -144,7 +145,10 @@ beforeEach(() => {
     PAYMENT_MAX_USDC: "1000",
     PAYMENT_MIN_USDT: "100",
     PAYMENT_MAX_USDT: "1000",
+    // These tests cover both coins; USDT is off unless turned on (USDC-only launch default).
+    PAYMENT_ENABLED_CURRENCIES: "usdc,usdt",
   });
+  clearBusinessSettingsCache();
   user = { id: randomUUID(), email: "user@example.com" };
   wallet = Keypair.generate();
   wallets.solReserveLamports.mockResolvedValue(5_000_000n);
@@ -602,6 +606,26 @@ describe("swaps", () => {
       status: 409,
       code: "test_mode_no_real_funds",
     });
+  });
+
+  it("are refused for a coin turned off after the payment was created, before any Jupiter call", async () => {
+    const p = await needsSwap(); // a USDC payment
+    const before = process.env["PAYMENT_ENABLED_CURRENCIES"];
+    process.env["PAYMENT_ENABLED_CURRENCIES"] = "usdt";
+    clearBusinessSettingsCache();
+    try {
+      mockOrders();
+      await expect(swaps.orderSwap(user, p.id)).rejects.toMatchObject({
+        status: 409,
+        code: "currency_disabled",
+      });
+      expect(jup.getOrder).not.toHaveBeenCalled();
+      expect(db.table("payment_swaps")).toHaveLength(0);
+    } finally {
+      if (before === undefined) delete process.env["PAYMENT_ENABLED_CURRENCIES"];
+      else process.env["PAYMENT_ENABLED_CURRENCIES"] = before;
+      clearBusinessSettingsCache();
+    }
   });
 
   it("order only the shortfall, from the user's own wallet, sized from Stables and the chain", async () => {

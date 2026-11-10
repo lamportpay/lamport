@@ -23,18 +23,22 @@ import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as PayRouteImport } from './routes/pay'
 import { Route as PeopleRouteImport } from './routes/people'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SendRouteImport } from './routes/send'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SwapRouteImport } from './routes/swap'
 import { Route as TechnologyRouteImport } from './routes/technology'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedHyperliquidTestRouteImport } from './routes/_authenticated/hyperliquid-test'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as ApiAskAiRouteImport } from './routes/api/ask-ai'
+import { Route as ApiCspReportRouteImport } from './routes/api/csp-report'
 import { Route as ApiEarlyAccessRouteImport } from './routes/api/early-access'
 import { Route as ApiIntegrationStatusRouteImport } from './routes/api/integration-status'
 import { Route as ApiKycRouteImport } from './routes/api/kyc'
@@ -61,6 +65,11 @@ import { Route as AuthenticatedAdminRolesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPaymentsIndexRouteImport } from './routes/_authenticated/payments.index'
 import { Route as AuthenticatedPaymentsIdRouteImport } from './routes/_authenticated/payments.$id'
 import { Route as ApiCronReconcilePaymentsRouteImport } from './routes/api/cron/reconcile-payments'
+import { Route as ApiHyperliquidAccountRouteImport } from './routes/api/hyperliquid/account'
+import { Route as ApiHyperliquidChecksRouteImport } from './routes/api/hyperliquid/checks'
+import { Route as ApiHyperliquidExchangeRouteImport } from './routes/api/hyperliquid/exchange'
+import { Route as ApiHyperliquidHistoryRouteImport } from './routes/api/hyperliquid/history'
+import { Route as ApiHyperliquidMarketsRouteImport } from './routes/api/hyperliquid/markets'
 import { Route as ApiJupiterExecuteRouteImport } from './routes/api/jupiter/execute'
 import { Route as ApiJupiterOrderRouteImport } from './routes/api/jupiter/order'
 import { Route as ApiJupiterQuoteRouteImport } from './routes/api/jupiter/quote'
@@ -82,6 +91,7 @@ import { Route as ApiPaymentsPaymentIdPayoutDetailsRouteImport } from './routes/
 import { Route as ApiPaymentsPaymentIdQuoteRouteImport } from './routes/api/payments/$paymentId/quote'
 import { Route as ApiPaymentsPaymentIdSettlementRouteImport } from './routes/api/payments/$paymentId/settlement'
 import { Route as ApiPaymentsPaymentIdTestPaymentRouteImport } from './routes/api/payments/$paymentId/test-payment'
+import { Route as ApiPaymentsPaymentIdTestPaymentTransactionRouteImport } from './routes/api/payments/$paymentId/test-payment-transaction'
 import { Route as ApiPaymentsPaymentIdTransferRouteImport } from './routes/api/payments/$paymentId/transfer'
 import { Route as ApiPaymentsPaymentIdSwapsIndexRouteImport } from './routes/api/payments/$paymentId/swaps/index'
 import { Route as ApiPaymentsPaymentIdSwapsSwapIdConfirmRouteImport } from './routes/api/payments/$paymentId/swaps/$swapId/confirm'
@@ -156,6 +166,11 @@ const PeopleRoute = PeopleRouteImport.update({
   path: '/people',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoadmapRoute = RoadmapRouteImport.update({
   id: '/roadmap',
   path: '/roadmap',
@@ -179,6 +194,11 @@ const SwapRoute = SwapRouteImport.update({
 const TechnologyRoute = TechnologyRouteImport.update({
   id: '/technology',
   path: '/technology',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WhitepaperRoute = WhitepaperRouteImport.update({
@@ -208,6 +228,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedHyperliquidTestRoute =
+  AuthenticatedHyperliquidTestRouteImport.update({
+    id: '/hyperliquid-test',
+    path: '/hyperliquid-test',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -216,6 +242,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
 const ApiAskAiRoute = ApiAskAiRouteImport.update({
   id: '/api/ask-ai',
   path: '/api/ask-ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCspReportRoute = ApiCspReportRouteImport.update({
+  id: '/api/csp-report',
+  path: '/api/csp-report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiEarlyAccessRoute = ApiEarlyAccessRouteImport.update({
@@ -361,6 +392,31 @@ const ApiCronReconcilePaymentsRoute =
     path: '/api/cron/reconcile-payments',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiHyperliquidAccountRoute = ApiHyperliquidAccountRouteImport.update({
+  id: '/api/hyperliquid/account',
+  path: '/api/hyperliquid/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHyperliquidChecksRoute = ApiHyperliquidChecksRouteImport.update({
+  id: '/api/hyperliquid/checks',
+  path: '/api/hyperliquid/checks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHyperliquidExchangeRoute = ApiHyperliquidExchangeRouteImport.update({
+  id: '/api/hyperliquid/exchange',
+  path: '/api/hyperliquid/exchange',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHyperliquidHistoryRoute = ApiHyperliquidHistoryRouteImport.update({
+  id: '/api/hyperliquid/history',
+  path: '/api/hyperliquid/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHyperliquidMarketsRoute = ApiHyperliquidMarketsRouteImport.update({
+  id: '/api/hyperliquid/markets',
+  path: '/api/hyperliquid/markets',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiJupiterExecuteRoute = ApiJupiterExecuteRouteImport.update({
   id: '/api/jupiter/execute',
   path: '/api/jupiter/execute',
@@ -476,6 +532,12 @@ const ApiPaymentsPaymentIdTestPaymentRoute =
     path: '/api/payments/$paymentId/test-payment',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPaymentsPaymentIdTestPaymentTransactionRoute =
+  ApiPaymentsPaymentIdTestPaymentTransactionRouteImport.update({
+    id: '/api/payments/$paymentId/test-payment-transaction',
+    path: '/api/payments/$paymentId/test-payment-transaction',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPaymentsPaymentIdTransferRoute =
   ApiPaymentsPaymentIdTransferRouteImport.update({
     id: '/api/payments/$paymentId/transfer',
@@ -515,18 +577,22 @@ export interface FileRoutesByFullPath {
   '/partners': typeof PartnersRoute
   '/pay': typeof PayRoute
   '/people': typeof PeopleRoute
+  '/privacy': typeof PrivacyRoute
   '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/technology': typeof TechnologyRoute
+  '/terms': typeof TermsRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/hyperliquid-test': typeof AuthenticatedHyperliquidTestRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
@@ -551,6 +617,11 @@ export interface FileRoutesByFullPath {
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
+  '/api/hyperliquid/account': typeof ApiHyperliquidAccountRoute
+  '/api/hyperliquid/checks': typeof ApiHyperliquidChecksRoute
+  '/api/hyperliquid/exchange': typeof ApiHyperliquidExchangeRoute
+  '/api/hyperliquid/history': typeof ApiHyperliquidHistoryRoute
+  '/api/hyperliquid/markets': typeof ApiHyperliquidMarketsRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -572,6 +643,7 @@ export interface FileRoutesByFullPath {
   '/api/payments/$paymentId/quote': typeof ApiPaymentsPaymentIdQuoteRoute
   '/api/payments/$paymentId/settlement': typeof ApiPaymentsPaymentIdSettlementRoute
   '/api/payments/$paymentId/test-payment': typeof ApiPaymentsPaymentIdTestPaymentRoute
+  '/api/payments/$paymentId/test-payment-transaction': typeof ApiPaymentsPaymentIdTestPaymentTransactionRoute
   '/api/payments/$paymentId/transfer': typeof ApiPaymentsPaymentIdTransferRoute
   '/admin/payments/': typeof AuthenticatedAdminPaymentsIndexRoute
   '/api/payments/$paymentId/': typeof ApiPaymentsPaymentIdIndexRoute
@@ -593,17 +665,21 @@ export interface FileRoutesByTo {
   '/partners': typeof PartnersRoute
   '/pay': typeof PayRoute
   '/people': typeof PeopleRoute
+  '/privacy': typeof PrivacyRoute
   '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/technology': typeof TechnologyRoute
+  '/terms': typeof TermsRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/hyperliquid-test': typeof AuthenticatedHyperliquidTestRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
@@ -628,6 +704,11 @@ export interface FileRoutesByTo {
   '/admin/roles': typeof AuthenticatedAdminRolesRoute
   '/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
+  '/api/hyperliquid/account': typeof ApiHyperliquidAccountRoute
+  '/api/hyperliquid/checks': typeof ApiHyperliquidChecksRoute
+  '/api/hyperliquid/exchange': typeof ApiHyperliquidExchangeRoute
+  '/api/hyperliquid/history': typeof ApiHyperliquidHistoryRoute
+  '/api/hyperliquid/markets': typeof ApiHyperliquidMarketsRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -649,6 +730,7 @@ export interface FileRoutesByTo {
   '/api/payments/$paymentId/quote': typeof ApiPaymentsPaymentIdQuoteRoute
   '/api/payments/$paymentId/settlement': typeof ApiPaymentsPaymentIdSettlementRoute
   '/api/payments/$paymentId/test-payment': typeof ApiPaymentsPaymentIdTestPaymentRoute
+  '/api/payments/$paymentId/test-payment-transaction': typeof ApiPaymentsPaymentIdTestPaymentTransactionRoute
   '/api/payments/$paymentId/transfer': typeof ApiPaymentsPaymentIdTransferRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsIndexRoute
   '/api/payments/$paymentId': typeof ApiPaymentsPaymentIdIndexRoute
@@ -672,18 +754,22 @@ export interface FileRoutesById {
   '/partners': typeof PartnersRoute
   '/pay': typeof PayRoute
   '/people': typeof PeopleRoute
+  '/privacy': typeof PrivacyRoute
   '/roadmap': typeof RoadmapRoute
   '/send': typeof SendRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/swap': typeof SwapRoute
   '/technology': typeof TechnologyRoute
+  '/terms': typeof TermsRoute
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/hyperliquid-test': typeof AuthenticatedHyperliquidTestRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/api/early-access': typeof ApiEarlyAccessRoute
   '/api/integration-status': typeof ApiIntegrationStatusRoute
   '/api/kyc': typeof ApiKycRoute
@@ -708,6 +794,11 @@ export interface FileRoutesById {
   '/_authenticated/admin_/roles': typeof AuthenticatedAdminRolesRoute
   '/_authenticated/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
+  '/api/hyperliquid/account': typeof ApiHyperliquidAccountRoute
+  '/api/hyperliquid/checks': typeof ApiHyperliquidChecksRoute
+  '/api/hyperliquid/exchange': typeof ApiHyperliquidExchangeRoute
+  '/api/hyperliquid/history': typeof ApiHyperliquidHistoryRoute
+  '/api/hyperliquid/markets': typeof ApiHyperliquidMarketsRoute
   '/api/jupiter/execute': typeof ApiJupiterExecuteRoute
   '/api/jupiter/order': typeof ApiJupiterOrderRoute
   '/api/jupiter/quote': typeof ApiJupiterQuoteRoute
@@ -729,6 +820,7 @@ export interface FileRoutesById {
   '/api/payments/$paymentId/quote': typeof ApiPaymentsPaymentIdQuoteRoute
   '/api/payments/$paymentId/settlement': typeof ApiPaymentsPaymentIdSettlementRoute
   '/api/payments/$paymentId/test-payment': typeof ApiPaymentsPaymentIdTestPaymentRoute
+  '/api/payments/$paymentId/test-payment-transaction': typeof ApiPaymentsPaymentIdTestPaymentTransactionRoute
   '/api/payments/$paymentId/transfer': typeof ApiPaymentsPaymentIdTransferRoute
   '/_authenticated/admin/payments/': typeof AuthenticatedAdminPaymentsIndexRoute
   '/api/payments/$paymentId/': typeof ApiPaymentsPaymentIdIndexRoute
@@ -752,18 +844,22 @@ export interface FileRouteTypes {
     | '/partners'
     | '/pay'
     | '/people'
+    | '/privacy'
     | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
     | '/technology'
+    | '/terms'
     | '/whitepaper'
     | '/workflow'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/hyperliquid-test'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/csp-report'
     | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
@@ -788,6 +884,11 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/payments/$id'
     | '/api/cron/reconcile-payments'
+    | '/api/hyperliquid/account'
+    | '/api/hyperliquid/checks'
+    | '/api/hyperliquid/exchange'
+    | '/api/hyperliquid/history'
+    | '/api/hyperliquid/markets'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -809,6 +910,7 @@ export interface FileRouteTypes {
     | '/api/payments/$paymentId/quote'
     | '/api/payments/$paymentId/settlement'
     | '/api/payments/$paymentId/test-payment'
+    | '/api/payments/$paymentId/test-payment-transaction'
     | '/api/payments/$paymentId/transfer'
     | '/admin/payments/'
     | '/api/payments/$paymentId/'
@@ -830,17 +932,21 @@ export interface FileRouteTypes {
     | '/partners'
     | '/pay'
     | '/people'
+    | '/privacy'
     | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
     | '/technology'
+    | '/terms'
     | '/whitepaper'
     | '/workflow'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/hyperliquid-test'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/csp-report'
     | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
@@ -865,6 +971,11 @@ export interface FileRouteTypes {
     | '/admin/roles'
     | '/payments/$id'
     | '/api/cron/reconcile-payments'
+    | '/api/hyperliquid/account'
+    | '/api/hyperliquid/checks'
+    | '/api/hyperliquid/exchange'
+    | '/api/hyperliquid/history'
+    | '/api/hyperliquid/markets'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -886,6 +997,7 @@ export interface FileRouteTypes {
     | '/api/payments/$paymentId/quote'
     | '/api/payments/$paymentId/settlement'
     | '/api/payments/$paymentId/test-payment'
+    | '/api/payments/$paymentId/test-payment-transaction'
     | '/api/payments/$paymentId/transfer'
     | '/admin/payments'
     | '/api/payments/$paymentId'
@@ -908,18 +1020,22 @@ export interface FileRouteTypes {
     | '/partners'
     | '/pay'
     | '/people'
+    | '/privacy'
     | '/roadmap'
     | '/send'
     | '/sitemap.xml'
     | '/swap'
     | '/technology'
+    | '/terms'
     | '/whitepaper'
     | '/workflow'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
+    | '/_authenticated/hyperliquid-test'
     | '/admin/login'
     | '/api/ask-ai'
+    | '/api/csp-report'
     | '/api/early-access'
     | '/api/integration-status'
     | '/api/kyc'
@@ -944,6 +1060,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin_/roles'
     | '/_authenticated/payments/$id'
     | '/api/cron/reconcile-payments'
+    | '/api/hyperliquid/account'
+    | '/api/hyperliquid/checks'
+    | '/api/hyperliquid/exchange'
+    | '/api/hyperliquid/history'
+    | '/api/hyperliquid/markets'
     | '/api/jupiter/execute'
     | '/api/jupiter/order'
     | '/api/jupiter/quote'
@@ -965,6 +1086,7 @@ export interface FileRouteTypes {
     | '/api/payments/$paymentId/quote'
     | '/api/payments/$paymentId/settlement'
     | '/api/payments/$paymentId/test-payment'
+    | '/api/payments/$paymentId/test-payment-transaction'
     | '/api/payments/$paymentId/transfer'
     | '/_authenticated/admin/payments/'
     | '/api/payments/$paymentId/'
@@ -988,17 +1110,20 @@ export interface RootRouteChildren {
   PartnersRoute: typeof PartnersRoute
   PayRoute: typeof PayRoute
   PeopleRoute: typeof PeopleRoute
+  PrivacyRoute: typeof PrivacyRoute
   RoadmapRoute: typeof RoadmapRoute
   SendRoute: typeof SendRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SwapRoute: typeof SwapRoute
   TechnologyRoute: typeof TechnologyRoute
+  TermsRoute: typeof TermsRoute
   WhitepaperRoute: typeof WhitepaperRoute
   WorkflowRoute: typeof WorkflowRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
   ApiAskAiRoute: typeof ApiAskAiRoute
+  ApiCspReportRoute: typeof ApiCspReportRoute
   ApiEarlyAccessRoute: typeof ApiEarlyAccessRoute
   ApiIntegrationStatusRoute: typeof ApiIntegrationStatusRoute
   ApiKycRoute: typeof ApiKycRoute
@@ -1010,6 +1135,11 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiCronReconcilePaymentsRoute: typeof ApiCronReconcilePaymentsRoute
+  ApiHyperliquidAccountRoute: typeof ApiHyperliquidAccountRoute
+  ApiHyperliquidChecksRoute: typeof ApiHyperliquidChecksRoute
+  ApiHyperliquidExchangeRoute: typeof ApiHyperliquidExchangeRoute
+  ApiHyperliquidHistoryRoute: typeof ApiHyperliquidHistoryRoute
+  ApiHyperliquidMarketsRoute: typeof ApiHyperliquidMarketsRoute
   ApiJupiterExecuteRoute: typeof ApiJupiterExecuteRoute
   ApiJupiterOrderRoute: typeof ApiJupiterOrderRoute
   ApiJupiterQuoteRoute: typeof ApiJupiterQuoteRoute
@@ -1027,6 +1157,7 @@ export interface RootRouteChildren {
   ApiPaymentsPaymentIdQuoteRoute: typeof ApiPaymentsPaymentIdQuoteRoute
   ApiPaymentsPaymentIdSettlementRoute: typeof ApiPaymentsPaymentIdSettlementRoute
   ApiPaymentsPaymentIdTestPaymentRoute: typeof ApiPaymentsPaymentIdTestPaymentRoute
+  ApiPaymentsPaymentIdTestPaymentTransactionRoute: typeof ApiPaymentsPaymentIdTestPaymentTransactionRoute
   ApiPaymentsPaymentIdTransferRoute: typeof ApiPaymentsPaymentIdTransferRoute
   ApiPaymentsPaymentIdIndexRoute: typeof ApiPaymentsPaymentIdIndexRoute
   ApiPaymentsPaymentIdSwapsIndexRoute: typeof ApiPaymentsPaymentIdSwapsIndexRoute
@@ -1134,6 +1265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PeopleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/roadmap': {
       id: '/roadmap'
       path: '/roadmap'
@@ -1167,6 +1305,13 @@ declare module '@tanstack/react-router' {
       path: '/technology'
       fullPath: '/technology'
       preLoaderRoute: typeof TechnologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/whitepaper': {
@@ -1204,6 +1349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/hyperliquid-test': {
+      id: '/_authenticated/hyperliquid-test'
+      path: '/hyperliquid-test'
+      fullPath: '/hyperliquid-test'
+      preLoaderRoute: typeof AuthenticatedHyperliquidTestRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -1216,6 +1368,13 @@ declare module '@tanstack/react-router' {
       path: '/api/ask-ai'
       fullPath: '/api/ask-ai'
       preLoaderRoute: typeof ApiAskAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/csp-report': {
+      id: '/api/csp-report'
+      path: '/api/csp-report'
+      fullPath: '/api/csp-report'
+      preLoaderRoute: typeof ApiCspReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/early-access': {
@@ -1400,6 +1559,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronReconcilePaymentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/hyperliquid/account': {
+      id: '/api/hyperliquid/account'
+      path: '/api/hyperliquid/account'
+      fullPath: '/api/hyperliquid/account'
+      preLoaderRoute: typeof ApiHyperliquidAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hyperliquid/checks': {
+      id: '/api/hyperliquid/checks'
+      path: '/api/hyperliquid/checks'
+      fullPath: '/api/hyperliquid/checks'
+      preLoaderRoute: typeof ApiHyperliquidChecksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hyperliquid/exchange': {
+      id: '/api/hyperliquid/exchange'
+      path: '/api/hyperliquid/exchange'
+      fullPath: '/api/hyperliquid/exchange'
+      preLoaderRoute: typeof ApiHyperliquidExchangeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hyperliquid/history': {
+      id: '/api/hyperliquid/history'
+      path: '/api/hyperliquid/history'
+      fullPath: '/api/hyperliquid/history'
+      preLoaderRoute: typeof ApiHyperliquidHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hyperliquid/markets': {
+      id: '/api/hyperliquid/markets'
+      path: '/api/hyperliquid/markets'
+      fullPath: '/api/hyperliquid/markets'
+      preLoaderRoute: typeof ApiHyperliquidMarketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/jupiter/execute': {
       id: '/api/jupiter/execute'
       path: '/api/jupiter/execute'
@@ -1547,6 +1741,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPaymentsPaymentIdTestPaymentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/payments/$paymentId/test-payment-transaction': {
+      id: '/api/payments/$paymentId/test-payment-transaction'
+      path: '/api/payments/$paymentId/test-payment-transaction'
+      fullPath: '/api/payments/$paymentId/test-payment-transaction'
+      preLoaderRoute: typeof ApiPaymentsPaymentIdTestPaymentTransactionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/payments/$paymentId/transfer': {
       id: '/api/payments/$paymentId/transfer'
       path: '/api/payments/$paymentId/transfer'
@@ -1618,6 +1819,7 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedHyperliquidTestRoute: typeof AuthenticatedHyperliquidTestRoute
   AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
   AuthenticatedPaymentsIdRoute: typeof AuthenticatedPaymentsIdRoute
   AuthenticatedPaymentsIndexRoute: typeof AuthenticatedPaymentsIndexRoute
@@ -1626,6 +1828,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedHyperliquidTestRoute: AuthenticatedHyperliquidTestRoute,
   AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
   AuthenticatedPaymentsIdRoute: AuthenticatedPaymentsIdRoute,
   AuthenticatedPaymentsIndexRoute: AuthenticatedPaymentsIndexRoute,
@@ -1650,11 +1853,13 @@ const rootRouteChildren: RootRouteChildren = {
   PartnersRoute: PartnersRoute,
   PayRoute: PayRoute,
   PeopleRoute: PeopleRoute,
+  PrivacyRoute: PrivacyRoute,
   RoadmapRoute: RoadmapRoute,
   SendRoute: SendRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SwapRoute: SwapRoute,
   TechnologyRoute: TechnologyRoute,
+  TermsRoute: TermsRoute,
   WhitepaperRoute: WhitepaperRoute,
   WorkflowRoute: WorkflowRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
@@ -1662,6 +1867,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
   ApiAskAiRoute: ApiAskAiRoute,
+  ApiCspReportRoute: ApiCspReportRoute,
   ApiEarlyAccessRoute: ApiEarlyAccessRoute,
   ApiIntegrationStatusRoute: ApiIntegrationStatusRoute,
   ApiKycRoute: ApiKycRoute,
@@ -1673,6 +1879,11 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiCronReconcilePaymentsRoute: ApiCronReconcilePaymentsRoute,
+  ApiHyperliquidAccountRoute: ApiHyperliquidAccountRoute,
+  ApiHyperliquidChecksRoute: ApiHyperliquidChecksRoute,
+  ApiHyperliquidExchangeRoute: ApiHyperliquidExchangeRoute,
+  ApiHyperliquidHistoryRoute: ApiHyperliquidHistoryRoute,
+  ApiHyperliquidMarketsRoute: ApiHyperliquidMarketsRoute,
   ApiJupiterExecuteRoute: ApiJupiterExecuteRoute,
   ApiJupiterOrderRoute: ApiJupiterOrderRoute,
   ApiJupiterQuoteRoute: ApiJupiterQuoteRoute,
@@ -1692,6 +1903,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPaymentsPaymentIdQuoteRoute: ApiPaymentsPaymentIdQuoteRoute,
   ApiPaymentsPaymentIdSettlementRoute: ApiPaymentsPaymentIdSettlementRoute,
   ApiPaymentsPaymentIdTestPaymentRoute: ApiPaymentsPaymentIdTestPaymentRoute,
+  ApiPaymentsPaymentIdTestPaymentTransactionRoute:
+    ApiPaymentsPaymentIdTestPaymentTransactionRoute,
   ApiPaymentsPaymentIdTransferRoute: ApiPaymentsPaymentIdTransferRoute,
   ApiPaymentsPaymentIdIndexRoute: ApiPaymentsPaymentIdIndexRoute,
   ApiPaymentsPaymentIdSwapsIndexRoute: ApiPaymentsPaymentIdSwapsIndexRoute,

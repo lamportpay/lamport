@@ -1,36 +1,44 @@
-# Keeps package-lock.json in sync with package.json so CI's `npm ci` stays green.
-# When a push to main changes package.json without updating the lock file
-# (for example dependencies installed with bun), this workflow regenerates the
-# lock file and commits it back. The follow-up commit then triggers CI again.
-name: Lockfile sync
+# Keeps package-lock.json in sync with package.json on Lovable branches (remediation R5,
+# 31 Oct 2026). Lovable installs dependencies with bun, which does not update the npm lock file,
+# and CI installs with `npm ci`. When a push to a Lovable branch changes package.json, this job
+# regenerates the lock file and commits it to that same branch, where the pull request shows it
+# for the owner's review (both files are owner-only in .github/CODEOWNERS).
+#
+# It never runs for main or any other branch: no bot writes to main. Until 31 Oct it ran on
+# pushes to main and pushed the lock file there directly.
+name: Lockfile sync (Lovable branches)
 
 on:
   push:
-    branches: [main]
+    branches: ["lovable/**", "lovable-sync"]
     paths: [package.json]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: lockfile-sync
+  group: lockfile-sync-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   sync:
+    if: startsWith(github.ref, 'refs/heads/lovable/') || github.ref == 'refs/heads/lovable-sync'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      # Pinned to commits: this job holds a write token.
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
         with:
           node-version: 22
 
-      - name: Regenerate package-lock.json
-        run: npm install --package-lock-only --no-audit --no-fund
+      - name: Regenerate package-lock.json (no package scripts run)
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
 
-      - name: Commit and push if the lock file changed
+      - name: Commit and push to the same Lovable branch if the lock file changed
         run: |
           if git diff --quiet package-lock.json; then
             echo "Lock file already in sync."
@@ -40,4 +48,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package-lock.json
           git commit -m "chore: sync package-lock.json with package.json"
-          git push
+          git push origin "HEAD:$GITHUB_REF"

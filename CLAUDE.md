@@ -7,6 +7,9 @@ LamportPay turns stablecoins on Solana into a bank payout, through Stables
 a fixed corridor list) is history and lives only in git history. Where any document conflicts
 with this file, this file wins.
 
+Current status, handoff and what is left: `docs/STATUS.md` (update it at the end of every work
+session).
+
 ## Product rules
 
 Change these only on the owner's instruction.
@@ -49,9 +52,9 @@ Change these only on the owner's instruction.
   change it). That table is not a list of supported corridors: a Stables preview quote decides
   whether a country/currency is supported, and Stables validates the bank fields
   (`POST /payment-methods/validate`). No country-specific business code.
-- **Limits: minimum 15 per payment (owner decision 2026-10-07, matching Stables' stated 15 USD minimum; was 100); maximum = Stables' limits (owner decision 2026-09-29).** TEST MODE: 15–5,000 USDC.
+- **Limits: minimum 15 per payment (owner decision 2026-10-07, matching Stables' stated 15 USD minimum; was 100); no LamportPay maximum: the partner (Stables) decides the maximum (decision 2026-11-04, replacing the provisional 5,000 of 3 Nov).** TEST MODE: 15–5,000 USDC.
   `PAYMENT_MIN_USDC`, `PAYMENT_MAX_USDC`, `PAYMENT_MIN_USDT`, `PAYMENT_MAX_USDT`, read in
-  `src/lib/payments/limits.server.ts` (defaults 100 and 1000000; `PAYMENT_MAX_*=none` = no
+  `src/lib/payments/limits.server.ts` (default minimum 15, no maximum, from `src/lib/payments/limit-defaults.ts`; `PAYMENT_MAX_*=none` = no
   LamportPay maximum, Stables' per-customer limits decide). Admins can override them per coin in
   Admin → Settings (C07, `business_settings.payment_limits`, audit logged with a reason).
   Don't repeat the numbers anywhere else.
@@ -85,7 +88,17 @@ Three separate experiences (see `docs/ROADMAP.md`):
   ("LamportPay", the one in `supabase/config.toml`). **Never touch the live database**: the
   original Lovable project `zmcbnknjatrfwrcfvtzt`, or any project other than the dev one.
   Don't read, query, migrate or point `.env` at it.
+- **No Supabase default in the build** (31 Oct 2026): `vite dev` / `vite build` stop unless
+  `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and `VITE_SUPABASE_PROJECT_ID` are set and
+  consistent (`src/lib/public-env.ts`). The live project is refused on a Vercel Preview always,
+  and elsewhere unless `LAMPORTPAY_SHARED_DB=1` (Lovable's own builds). Never add a fallback back.
 - **Migrations:** add a file to `supabase/migrations/` and apply it to the dev project only.
+- **Branches and deployments (31 Oct 2026):** work on a feature branch from
+  `vercel-preview-migration` and merge through a pull request; never push to `main` (production
+  only, owner-approved release PR). Vercel builds Production only from `main` and only when
+  someone deliberately creates that deployment (`scripts/vercel-ignore-build.sh`, `vercel.json`).
+  **`https://lamportpay.com` stays the domain**: no new subdomain, DNS, URL, canonical, sitemap or
+  SEO change without the owner's explicit approval.
 - **Stables sandbox only** (`sti_test_` keys, `https://api.sandbox.stables.money`) until the
   owner starts the planned production test.
 - **Never print or commit secrets.** Don't cat, echo or log `.env` / `.env.local` values;
@@ -99,6 +112,10 @@ Three separate experiences (see `docs/ROADMAP.md`):
 - Every Stables write sends an `Idempotency-Key` (`src/lib/stables/client.server.ts`).
 - The Stables transfer state is authoritative; our payment status follows it. The Travel Rule
   is a requirement on the payment (`travel_rule_*` columns), not a payment state.
+- A terminal webhook status (completed, failed, cancelled, expired) applies only after
+  `GET /transfers/{id}` confirms it. If Stables reports a different status, Stables' status
+  applies (still forward-only) and `webhook_status_mismatch` is logged (owner decision D-7,
+  30 Oct 2026). If Stables can't be reached, the event stays unprocessed for reconciliation.
 - Webhooks: Svix-signed only, at `POST /api/public/stables-webhook`. Store, answer 200, then
   process. Unsigned or badly signed requests get 401; 503 only when the secret is not set.
   Missed events are caught up by `/api/cron/reconcile-payments`.
@@ -138,7 +155,7 @@ npm run reconcile  # pull transfer status from Stables, replay stored webhooks
 
 ## Sign-in (2026-09-30)
 
-- **Admin** signs in at `/admin/login` (own page, admin look). Unauthenticated `/admin/*` redirects there; after sign-in `getAdminSession` checks the role on the server and a non-admin account is signed straight back out. `?next=` only accepts same-site `/admin` paths (`src/lib/admin-path.ts`). Admin sign-out returns to `/admin/login`.
+- **Admin** signs in at `/admin/login` (own page, admin look) with password + authenticator-app code (TOTP, Supabase MFA; 30 Oct). Admin rights need an `aal2` session: `src/lib/admin-guard.ts` for every admin server function (never call `has_role` directly), and `has_role()` in the database (migration `20261030120000_admin_role_requires_mfa.sql`). Unauthenticated `/admin/*` redirects there; after sign-in `getAdminSession` checks the role on the server and a non-admin account is signed straight back out. `?next=` only accepts same-site `/admin` paths (`src/lib/admin-path.ts`). Admin sign-out returns to `/admin/login`.
 - **Customers** sign in with their wallet (Supabase Auth Web3, Sign in with Solana): one plain-text message signature, never a transaction, key or seed phrase (`src/lib/wallet-sign-in.ts`, bridge in `components/site/wallet/AppWallet.tsx`, triggered via `requestWalletSignIn()` in `lib/wallet-state.ts`). Email + password on `/auth` stays as the fallback.
 - Wallet-only accounts have no email. The KYC card asks for it once; `/api/kyc` passes it straight to Stables when the customer is created (`email_required` if missing). LamportPay does not store it.
 - 2 Oct: wallet-first identity (see `docs/identity/wallet-first-identity.md`). Connecting a wallet while signed out also asks for the sign-in signature (one step); header shows "Verify wallet" for a restored connection and "Use this wallet" when the connected wallet differs from the account's. Server trusts only Supabase web3 identities (`walletAddressesOf`), never `user_metadata`; `assertLinkedWallet` refuses other wallets for wallet accounts. `user_wallets` / `identity_events` are written by DB triggers only. KYC state: `lib/identity/kyc-state.ts`. `/swap` redirects to `/pay`.

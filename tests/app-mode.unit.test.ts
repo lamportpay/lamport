@@ -216,7 +216,9 @@ describe("1. TEST MODE cannot call production endpoints", () => {
       const est = await estimateFor(ok);
       // Within the limit: Stables (sandbox) is asked to price it.
       expect(stablesCalls()).toBe(before + 1);
-      expect(est.payout.status === "refused" ? est.payout.reason : "").not.toMatch(/between 15 and/);
+      expect(est.payout.status === "refused" ? est.payout.reason : "").not.toMatch(
+        /between 15 and/,
+      );
     }
     for (const over of ["14.99", "5000.01"]) {
       const before = stablesCalls();
@@ -235,7 +237,15 @@ describe("1. TEST MODE cannot call production endpoints", () => {
     const stored = resolveBusinessSettings(null);
     expect(withModeLimits(stored, "live")).toBe(stored);
     expect(withModeLimits(stored, "test").paymentLimits.usdc).toEqual({ min: "15", max: "5000" });
-    expect(stored.paymentLimits.usdc).not.toEqual({ min: "15", max: "5000" });
+    // A LIVE maximum different from the TEST profile stays as configured in LIVE
+    // and is replaced in TEST (independent of the code defaults).
+    const custom = {
+      ...stored,
+      paymentLimits: { ...stored.paymentLimits, usdc: { min: "20", max: "2000" } },
+    };
+    expect(withModeLimits(custom, "live")).toBe(custom);
+    expect(withModeLimits(custom, "live").paymentLimits.usdc).toEqual({ min: "20", max: "2000" });
+    expect(withModeLimits(custom, "test").paymentLimits.usdc).toEqual({ min: "15", max: "5000" });
   });
 
   it("a LIVE request that fails its gates never reaches Jupiter either", async () => {
@@ -307,7 +317,6 @@ describe("1. TEST MODE cannot call production endpoints", () => {
     expect(currentMode().ok).toBe(false);
     vi.stubEnv("LAMPORTPAY_SHARED_DB", "1");
     expect(currentMode().ok).toBe(true);
-
   });
 
   it("blocks on an unknown mode value instead of guessing", () => {
@@ -513,6 +522,22 @@ describe("5. LIVE MODE stays disabled until configured AND approved", () => {
     expect(s.problems.join(" ")).toMatch(/approval/);
   });
 
+  it("needs the Stables fixed-IP proxy and webhook secret (4 Nov), without reporting values", () => {
+    const { STABLES_PROXY_URL: _proxy, ...noProxy } = LIVE_ENV;
+    const p = evaluateMode(noProxy, true);
+    expect(p).toMatchObject({ ok: false, liveAvailable: false });
+    expect(p.liveBlockers.join(" ")).toMatch(/STABLES_PROXY_URL/);
+
+    const { STABLES_WEBHOOK_SECRET: _secret, ...noSecret } = LIVE_ENV;
+    const w = evaluateMode(noSecret, true);
+    expect(w).toMatchObject({ ok: false, liveAvailable: false });
+    expect(w.liveBlockers.join(" ")).toMatch(/STABLES_WEBHOOK_SECRET/);
+
+    const all = evaluateMode({ ...LIVE_ENV }, true).liveBlockers.join(" ");
+    expect(all).not.toContain(LIVE_ENV.STABLES_PROXY_URL);
+    expect(all).not.toContain(LIVE_ENV.STABLES_WEBHOOK_SECRET);
+  });
+
   it("is available only with lock open + approval + full production config", () => {
     expect(evaluateMode({ ...LIVE_ENV }, true)).toMatchObject({
       mode: "live",
@@ -530,5 +555,61 @@ describe("5. LIVE MODE stays disabled until configured AND approved", () => {
     );
     expect(res.status).toBe(503);
     expect(await res.json()).toMatchObject({ code: "mode_blocked" });
+  });
+});
+
+// ---------------------------------------------------------------- 6
+
+describe("6. LIVE MODE runs only on the Production deployment (Batch 1, 9 Nov)", () => {
+  const PROD_BLOCKER = /only on the Production deployment/;
+
+  it("Production with lock open + approval + full config: LIVE available", () => {
+    const s = evaluateMode({ ...LIVE_ENV, VERCEL_ENV: "production" }, true);
+    expect(s).toMatchObject({ mode: "live", ok: true, liveAvailable: true });
+    expect(s.liveBlockers).toEqual([]);
+  });
+
+  for (const vercelEnv of ["preview", "development", "", "Production ", "prod"]) {
+    it(`VERCEL_ENV=${JSON.stringify(vercelEnv)} refuses LIVE even with a complete production config`, () => {
+      const s = evaluateMode({ ...LIVE_ENV, VERCEL_ENV: vercelEnv }, true);
+      expect(s).toMatchObject({ mode: "live", ok: false, liveAvailable: false, liveUrl: null });
+      expect(s.liveBlockers.join(" ")).toMatch(PROD_BLOCKER);
+      expect(s.problems.join(" ")).toMatch(PROD_BLOCKER);
+    });
+  }
+
+  it("refuses LIVE when VERCEL_ENV is not set at all (local or non-Vercel host)", () => {
+    const { VERCEL_ENV: _env, ...noVercel } = LIVE_ENV;
+    const s = evaluateMode(noVercel, true);
+    expect(s).toMatchObject({ ok: false, liveAvailable: false });
+    expect(s.liveBlockers.join(" ")).toMatch(PROD_BLOCKER);
+  });
+
+  it("a Preview that receives LIVE settings serves no payment action (503), with no fallback to TEST", async () => {
+    useEnv({ ...LIVE_ENV, VERCEL_ENV: "preview" });
+    expect(currentMode()).toMatchObject({ mode: "live", ok: false, realFunds: true });
+    const { handleUserRequest } = await import("@/lib/payments/http.server");
+    const res = await handleUserRequest(new Request("http://x"), undefined, async () =>
+      Response.json({ reached: true }),
+    );
+    expect(res.status).toBe(503);
+    expect(await res.json()).toMatchObject({ code: "mode_blocked" });
+  });
+
+  for (const vercelEnv of ["preview", "development", undefined]) {
+    it(`TEST MODE keeps working with VERCEL_ENV=${String(vercelEnv)}`, () => {
+      const env =
+        vercelEnv === undefined ? { ...TEST_ENV } : { ...TEST_ENV, VERCEL_ENV: vercelEnv };
+      expect(evaluateMode(env)).toMatchObject({ mode: "test", ok: true, realFunds: false });
+    });
+  }
+
+  it("the public status never names the deployment rule", () => {
+    useEnv({ ...LIVE_ENV, VERCEL_ENV: "preview" });
+    const res = handler(StatusRoute, "GET");
+    return res({ request: new Request("http://x/api/integration-status") }).then(async (r) => {
+      const body = (await r.json()) as { mode: ModeStatus };
+      expect(JSON.stringify(body.mode)).not.toMatch(/VERCEL_ENV/);
+    });
   });
 });

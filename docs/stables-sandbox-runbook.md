@@ -17,7 +17,7 @@ disabled; an admin simulates the deposit instead.
    - `CRON_SECRET=` a long random string
    - `SUPABASE_*` pointing at the **dev** project
    - `PAYMENT_MIN_USDC`, `PAYMENT_MAX_USDC`, `PAYMENT_MIN_USDT`, `PAYMENT_MAX_USDT` (defaults
-     100 and 1000000)
+     minimum 15, no maximum)
 2. **Database:** every migration in `supabase/migrations` applied to the dev project (the latest
    is `20260928120000_payment_swaps.sql`).
 3. **Admin role:** your user has a row in `user_roles` with `role = 'admin'` (needed for step 5
@@ -274,7 +274,7 @@ npm run webhook:send -- travel-rule <transfer_id>
 ## 8. Other checks
 
 - **Our limits:**
-  - 14.99 USDC is refused: "Payments must be between 15 and 1,000,000 USDC." (LIVE defaults;
+  - 14.99 USDC is refused: "Payments must be at least 15 USDC." (LIVE defaults;
     TEST MODE reads "between 15 and 5,000 USDC").
   - Change `PAYMENT_MIN_USDT` in `.env` and restart: the USDT limit follows.
 - **Unknown events:** `npm run webhook:send -- unknown` gives 200, stored as "Ignored
@@ -313,7 +313,7 @@ npm run webhook:send -- travel-rule <transfer_id>
 - **USDT on Solana:** it quotes (GBP, AUD, NGN on 2026-09-27; not USD). A USDT → AUD transfer ran
   to `completed` in the sandbox (simulated deposit). USDT → GBP could not be created because of the
   500s below. Real funding with USDT is untested (sandbox-limited).
-- **GBP transfer creation 500s** (tenant `9337824d-1860-4ac5-a352-88416f59085b`): from about 14:03
+- **GBP transfer creation 500s** (LamportPay's sandbox tenant): from about 14:03
   UTC on 2026-09-27, `POST /api/v1/transfer` to GB / GBP answered 500 "Something went wrong while
   creating the transfer." for USDC and USDT. One call succeeded at 14:47:33, then it failed again
   at 14:48; AUD transfers worked at the same time. Correlation IDs: `d39b1358-e405-4f83-83ca-0749b04d7f31`

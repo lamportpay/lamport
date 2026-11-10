@@ -16,6 +16,9 @@ const PATTERNS = {
   "Stables live key prefix": /sti_live_[A-Za-z0-9]{8,}/,
   "Supabase secret key prefix": /sb_secret_[A-Za-z0-9]{8,}/,
   "private key block": /-----BEGIN [A-Z ]*PRIVATE KEY-----/,
+  // Not a secret, but browsers built here must never talk to Lovable Cloud's live database
+  // (31 Oct 2026; src/lib/supabase-refs.ts LIVE_SUPABASE_REF).
+  "live (Lovable Cloud) database ref": /zmcbnknjatrfwrcfvtzt/,
 };
 
 function* files(dir) {

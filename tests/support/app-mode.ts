@@ -6,6 +6,8 @@
  */
 export const LIVE_ENV = {
   LAMPORTPAY_MODE: "live",
+  /** Set by Vercel on the Production deployment only; LIVE refuses anything else. */
+  VERCEL_ENV: "production",
   LAMPORTPAY_LIVE_APPROVED_BY: "owner (test fixture)",
   LAMPORTPAY_LIVE_APPROVED_AT: "2026-10-01T00:00:00Z",
   LAMPORTPAY_LIVE_URL: "https://app.lamportpay.test",
@@ -13,6 +15,8 @@ export const LIVE_ENV = {
   SUPABASE_URL: "https://prodfixture.supabase.co",
   STABLES_API_KEY: "sti_live_fixture",
   STABLES_API_URL: "https://api.stables.money",
+  STABLES_PROXY_URL: "http://proxy.fixture.example:3128",
+  STABLES_WEBHOOK_SECRET: "whsec_fixture",
 } as const;
 
 export const TEST_ENV = {

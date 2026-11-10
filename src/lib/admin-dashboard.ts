@@ -1,7 +1,14 @@
 /** Presentation-only dashboard data; provider state remains authoritative. */
 export type AdminDashboardData = {
   totals: { payments: number; partial: boolean; byStatus: Record<string, number> };
-  revenue: { receivedMinor: string; received24hMinor: string; paymentsWithFee: number };
+  revenue: {
+    /** Mainnet fees verified on-chain (revenue). */
+    receivedMinor: string;
+    received24hMinor: string;
+    /** Devnet test fees (TEST MODE evidence, never revenue). */
+    testReceivedMinor: string;
+    paymentsWithFee: number;
+  };
   attention: { openTravelRule: number; feeMismatches: number };
   recent: {
     id: string;

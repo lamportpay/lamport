@@ -1,0 +1,63 @@
+# Files Lovable may change (remediation R6, 31 Oct 2026). Deny by default: a pull request from a
+# `lovable/*` branch or `lovable-sync` that changes, adds, renames or deletes any other file fails
+# the `lovable-path-guard` CI job (scripts/check-lovable-paths.mjs). Everything outside this list
+# needs the owner's review (.github/CODEOWNERS, kept equivalent by tests/codeowners.unit.test.ts).
+#
+# Syntax: one glob per line, relative to the repository root. `*` = any characters except `/`,
+# `**` = any characters including `/`. `[`, `]`, `$` and `.` are literal. A line starting with `!`
+# takes paths out again (it wins over earlier lines). Blank lines and `#` comments are ignored.
+#
+# Never add here: payments, wallet signing, Stables, Jupiter, identity, admin, API routes, the
+# database, security headers, analytics or consent, legal pages, SEO plumbing, build, CI,
+# dependencies, scripts, tests or project rules.
+
+# Marketing pages (content and layout only; their data comes from the files below)
+src/routes/index.tsx
+src/routes/about.tsx
+src/routes/people.tsx
+src/routes/how-it-works.tsx
+src/routes/workflow.tsx
+src/routes/technology.tsx
+src/routes/partners.tsx
+src/routes/roadmap.tsx
+src/routes/whitepaper.tsx
+src/routes/compliance.tsx
+src/routes/docs.tsx
+src/routes/faq.tsx
+src/routes/contact.tsx
+src/routes/blog.index.tsx
+src/routes/blog.$slug.tsx
+src/routes/news.index.tsx
+src/routes/news.$slug.tsx
+
+# Marketing components, except those that load scripts, handle consent, wallets, fees, payments,
+# admin data, server functions or legal text
+src/components/site/**
+!src/components/site/Layout.tsx
+!src/components/site/GoogleAnalytics.tsx
+!src/components/site/CookieConsent.tsx
+!src/components/site/LegalPage.tsx
+!src/components/site/wallet/**
+!src/components/site/LaunchPopup.tsx
+!src/components/site/FeeCalculator.tsx
+!src/components/site/PaymentReceipt.tsx
+!src/components/site/SwapRoutePreview.tsx
+!src/components/site/CustomerSupport.tsx
+!src/components/site/BusinessSettingsAdmin.tsx
+!src/components/site/StablesPaymentsAdmin.tsx
+# demo-data.ts also feeds the MCP server's quote tools (src/lib/mcp/tools/)
+!src/components/site/demo-data.ts
+
+# UI primitives, content, images and styles
+src/components/ui/**
+src/content/**
+src/assets/**
+src/styles.css
+public/**
+!public/robots.txt
+
+# Page data for the marketing site
+src/lib/company-profile.ts
+src/lib/team.ts
+src/lib/world-map.ts
+src/lib/world-map-paths.ts

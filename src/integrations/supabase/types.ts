@@ -221,6 +221,57 @@ export type Database = {
         }
         Relationships: []
       }
+      hyperliquid_test_events: {
+        Row: {
+          account: string | null
+          agent: string | null
+          completed_at: string | null
+          created_at: string
+          error: string | null
+          id: string
+          kind: string
+          network: string
+          nonce: number | null
+          ok: boolean | null
+          request: Json
+          response: Json | null
+          signer: string | null
+          user_id: string
+        }
+        Insert: {
+          account?: string | null
+          agent?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind: string
+          network?: string
+          nonce?: number | null
+          ok?: boolean | null
+          request?: Json
+          response?: Json | null
+          signer?: string | null
+          user_id: string
+        }
+        Update: {
+          account?: string | null
+          agent?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind?: string
+          network?: string
+          nonce?: number | null
+          ok?: boolean | null
+          request?: Json
+          response?: Json | null
+          signer?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       jupiter_swap_orders: {
         Row: {
           created_at: string
@@ -278,136 +329,44 @@ export type Database = {
         }
         Relationships: []
       }
-      mock_kyc_submissions: {
+      ops_alerts: {
         Row: {
-          country: string
-          created_at: string
-          document_type: string
-          email: string
-          full_name: string
-          id: string
-          reference: string
-          review_note: string | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          status: string
-          updated_at: string
+          detail: Json
+          key: string
+          last_seen_at: string
+          notified_at: string | null
+          notified_severity: string | null
+          notify_count: number
+          opened_at: string
+          resolved_at: string | null
+          severity: string
+          title: string
         }
         Insert: {
-          country: string
-          created_at?: string
-          document_type?: string
-          email: string
-          full_name: string
-          id?: string
-          reference: string
-          review_note?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string
-          updated_at?: string
+          detail?: Json
+          key: string
+          last_seen_at?: string
+          notified_at?: string | null
+          notified_severity?: string | null
+          notify_count?: number
+          opened_at?: string
+          resolved_at?: string | null
+          severity: string
+          title: string
         }
         Update: {
-          country?: string
-          created_at?: string
-          document_type?: string
-          email?: string
-          full_name?: string
-          id?: string
-          reference?: string
-          review_note?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string
-          updated_at?: string
+          detail?: Json
+          key?: string
+          last_seen_at?: string
+          notified_at?: string | null
+          notified_severity?: string | null
+          notify_count?: number
+          opened_at?: string
+          resolved_at?: string | null
+          severity?: string
+          title?: string
         }
         Relationships: []
-      }
-      mock_payout_transfers: {
-        Row: {
-          admin_note: string | null
-          created_at: string
-          funded_at: string | null
-          fx_rate: number
-          id: string
-          kyc_submission_id: string | null
-          partner_reference: string | null
-          payment_rail: string
-          payment_status: string
-          payout_amount: number
-          payout_currency: string
-          quote_status: string
-          recipient_name: string
-          reference: string
-          send_amount: number
-          send_currency: string
-          sender_name: string
-          settled_at: string | null
-          solana_tx_signature: string | null
-          timeline_note: string | null
-          total_fee: number
-          updated_at: string
-          updated_by: string | null
-        }
-        Insert: {
-          admin_note?: string | null
-          created_at?: string
-          funded_at?: string | null
-          fx_rate: number
-          id?: string
-          kyc_submission_id?: string | null
-          partner_reference?: string | null
-          payment_rail?: string
-          payment_status?: string
-          payout_amount: number
-          payout_currency: string
-          quote_status?: string
-          recipient_name: string
-          reference: string
-          send_amount: number
-          send_currency?: string
-          sender_name: string
-          settled_at?: string | null
-          solana_tx_signature?: string | null
-          timeline_note?: string | null
-          total_fee?: number
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Update: {
-          admin_note?: string | null
-          created_at?: string
-          funded_at?: string | null
-          fx_rate?: number
-          id?: string
-          kyc_submission_id?: string | null
-          partner_reference?: string | null
-          payment_rail?: string
-          payment_status?: string
-          payout_amount?: number
-          payout_currency?: string
-          quote_status?: string
-          recipient_name?: string
-          reference?: string
-          send_amount?: number
-          send_currency?: string
-          sender_name?: string
-          settled_at?: string | null
-          solana_tx_signature?: string | null
-          timeline_note?: string | null
-          total_fee?: number
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "mock_payout_transfers_kyc_submission_id_fkey"
-            columns: ["kyc_submission_id"]
-            isOneToOne: false
-            referencedRelation: "mock_kyc_submissions"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       payment_case_events: {
         Row: {
@@ -585,6 +544,7 @@ export type Database = {
           entry_type: string
           id: number
           payment_id: string
+          network: string | null
           reference: string | null
         }
         Insert: {
@@ -597,6 +557,7 @@ export type Database = {
           entry_type: string
           id?: never
           payment_id: string
+          network?: string | null
           reference?: string | null
         }
         Update: {
@@ -609,6 +570,7 @@ export type Database = {
           entry_type?: string
           id?: never
           payment_id?: string
+          network?: string | null
           reference?: string | null
         }
         Relationships: [
@@ -729,7 +691,12 @@ export type Database = {
           exchange_rate: number | null
           failure_reason: string | null
           fees: Json | null
+          funding_build_blockhash: string | null
+          funding_build_last_valid_block_height: number | null
           funding_payer: string | null
+          funding_pending_at: string | null
+          funding_pending_last_valid_block_height: number | null
+          funding_pending_signature: string | null
           funding_signature: string | null
           funding_verified_at: string | null
           id: string
@@ -739,6 +706,9 @@ export type Database = {
           platform_fee_min_minor: number | null
           platform_fee_minor: number | null
           platform_fee_received_minor: number | null
+          platform_fee_network: string | null
+          platform_fee_received_at: string | null
+          platform_fee_signature: string | null
           platform_fee_rule: string | null
           platform_fee_waiver: string | null
           platform_fee_waiver_rank: number | null
@@ -780,7 +750,12 @@ export type Database = {
           exchange_rate?: number | null
           failure_reason?: string | null
           fees?: Json | null
+          funding_build_blockhash?: string | null
+          funding_build_last_valid_block_height?: number | null
           funding_payer?: string | null
+          funding_pending_at?: string | null
+          funding_pending_last_valid_block_height?: number | null
+          funding_pending_signature?: string | null
           funding_signature?: string | null
           funding_verified_at?: string | null
           id?: string
@@ -790,6 +765,9 @@ export type Database = {
           platform_fee_min_minor?: number | null
           platform_fee_minor?: number | null
           platform_fee_received_minor?: number | null
+          platform_fee_network?: string | null
+          platform_fee_received_at?: string | null
+          platform_fee_signature?: string | null
           platform_fee_rule?: string | null
           platform_fee_waiver?: string | null
           platform_fee_waiver_rank?: number | null
@@ -831,7 +809,12 @@ export type Database = {
           exchange_rate?: number | null
           failure_reason?: string | null
           fees?: Json | null
+          funding_build_blockhash?: string | null
+          funding_build_last_valid_block_height?: number | null
           funding_payer?: string | null
+          funding_pending_at?: string | null
+          funding_pending_last_valid_block_height?: number | null
+          funding_pending_signature?: string | null
           funding_signature?: string | null
           funding_verified_at?: string | null
           id?: string
@@ -841,6 +824,9 @@ export type Database = {
           platform_fee_min_minor?: number | null
           platform_fee_minor?: number | null
           platform_fee_received_minor?: number | null
+          platform_fee_network?: string | null
+          platform_fee_received_at?: string | null
+          platform_fee_signature?: string | null
           platform_fee_rule?: string | null
           platform_fee_waiver?: string | null
           platform_fee_waiver_rank?: number | null

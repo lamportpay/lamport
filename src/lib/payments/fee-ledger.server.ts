@@ -30,7 +30,15 @@ export type FeeLedgerEntry = {
   currency: string;
   bps: number | null;
   reference: string | null;
+  /** Network a received fee was seen on; set on 'received' rows only. */
+  network?: FeeNetwork | null;
 };
+
+/**
+ * Where a fee receipt was seen: "solana" (mainnet: revenue) or "solana-devnet"
+ * (TEST MODE: devnet test USDC, never counted as revenue).
+ */
+export type FeeNetwork = "solana" | "solana-devnet";
 
 function partnerFees(row: Pick<PaymentRow, "fees">): StoredFees {
   const fees = row.fees;
@@ -134,6 +142,7 @@ export function receivedFeeEntry(
   receivedMinor: bigint,
   currency: string,
   signature: string,
+  network: FeeNetwork,
 ): FeeLedgerEntry {
   return {
     payment_id: paymentId,
@@ -144,6 +153,7 @@ export function receivedFeeEntry(
     currency,
     bps: null,
     reference: signature,
+    network,
   };
 }
 

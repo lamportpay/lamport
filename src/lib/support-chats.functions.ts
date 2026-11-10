@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAdminSession as requireAdmin } from "@/lib/admin-guard";
 
 export type SupportChatRow = {
   id: string;
@@ -26,14 +27,6 @@ type AdminContext = {
   claims?: unknown;
 };
 
-async function requireAdmin(context: AdminContext) {
-  const { data, error } = (await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  })) as { data: boolean | null; error: unknown };
-  if (error) throw new Error("Could not verify admin access.");
-  if (!data) throw new Error("Admin role required.");
-}
 
 export const listSupportChatsAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

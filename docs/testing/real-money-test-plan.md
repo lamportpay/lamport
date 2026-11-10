@@ -21,7 +21,7 @@ user wallet → (Jupiter swap, only if the wallet lacks the settlement coin) →
 | A4 | Corridor confirmed for the test customer (country, currency, bank) and that customer is eligible | Stables | Preview quote succeeds |
 | A5 | Test customer fully KYC-verified on production (base level), payout account in the customer's own name | Test user | Stables customer status |
 | A6 | Fee configuration decided and live: LamportPay fee and the Stables `integrator_fee` mechanism (see open question F2) | Business + Stables | Written decision |
-| A7 | Production limits confirmed: `PAYMENT_MIN_*` = 15 (owner decision 7 Oct 2026, Stables' 15 USD minimum), `PAYMENT_MAX_*` = 1,000,000 or `none` | Business | Env values |
+| A7 | Production limits confirmed: `PAYMENT_MIN_*` = 15 (owner decision 7 Oct 2026, Stables' 15 USD minimum), `PAYMENT_MAX_*` empty = no LamportPay maximum; Stables decides (decision 4 Nov 2026) | Business | Env values |
 | A8 | Legal/compliance sign-off for operating the flow in the test corridor | Legal | Written sign-off |
 | A9 | Stables' answers on: `transfer.updated.status_transitioned` in production, `actual_payout`, deposit address expiry, Travel Rule holds for self-custody wallets | Stables | Slack/email thread |
 | A10 | Production webhook endpoint reachable and verified with Stables' test message; reconcile cron schedule set (`RECONCILE_CRON_SCHEDULE`) | Engineering | Delivery log line |
@@ -29,7 +29,7 @@ user wallet → (Jupiter swap, only if the wallet lacks the settlement coin) →
 
 ## B. Transaction test
 
-Amount: the configured minimum (**100 USDC**) unless Stables or the business approves a lower
+Amount: the configured minimum (**15 USDC**) unless Stables or the business approves a lower
 production-only test amount. Do not change `PAYMENT_MIN_*` for the test without explicit approval.
 
 Run 1: wallet already holds USDC (no swap). Run 2 (only after run 1 reconciles): wallet holds SOL
@@ -79,6 +79,28 @@ safely and without extra loss. None of these may produce a `COMPLETED` payment.
 | Duplicate webhook | Stables dashboard "resend" of a delivered event | Stored once, answered 200, not re-applied |
 | Timeout | Unit tests | No state change on timeout; reconcile catches up |
 | Stale quote | Let the quote expire, then fund | Refused; new quote required |
+
+## E. Double-payment protection, first end-to-end run (added 11 Nov 2026)
+
+The pending-signature and two-window protection (`docs/security/double-payment-protection.md`)
+cannot run in TEST (the LIVE funding path refuses TEST mode and the sandbox). It is covered by
+unit tests and real devnet reads; its first end-to-end run is inside run 1, at no extra cost:
+
+1. Before pressing Send, open the same payment in a second tab. Press Send in tab 1 and keep
+   the wallet popup open; press Send in tab 2. Expected: tab 2 gets the identical transaction
+   (event `funding_transaction_built` with `reused: true`), or `funding_in_progress` if another
+   wallet is connected. Reject tab 2's popup.
+2. Approve in tab 1. As soon as the wallet returns, close the tab (or switch the browser
+   offline) before "Verifying on Solana" finishes.
+3. Reopen the payment. Expected: "Payment sent. Waiting for Solana to confirm it", the
+   signature and **Check again**; no Send button and no manual form. Admin timeline shows
+   `funding_signature_received`; `funding_pending_signature` set, `funding_signature` empty.
+4. After about 20 seconds press Check again. Expected: funded; pending fields cleared; the fee
+   receipt equals what the revenue wallet received in that transaction.
+5. Post a different signature to `/api/payments/{id}/funding`. Expected: 409; no new
+   transaction is built.
+
+Record each answer with the run's evidence (section B).
 
 ## Stop conditions
 

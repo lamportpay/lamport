@@ -88,7 +88,7 @@ describe("/api/ask-ai rate limit", () => {
     expect(upsert).not.toHaveBeenCalled();
     expect(rpc).toHaveBeenCalledWith(
       "rate_limit_hit",
-      expect.objectContaining({ p_bucket: "ask-ai", p_key: "203.0.113.9", p_limit: 30 }),
+      expect.objectContaining({ p_bucket: "ask-ai", p_key: "ip:203.0.113.9", p_limit: 30 }),
     );
   });
 

@@ -323,6 +323,30 @@ describe("getOrder", () => {
     expect(error.message).toBe("Insufficient funds");
   });
 
+  it("handles the live 'unfunded taker' answer (30 Oct: errorCode only, no `error`, gasless, no transaction)", async () => {
+    // Shape returned by api.jup.ag/swap/v2/order for a taker without SOL, ExactIn and ExactOut.
+    for (const errorMessage of ["Insufficient funds", "Insufficient balance to fund the swap"]) {
+      fetchMock.mockResolvedValueOnce(
+        jsonResponse({
+          swapMode: "ExactIn",
+          inAmount: "10000000",
+          outAmount: "969177",
+          otherAmountThreshold: "967044",
+          slippageBps: 22,
+          priceImpactPct: "-0.0001843193919998148",
+          gasless: true,
+          requestId: "req-live-shape",
+          errorCode: 1,
+          errorMessage,
+        }),
+      );
+      const error = await jupiterError(getOrder(exactIn));
+      expect(error.status).toBe(422);
+      expect(error.code).toBe(1);
+      expect(error.message).toBe(errorMessage);
+    }
+  });
+
   it("fails when a taker was given but no transaction came back", async () => {
     fetchMock.mockResolvedValueOnce(jsonResponse(orderBody({ transaction: null })));
     expect((await jupiterError(getOrder(exactIn))).status).toBe(422);

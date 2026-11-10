@@ -377,8 +377,8 @@ function limitToMinor(value: string): number | null {
 
 /**
  * LamportPay's own per-payment limits per coin (C07). Stables still applies its
- * own per-customer limits on top. Empty maximum = no LamportPay maximum (owner
- * decision 2026-09-29: "maximum as per Stables' limits"). Audit logged with a
+ * own per-customer limits on top. No default maximum (decision 2026-11-04: the partner decides);
+ * an empty maximum here = no LamportPay maximum. Audit logged with a
  * reason; "Use .env" returns a coin to the server environment values.
  */
 export function PaymentLimitSettings() {

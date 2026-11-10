@@ -11,8 +11,10 @@ import {
   StatCard,
 } from "@/components/admin/AdminShell";
 import { FeeAndWalletSettings } from "@/components/site/BusinessSettingsAdmin";
+import { explorerTxUrl } from "@/lib/app-mode";
 import { getRevenuePayments, getRevenueReconciliation } from "@/lib/admin-ops.functions";
 import { formatMinor } from "@/lib/money";
+import { getTokenInfo } from "@/lib/tokens";
 
 export const Route = createFileRoute("/_authenticated/admin/fees-revenue")({
   head: () => ({ meta: [{ title: "Fees & Revenue | LamportPay Admin" }] }),
@@ -20,53 +22,108 @@ export const Route = createFileRoute("/_authenticated/admin/fees-revenue")({
 });
 
 const STATUS_TEXT = {
-  received: "Received",
+  calculated: "Calculated (quote only)",
+  pending: "Pending",
+  collected: "Collected",
   short: "Short",
   missing: "Missing",
-  pending: "Awaiting deposit",
+  failed: "Failed (no fee)",
+  not_collected: "Not collected",
 } as const;
 
 const STATUS_TONE = {
-  received: "text-[color:var(--success)]",
+  calculated: "text-muted-foreground",
+  pending: "text-muted-foreground",
+  collected: "text-[color:var(--success)]",
   short: "text-destructive",
   missing: "text-destructive",
-  pending: "text-muted-foreground",
+  failed: "text-muted-foreground",
+  not_collected: "text-amber-600",
 } as const;
+
+function short(address: string | null) {
+  return address ? `${address.slice(0, 4)}…${address.slice(-4)}` : "—";
+}
+
+/** "1.25 SOL"; a token without known decimals shows raw units and its mint. */
+function swapLabel(inMinor: string, symbol: string | undefined, mint: string) {
+  try {
+    if (symbol) return `${formatMinor(BigInt(inMinor), symbol.toLowerCase())} ${symbol}`;
+  } catch {
+    // Unknown decimals: fall through to raw units.
+  }
+  return `${inMinor} units of ${short(mint)}`;
+}
+
+function NetworkTag({ network }: { network: "solana" | "solana-devnet" | null }) {
+  if (network === "solana") return <span>Solana mainnet</span>;
+  if (network === "solana-devnet") {
+    return <span className="text-amber-600">Solana devnet (test, not revenue)</span>;
+  }
+  return <span className="text-muted-foreground">—</span>;
+}
 
 function FeesRevenuePage() {
   const fetchRevenue = useServerFn(getRevenuePayments);
   const query = useQuery({ queryKey: ["admin-revenue-payments"], queryFn: () => fetchRevenue() });
   const rows = query.data ?? [];
-  const received = rows.reduce((sum, r) => sum + BigInt(r.receivedMinor ?? "0"), 0n);
-  const expected = rows
-    .filter((r) => r.revenueStatus !== "pending")
-    .reduce((sum, r) => sum + BigInt(r.feeMinor), 0n);
+  const sum = (
+    filter: (r: (typeof rows)[number]) => boolean,
+    pick: (r: (typeof rows)[number]) => string | null,
+  ) => rows.filter(filter).reduce((total, r) => total + BigInt(pick(r) ?? "0"), 0n);
+  const settled = (r: (typeof rows)[number]) =>
+    r.revenueStatus === "collected" || r.revenueStatus === "short" || r.revenueStatus === "missing";
+  const revenue = sum(
+    (r) => r.countsAsRevenue && settled(r),
+    (r) => r.receivedMinor,
+  );
+  const testFees = sum(
+    (r) => r.network === "solana-devnet" && settled(r),
+    (r) => r.receivedMinor,
+  );
+  const pending = sum(
+    (r) => r.revenueStatus === "pending",
+    (r) => r.feeMinor,
+  );
+  const counts = rows.reduce<Record<string, number>>((acc, r) => {
+    acc[r.revenueStatus] = (acc[r.revenueStatus] ?? 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <AdminPage
       title="Fees & Revenue"
       crumbs={[{ label: "Fees & Revenue" }]}
-      description="The one LamportPay fee, the revenue wallet, and the fee each payment carried. Revenue figures come from verified on-chain funding transactions."
+      description="The one LamportPay fee, the revenue wallet, and the fee each payment carried. Collected amounts come only from transactions the server read on-chain; devnet test fees are shown apart and never count as revenue."
     >
       <FeeAndWalletSettings />
 
-      <div className="grid sm:grid-cols-3 gap-3">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
-          label="Revenue received"
-          value={`${formatMinor(received, "usdc")} USDC`}
-          hint="Latest 200 payments with a fee"
+          label="Revenue collected (mainnet)"
+          value={`${formatMinor(revenue, "usdc")} USDC`}
+          hint="Verified on Solana mainnet; latest 200 payments with a fee"
         />
         <StatCard
-          label="Expected from funded payments"
-          value={`${formatMinor(expected, "usdc")} USDC`}
+          label="Test fees collected (devnet)"
+          value={`${formatMinor(testFees, "usdc")} USDC`}
+          hint="Devnet test USDC: proves the fee path, not revenue"
+        />
+        <StatCard
+          label="Pending fees"
+          value={`${formatMinor(pending, "usdc")} USDC`}
+          hint={`${counts["pending"] ?? 0} payments awaiting the customer's transaction`}
         />
         <StatCard
           label="Payments with a fee"
           value={rows.length.toLocaleString()}
           hint={
-            <Link to="/admin/reports" className="text-primary hover:underline">
-              Daily / weekly / monthly reports
-            </Link>
+            <span>
+              {counts["calculated"] ?? 0} quote only · {counts["failed"] ?? 0} failed ·{" "}
+              <Link to="/admin/reports" className="text-primary hover:underline">
+                reports
+              </Link>
+            </span>
           }
         />
       </div>
@@ -88,61 +145,92 @@ function FeesRevenuePage() {
               <thead className="text-xs text-muted-foreground text-left">
                 <tr>
                   <th className="py-2 pr-3 font-medium">Payment</th>
-                  <th className="py-2 pr-3 font-medium">Amount</th>
+                  <th className="py-2 pr-3 font-medium">Swapped in</th>
+                  <th className="py-2 pr-3 font-medium">To payout partner</th>
                   <th className="py-2 pr-3 font-medium">Fee</th>
                   <th className="py-2 pr-3 font-medium">Received</th>
-                  <th className="py-2 pr-3 font-medium">Revenue</th>
+                  <th className="py-2 pr-3 font-medium">Status</th>
+                  <th className="py-2 pr-3 font-medium">Network</th>
+                  <th className="py-2 pr-3 font-medium">Customer wallet</th>
+                  <th className="py-2 pr-3 font-medium">Revenue wallet</th>
                   <th className="py-2 font-medium">Transaction</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
-                {rows.map((r) => (
-                  <tr key={r.id}>
-                    <td className="py-2 pr-3">
-                      <Link
-                        to="/admin/payments/$id"
-                        params={{ id: r.id }}
-                        className="font-mono text-xs text-primary hover:underline"
-                      >
-                        {r.id.slice(0, 8)}
-                      </Link>
-                      <div className="text-xs text-muted-foreground">
-                        {new Date(r.verifiedAt ?? r.createdAt).toLocaleDateString()}
-                      </div>
-                    </td>
-                    <td className="py-2 pr-3 tabular-nums">
-                      {formatMinor(BigInt(r.amountMinor), r.currency)} {r.currency.toUpperCase()}
-                    </td>
-                    <td className="py-2 pr-3 tabular-nums">
-                      {formatMinor(BigInt(r.feeMinor), r.currency)}
-                      {r.feeBps !== null && (
-                        <span className="text-xs text-muted-foreground"> ({r.feeBps / 100}%)</span>
-                      )}
-                    </td>
-                    <td className="py-2 pr-3 tabular-nums">
-                      {r.receivedMinor === null
-                        ? "—"
-                        : formatMinor(BigInt(r.receivedMinor), r.currency)}
-                    </td>
-                    <td className={`py-2 pr-3 font-medium ${STATUS_TONE[r.revenueStatus]}`}>
-                      {STATUS_TEXT[r.revenueStatus]}
-                    </td>
-                    <td className="py-2">
-                      {r.signature ? (
-                        <a
-                          href={`https://explorer.solana.com/tx/${r.signature}`}
-                          target="_blank"
-                          rel="noreferrer"
+                {rows.map((r) => {
+                  const token = r.swap ? getTokenInfo(r.swap.inputMint) : undefined;
+                  return (
+                    <tr key={r.id}>
+                      <td className="py-2 pr-3">
+                        <Link
+                          to="/admin/payments/$id"
+                          params={{ id: r.id }}
                           className="font-mono text-xs text-primary hover:underline"
                         >
-                          {r.signature.slice(0, 10)}…
-                        </a>
-                      ) : (
-                        "—"
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                          {r.id.slice(0, 8)}
+                        </Link>
+                        <div className="text-xs text-muted-foreground">
+                          {new Date(r.verifiedAt ?? r.createdAt).toLocaleString()}
+                        </div>
+                      </td>
+                      <td className="py-2 pr-3 tabular-nums">
+                        {r.swap ? swapLabel(r.swap.inMinor, token?.symbol, r.swap.inputMint) : "—"}
+                      </td>
+                      <td className="py-2 pr-3 tabular-nums">
+                        {formatMinor(BigInt(r.amountMinor), r.currency)} {r.currency.toUpperCase()}
+                      </td>
+                      <td className="py-2 pr-3 tabular-nums">
+                        {formatMinor(BigInt(r.feeMinor), r.currency)}
+                        {r.feeBps !== null && (
+                          <span className="text-xs text-muted-foreground">
+                            {" "}
+                            ({r.feeBps / 100}%)
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-2 pr-3 tabular-nums">
+                        {r.receivedMinor === null
+                          ? "—"
+                          : formatMinor(BigInt(r.receivedMinor), r.currency)}
+                      </td>
+                      <td className={`py-2 pr-3 font-medium ${STATUS_TONE[r.revenueStatus]}`}>
+                        {STATUS_TEXT[r.revenueStatus]}
+                      </td>
+                      <td className="py-2 pr-3 text-xs">
+                        <NetworkTag network={r.network} />
+                      </td>
+                      <td
+                        className="py-2 pr-3 font-mono text-xs"
+                        title={r.payerWallet ?? undefined}
+                      >
+                        {short(r.payerWallet)}
+                      </td>
+                      <td
+                        className="py-2 pr-3 font-mono text-xs"
+                        title={r.revenueWallet ?? undefined}
+                      >
+                        {short(r.revenueWallet)}
+                      </td>
+                      <td className="py-2">
+                        {r.signature ? (
+                          <a
+                            href={explorerTxUrl(
+                              r.signature,
+                              r.network === "solana-devnet" ? "devnet" : "mainnet-beta",
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="font-mono text-xs text-primary hover:underline"
+                          >
+                            {r.signature.slice(0, 10)}…
+                          </a>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -159,7 +247,7 @@ const ISSUE_TEXT = {
   ledger_received_mismatch: "Ledger 'received' differs from the payment",
 } as const;
 
-/** Signed minor amount → "-1.50" style text (formatMinor handles non-negative only). */
+/** Signed minor amount → "−1.50" style text (formatMinor handles non-negative only). */
 function signed(minor: string, currency: string) {
   const v = BigInt(minor);
   return `${v < 0n ? "−" : ""}${formatMinor(v < 0n ? -v : v, currency)}`;
@@ -167,7 +255,8 @@ function signed(minor: string, currency: string) {
 
 /**
  * C10: expected vs received (exact, per payment), fee ledger vs payment
- * records, and the revenue wallet's on-chain balance (informative).
+ * records, and the revenue wallet's on-chain balance (informative), on the
+ * server's own network (TEST: devnet, LIVE: mainnet).
  */
 function ReconciliationPanel() {
   const fetchRecon = useServerFn(getRevenueReconciliation);
@@ -176,15 +265,26 @@ function ReconciliationPanel() {
     queryFn: () => fetchRecon(),
   });
   const r = query.data;
+  const devnet = r?.network === "solana-devnet";
   return (
     <Panel
-      title="Reconciliation"
-      description="Fees expected vs fees received for every funded payment, the append-only fee ledger vs the payment records, and the revenue wallet's live balance on Solana."
+      title={devnet ? "Reconciliation — devnet test fees" : "Reconciliation"}
+      description={
+        devnet
+          ? "TEST MODE: fees paid in devnet test USDC vs what the revenue wallet holds on Solana devnet. Not revenue."
+          : "Fees expected vs fees received for every funded payment, the append-only fee ledger vs the payment records, and the revenue wallet's live balance on Solana."
+      }
     >
       {query.isLoading && <LoadingState label="Reconciling…" />}
       {query.isError && <ErrorState error={query.error} />}
       {r && (
         <div className="space-y-4 text-sm">
+          {r.revenueWalletIsCustomerWallet && (
+            <p className="rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-destructive">
+              The revenue wallet is also linked to a customer account. A fee paid from it to itself
+              moves nothing. Use a separate wallet for customer payments.
+            </p>
+          )}
           <p
             className={
               r.balanced
@@ -198,14 +298,16 @@ function ReconciliationPanel() {
             {r.partial && " (Partial: only the most recent payments were checked.)"}
           </p>
           {r.coins.length === 0 ? (
-            <EmptyState>No payment has carried a LamportPay fee yet.</EmptyState>
+            <EmptyState>
+              No payment with a fee is awaiting or has settled on this network.
+            </EmptyState>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="text-xs text-muted-foreground text-left">
                   <tr>
                     <th className="py-2 pr-3 font-medium">Coin</th>
-                    <th className="py-2 pr-3 font-medium">Funded</th>
+                    <th className="py-2 pr-3 font-medium">Settled</th>
                     <th className="py-2 pr-3 font-medium">Expected</th>
                     <th className="py-2 pr-3 font-medium">Received</th>
                     <th className="py-2 pr-3 font-medium">Ledger (exp. / rec.)</th>
@@ -254,7 +356,7 @@ function ReconciliationPanel() {
           )}
           <p className="text-xs text-muted-foreground">
             {r.onChain.status === "ok"
-              ? `Wallet balance read from Solana at ${new Date(r.onChain.readAt).toLocaleString()}. A difference is expected when the owner moves funds out (negative) or the wallet receives other deposits (positive); it is shown for review, not as an error.`
+              ? `Wallet balance read from Solana ${devnet ? "devnet" : "mainnet"} at ${new Date(r.onChain.readAt).toLocaleString()}. A difference is expected when the owner moves funds out (negative) or the wallet receives other deposits (positive); it is shown for review, not as an error.`
               : r.onChain.status === "not_configured"
                 ? "No revenue wallet is set, so the on-chain balance is not checked."
                 : `On-chain balance unavailable: ${r.onChain.reason}`}

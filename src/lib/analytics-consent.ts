@@ -1,3 +1,7 @@
+/**
+ * Google Analytics loads only after the visitor accepts optional cookies (GoogleAnalytics.tsx
+ * injects gtag.js then). Never put gtag.js or a gtag bootstrap in the served HTML (30 Oct 2026).
+ */
 export const ANALYTICS_ID = "G-J4DVLBPWRZ";
 export const COOKIE_KEY = "lamportpay-cookie-consent";
 export const COOKIE_VERSION = 2;
@@ -20,18 +24,3 @@ export function analyticsPath(pathname: string): string | null {
   if (PUBLIC_PAGES.has(pathname)) return pathname;
   return /^\/(blog|news)\/[a-z0-9-]+$/.test(pathname) ? pathname : null;
 }
-
-/**
- * Google Consent Mode bootstrap, rendered in the marketing layout's HTML so tag
- * checkers detect G-J4DVLBPWRZ. Consent starts fully denied and no page view is
- * sent from here; GoogleAnalytics.tsx turns consent on only after the visitor
- * accepts optional cookies, so nothing is measured before that.
- */
-export const GA_BOOTSTRAP_SNIPPET = [
-  "window.dataLayer=window.dataLayer||[];",
-  "window.gtag=function(){window.dataLayer.push(arguments);};",
-  "gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});",
-  "gtag('set','developer_id.dZjgwMW',true);",
-  "gtag('js',new Date());",
-  `gtag('config','${ANALYTICS_ID}',{send_page_view:false,allow_google_signals:false,allow_ad_personalization_signals:false});`,
-].join("\n");

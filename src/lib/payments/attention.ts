@@ -50,7 +50,11 @@ const FUNDS_STATES = new Set([
   "PAYMENT_PROCESSED",
   "COMPLETED",
 ]);
-const ENDED_WITHOUT_PAYOUT = new Set(["FAILED", "CANCELLED", "EXPIRED"]);
+export const ENDED_WITHOUT_PAYOUT: ReadonlySet<string> = new Set([
+  "FAILED",
+  "CANCELLED",
+  "EXPIRED",
+]);
 
 export type AttentionInput = {
   status: string;

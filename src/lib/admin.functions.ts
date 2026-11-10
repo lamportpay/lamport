@@ -5,6 +5,7 @@ import { stuckSignal } from "./payments/stuck";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { isAdminSession, requireAdminSession as requireAdmin } from "@/lib/admin-guard";
 import { toPaymentView } from "@/lib/payments/view";
 import { logAdminActions } from "./admin.audit.server";
 import {
@@ -15,18 +16,6 @@ import {
   type AdminStablesPaymentRow,
   type AdminUnmatchedTravelRule,
 } from "./admin.constants";
-
-async function requireAdmin(context: {
-  supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => unknown };
-  userId: string;
-}) {
-  const { data: isAdmin, error } = (await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  })) as { data: boolean | null; error: unknown };
-  if (error) throw new Error("Could not verify admin access.");
-  if (!isAdmin) throw new Error("Admin role required.");
-}
 
 /**
  * One live Stables payment for admins: the same view (and receipt) the user
@@ -120,11 +109,7 @@ export const getStablesPaymentsAdmin = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) {
       return {
         isAdmin: false,
@@ -286,11 +271,7 @@ export const getRoleManagement = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) {
       return { isAdmin: false, roles: [] as AdminRoleRow[], invites: [] as AdminInviteRow[] };
     }
@@ -337,11 +318,7 @@ export const grantRoleByEmail = createServerFn({ method: "POST" })
     const { supabase, userId, claims } = context;
     const actor = { id: userId, email: (claims as { email?: string } | null)?.email ?? null };
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) throw new Error("Forbidden");
 
     const email = data.email.trim().toLowerCase();
@@ -405,11 +382,7 @@ export const revokeRole = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
 
-    const { data: isAdmin, error: roleError } = await supabase.rpc("has_role", {
-      _user_id: userId,
-      _role: "admin",
-    });
-    if (roleError) throw new Error("Could not verify admin access.");
+    const isAdmin = await isAdminSession(context);
     if (!isAdmin) throw new Error("Forbidden");
     if (data.userId === userId && data.role === "admin") {
       throw new Error("You cannot revoke your own admin role.");
@@ -454,7 +427,13 @@ export const cancelAdminInvite = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
 
-    const { data: deleted, error } = await supabase
+    // Invites change only through the service role (signed-in users hold SELECT only,
+    // 20261109120000_production_schema_hygiene.sql), so the admin check happens here.
+    const isAdmin = await isAdminSession(context);
+    if (!isAdmin) throw new Error("Forbidden");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: deleted, error } = await supabaseAdmin
       .from("admin_invites")
       .delete()
       .eq("id", data.id)
@@ -494,6 +473,9 @@ export const redeemAdminInvite = createServerFn({ method: "POST" })
     if (userError) throw new Error(userError.message);
     const email = (user?.user?.email ?? "").toLowerCase();
     if (!email) throw new Error("Your account has no email address.");
+    // An unconfirmed email proves nothing: whoever signs up first with an invited
+    // address must not receive the invite's role.
+    if (!user?.user?.email_confirmed_at) throw new Error("Confirm your email address first.");
 
     const { data: invite, error: inviteError } = await supabaseAdmin
       .from("admin_invites")
@@ -529,13 +511,29 @@ export const redeemAdminInvite = createServerFn({ method: "POST" })
   });
 
 /**
- * Demo bootstrap: lets the first signed-in operator claim the admin role while
- * no admin exists yet. Once an admin exists this always refuses.
+ * Bootstrap: lets the operator named in ADMIN_BOOTSTRAP_EMAIL claim the admin
+ * role while no admin exists yet (a fresh production database). The account's
+ * email must match and be confirmed; without the variable this always refuses,
+ * so the first person to sign in to a new database cannot make themselves admin.
+ * Once an admin exists this always refuses.
  */
 export const claimFirstAdminRole = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const bootstrapEmail = process.env["ADMIN_BOOTSTRAP_EMAIL"]?.trim().toLowerCase();
+    if (!bootstrapEmail) throw new Error("Admin bootstrap is not enabled on this server.");
+    const { data: me, error: meError } = await supabaseAdmin.auth.admin.getUserById(
+      context.userId,
+    );
+    if (meError) throw new Error(meError.message);
+    if (
+      !me?.user?.email_confirmed_at ||
+      (me.user.email ?? "").toLowerCase() !== bootstrapEmail
+    ) {
+      throw new Error("This account may not claim the admin role.");
+    }
 
     const { count, error: countError } = await supabaseAdmin
       .from("user_roles")

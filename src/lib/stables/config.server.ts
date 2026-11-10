@@ -10,8 +10,34 @@ export const STABLES_SANDBOX_URL = "https://api.sandbox.stables.money";
 export type StablesEnvironment = "sandbox" | "production";
 
 export type StablesConfig =
-  | { configured: true; apiKey: string; apiUrl: string; environment: StablesEnvironment }
+  | {
+      configured: true;
+      apiKey: string;
+      apiUrl: string;
+      environment: StablesEnvironment;
+      /**
+       * STABLES_PROXY_URL: the fixed-IP forward proxy that Stables calls (and only those) go
+       * through, for Stables' production IP allowlist. Secret (may hold proxy credentials);
+       * never logged. Null or absent: direct calls.
+       */
+      proxyUrl?: string | null;
+    }
   | { configured: false; reason: string };
+
+/** STABLES_PROXY_URL when set and valid; an error message (never the value) when invalid. */
+function proxyFromEnv(): { proxyUrl: string | null } | { error: string } {
+  const raw = process.env["STABLES_PROXY_URL"]?.trim();
+  if (!raw) return { proxyUrl: null };
+  try {
+    const url = new URL(raw);
+    if ((url.protocol === "http:" || url.protocol === "https:") && url.hostname) {
+      return { proxyUrl: raw };
+    }
+  } catch {
+    // Reported below without echoing the value (it may contain credentials).
+  }
+  return { error: "STABLES_PROXY_URL is not a valid http(s) proxy URL." };
+}
 
 export function getStablesConfig(): StablesConfig {
   const apiKey = process.env["STABLES_API_KEY"]?.trim();
@@ -61,7 +87,10 @@ export function getStablesConfig(): StablesConfig {
     return { configured: false, reason: "Devnet / sandbox mode cannot use a live Stables key." };
   }
 
-  return { configured: true, apiKey, apiUrl, environment };
+  const proxy = proxyFromEnv();
+  if ("error" in proxy) return { configured: false, reason: proxy.error };
+
+  return { configured: true, apiKey, apiUrl, environment, proxyUrl: proxy.proxyUrl };
 }
 
 /** Signing secret (`whsec_…`) of the dashboard-managed (Svix) webhook endpoint. */

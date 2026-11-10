@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate, Outlet } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ShieldAlert } from "lucide-react";
@@ -28,6 +28,16 @@ function AdminLayout() {
       <div className="min-h-screen grid place-items-center text-sm text-muted-foreground">
         Loading admin…
       </div>
+    );
+  }
+  if (session.data?.mfaRequired) {
+    // Admin account, but this session has not passed the authenticator step yet.
+    return (
+      <Navigate
+        to="/admin/login"
+        search={{ next: `${window.location.pathname}${window.location.search}` }}
+        replace
+      />
     );
   }
   if (session.isError || !session.data?.isAdmin) {
