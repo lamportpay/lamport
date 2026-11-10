@@ -17,7 +17,8 @@ needed. "TEST" and "LIVE" are the app modes (`src/lib/app-mode.server.ts`).
 | `LAMPORTPAY_MODE` | P | `test` | `test` | `live` | Server mode; must equal the next one |
 | `VITE_LAMPORTPAY_MODE` | P | `test` | `test` | `live` | Browser build mode |
 | `LAMPORTPAY_LIVE_APPROVED_BY`, `LAMPORTPAY_LIVE_APPROVED_AT` | P | never | never | at LIVE unlock only | Part of the LIVE gate with the code lock |
-| `LAMPORTPAY_LIVE_URL` | P | never | never | `https://lamportpay.com` | |
+| `LAMPORTPAY_LIVE_URL` | P | never | never | `https://lamportpay.com` | `https://lamport-kohl.vercel.app` until the DNS switch (11 Nov) |
+| `LAMPORTPAY_LIVE_DATABASE_REF` | P | never | never | `gdksfksypkcfiohozzsx` | Lets LIVE run on the current Supabase project until a separate production project exists (owner decision 11 Nov 2026); remove it when that project is used |
 | `LAMPORTPAY_TEST_URL` | P | – | optional | optional | Link to the test deployment |
 | `LAMPORTPAY_SHARED_DB` | P | never | never | never (legacy) | Refused setups |
 | `VERCEL_ENV` | set by Vercel | – | `preview` | `production` | Not set by hand. LIVE runs only when it is exactly `production`; a Preview refuses LIVE even with production values (9 Nov) |

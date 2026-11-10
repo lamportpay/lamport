@@ -130,7 +130,10 @@ function liveBlockers(env: Env, codeUnlocked: boolean): string[] {
   if (!mainnetRpc) blockers.push("A dedicated Solana mainnet RPC (SOLANA_RPC_URL) is not set.");
   else if (looksTestCluster(mainnetRpc)) blockers.push("SOLANA_RPC_URL points at a test cluster.");
   const supabase = env["SUPABASE_URL"] ?? "";
-  if (!supabase || supabase.includes(DEV_SUPABASE_REF)) {
+  // Decision 11 Nov 2026: until a separate production project exists, LIVE may run on the
+  // current project, but only when the deployment names it explicitly.
+  const currentDbForLive = env["LAMPORTPAY_LIVE_DATABASE_REF"]?.trim() === DEV_SUPABASE_REF;
+  if (!supabase || (supabase.includes(DEV_SUPABASE_REF) && !currentDbForLive)) {
     blockers.push("Live mode must use the production database, not the dev project.");
   }
   if (!hostOf(env["LAMPORTPAY_LIVE_URL"]))

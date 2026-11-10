@@ -33,6 +33,9 @@ import { Route as StatusRoute } from "@/routes/api/integration-status";
 import { Route as SwitchRoute } from "@/routes/api/mode/switch-request";
 import { LIVE_ENV, TEST_ENV } from "./support/app-mode";
 
+/** A complete LIVE configuration without the recorded owner approval: LIVE stays inactive. */
+const { LAMPORTPAY_LIVE_APPROVED_BY: _approvedBy, ...LIVE_WITHOUT_APPROVAL } = LIVE_ENV;
+
 type Handler = (ctx: { request: Request }) => Promise<Response>;
 const handler = (route: unknown, method: "GET" | "POST") =>
   (route as { options: { server: { handlers: Record<string, Handler> } } }).options.server.handlers[
@@ -249,7 +252,7 @@ describe("1. TEST MODE cannot call production endpoints", () => {
   });
 
   it("a LIVE request that fails its gates never reaches Jupiter either", async () => {
-    useEnv({ ...LIVE_ENV }); // code lock closed → LIVE is not active
+    useEnv(LIVE_WITHOUT_APPROVAL); // no recorded approval: LIVE is not active
     await expect(
       getOrder({ inputMint: SOL_MINT, outputMint: USDC_MINT, amount: 1_000_000n }),
     ).rejects.toBeInstanceOf(ModeGuardError);
@@ -408,7 +411,7 @@ describe("3. The mode indicator reflects the server's environment", () => {
   });
 
   it("reports a blocked server as blocked, whatever the page thinks", async () => {
-    useEnv({ ...LIVE_ENV }); // LIVE requested, but the code lock is closed
+    useEnv(LIVE_WITHOUT_APPROVAL); // LIVE requested, but no recorded approval
     const res = await handler(
       StatusRoute,
       "GET",
@@ -502,12 +505,20 @@ describe("4. Switching modes cannot bypass server-side protection", () => {
 // ---------------------------------------------------------------- 5
 
 describe("5. LIVE MODE stays disabled until configured AND approved", () => {
-  it("ships with the code lock closed", () => {
-    expect(LIVE_MODE_CODE_UNLOCKED).toBe(false);
+  it("ships with the code lock open (owner decision, 11 Nov 2026)", () => {
+    expect(LIVE_MODE_CODE_UNLOCKED).toBe(true);
   });
 
-  it("a complete production configuration alone does not enable it", () => {
-    useEnv({ ...LIVE_ENV });
+  it("a closed code lock blocks even a complete, approved configuration", () => {
+    expect(evaluateMode({ ...LIVE_ENV }, false)).toMatchObject({
+      ok: false,
+      liveAvailable: false,
+    });
+  });
+
+  it("a production configuration without the recorded approval does not enable it", () => {
+    const { LAMPORTPAY_LIVE_APPROVED_BY: _by, ...noApproval } = LIVE_ENV;
+    useEnv({ ...noApproval });
     const s = currentMode();
     expect(s).toMatchObject({ mode: "live", ok: false, liveAvailable: false, liveUrl: null });
     expect(() => requireModeProfile()).toThrow(
@@ -547,8 +558,20 @@ describe("5. LIVE MODE stays disabled until configured AND approved", () => {
     });
   });
 
+  it("runs on the current database only when the deployment names it (11 Nov 2026)", () => {
+    const currentDb = { ...LIVE_ENV, SUPABASE_URL: "https://gdksfksypkcfiohozzsx.supabase.co" };
+    expect(evaluateMode(currentDb, true).ok).toBe(false);
+    expect(
+      evaluateMode({ ...currentDb, LAMPORTPAY_LIVE_DATABASE_REF: "gdksfksypkcfiohozzsx" }, true).ok,
+    ).toBe(true);
+    expect(
+      evaluateMode({ ...currentDb, LAMPORTPAY_LIVE_DATABASE_REF: "zmcbnknjatrfwrcfvtzt" }, true).ok,
+    ).toBe(false);
+  });
+
   it("blocks payment API calls with 503 when LIVE is requested but not enabled", async () => {
-    useEnv({ ...LIVE_ENV });
+    const { LAMPORTPAY_LIVE_APPROVED_BY: _by, ...noApproval } = LIVE_ENV;
+    useEnv({ ...noApproval });
     const { handleUserRequest } = await import("@/lib/payments/http.server");
     const res = await handleUserRequest(new Request("http://x"), undefined, async () =>
       Response.json({ reached: true }),

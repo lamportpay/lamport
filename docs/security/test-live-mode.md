@@ -64,6 +64,16 @@ confirmation, opens it. Nothing the browser sends can change which endpoints the
 - Switch → confirmation dialog → server answer. Today it answers "not available" with a reason.
 - LIVE MODE only: a red warning on the funding and swap panels before any wallet approval.
 
+## LIVE opened on Production (11 Nov 2026)
+
+Owner decision, 11 Nov 2026 03:50 PKT: the code lock is open (`src/lib/app-mode-lock.ts`) so
+real-money tests run on the Vercel Production deployment (`https://lamport-kohl.vercel.app`)
+before `lamportpay.com` moves to Vercel. The current Supabase project (`gdksfksypkcfiohozzsx`)
+is the database for now; LIVE accepts it only with `LAMPORTPAY_LIVE_DATABASE_REF` set to that
+ref. LIVE still needs the recorded approval, every production value and `VERCEL_ENV=production`;
+Previews stay TEST. To lock LIVE again: set `LIVE_MODE_CODE_UNLOCKED` back to `false` and
+deploy, or set `LAMPORTPAY_MODE=test` (with the sandbox values) in Vercel Production and redeploy.
+
 ## Owner steps to go live (later, not now)
 
 1. Separate production deployment + production database + production Stables key + mainnet RPC.
