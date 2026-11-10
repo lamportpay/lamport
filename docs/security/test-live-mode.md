@@ -39,6 +39,14 @@ confirmation, opens it. Nothing the browser sends can change which endpoints the
 - LIVE MODE needs **all** of: the code lock `src/lib/app-mode-lock.ts` opened in a reviewed
   commit, `LAMPORTPAY_LIVE_APPROVED_BY` + `LAMPORTPAY_LIVE_APPROVED_AT`, production Stables URL and
   live key, `SOLANA_RPC_URL` (not a test cluster), production `SUPABASE_URL`, `LAMPORTPAY_LIVE_URL`.
+- LIVE MODE also requires `VERCEL_ENV` to be exactly `production` (9 Nov 2026). Vercel sets it;
+  a Preview (`preview`), local development (`development` or unset) or any other value refuses
+  LIVE even when every other LIVE value is present, so a Preview given production settings
+  returns 503 `mode_blocked` instead of moving real funds. TEST MODE does not depend on it.
+  The public status never mentions it. Tests: `tests/app-mode.unit.test.ts`, section 6.
+- A valid Solana priority-fee setting is also part of the LIVE check
+  (`SOLANA_COMPUTE_UNIT_LIMIT`, `SOLANA_PRIORITY_FEE_MICROLAMPORTS`; see
+  `docs/ENVIRONMENT-CHECKLIST.md`).
 - Public status (`/api/integration-status` → `mode`) hides configuration details; admins see
   them in Admin → System status.
 

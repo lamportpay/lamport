@@ -19,6 +19,10 @@ export class PaymentError extends Error {
       /** TEST MODE: an amount the payout partner's sandbox accepts, to start again with. */
       retryAmount?: string;
       retryCountry?: string;
+      /** A funding signature already sent and waiting for confirmation (public chain data). */
+      pendingSignature?: string;
+      /** When an earlier prepared transaction blocks a new one: seconds until it expires. */
+      retryAfterSeconds?: number;
     },
   ) {
     super(message);

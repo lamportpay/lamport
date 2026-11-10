@@ -252,20 +252,114 @@ export async function touchPayment(paymentId: string, patch: PaymentUpdate): Pro
   if (error) fail("Update payment", error);
 }
 
-/** Record the wallet the user will pay from, while the payment is not funded yet. */
+/**
+ * Record the wallet the user will pay from, while the payment is not funded.
+ * With `build` (the LIVE funding transaction just prepared), also keep its
+ * blockhash, and only while no funding signature is pending (a transaction
+ * reported meanwhile wins). The TEST flow passes no `build` and never touches
+ * the double-payment columns.
+ */
 export async function setPayerWallet(
   paymentId: string,
   wallet: string,
+  build?: { blockhash: string; lastValidBlockHeight: number },
 ): Promise<PaymentRow | null> {
-  const { data, error } = await supabaseAdmin
+  let query = supabaseAdmin
     .from("payments")
-    .update({ payer_wallet: wallet })
+    .update(
+      build
+        ? {
+            payer_wallet: wallet,
+            funding_build_blockhash: build.blockhash,
+            funding_build_last_valid_block_height: build.lastValidBlockHeight,
+          }
+        : { payer_wallet: wallet },
+    )
     .eq("id", paymentId)
-    .is("funding_signature", null)
-    .select("*")
-    .maybeSingle();
+    .is("funding_signature", null);
+  if (build) query = query.is("funding_pending_signature", null);
+  const { data, error } = await query.select("*").maybeSingle();
   if (error) fail("Record payer wallet", error);
   return data;
+}
+
+export type PendingFundingWrite = "recorded" | "busy";
+
+/**
+ * Store the wallet-returned funding signature as pending (double-payment
+ * protection, 9 Nov 2026). Only written while the payment has no verified
+ * funding and no other pending signature. Not unique across payments on
+ * purpose: a signature someone else records on their own payment must never
+ * block this one (on-chain verification decides which payment it funded).
+ * A pending signature never means "funded".
+ */
+export async function recordPendingFunding(
+  paymentId: string,
+  pending: { signature: string; at: string },
+): Promise<PendingFundingWrite> {
+  const { data, error } = await supabaseAdmin
+    .from("payments")
+    .update({
+      funding_pending_signature: pending.signature,
+      funding_pending_at: pending.at,
+      // Set on the first on-chain check (setPendingExpiryHeight).
+      funding_pending_last_valid_block_height: null,
+    })
+    .eq("id", paymentId)
+    .is("funding_signature", null)
+    .is("funding_pending_signature", null)
+    .select("id")
+    .maybeSingle();
+  if (error) fail("Record pending funding", error);
+  return data ? "recorded" : "busy";
+}
+
+/**
+ * Keep the block height after which the pending transaction can no longer land.
+ * Written once (first check), and only while `signature` is still the pending one.
+ */
+export async function setPendingExpiryHeight(
+  paymentId: string,
+  signature: string,
+  height: number,
+): Promise<void> {
+  const { error } = await supabaseAdmin
+    .from("payments")
+    .update({ funding_pending_last_valid_block_height: height })
+    .eq("id", paymentId)
+    .eq("funding_pending_signature", signature)
+    .is("funding_pending_last_valid_block_height", null);
+  if (error) fail("Record pending expiry height", error);
+}
+
+/** Clear the pending signature, only if it is still `signature`. True when cleared. */
+export async function clearPendingFunding(
+  paymentId: string,
+  signature: string,
+  /**
+   * The transaction was processed and failed (or paid nothing): also forget the
+   * prepared transaction, whose identical copy Solana would now refuse as
+   * already processed, so the customer gets a fresh one.
+   */
+  forgetBuild = false,
+): Promise<boolean> {
+  const { data, error } = await supabaseAdmin
+    .from("payments")
+    .update({
+      funding_pending_signature: null,
+      funding_pending_at: null,
+      funding_pending_last_valid_block_height: null,
+      ...(forgetBuild && {
+        funding_build_blockhash: null,
+        funding_build_last_valid_block_height: null,
+      }),
+    })
+    .eq("id", paymentId)
+    .eq("funding_pending_signature", signature)
+    .select("id")
+    .maybeSingle();
+  if (error) fail("Clear pending funding", error);
+  return Boolean(data);
 }
 
 export type FundingWrite =

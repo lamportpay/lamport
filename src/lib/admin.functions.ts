@@ -427,7 +427,13 @@ export const cancelAdminInvite = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId, claims } = context;
 
-    const { data: deleted, error } = await supabase
+    // Invites change only through the service role (signed-in users hold SELECT only,
+    // 20261109120000_production_schema_hygiene.sql), so the admin check happens here.
+    const isAdmin = await isAdminSession(context);
+    if (!isAdmin) throw new Error("Forbidden");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: deleted, error } = await supabaseAdmin
       .from("admin_invites")
       .delete()
       .eq("id", data.id)

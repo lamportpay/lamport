@@ -1,4 +1,7 @@
-# Production cutover checklist: Vercel hosts lamportpay.com (prepared 31 Oct 2026)
+# Production cutover checklist: Vercel hosts lamportpay.com (prepared 31 Oct 2026, updated 11 Nov 2026)
+
+Status 11 Nov: Phase A open items are the merges below; Phases B-F not started.
+The shortest safe path to the first real payment is the order of this file.
 
 Owner decisions (31 Oct 2026): **`https://lamportpay.com` stays the one and only domain**: no
 `app.` subdomain, no new URL structure, canonical URLs, redirects, sitemap or SEO setup changed
@@ -23,14 +26,25 @@ approval at that moment; "Owner" = only the owner can do it (account access or s
 - [x] Owner: import the two rulesets (`.github/rulesets/README.md`). Done; both active on GitHub,
       verified 4 Nov.
 - [ ] Owner: in Lovable, switch the GitHub branch to `lovable/legacy`.
+- [ ] **Approval:** merge PR #7 (revenue engine on devnet, fixes, LIVE wording, Hyperliquid
+      testnet panel) and then PR #9 (Stables fixed-IP proxy) into `vercel-preview-migration`.
+- [ ] **Approval:** commit Batch 1 and merge it into `vercel-preview-migration`: LIVE only on
+      the Production deployment (`VERCEL_ENV=production`), double-payment protection including
+      two open windows (`docs/security/double-payment-protection.md`), configurable priority fee,
+      database clean-up migration. Apply migration `20261109100000` to dev first
+      (`docs/migration/apply-batch1-migrations.md`).
 
 ## Phase B: production database (separate from development)
 
 - [ ] Owner: Supabase organisation on **Pro** (the free plan's two projects are used).
 - [ ] **Approval:** create project "LamportPay Production" (region to decide; London `eu-west-2`
       suits a UK company, with Vercel functions moved to `lhr1` to sit next to it).
-- [ ] **Approval:** settle P1 (demo tables) in `docs/migration/production-database-review.md`,
-      then apply the 31 reviewed migrations in file order; run the checks listed there.
+- [x] P1 (demo tables) settled by migration `20261109120000_production_schema_hygiene.sql`
+      (drops them; 9 Nov).
+- [ ] **Approval:** apply all 35 migrations in file order with the Supabase CLI
+      (`supabase db push`, commands in `docs/migration/apply-batch1-migrations.md`); run the
+      checks listed there and in `docs/migration/production-database-review.md`. The same set
+      replays cleanly on a local Postgres (`scripts/db-replay/run.sh`).
 - [ ] Owner: dashboard settings (P5: Web3 provider, Site URL, redirect URLs, MFA,
       leaked-password protection).
 
@@ -51,8 +65,16 @@ approval at that moment; "Owner" = only the owner can do it (account access or s
 - [x] Stables' production key needs an IP allowlist (production checklist and dashboard, 3 Nov).
       Decision 4 Nov: one free Oracle Cloud "Always Free" server with a reserved IPv4 as the
       proxy (`docs/integrations/stables-fixed-ip.md`; Vercel Static IPs rejected on cost).
-- [ ] Owner: finish the Oracle account (card verification), then engineering creates the server,
-      verifies its outbound IP and proxy rules, and the owner sends the IP to Stables.
+- [x] Oracle account and server (7 Nov): reserved IP `130.210.11.66`, proxy only to the Stables
+      API hosts, password protected; outbound IP and rules verified (PR #9).
+- [ ] Owner: send `130.210.11.66` to Stables for the production allowlist; wait for written
+      confirmation. Move the Oracle account to pay-as-you-go so the free server is not reclaimed
+      when idle.
+- [ ] Production holds production values only: no sandbox Stables key or URL, no
+      `SOLANA_DEVNET_RPC_URL`, no `LAMPORTPAY_TEST_URL` test links. The TEST environment
+      (local and the Preview, dev database, devnet, Stables sandbox) stays as it is for
+      development and later tests. Optional priority-fee settings
+      `SOLANA_COMPUTE_UNIT_LIMIT` / `SOLANA_PRIORITY_FEE_MICROLAMPORTS` (defaults are safe).
 - [ ] Owner: `STABLES_PROXY_URL` (secret) in Vercel Production. LIVE refuses to start without it
       and without `STABLES_WEBHOOK_SECRET` (gates added 5 Nov). Full list of names and where each
       goes: `docs/ENVIRONMENT-CHECKLIST.md`.
@@ -89,8 +111,10 @@ approval at that moment; "Owner" = only the owner can do it (account access or s
 
 - [ ] **Approval:** LIVE unlock (reviewed change to `src/lib/app-mode-lock.ts`,
       `LAMPORTPAY_LIVE_APPROVED_BY` / `_AT`).
-- [ ] **Approval:** the 15 USDC real-money test (`docs/integrations/stables-production-checklist.md`
-      section D), then the soft launch.
+- [ ] **Approval:** the 15 USDC real-money test to the team's GBP bank account
+      (`docs/integrations/stables-production-checklist.md` section D and
+      `docs/testing/real-money-test-plan.md`, including section E: interrupted confirmation),
+      then the soft launch.
 
 ## Later (after the switch is stable)
 

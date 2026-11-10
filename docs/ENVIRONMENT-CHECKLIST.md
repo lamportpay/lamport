@@ -20,6 +20,7 @@ needed. "TEST" and "LIVE" are the app modes (`src/lib/app-mode.server.ts`).
 | `LAMPORTPAY_LIVE_URL` | P | never | never | `https://lamportpay.com` | |
 | `LAMPORTPAY_TEST_URL` | P | – | optional | optional | Link to the test deployment |
 | `LAMPORTPAY_SHARED_DB` | P | never | never | never (legacy) | Refused setups |
+| `VERCEL_ENV` | set by Vercel | – | `preview` | `production` | Not set by hand. LIVE runs only when it is exactly `production`; a Preview refuses LIVE even with production values (9 Nov) |
 
 ## Supabase
 
@@ -58,6 +59,8 @@ needed. "TEST" and "LIVE" are the app modes (`src/lib/app-mode.server.ts`).
 | `SOLANA_RPC_URL` | **S** (key in URL) | never | never | mainnet RPC (new key) | TEST refuses mainnet |
 | `SOLANA_TESTNET_RPC_URL` | **S** | optional | optional | – | |
 | `SOLANA_FEE_RESERVE_LAMPORTS` | P | optional | optional | optional | Fee reserve override |
+| `SOLANA_COMPUTE_UNIT_LIMIT` | P | empty | empty | empty or as decided | Funding transaction compute limit. Default 120000; allowed 50000 to 400000 (9 Nov) |
+| `SOLANA_PRIORITY_FEE_MICROLAMPORTS` | P | empty | empty | empty or as decided | Priority fee per compute unit. Default 10000 (= 0.0000012 SOL at the default limit); allowed 0 to 1000000. An invalid value blocks LIVE and stops funding transactions being built (9 Nov) |
 
 ## Jupiter (Mainnet API; no devnet exists)
 

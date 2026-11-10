@@ -137,7 +137,25 @@ beforeEach(() => {
   wallets.readWalletHoldings.mockImplementation(async (owner) => holdings(owner));
   wallets.solReserveLamports.mockResolvedValue(5_000_000n);
   wallets.tokenAccountRentLamports.mockResolvedValue(2_039_280n);
+  // Solana reads a test did not queue: the pending-signature check sees an
+  // unknown signature whose blockhash is still valid (in flight).
+  solana({ status: null, height: 0 });
 });
+
+/**
+ * Answers for the pending-signature check (getSignatureStatuses, getBlockHeight).
+ * Values queued with mockResolvedValueOnce (getTransaction, getLatestBlockhash) still come first.
+ */
+function solana(chain: {
+  status: { err: unknown; confirmationStatus?: string } | null;
+  height: number;
+}) {
+  rpcMock.mockImplementation((async (_cluster: string, method: string) => {
+    if (method === "getSignatureStatuses") return { ok: true, result: { value: [chain.status] } };
+    if (method === "getBlockHeight") return { ok: true, result: chain.height };
+    return { ok: false, error: `unexpected rpc ${method}`, status: 500 };
+  }) as never);
+}
 
 afterAll(() => {
   for (const [k, v] of Object.entries(savedEnv)) {
@@ -210,11 +228,11 @@ const BENEFICIARY = {
 };
 
 /** Payment whose transfer exists and waits for the user's USDC. */
-async function paymentAwaitingFunds(amount = "75") {
+async function paymentAwaitingFunds(amount = "75", transferId = "tr_1") {
   const payment = await quotedPayment(amount);
   const deposit = newWallet();
   api.validatePaymentMethod.mockResolvedValueOnce({ valid: true });
-  api.createTransfer.mockResolvedValueOnce(transfer("tr_1", deposit, amount));
+  api.createTransfer.mockResolvedValueOnce(transfer(transferId, deposit, amount));
   await service.createPaymentTransfer(user, payment.id, {
     purposeCode: "FAMILY_MAINTENANCE",
     beneficiary: BENEFICIARY,
@@ -222,11 +240,22 @@ async function paymentAwaitingFunds(amount = "75") {
   return { id: payment.id, deposit };
 }
 
-function mockBlockhash() {
-  rpcMock.mockResolvedValueOnce({
-    ok: true,
-    result: { value: { blockhash: newWallet(), lastValidBlockHeight: 100 } },
-  });
+/**
+ * The next getLatestBlockhash answers a fresh blockhash valid to height 100.
+ * Answers by method (not by call order), so the two-window check's
+ * getBlockHeight call before it is unaffected.
+ */
+function mockBlockhash(lastValidBlockHeight = 100) {
+  const previous = rpcMock.getMockImplementation();
+  let used = false;
+  rpcMock.mockImplementation((async (cluster: string, method: string, params: unknown) => {
+    if (method === "getLatestBlockhash" && !used) {
+      used = true;
+      return { ok: true, result: { value: { blockhash: newWallet(), lastValidBlockHeight } } };
+    }
+    if (previous) return (previous as (...a: unknown[]) => unknown)(cluster, method, params);
+    return { ok: false, error: `unexpected rpc ${method}`, status: 500 };
+  }) as never);
 }
 
 async function seedTransferPayment(status: string, overrides: Record<string, unknown> = {}) {
@@ -764,7 +793,8 @@ describe("deposit verification", () => {
   }
 
   async function prepared() {
-    const { id, deposit } = await paymentAwaitingFunds("75");
+    // A distinct Stables transfer per payment, so one test can prepare several.
+    const { id, deposit } = await paymentAwaitingFunds("75", `tr_${randomUUID()}`);
     const payer = newWallet();
     mockBlockhash();
     await service.buildFundingTransaction(user, id, payer);
@@ -775,7 +805,7 @@ describe("deposit verification", () => {
     const { id } = await prepared();
     const { signature } = await fund(null);
     await expect(service.verifyFunding(user, id, signature)).resolves.toEqual({ pending: true });
-    expect(rpcMock).toHaveBeenLastCalledWith("mainnet-beta", "getTransaction", [
+    expect(rpcMock).toHaveBeenCalledWith("mainnet-beta", "getTransaction", [
       signature,
       expect.objectContaining({ commitment: "finalized" }),
     ]);
@@ -789,17 +819,19 @@ describe("deposit verification", () => {
     });
 
   it("requires exactly the deposit amount", async () => {
-    const { id, deposit, payer } = await prepared();
     for (const [amount, shown] of [
       [74_999_999n, "74.999999"],
       [75_000_001n, "75.000001"],
     ] as const) {
+      // A fresh payment each time: a wrong amount that reached the deposit
+      // address keeps the payment from accepting a second transaction.
+      const { id, deposit, payer } = await prepared();
       const { signature } = await fund({ from: payer, to: deposit, amount });
       await expect(service.verifyFunding(user, id, signature)).rejects.toEqual(
         rejected(new RegExp(`deposit address received ${shown} USDC .* exactly 75 USDC`)),
       );
+      expect(paymentRow(id)["funding_signature"]).toBeNull();
     }
-    expect(paymentRow(id)["funding_signature"]).toBeNull();
   });
 
   it("warns not to send again once a wrong amount reached the deposit address", async () => {
@@ -832,16 +864,16 @@ describe("deposit verification", () => {
   });
 
   it("requires the payer wallet to sign and to be the one debited", async () => {
-    const { id, deposit, payer } = await prepared();
     const stranger = newWallet();
-
-    let tx = await fund({ from: stranger, to: deposit, amount: 75_000_000n });
-    await expect(service.verifyFunding(user, id, tx.signature)).rejects.toEqual(
+    const a = await prepared();
+    let tx = await fund({ from: stranger, to: a.deposit, amount: 75_000_000n });
+    await expect(service.verifyFunding(user, a.id, tx.signature)).rejects.toEqual(
       rejected(/not signed by your wallet/),
     );
 
-    tx = await fund({ from: stranger, to: deposit, amount: 75_000_000n, signer: payer });
-    await expect(service.verifyFunding(user, id, tx.signature)).rejects.toEqual(
+    const b = await prepared();
+    tx = await fund({ from: stranger, to: b.deposit, amount: 75_000_000n, signer: b.payer });
+    await expect(service.verifyFunding(user, b.id, tx.signature)).rejects.toEqual(
       rejected(/Your wallet sent 0/),
     );
   });
@@ -915,6 +947,330 @@ describe("deposit verification", () => {
     await expect(service.verifyFunding(user, id, fakeSignature())).rejects.toMatchObject({
       code: "test_mode_no_real_funds",
     });
+  });
+});
+
+// ------------------------------------- double-payment protection (Batch 1)
+
+describe("double-payment protection: pending funding signature (9 Nov)", () => {
+  async function prepared() {
+    const { id, deposit } = await paymentAwaitingFunds("75", `tr_${randomUUID()}`);
+    const payer = newWallet();
+    mockBlockhash(); // lastValidBlockHeight 100
+    await service.buildFundingTransaction(user, id, payer);
+    return { id, deposit, payer };
+  }
+  /** verifyFunding while the transaction is not finalized yet (getTransaction: null). */
+  async function sendNotFinalized(id: string, signature = fakeSignature()) {
+    rpcMock.mockResolvedValueOnce({ ok: true, result: null });
+    const result = await service.verifyFunding(user, id, signature);
+    return { signature, result };
+  }
+  const events = (id: string, kind: string) =>
+    db.table("payment_events").filter((e) => e["payment_id"] === id && e["kind"] === kind);
+
+  it("stores the wallet's signature as pending at once, without marking the payment funded", async () => {
+    const { id } = await prepared();
+    const { signature, result } = await sendNotFinalized(id);
+    expect(result).toEqual({ pending: true });
+    const row = paymentRow(id);
+    expect(row["funding_pending_signature"]).toBe(signature);
+    // Expiry bound from the first check: chain height then (0) + 151.
+    expect(row["funding_pending_last_valid_block_height"]).toBe(151);
+    expect(row["funding_signature"]).toBeNull();
+    expect(row["funding_verified_at"]).toBeNull();
+    const view = await service.getPaymentView(user, id);
+    expect(view.funding).toBeNull();
+    expect(view.fundingPending).toMatchObject({ signature });
+    expect(events(id, "funding_signature_received")).toHaveLength(1);
+  });
+
+  it("refuses to build another funding transaction while the first may still land", async () => {
+    const { id, payer } = await prepared();
+    const { signature } = await sendNotFinalized(id);
+    rpcMock.mockClear();
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      status: 409,
+      code: "funding_pending",
+      extra: { pendingSignature: signature },
+    });
+    // No new transaction was built (no blockhash fetched).
+    expect(rpcMock).not.toHaveBeenCalledWith(
+      "mainnet-beta",
+      "getLatestBlockhash",
+      expect.anything(),
+    );
+  });
+
+  it("refuses a different signature while one is pending", async () => {
+    const { id } = await prepared();
+    const { signature } = await sendNotFinalized(id);
+    await expect(service.verifyFunding(user, id, fakeSignature())).rejects.toMatchObject({
+      status: 409,
+      code: "funding_pending",
+    });
+    expect(paymentRow(id)["funding_pending_signature"]).toBe(signature);
+  });
+
+  it("repeating the same signature (Check again, or a double request) is idempotent", async () => {
+    const { id } = await prepared();
+    const { signature } = await sendNotFinalized(id);
+    await sendNotFinalized(id, signature);
+    await sendNotFinalized(id, signature);
+    expect(events(id, "funding_signature_received")).toHaveLength(1);
+    expect(paymentRow(id)["funding_pending_signature"]).toBe(signature);
+  });
+
+  it("after a reload, the pending signature is verified on-chain before the payment counts as funded", async () => {
+    const { id, deposit, payer } = await prepared();
+    const tx = usdcTransferTx({ from: payer, to: deposit, amount: 75_000_000n });
+    const signature = fakeSignature();
+    await sendNotFinalized(id, signature);
+    // Reload: the page reads the payment and offers Check again with the stored signature.
+    const reloaded = await service.getPaymentView(user, id);
+    expect(reloaded.fundingPending?.signature).toBe(signature);
+    rpcMock.mockResolvedValueOnce({ ok: true, result: tx });
+    const funded = await service.verifyFunding(user, id, reloaded.fundingPending!.signature);
+    expect(funded).toMatchObject({ pending: false, payment: { funding: { signature } } });
+    const row = paymentRow(id);
+    expect(row["funding_signature"]).toBe(signature);
+    expect(row["funding_pending_signature"]).toBeNull();
+    expect(row["funding_pending_at"]).toBeNull();
+    expect((await service.getPaymentView(user, id)).fundingPending).toBeNull();
+  });
+
+  it("releases a transaction Solana never saw once its blockhash expired, and allows paying again", async () => {
+    const { id, payer } = await prepared();
+    const { signature } = await sendNotFinalized(id);
+    solana({ status: null, height: 151 + 150 + 1 }); // past the expiry bound + margin
+    rpcMock.mockResolvedValueOnce({ ok: true, result: null });
+    await expect(service.verifyFunding(user, id, signature)).rejects.toMatchObject({
+      status: 409,
+      code: "funding_expired",
+    });
+    expect(paymentRow(id)["funding_pending_signature"]).toBeNull();
+    expect(events(id, "funding_pending_cleared")).toHaveLength(1);
+    mockBlockhash();
+    await expect(service.buildFundingTransaction(user, id, payer)).resolves.toMatchObject({
+      transaction: expect.any(String),
+    });
+  });
+
+  it("keeps waiting inside the expiry margin (a just-landed transaction is never misread)", async () => {
+    const { id, payer } = await prepared();
+    await sendNotFinalized(id);
+    solana({ status: null, height: 151 + 150 });
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      code: "funding_pending",
+    });
+  });
+
+  it("keeps a landed but not yet finalized transaction pending", async () => {
+    const { id, payer } = await prepared();
+    await sendNotFinalized(id);
+    solana({ status: { err: null }, height: 10_000 });
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      code: "funding_pending",
+    });
+  });
+
+  it("releases a transaction that failed on Solana, and prepares a fresh one", async () => {
+    const { id, payer } = await prepared();
+    const firstBlockhash = paymentRow(id)["funding_build_blockhash"];
+    const { signature } = await sendNotFinalized(id);
+    solana({
+      status: { err: { InstructionError: [0, "Custom"] }, confirmationStatus: "confirmed" },
+      height: 0,
+    });
+    rpcMock.mockResolvedValueOnce({ ok: true, result: null });
+    await expect(service.verifyFunding(user, id, signature)).rejects.toMatchObject({
+      status: 422,
+      code: "funding_rejected",
+    });
+    expect(paymentRow(id)["funding_pending_signature"]).toBeNull();
+    expect(paymentRow(id)["funding_build_blockhash"]).toBeNull();
+    mockBlockhash();
+    const fresh = await service.buildFundingTransaction(user, id, payer);
+    // Not the failed transaction again (Solana would refuse it as already processed).
+    expect(fresh.blockhash).not.toBe(firstBlockhash);
+  });
+
+  it("refuses (503) rather than guessing when Solana cannot be read", async () => {
+    const { id, payer } = await prepared();
+    await sendNotFinalized(id);
+    rpcMock.mockImplementation((async () => ({ ok: false, error: "down", status: 503 })) as never);
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      status: 503,
+      code: "funding_status_unavailable",
+    });
+  });
+
+  it("keeps the payment blocked when a wrong amount reached the deposit address", async () => {
+    const { id, deposit, payer } = await prepared();
+    const signature = fakeSignature();
+    rpcMock.mockResolvedValueOnce({
+      ok: true,
+      result: usdcTransferTx({ from: payer, to: deposit, amount: 75_500_000n }),
+    });
+    await expect(service.verifyFunding(user, id, signature)).rejects.toMatchObject({
+      code: "funding_rejected",
+    });
+    expect(paymentRow(id)["funding_pending_signature"]).toBe(signature);
+    solana({ status: { err: null }, height: 10_000 });
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      code: "funding_pending",
+    });
+  });
+
+  it("releases the pending signature when nothing reached the deposit address", async () => {
+    const { id, payer } = await prepared();
+    const signature = fakeSignature();
+    rpcMock.mockResolvedValueOnce({
+      ok: true,
+      result: usdcTransferTx({ from: payer, to: newWallet(), amount: 75_000_000n }),
+    });
+    await expect(service.verifyFunding(user, id, signature)).rejects.toMatchObject({
+      code: "funding_rejected",
+    });
+    expect(paymentRow(id)["funding_pending_signature"]).toBeNull();
+  });
+
+  it("a signature recorded on another payment never blocks this one (review 10 Nov)", async () => {
+    // Someone records this payment's signature on their own payment first.
+    const other = await prepared();
+    const { signature } = await sendNotFinalized(other.id);
+    const mine = await prepared();
+    const { result } = await sendNotFinalized(mine.id, signature);
+    expect(result).toEqual({ pending: true });
+    expect(paymentRow(mine.id)["funding_pending_signature"]).toBe(signature);
+  });
+
+  it("a transaction sent with a newer blockhash than the last build is not released early (review 10 Nov)", async () => {
+    // Built when the chain was low (blockhash valid to 100); the wallet sent a
+    // transaction later, reported when the chain is at 1000.
+    const { id, payer } = await prepared();
+    solana({ status: null, height: 1000 });
+    const { signature } = await sendNotFinalized(id);
+    expect(paymentRow(id)["funding_pending_last_valid_block_height"]).toBe(1151);
+    // Far past the build's blockhash, still inside this transaction's window.
+    solana({ status: null, height: 1151 + 150 });
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      code: "funding_pending",
+    });
+    // Only past this transaction's own window (+ margin) is it released.
+    solana({ status: null, height: 1151 + 151 });
+    rpcMock.mockResolvedValueOnce({ ok: true, result: null });
+    await expect(service.verifyFunding(user, id, signature)).rejects.toMatchObject({
+      code: "funding_expired",
+    });
+    mockBlockhash();
+    await expect(service.buildFundingTransaction(user, id, payer)).resolves.toBeTruthy();
+  });
+
+  it("a failure seen only at processed commitment keeps the payment blocked (review 10 Nov)", async () => {
+    const { id, payer } = await prepared();
+    const { signature } = await sendNotFinalized(id);
+    solana({ status: { err: { InstructionError: [0, "Custom"] }, confirmationStatus: "processed" }, height: 0 });
+    rpcMock.mockResolvedValueOnce({ ok: true, result: null });
+    await expect(service.verifyFunding(user, id, signature)).resolves.toEqual({ pending: true });
+    expect(paymentRow(id)["funding_pending_signature"]).toBe(signature);
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      code: "funding_pending",
+    });
+  });
+
+  it("a second signature while one is pending is refused and kept on the timeline (review 10 Nov)", async () => {
+    const { id } = await prepared();
+    const { signature: first } = await sendNotFinalized(id);
+    const second = fakeSignature();
+    await expect(service.verifyFunding(user, id, second)).rejects.toMatchObject({
+      code: "funding_pending",
+    });
+    expect(events(id, "funding_signature_refused")).toEqual([
+      expect.objectContaining({
+        detail: expect.objectContaining({ signature: second, pendingSignature: first }),
+      }),
+    ]);
+  });
+
+  it("the payer wallet is not recorded once a signature is pending (build race, review 10 Nov)", async () => {
+    const { id, payer } = await prepared();
+    await sendNotFinalized(id);
+    await expect(
+      ledger.setPayerWallet(id, payer, { blockhash: newWallet(), lastValidBlockHeight: 500 }),
+    ).resolves.toBeNull();
+  });
+
+  // ----------------------------------------------- two windows (review 10 Nov)
+
+  it("two windows get the identical transaction while the first can still land", async () => {
+    const { id } = await paymentAwaitingFunds("75", `tr_${randomUUID()}`);
+    const payer = newWallet();
+    mockBlockhash(); // valid to 100; chain at 0
+    const first = await service.buildFundingTransaction(user, id, payer);
+    expect(paymentRow(id)["funding_build_blockhash"]).toBe(first.blockhash);
+    rpcMock.mockClear();
+    const second = await service.buildFundingTransaction(user, id, payer);
+    // Same inputs and blockhash: byte-for-byte the same transaction, so the
+    // same signature if both are signed, and Solana processes it once.
+    expect(second.transaction).toBe(first.transaction);
+    expect(second.blockhash).toBe(first.blockhash);
+    expect(rpcMock).not.toHaveBeenCalledWith("mainnet-beta", "getLatestBlockhash", expect.anything());
+    expect(events(id, "funding_transaction_built")).toHaveLength(2);
+  });
+
+  it("another wallet cannot prepare a payment while the first window's can still land", async () => {
+    const { id } = await prepared();
+    const other = newWallet();
+    await expect(service.buildFundingTransaction(user, id, other)).rejects.toMatchObject({
+      status: 409,
+      code: "funding_in_progress",
+      extra: { retryAfterSeconds: expect.any(Number) },
+    });
+  });
+
+  it("close to the first transaction's expiry, nothing new is handed out", async () => {
+    const { id, payer } = await prepared(); // valid to 100
+    solana({ status: null, height: 85 });
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      code: "funding_prepare_wait",
+    });
+    solana({ status: null, height: 110 }); // still inside the lag margin
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      code: "funding_prepare_wait",
+    });
+  });
+
+  it("after the first transaction expired, a new one is built", async () => {
+    const { id, payer } = await prepared();
+    const first = paymentRow(id)["funding_build_blockhash"];
+    solana({ status: null, height: 111 });
+    mockBlockhash(400);
+    const fresh = await service.buildFundingTransaction(user, id, payer);
+    expect(fresh.blockhash).not.toBe(first);
+    expect(paymentRow(id)["funding_build_last_valid_block_height"]).toBe(400);
+  });
+
+  it("refuses (503) when Solana cannot be read and an earlier transaction exists", async () => {
+    const { id, payer } = await prepared();
+    rpcMock.mockImplementation((async () => ({ ok: false, error: "down", status: 503 })) as never);
+    await expect(service.buildFundingTransaction(user, id, payer)).rejects.toMatchObject({
+      status: 503,
+      code: "funding_status_unavailable",
+    });
+  });
+
+  it("concurrent verifications of the same signature record it once", async () => {
+    const { id } = await prepared();
+    const signature = fakeSignature();
+    rpcMock.mockResolvedValueOnce({ ok: true, result: null });
+    rpcMock.mockResolvedValueOnce({ ok: true, result: null });
+    const results = await Promise.all([
+      service.verifyFunding(user, id, signature),
+      service.verifyFunding(user, id, signature),
+    ]);
+    expect(results).toEqual([{ pending: true }, { pending: true }]);
+    expect(events(id, "funding_signature_received")).toHaveLength(1);
   });
 });
 
@@ -2493,11 +2849,16 @@ describe("terminal transfer webhooks are confirmed with Stables (30 Oct 2026)", 
 
   it("does not complete a payment on a signed COMPLETED event that Stables does not confirm", async () => {
     const { id, deposit } = await paymentAwaitingFunds();
-    api.getTransfer.mockResolvedValueOnce(transfer("tr_1", deposit, "75", "awaiting_funds_collection"));
+    api.getTransfer.mockResolvedValueOnce(
+      transfer("tr_1", deposit, "75", "awaiting_funds_collection"),
+    );
     await deliver(
       transferEvent("tr_1", "COMPLETED", { actual_payout: { amount: "9999", currency: "INR" } }),
     );
-    expect(paymentRow(id)).toMatchObject({ status: "AWAITING_FUNDS_COLLECTION", actual_payout_minor: null });
+    expect(paymentRow(id)).toMatchObject({
+      status: "AWAITING_FUNDS_COLLECTION",
+      actual_payout_minor: null,
+    });
     expect(storedEvent()["processed_at"]).not.toBeNull();
   });
 

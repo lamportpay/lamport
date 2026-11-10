@@ -4,9 +4,16 @@
  * holds keys; the user's wallet signs and sends. Both mints use the classic SPL
  * Token program and 6 decimals.
  */
-import { PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
+import {
+  ComputeBudgetProgram,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+  TransactionInstruction,
+} from "@solana/web3.js";
 
 import { toMajor } from "./money";
+import { priorityFeeConfig } from "./solana-priority-fee";
 import { getTokenInfo, USDC_MINT } from "./tokens";
 import { rpc } from "./solana-rpc.server";
 
@@ -141,7 +148,13 @@ export async function buildUsdcTransferTransaction(input: {
   amountMinor: bigint;
   mint?: string;
   fee?: { recipient: string; amountMinor: bigint };
-}): Promise<{ transaction: string; lastValidBlockHeight: number }> {
+  /**
+   * Reuse this blockhash instead of fetching a new one. With the same inputs
+   * the transaction is byte-for-byte identical, so signing it twice gives the
+   * same signature and Solana processes it once (two-window protection).
+   */
+  blockhash?: { blockhash: string; lastValidBlockHeight: number };
+}): Promise<{ transaction: string; blockhash: string; lastValidBlockHeight: number }> {
   const token = stablecoin(input.mint ?? USDC_MINT);
   const payer = new PublicKey(input.payer);
   const recipient = new PublicKey(input.recipient);
@@ -153,19 +166,30 @@ export async function buildUsdcTransferTransaction(input: {
   if (fee && (fee.recipient === input.recipient || fee.recipient === input.payer)) {
     throw new Error("The fee recipient must differ from the payer and the deposit address.");
   }
+  // Compute budget from server configuration (validated; refuses when invalid).
+  const budget = priorityFeeConfig();
+  if (!budget.ok) throw new Error(`Invalid Solana priority fee setting: ${budget.error}`);
 
-  const blockhash = await rpc<{ value: { blockhash: string; lastValidBlockHeight: number } }>(
-    "mainnet-beta",
-    "getLatestBlockhash",
-    [{ commitment: "confirmed" }],
-  );
-  if (!blockhash.ok) throw new Error(blockhash.error);
+  let recent = input.blockhash;
+  if (!recent) {
+    const fetched = await rpc<{ value: { blockhash: string; lastValidBlockHeight: number } }>(
+      "mainnet-beta",
+      "getLatestBlockhash",
+      [{ commitment: "confirmed" }],
+    );
+    if (!fetched.ok) throw new Error(fetched.error);
+    recent = fetched.result.value;
+  }
 
   const tx = new Transaction({
     feePayer: payer,
-    blockhash: blockhash.result.value.blockhash,
-    lastValidBlockHeight: blockhash.result.value.lastValidBlockHeight,
+    blockhash: recent.blockhash,
+    lastValidBlockHeight: recent.lastValidBlockHeight,
   }).add(
+    // Paid in SOL by the payer as part of the network fee; separate from the
+    // LamportPay fee, and still one signature.
+    ComputeBudgetProgram.setComputeUnitLimit({ units: budget.fee.computeUnitLimit }),
+    ComputeBudgetProgram.setComputeUnitPrice({ microLamports: budget.fee.microLamportsPerUnit }),
     createAtaIdempotent(payer, destination, recipient, token.key),
     transferChecked(source, token.key, destination, payer, input.amountMinor, token.decimals),
   );
@@ -182,8 +206,16 @@ export async function buildUsdcTransferTransaction(input: {
     transaction: tx
       .serialize({ requireAllSignatures: false, verifySignatures: false })
       .toString("base64"),
-    lastValidBlockHeight: blockhash.result.value.lastValidBlockHeight,
+    blockhash: recent.blockhash,
+    lastValidBlockHeight: recent.lastValidBlockHeight,
   };
+}
+
+/** Current mainnet block height (confirmed); throws when Solana cannot be read. */
+export async function currentBlockHeight(): Promise<number> {
+  const height = await rpc<number>("mainnet-beta", "getBlockHeight", [{ commitment: "confirmed" }]);
+  if (!height.ok) throw new Error(height.error);
+  return height.result;
 }
 
 const MEMO_PROGRAM = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
@@ -354,5 +386,75 @@ export async function verifyUsdcDeposit(input: {
     payer: input.payer,
     slot: tx.result.slot,
     blockTime: tx.result.blockTime,
+  };
+}
+
+// ------------------------------------------- pending funding signature (9 Nov)
+
+/**
+ * Where a wallet-returned funding signature stands on mainnet:
+ * - "landed": Solana knows it and it succeeded (verification decides the rest);
+ * - "failed": it failed at confirmed or finalized commitment (nothing moved);
+ * - "expired": Solana does not know it and it can no longer land (safe to build
+ *   a new transaction);
+ * - "in_flight": not known yet, or only seen at processed commitment; it could
+ *   still land (do not send again).
+ */
+export type PendingSignatureState = "landed" | "failed" | "expired" | "in_flight";
+
+/**
+ * A blockhash can be used for 150 blocks after its own block. Every transaction
+ * reported to us was sent at or before the first check, so its blockhash is no
+ * newer than the chain height at that check: it can no longer land once the
+ * chain passes that height + this many blocks. This holds whatever blockhash
+ * the wallet used (a later build, a manual send, a wallet that refreshed it).
+ */
+export const BLOCKHASH_VALIDITY_BLOCKS = 151;
+/**
+ * Extra blocks before an unseen signature counts as expired. Signature lookups
+ * and RPC nodes can lag the chain tip; about a minute of blocks keeps a
+ * just-landed transaction from being misread.
+ */
+export const PENDING_EXPIRY_MARGIN_BLOCKS = 150;
+
+type SignatureStatus = { err: unknown; confirmationStatus?: string | null } | null;
+
+/**
+ * Read-only RPC checks; throws when Solana cannot be read (callers refuse,
+ * never guess). `expiryHeight` is the stored bound for this signature; when it
+ * is null (first check) the bound is computed from the current height and
+ * returned for the caller to store.
+ */
+export async function pendingSignatureState(input: {
+  signature: string;
+  expiryHeight: number | null;
+  /** Payments always use mainnet; devnet only for the read-only live test. */
+  cluster?: "mainnet-beta" | "devnet";
+}): Promise<{ state: PendingSignatureState; expiryHeight: number | null }> {
+  const cluster = input.cluster ?? "mainnet-beta";
+  const statuses = await rpc<{ value: SignatureStatus[] }>(cluster, "getSignatureStatuses", [
+    [input.signature],
+    { searchTransactionHistory: true },
+  ]);
+  if (!statuses.ok) throw new Error(statuses.error);
+  const status = statuses.result.value[0] ?? null;
+  if (status) {
+    if (status.err == null) return { state: "landed", expiryHeight: input.expiryHeight };
+    // A failure seen only at processed commitment can still be replaced by the
+    // cluster's final result: wait until it is confirmed.
+    const settled =
+      status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized";
+    return { state: settled ? "failed" : "in_flight", expiryHeight: input.expiryHeight };
+  }
+
+  const height = await rpc<number>(cluster, "getBlockHeight", [{ commitment: "confirmed" }]);
+  if (!height.ok) throw new Error(height.error);
+  if (input.expiryHeight === null) {
+    return { state: "in_flight", expiryHeight: height.result + BLOCKHASH_VALIDITY_BLOCKS };
+  }
+  return {
+    state:
+      height.result > input.expiryHeight + PENDING_EXPIRY_MARGIN_BLOCKS ? "expired" : "in_flight",
+    expiryHeight: input.expiryHeight,
   };
 }
