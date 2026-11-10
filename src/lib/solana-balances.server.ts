@@ -9,6 +9,7 @@ import { PublicKey } from "@solana/web3.js";
 
 import { MODE_PROFILES } from "./app-mode";
 import { currentMode } from "./app-mode.server";
+import { priorityFeeConfig } from "./solana-priority-fee";
 import { activeCluster, rpc } from "./solana-rpc.server";
 import { associatedTokenAddress, isValidPublicKey } from "./solana-usdc.server";
 import { PAYMENT_CURRENCIES, type PaymentCurrency } from "./tokens";
@@ -239,7 +240,14 @@ export async function solReserveLamports(input: SolReserveInput): Promise<bigint
   const margin = solFeeReserveMarginLamports();
   if (!isValidPublicKey(input.payer)) return "unavailable";
 
-  let lamports = LAMPORTS_PER_SIGNATURE * FUNDING_SIGNATURES + FUNDING_PRIORITY_ALLOWANCE_LAMPORTS;
+  // The configured priority fee (solana-priority-fee.ts) when it is larger than
+  // the standing allowance, so the SOL check always covers what the wallet pays.
+  const budget = priorityFeeConfig();
+  const priority =
+    budget.ok && budget.fee.maxLamports > FUNDING_PRIORITY_ALLOWANCE_LAMPORTS
+      ? budget.fee.maxLamports
+      : FUNDING_PRIORITY_ALLOWANCE_LAMPORTS;
+  let lamports = LAMPORTS_PER_SIGNATURE * FUNDING_SIGNATURES + priority;
   const rentChecks: Promise<boolean | "unavailable">[] = [];
   if (input.depositOwner != null && input.mint != null) {
     // The funding transaction creates Stables' deposit token account if missing, at the payer's cost.

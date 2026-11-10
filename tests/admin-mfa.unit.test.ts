@@ -43,26 +43,24 @@ describe("admin access needs the authenticator step (aal2)", () => {
 });
 
 describe("database: has_role() requires aal2 for the admin role", () => {
-  const sql = readFileSync(
-    new URL("../supabase/migrations/20261030120000_admin_role_requires_mfa.sql", import.meta.url),
-    "utf8",
-  );
+  const dir = new URL("../supabase/migrations/", import.meta.url);
+  const defining = readdirSync(dir)
+    .filter((f) => f.endsWith(".sql"))
+    .filter((f) => /function public\.has_role/i.test(readFileSync(new URL(f, dir), "utf8")))
+    .sort();
+  const latest = readFileSync(new URL(defining.at(-1)!, dir), "utf8");
 
-  it("requires aal2 for admin, keeps self-only and the service role", () => {
-    expect(sql).toMatch(/create or replace function public\.has_role\(_user_id uuid, _role public\.app_role\)/);
-    expect(sql).toMatch(/_role <> 'admin' or coalesce\(auth\.jwt\(\) ->> 'aal', ''\) = 'aal2'/);
-    expect(sql).toMatch(/_user_id = auth\.uid\(\)/);
-    expect(sql).toMatch(/coalesce\(auth\.role\(\), ''\) = 'service_role'/);
-    expect(sql).toMatch(/security definer/);
+  it("the latest definition is the 9 Nov hygiene migration (empty search_path)", () => {
+    expect(defining.at(-1)).toBe("20261109120000_production_schema_hygiene.sql");
+    expect(latest).toMatch(/security definer\s+set search_path = ''/);
   });
 
-  it("is the latest definition of has_role", () => {
-    const dir = new URL("../supabase/migrations/", import.meta.url);
-    const defining = readdirSync(dir)
-      .filter((f) => f.endsWith(".sql"))
-      .filter((f) => /function public\.has_role/i.test(readFileSync(new URL(f, dir), "utf8")))
-      .sort();
-    expect(defining.at(-1)).toBe("20261030120000_admin_role_requires_mfa.sql");
+  it("the latest definition still requires aal2 for admin, keeps self-only and the service role", () => {
+    expect(latest).toMatch(/create or replace function public\.has_role\(_user_id uuid, _role public\.app_role\)/);
+    expect(latest).toMatch(/_role <> 'admin'::public\.app_role or coalesce\(auth\.jwt\(\) ->> 'aal', ''\) = 'aal2'/);
+    expect(latest).toMatch(/_user_id = auth\.uid\(\)/);
+    expect(latest).toMatch(/coalesce\(auth\.role\(\), ''\) = 'service_role'/);
+    expect(latest).toMatch(/select 1 from public\.user_roles/);
   });
 });
 

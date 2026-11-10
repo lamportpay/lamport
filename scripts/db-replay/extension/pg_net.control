@@ -1,0 +1,3 @@
+comment = 'LOCAL REPLAY STUB of pg_net (no network)'
+default_version = '0.0'
+relocatable = false

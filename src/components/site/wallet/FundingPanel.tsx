@@ -1,5 +1,5 @@
 import "@/lib/buffer-polyfill";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Transaction } from "@solana/web3.js";
 import { Loader2, Send, TriangleAlert } from "lucide-react";
@@ -17,8 +17,17 @@ export type FundingPanelProps = {
   depositAddress: string;
   /** LamportPay's fee, sent in the same transaction; omitted when there is none. */
   platformFee?: string | null;
+  /**
+   * A transaction the wallet already sent for this payment that is not verified
+   * yet (from the server, so it survives a reload): only "Check again" is offered.
+   */
+  pendingSignature?: string | null;
+  /** Called when the payment changed on the server (funded, or pending state changed). */
   onFunded: () => void;
 };
+
+/** Server answers that end a pending transaction without funds moving: the customer may send again. */
+const RELEASED_CODES = new Set(["funding_expired", "funding_rejected"]);
 
 type BuiltTransaction = {
   transaction: string;
@@ -50,8 +59,15 @@ function fromBase64(value: string): Uint8Array {
  * Ask the server to verify `signature`, retrying while the transaction is not
  * finalized yet (finalization takes roughly 15 seconds after it lands).
  */
-async function confirmFunding(paymentId: string, signature: string, payer: string): Promise<void> {
-  for (let attempt = 0; attempt < 20; attempt++) {
+async function confirmFunding(
+  paymentId: string,
+  signature: string,
+  payer: string | undefined,
+  attempts = 20,
+): Promise<void> {
+  // The first call records the signature on the server at once (pending), so a
+  // reload or a failed confirmation can never lead to a second payment.
+  for (let attempt = 0; attempt < attempts; attempt++) {
     if (attempt > 0) await new Promise((r) => setTimeout(r, 3000));
     const { status } = await paymentApi(`/api/payments/${paymentId}/funding`, {
       method: "POST",
@@ -60,8 +76,9 @@ async function confirmFunding(paymentId: string, signature: string, payer: strin
     if (status !== 202) return;
   }
   throw new PaymentApiError(
-    "Sent, but not confirmed yet. Paste the signature below to retry verification.",
+    "Sent, but not confirmed yet. Use Check again in a moment; do not send it again.",
     202,
+    "funding_not_confirmed",
   );
 }
 
@@ -77,6 +94,7 @@ export function FundingPanel({
   currency = "USDC",
   depositAddress,
   platformFee = null,
+  pendingSignature = null,
   onFunded,
 }: FundingPanelProps) {
   const hasFee = platformFee !== null && Number(platformFee) > 0;
@@ -84,14 +102,50 @@ export function FundingPanel({
   const { publicKey, connected, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const [busy, setBusy] = useState<"build" | "send" | "verify" | null>(null);
-  const [signature, setSignature] = useState<string | null>(null);
+  const [signature, setSignature] = useState<string | null>(pendingSignature);
   const [error, setError] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  // One send at a time, even across fast double clicks (state updates are async).
+  const sending = useRef(false);
+
+  // The server's pending transaction (after a reload, or another tab) wins.
+  useEffect(() => {
+    if (pendingSignature) setSignature(pendingSignature);
+  }, [pendingSignature]);
+
+  /** Handle a verification error: a released transaction re-enables sending. */
+  const onVerifyError = useCallback(
+    (e: unknown) => {
+      if (e instanceof PaymentApiError && e.code && RELEASED_CODES.has(e.code)) {
+        setSignature(null);
+        onFunded(); // refresh: the server cleared the pending transaction
+      }
+      setError(walletActionErrorMessage(e, "Verification failed."));
+    },
+    [onFunded],
+  );
+
+  const checkAgain = useCallback(async () => {
+    if (!signature) return;
+    setError(null);
+    setBusy("verify");
+    try {
+      await confirmFunding(paymentId, signature, publicKey?.toBase58(), 5);
+      onFunded();
+    } catch (e) {
+      onVerifyError(e);
+    } finally {
+      setBusy(null);
+    }
+  }, [signature, paymentId, publicKey, onFunded, onVerifyError]);
 
   const send = useCallback(async () => {
     if (!publicKey) return setError("Connect a wallet first.");
+    if (sending.current || signature) return;
+    sending.current = true;
     setError(null);
     setConfirmOpen(false);
+    let sent = false;
     try {
       setBusy("build");
       const { data } = await paymentApi<BuiltTransaction>(
@@ -111,18 +165,26 @@ export function FundingPanel({
       setBusy("send");
       const tx = Transaction.from(fromBase64(data.transaction));
       const sig = await sendTransaction(tx, connection);
+      sent = true;
       setSignature(sig);
 
       setBusy("verify");
       await confirmFunding(paymentId, sig, publicKey.toBase58());
       onFunded();
     } catch (e) {
-      setError(walletActionErrorMessage(e, "Sending failed."));
+      if (sent) onVerifyError(e);
+      else if (e instanceof PaymentApiError && e.code === "funding_pending") {
+        // An earlier transaction may still land: show it instead of sending again.
+        setError(e.message);
+        onFunded();
+      } else setError(walletActionErrorMessage(e, "Sending failed."));
     } finally {
+      sending.current = false;
       setBusy(null);
     }
   }, [
     publicKey,
+    signature,
     paymentId,
     depositAddress,
     amount,
@@ -131,6 +193,7 @@ export function FundingPanel({
     sendTransaction,
     connection,
     onFunded,
+    onVerifyError,
   ]);
 
   return (
@@ -138,10 +201,11 @@ export function FundingPanel({
       <WalletStatusCard />
       <LiveFundsWarning />
 
-      {!confirmOpen ? (
+      {/* While a sent transaction is pending, only "Check again" is offered (below). */}
+      {signature ? null : !confirmOpen ? (
         <button
           type="button"
-          disabled={!connected || busy !== null || Boolean(signature)}
+          disabled={!connected || busy !== null}
           onClick={() => setConfirmOpen(true)}
           className="inline-flex items-center gap-2 rounded-full bg-foreground text-background px-5 py-2.5 font-semibold hover:opacity-90 transition disabled:opacity-50"
         >
@@ -197,8 +261,26 @@ export function FundingPanel({
       )}
 
       {signature && (
-        <div className="text-xs text-muted-foreground break-all">
-          Signature: <span className="font-mono">{signature}</span>
+        <div
+          className="rounded-2xl border border-border/60 bg-secondary/40 p-4 space-y-3"
+          role="status"
+        >
+          <p className="text-sm">
+            <strong>Payment sent.</strong> Waiting for Solana to confirm it. Do not send it again;
+            use Check again if this takes more than a minute.
+          </p>
+          <div className="text-xs text-muted-foreground break-all">
+            Signature: <span className="font-mono">{signature}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => void checkAgain()}
+            disabled={busy !== null}
+            className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary disabled:opacity-50"
+          >
+            {busy === "verify" && <Loader2 className="w-4 h-4 animate-spin" />}
+            Check again
+          </button>
         </div>
       )}
       {busy === "send" && (

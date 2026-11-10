@@ -72,6 +72,11 @@ export type PaymentView = {
     amount: string;
   } | null;
   funding: { signature: string; payer: string | null; verifiedAt: string | null } | null;
+  /**
+   * A funding transaction the wallet already sent that is not verified yet:
+   * the page offers "Check again" instead of another payment. Null once funded.
+   */
+  fundingPending: { signature: string; since: string } | null;
   /** Wallet the stablecoin must come from (set when the funding transaction is prepared). */
   payerWallet: string | null;
   /** What Stables actually paid out, once the transfer completed. */
@@ -300,6 +305,8 @@ type Row = {
   funding_signature: string | null;
   funding_payer: string | null;
   funding_verified_at: string | null;
+  funding_pending_signature?: string | null;
+  funding_pending_at?: string | null;
   payer_wallet: string | null;
   actual_payout_minor: number | null;
   actual_payout_currency: string | null;
@@ -611,6 +618,10 @@ export function toPaymentView(
           verifiedAt: row.funding_verified_at,
         }
       : null,
+    fundingPending:
+      !row.funding_signature && row.funding_pending_signature && row.funding_pending_at
+        ? { signature: row.funding_pending_signature, since: row.funding_pending_at }
+        : null,
     payerWallet: row.payer_wallet,
     actualPayout:
       row.actual_payout_minor !== null && row.actual_payout_currency

@@ -557,3 +557,59 @@ describe("5. LIVE MODE stays disabled until configured AND approved", () => {
     expect(await res.json()).toMatchObject({ code: "mode_blocked" });
   });
 });
+
+// ---------------------------------------------------------------- 6
+
+describe("6. LIVE MODE runs only on the Production deployment (Batch 1, 9 Nov)", () => {
+  const PROD_BLOCKER = /only on the Production deployment/;
+
+  it("Production with lock open + approval + full config: LIVE available", () => {
+    const s = evaluateMode({ ...LIVE_ENV, VERCEL_ENV: "production" }, true);
+    expect(s).toMatchObject({ mode: "live", ok: true, liveAvailable: true });
+    expect(s.liveBlockers).toEqual([]);
+  });
+
+  for (const vercelEnv of ["preview", "development", "", "Production ", "prod"]) {
+    it(`VERCEL_ENV=${JSON.stringify(vercelEnv)} refuses LIVE even with a complete production config`, () => {
+      const s = evaluateMode({ ...LIVE_ENV, VERCEL_ENV: vercelEnv }, true);
+      expect(s).toMatchObject({ mode: "live", ok: false, liveAvailable: false, liveUrl: null });
+      expect(s.liveBlockers.join(" ")).toMatch(PROD_BLOCKER);
+      expect(s.problems.join(" ")).toMatch(PROD_BLOCKER);
+    });
+  }
+
+  it("refuses LIVE when VERCEL_ENV is not set at all (local or non-Vercel host)", () => {
+    const { VERCEL_ENV: _env, ...noVercel } = LIVE_ENV;
+    const s = evaluateMode(noVercel, true);
+    expect(s).toMatchObject({ ok: false, liveAvailable: false });
+    expect(s.liveBlockers.join(" ")).toMatch(PROD_BLOCKER);
+  });
+
+  it("a Preview that receives LIVE settings serves no payment action (503), with no fallback to TEST", async () => {
+    useEnv({ ...LIVE_ENV, VERCEL_ENV: "preview" });
+    expect(currentMode()).toMatchObject({ mode: "live", ok: false, realFunds: true });
+    const { handleUserRequest } = await import("@/lib/payments/http.server");
+    const res = await handleUserRequest(new Request("http://x"), undefined, async () =>
+      Response.json({ reached: true }),
+    );
+    expect(res.status).toBe(503);
+    expect(await res.json()).toMatchObject({ code: "mode_blocked" });
+  });
+
+  for (const vercelEnv of ["preview", "development", undefined]) {
+    it(`TEST MODE keeps working with VERCEL_ENV=${String(vercelEnv)}`, () => {
+      const env =
+        vercelEnv === undefined ? { ...TEST_ENV } : { ...TEST_ENV, VERCEL_ENV: vercelEnv };
+      expect(evaluateMode(env)).toMatchObject({ mode: "test", ok: true, realFunds: false });
+    });
+  }
+
+  it("the public status never names the deployment rule", () => {
+    useEnv({ ...LIVE_ENV, VERCEL_ENV: "preview" });
+    const res = handler(StatusRoute, "GET");
+    return res({ request: new Request("http://x/api/integration-status") }).then(async (r) => {
+      const body = (await r.json()) as { mode: ModeStatus };
+      expect(JSON.stringify(body.mode)).not.toMatch(/VERCEL_ENV/);
+    });
+  });
+});

@@ -6,6 +6,8 @@
  */
 export const LIVE_ENV = {
   LAMPORTPAY_MODE: "live",
+  /** Set by Vercel on the Production deployment only; LIVE refuses anything else. */
+  VERCEL_ENV: "production",
   LAMPORTPAY_LIVE_APPROVED_BY: "owner (test fixture)",
   LAMPORTPAY_LIVE_APPROVED_AT: "2026-10-01T00:00:00Z",
   LAMPORTPAY_LIVE_URL: "https://app.lamportpay.test",
