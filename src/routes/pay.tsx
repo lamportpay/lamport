@@ -1932,7 +1932,8 @@ function SandboxNotice() {
       role="note"
       className="rounded-lg border border-[color:var(--warning)]/40 bg-[color:var(--warning)]/10 px-3 py-2 text-xs font-medium"
     >
-      Sandbox transaction — no real money moves.
+      Test payment on Solana devnet — only devnet test tokens move (the LamportPay fee too). No
+      real money.
     </p>
   );
 }

@@ -993,7 +993,7 @@ async function platformFeeFor(
 }
 
 /** What the payer sends in total: the Stables deposit plus LamportPay's fee. */
-function platformFeeOf(payment: PaymentRow): { minor: bigint; wallet: string | null } {
+export function platformFeeOf(payment: PaymentRow): { minor: bigint; wallet: string | null } {
   const minor = BigInt(payment.platform_fee_minor ?? 0);
   if (minor > 0n && !payment.platform_fee_wallet) {
     throw new Error(`Payment ${payment.id} has a platform fee but no revenue wallet.`);
@@ -2061,14 +2061,21 @@ export async function verifyFunding(
     throw new PaymentError(result.reason, 422, "funding_rejected");
   }
 
+  const verifiedAt = new Date().toISOString();
   const write = await ledger.recordFunding(
     payment.id,
     {
       funding_signature: signature,
       funding_payer: result.payer,
       payer_wallet: result.payer,
-      funding_verified_at: new Date().toISOString(),
-      ...(fee.wallet && { platform_fee_received_minor: Number(result.feeReceivedMinor) }),
+      funding_verified_at: verifiedAt,
+      // The fee receipt (mainnet: revenue), written once with the funding.
+      ...(fee.wallet && {
+        platform_fee_received_minor: Number(result.feeReceivedMinor),
+        platform_fee_network: "solana",
+        platform_fee_signature: signature,
+        platform_fee_received_at: verifiedAt,
+      }),
     },
     {
       kind: "funding_verified",
@@ -2096,7 +2103,7 @@ export async function verifyFunding(
   }
   if (fee.wallet) {
     await appendFeeLedger([
-      receivedFeeEntry(payment.id, result.feeReceivedMinor, currency, signature),
+      receivedFeeEntry(payment.id, result.feeReceivedMinor, currency, signature, "solana"),
     ]);
   }
   // The Stables deposit is what the payout depends on, so it drives the state.

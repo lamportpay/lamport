@@ -9,7 +9,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck } from "lucide-react";
 import { paymentApi } from "@/lib/payments/api-client";
 import type { KycStatus } from "@/lib/payments/view";
-import { ChevronRight, History, LogOut, Send, UserRound, Wallet } from "lucide-react";
+import { ChevronRight, FlaskConical, History, LogOut, Send, UserRound, Wallet } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
@@ -22,6 +22,7 @@ import { AppWalletIsland } from "@/components/site/wallet/WalletIsland";
 import { supabase } from "@/integrations/supabase/client";
 import { walletLinkOf } from "@/lib/identity/wallet-identity";
 import { useAccount } from "@/lib/use-account";
+import { useModeStatus } from "@/lib/use-mode-status";
 import { requestWalletSignIn, setWalletSignIn, useAppWallet } from "@/lib/wallet-state";
 
 // Swapping is part of Convert (/pay): a missing USDC amount is swapped inside
@@ -29,6 +30,11 @@ import { requestWalletSignIn, setWalletSignIn, useAppWallet } from "@/lib/wallet
 const APP_NAV = [
   { to: "/pay", label: "Pay", icon: Send },
   { to: "/payments", label: "History", icon: History },
+] as const;
+/** TEST MODE only: the Hyperliquid testnet test panel. */
+const TEST_NAV = [
+  ...APP_NAV,
+  { to: "/hyperliquid-test", label: "HL Test", icon: FlaskConical },
 ] as const;
 
 /** Whether someone is signed in: null while unknown (first render / loading). */
@@ -169,7 +175,13 @@ function Account() {
  * Phones: the account lives in the bottom tab bar and opens as a sheet (wallet,
  * history, sign in / out), so the header keeps just the logo, mode and wallet.
  */
-function AccountSheet({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+function AccountSheet({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+}) {
   const account = useAccount();
   const { publicKey, signIn } = useAppWallet();
   const queryClient = useQueryClient();
@@ -261,6 +273,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const accountAlert =
     account.status === "signed_in" &&
     walletLinkOf(publicKey, account.wallets) === "different_wallet";
+  const { status: modeStatus } = useModeStatus();
+  const nav = modeStatus?.mode === "test" ? TEST_NAV : APP_NAV;
   // overflow-x-clip, not -hidden: "hidden" makes this div a scroll container,
   // which silently breaks the sticky header and the sticky /pay side panels.
   return (
@@ -296,7 +310,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
               className="hidden sm:flex items-center gap-1 rounded-full border border-border/60 bg-card/70 p-1"
               aria-label="App"
             >
-              {APP_NAV.map(({ to, label, icon: Icon }) => (
+              {nav.map(({ to, label, icon: Icon }) => (
                 <Link
                   key={to}
                   to={to}
@@ -339,7 +353,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         aria-label="App"
       >
         <div className="flex h-16">
-          {APP_NAV.map(({ to, label, icon: Icon }) => (
+          {nav.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}

@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { companyGraph } from "@/lib/company-profile";
 import { isAdminArea } from "@/lib/admin-path";
 import { googleTagLoaded, reloadWithoutTags } from "@/lib/tag-manager";
+import { getLaunchStage } from "@/lib/launch-stage.functions";
 
 function NotFoundComponent() {
   return (
@@ -89,7 +90,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       return new Promise<never>(() => {});
     }
   },
-  head: () => ({
+  // Public wording stage ("test" until LIVE is active), read once per page load.
+  loader: () => getLaunchStage(),
+  staleTime: Infinity,
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
@@ -97,7 +101,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "LamportPay is a multi-asset crypto-to-local-currency payment routing sandbox. Crypto in. Local money out.",
+          loaderData?.stage === "live"
+            ? "LamportPay converts crypto in your own wallet into local currency paid to a bank account. Non-custodial. Crypto in. Local money out."
+            : "LamportPay is a multi-asset crypto-to-local-currency payment routing sandbox. Crypto in. Local money out.",
       },
       { name: "author", content: "LamportPay" },
       { property: "og:site_name", content: "LamportPay" },

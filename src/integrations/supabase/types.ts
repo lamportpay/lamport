@@ -221,6 +221,57 @@ export type Database = {
         }
         Relationships: []
       }
+      hyperliquid_test_events: {
+        Row: {
+          account: string | null
+          agent: string | null
+          completed_at: string | null
+          created_at: string
+          error: string | null
+          id: string
+          kind: string
+          network: string
+          nonce: number | null
+          ok: boolean | null
+          request: Json
+          response: Json | null
+          signer: string | null
+          user_id: string
+        }
+        Insert: {
+          account?: string | null
+          agent?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind: string
+          network?: string
+          nonce?: number | null
+          ok?: boolean | null
+          request?: Json
+          response?: Json | null
+          signer?: string | null
+          user_id: string
+        }
+        Update: {
+          account?: string | null
+          agent?: string | null
+          completed_at?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind?: string
+          network?: string
+          nonce?: number | null
+          ok?: boolean | null
+          request?: Json
+          response?: Json | null
+          signer?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       jupiter_swap_orders: {
         Row: {
           created_at: string
@@ -624,6 +675,7 @@ export type Database = {
           entry_type: string
           id: number
           payment_id: string
+          network: string | null
           reference: string | null
         }
         Insert: {
@@ -636,6 +688,7 @@ export type Database = {
           entry_type: string
           id?: never
           payment_id: string
+          network?: string | null
           reference?: string | null
         }
         Update: {
@@ -648,6 +701,7 @@ export type Database = {
           entry_type?: string
           id?: never
           payment_id?: string
+          network?: string | null
           reference?: string | null
         }
         Relationships: [
@@ -778,6 +832,9 @@ export type Database = {
           platform_fee_min_minor: number | null
           platform_fee_minor: number | null
           platform_fee_received_minor: number | null
+          platform_fee_network: string | null
+          platform_fee_received_at: string | null
+          platform_fee_signature: string | null
           platform_fee_rule: string | null
           platform_fee_waiver: string | null
           platform_fee_waiver_rank: number | null
@@ -829,6 +886,9 @@ export type Database = {
           platform_fee_min_minor?: number | null
           platform_fee_minor?: number | null
           platform_fee_received_minor?: number | null
+          platform_fee_network?: string | null
+          platform_fee_received_at?: string | null
+          platform_fee_signature?: string | null
           platform_fee_rule?: string | null
           platform_fee_waiver?: string | null
           platform_fee_waiver_rank?: number | null
@@ -880,6 +940,9 @@ export type Database = {
           platform_fee_min_minor?: number | null
           platform_fee_minor?: number | null
           platform_fee_received_minor?: number | null
+          platform_fee_network?: string | null
+          platform_fee_received_at?: string | null
+          platform_fee_signature?: string | null
           platform_fee_rule?: string | null
           platform_fee_waiver?: string | null
           platform_fee_waiver_rank?: number | null

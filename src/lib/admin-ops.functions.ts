@@ -40,27 +40,30 @@ const REVENUE_SCAN_LIMIT = 5000;
 type RevenueRow = {
   id: string;
   status: string;
+  transfer_id: string | null;
   source_currency: string;
   deposit_currency: string | null;
   source_amount_minor: number;
+  deposit_amount_minor: number | null;
   platform_fee_bps: number | null;
   platform_fee_minor: number | null;
   platform_fee_received_minor: number | null;
+  platform_fee_received_at: string | null;
+  platform_fee_network: string | null;
+  platform_fee_signature: string | null;
+  platform_fee_wallet: string | null;
+  payer_wallet: string | null;
   funding_verified_at: string | null;
   funding_signature: string | null;
   created_at: string;
 };
 
 const REVENUE_COLUMNS =
-  "id, status, source_currency, deposit_currency, source_amount_minor, platform_fee_bps, platform_fee_minor, platform_fee_received_minor, funding_verified_at, funding_signature, created_at";
+  "id, status, transfer_id, source_currency, deposit_currency, source_amount_minor, deposit_amount_minor, platform_fee_bps, platform_fee_minor, platform_fee_received_minor, platform_fee_received_at, platform_fee_network, platform_fee_signature, platform_fee_wallet, payer_wallet, funding_verified_at, funding_signature, created_at";
 
-/** Revenue status of one payment, from stored records only. */
-function revenueStatus(row: RevenueRow): "received" | "short" | "missing" | "pending" {
-  const expected = row.platform_fee_minor ?? 0;
-  if (!row.funding_verified_at) return "pending";
-  const received = row.platform_fee_received_minor ?? 0;
-  if (received >= expected) return "received";
-  return received > 0 ? "short" : "missing";
+/** Mainnet fees count as revenue; devnet test fees never do (revenue-status.ts). */
+async function revenueStatusLib() {
+  return import("@/lib/payments/revenue-status");
 }
 
 /**
@@ -131,12 +134,17 @@ export const getAdminDashboard = createServerFn({ method: "GET" })
     const byStatus: Record<string, number> = {};
     for (const row of statuses.data ?? []) byStatus[row.status] = (byStatus[row.status] ?? 0) + 1;
     const rows = (revenue.data ?? []) as RevenueRow[];
+    const { revenueMinor, testFeeMinor, feeReceivedAt } = await revenueStatusLib();
+    // Revenue = fees verified on mainnet only. Devnet test fees are reported apart.
     let receivedMinor = 0n;
     let received24hMinor = 0n;
+    let testReceivedMinor = 0n;
     for (const row of rows) {
-      const got = BigInt(row.platform_fee_received_minor ?? 0);
+      const got = revenueMinor(row);
       receivedMinor += got;
-      if (row.funding_verified_at && row.funding_verified_at >= since) received24hMinor += got;
+      const at = feeReceivedAt(row);
+      if (at && at >= since) received24hMinor += got;
+      testReceivedMinor += testFeeMinor(row);
     }
     return {
       totals: {
@@ -148,7 +156,8 @@ export const getAdminDashboard = createServerFn({ method: "GET" })
         currency: "usdc",
         receivedMinor: receivedMinor.toString(),
         received24hMinor: received24hMinor.toString(),
-        paymentsWithFee: rows.length,
+        testReceivedMinor: testReceivedMinor.toString(),
+        paymentsWithFee: rows.filter((r) => r.transfer_id).length,
       },
       attention: {
         openTravelRule: openTravelRule.count ?? 0,
@@ -171,23 +180,59 @@ export const getRevenuePayments = createServerFn({ method: "GET" })
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw new Error(error.message);
-    return ((data ?? []) as RevenueRow[]).map((row) => ({
-      id: row.id,
-      status: row.status,
-      createdAt: row.created_at,
-      verifiedAt: row.funding_verified_at,
-      currency: row.deposit_currency ?? row.source_currency,
-      amountMinor: String(row.source_amount_minor),
-      feeBps: row.platform_fee_bps,
-      feeMinor: String(row.platform_fee_minor ?? 0),
-      receivedMinor:
-        row.platform_fee_received_minor === null ? null : String(row.platform_fee_received_minor),
-      signature: row.funding_signature,
-      revenueStatus: revenueStatus(row),
-    }));
+    const rows = (data ?? []) as RevenueRow[];
+    // The swap that came before the payment, if any (what the customer swapped in).
+    const swaps = new Map<string, { inputMint: string; inMinor: string; outMinor: string | null }>();
+    if (rows.length > 0) {
+      const { data: landed, error: swapError } = await context.supabase
+        .from("payment_swaps")
+        .select("payment_id, input_mint, in_amount_minor, actual_in_minor, actual_out_minor")
+        .in(
+          "payment_id",
+          rows.map((r) => r.id),
+        )
+        .eq("status", "landed");
+      if (swapError) throw new Error(swapError.message);
+      for (const s of landed ?? []) {
+        swaps.set(s.payment_id, {
+          inputMint: s.input_mint,
+          inMinor: String(s.actual_in_minor ?? s.in_amount_minor),
+          outMinor: s.actual_out_minor === null ? null : String(s.actual_out_minor),
+        });
+      }
+    }
+    const { revenueStatus, feeNetworkOf, feeReceivedAt } = await revenueStatusLib();
+    return rows.map((row) => {
+      const network = feeNetworkOf(row);
+      return {
+        id: row.id,
+        status: row.status,
+        createdAt: row.created_at,
+        verifiedAt: feeReceivedAt(row),
+        currency: row.deposit_currency ?? row.source_currency,
+        /** What the payout partner gets (net of LamportPay's fee). */
+        amountMinor: String(row.deposit_amount_minor ?? row.source_amount_minor),
+        feeBps: row.platform_fee_bps,
+        feeMinor: String(row.platform_fee_minor ?? 0),
+        receivedMinor:
+          row.platform_fee_received_minor === null ? null : String(row.platform_fee_received_minor),
+        signature: row.platform_fee_signature ?? row.funding_signature,
+        network,
+        /** Mainnet only: devnet fees are test evidence, not revenue. */
+        countsAsRevenue: network === "solana",
+        payerWallet: row.payer_wallet,
+        revenueWallet: row.platform_fee_wallet,
+        swap: swaps.get(row.id) ?? null,
+        revenueStatus: revenueStatus(row),
+      };
+    });
   });
 
-/** Revenue received per day, week or month (UTC), from verified fundings. */
+/**
+ * Revenue received per day, week or month (UTC), from verified fundings. Only
+ * LIVE (mainnet) funding sets `funding_verified_at`, so devnet test fees never
+ * enter these totals.
+ */
 export const getRevenueReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
@@ -365,7 +410,19 @@ export const getRevenueReconciliation = createServerFn({ method: "GET" })
           : { status: "unavailable", reason: "The revenue wallet's balance could not be read." };
     }
 
-    const rows = (payments.data ?? []) as RevenueRow[];
+    // The revenue wallet's balance is read on the server's own cluster (TEST:
+    // devnet, LIVE: mainnet), so only fees received on that network are compared.
+    const { currentMode } = await import("@/lib/app-mode.server");
+    const network = currentMode().mode === "live" ? "solana" : "solana-devnet";
+    const { feeNetworkOf, feeReceivedAt, revenueStatus } = await revenueStatusLib();
+    // Quote-only and ended payments can never receive a fee: they are listed per
+    // payment on the page, not reconciled here.
+    const rows = ((payments.data ?? []) as RevenueRow[]).filter((r) => {
+      const seen = feeNetworkOf(r);
+      const status = revenueStatus(r);
+      return (seen === null || seen === network) && !["calculated", "failed", "not_collected"].includes(status);
+    });
+    const inScope = new Set(rows.map((r) => r.id));
     const result = reconcileRevenue(
       rows.map((r) => ({
         id: r.id,
@@ -373,20 +430,34 @@ export const getRevenueReconciliation = createServerFn({ method: "GET" })
         feeMinor: BigInt(r.platform_fee_minor ?? 0),
         receivedMinor:
           r.platform_fee_received_minor === null ? null : BigInt(r.platform_fee_received_minor),
-        fundingVerified: Boolean(r.funding_verified_at),
+        fundingVerified: Boolean(feeReceivedAt(r)),
       })),
-      (ledger.data ?? []).map((l) => ({
-        paymentId: l.payment_id,
-        entryType: l.entry_type as "expected" | "received",
-        amountMinor: BigInt(l.amount_minor),
-        currency: l.currency,
-      })),
+      (ledger.data ?? [])
+        .filter((l) => inScope.has(l.payment_id))
+        .map((l) => ({
+          paymentId: l.payment_id,
+          entryType: l.entry_type as "expected" | "received",
+          amountMinor: BigInt(l.amount_minor),
+          currency: l.currency,
+        })),
       onChain,
     );
+    // The revenue wallet must never also be a customer's login wallet: a fee paid
+    // from it to itself moves nothing (found 5 Nov 2026 on the dev database).
+    let revenueWalletIsCustomerWallet = false;
+    if (wallet) {
+      const linked = await supabase
+        .from("user_wallets")
+        .select("address", { count: "exact", head: true })
+        .eq("address", wallet);
+      revenueWalletIsCustomerWallet = !linked.error && (linked.count ?? 0) > 0;
+    }
     return {
       ...result,
+      network,
+      revenueWalletIsCustomerWallet,
       checkedAt: new Date().toISOString(),
-      partial: rows.length >= REVENUE_SCAN_LIMIT,
+      partial: (payments.data ?? []).length >= REVENUE_SCAN_LIMIT,
     };
   });
 
