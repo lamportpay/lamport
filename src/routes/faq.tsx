@@ -7,7 +7,8 @@ import {
   ShieldCheck,
   ChevronDown,
 } from "lucide-react";
-import { FAQS } from "@/lib/ask-ai-faq";
+import { FAQS, faqAnswer } from "@/lib/ask-ai-faq";
+import { useLaunchStage } from "@/lib/launch-stage";
 import { Button } from "@/components/ui/button";
 import { SiteLayout } from "@/components/site/Layout";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,7 @@ function openAskAi() {
 }
 
 function FaqPage() {
+  const stage = useLaunchStage();
   const [openId, setOpenId] = useState<string | null>(FAQS[0]?.id ?? null);
   return (
     <SiteLayout>
@@ -112,7 +114,7 @@ function FaqPage() {
                   hidden={!open}
                   className="px-5 pb-5 pl-[3.25rem] text-muted-foreground leading-relaxed whitespace-pre-line"
                 >
-                  {f.answer.replace(/\*\*/g, "")}
+                  {faqAnswer(f, stage).replace(/\*\*/g, "")}
                   <button
                     type="button"
                     onClick={openAskAi}

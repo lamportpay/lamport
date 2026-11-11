@@ -1,5 +1,5 @@
 /** Shared facts for the legal pages (/privacy, /terms). */
-export const LEGAL_LAST_UPDATED = "30 October 2026";
+export const LEGAL_LAST_UPDATED = "12 November 2026";
 
 /**
  * Both pages were drafted from how the product works today and have not been reviewed by a

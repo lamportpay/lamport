@@ -5,6 +5,7 @@ import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { TRACKER_PHASES, TRACKER_STATUS_LABEL } from "@/content/roadmap-tracker";
 import { PAYMENT_COSTS, PAYMENT_JOURNEY } from "@/content/payment-flow";
 import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
+import { useLaunchStage } from "@/lib/launch-stage";
 
 export const Route = createFileRoute("/whitepaper")({
   head: () =>
@@ -28,8 +29,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
         without holding funds, private keys or customer balances. Stables is the payout infrastructure
         provider, and Jupiter supplies the Solana conversion route when needed. A second route, for
         major digital assets through Hyperliquid liquidity, is in progress, and a regional network of
-        payout partners is planned corridor by corridor. The current experience is a sandbox
-        demonstration, not a live bank-payout service.
+        payout partners is planned corridor by corridor. <CurrentStage />
       </p>
     ),
   },
@@ -327,15 +327,41 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         LamportPay aims to make wallet-to-bank payments understandable: quote first, disclose
-        costs, verify the sender, authorize in the wallet and track the provider's outcome.
-        The current sandbox demonstrates that design; broader assets, payout coverage and
-        production availability remain subject to validation rather than promises of live service.
+        costs, verify the sender, authorize in the wallet and track the provider's outcome.{" "}
+        <ClosingStage />
       </p>
     ),
   },
 ];
 
+/** One-line status that follows the server's launch stage. */
+function CurrentStage() {
+  return useLaunchStage() === "live" ? (
+    <>
+      LamportPay is now live on Solana mainnet: payments use real USDC and bank payouts are real,
+      within the countries and limits the payout partner has approved.
+    </>
+  ) : (
+    <>The current experience is a sandbox demonstration, not a live bank-payout service.</>
+  );
+}
+
+function ClosingStage() {
+  return useLaunchStage() === "live" ? (
+    <>
+      That design now runs live on Solana mainnet; broader assets and payout coverage are added
+      corridor by corridor, each one validated before it opens.
+    </>
+  ) : (
+    <>
+      The current sandbox demonstrates that design; broader assets, payout coverage and
+      production availability remain subject to validation rather than promises of live service.
+    </>
+  );
+}
+
 function Whitepaper() {
+  const live = useLaunchStage() === "live";
   return (
     <SiteLayout>
       <section className="max-w-6xl mx-auto px-5 py-12 md:py-16">
@@ -353,6 +379,13 @@ function Whitepaper() {
           the path from sandbox validation to bank payouts.
         </p>
         <PaymentFlowStatus />
+        {live && (
+          <p className="mt-4 max-w-3xl text-sm text-muted-foreground leading-relaxed">
+            This paper records how LamportPay was designed and validated. Sections that mention the
+            sandbox describe that validation stage; LamportPay now runs live on Solana mainnet, and
+            the app always shows the countries, fees and limits that apply today.
+          </p>
+        )}
 
         <div className="mt-14 grid md:grid-cols-[220px_1fr] gap-10">
           <aside className="md:sticky md:top-24 self-start">

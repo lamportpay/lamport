@@ -126,9 +126,14 @@ function liveBlockers(env: Env, codeUnlocked: boolean): string[] {
   // The funding transaction's compute budget must be valid (never guessed).
   const budget = priorityFeeConfig(env);
   if (!budget.ok) blockers.push(`Solana priority fee configuration: ${budget.error}`);
-  const mainnetRpc = env["SOLANA_RPC_URL"]?.trim();
-  if (!mainnetRpc) blockers.push("A dedicated Solana mainnet RPC (SOLANA_RPC_URL) is not set.");
-  else if (looksTestCluster(mainnetRpc)) blockers.push("SOLANA_RPC_URL points at a test cluster.");
+  // One or more mainnet endpoints, comma separated, tried in order (12 Nov 2026).
+  const mainnetRpcs = (env["SOLANA_RPC_URL"] ?? "").split(/[\s,]+/).filter(Boolean);
+  if (mainnetRpcs.length === 0)
+    blockers.push("A dedicated Solana mainnet RPC (SOLANA_RPC_URL) is not set.");
+  else if (mainnetRpcs.some((u) => !hostOf(u)))
+    blockers.push("SOLANA_RPC_URL holds an address that is not a valid URL.");
+  else if (mainnetRpcs.some((u) => looksTestCluster(u)))
+    blockers.push("SOLANA_RPC_URL points at a test cluster.");
   const supabase = env["SUPABASE_URL"] ?? "";
   // Decision 11 Nov 2026: until a separate production project exists, LIVE may run on the
   // current project, but only when the deployment names it explicitly.

@@ -45,6 +45,26 @@ export class StablesError extends Error {
 const TIMEOUT_MS = 20_000;
 const MAX_ATTEMPTS = 3;
 const RETRYABLE = new Set([429, 500, 502, 503, 504]);
+/** Longest standard Retry-After wait honoured inside one request. */
+const MAX_RETRY_AFTER_MS = 5_000;
+
+/**
+ * Standard HTTP Retry-After (seconds or an HTTP date), capped so a request never
+ * stalls for long; 0 when absent or unreadable. Stables' actual limits are not
+ * confirmed yet (question #68), so this only follows the header if one is sent.
+ */
+export function retryAfterMs(header: string | null, now = Date.now()): number {
+  if (!header) return 0;
+  const value = header.trim();
+  let ms: number;
+  if (/^\d+(\.\d+)?$/.test(value)) ms = Number(value) * 1000;
+  else {
+    const at = Date.parse(value);
+    if (Number.isNaN(at)) return 0;
+    ms = at - now;
+  }
+  return Number.isFinite(ms) && ms > 0 ? Math.min(ms, MAX_RETRY_AFTER_MS) : 0;
+}
 
 /**
  * Deterministic UUID v4-shaped key derived from `parts`, so the same logical
@@ -80,8 +100,12 @@ async function request<T>(
   assertEndpointAllowed("stables", config.apiUrl);
 
   let lastError: StablesError | null = null;
+  let waitMs = 0;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    if (attempt > 1) await new Promise((r) => setTimeout(r, 400 * 2 ** (attempt - 2)));
+    if (attempt > 1) {
+      await new Promise((r) => setTimeout(r, Math.max(waitMs, 400 * 2 ** (attempt - 2))));
+      waitMs = 0;
+    }
 
     let response: Response;
     try {
@@ -136,6 +160,7 @@ async function request<T>(
     const correlationId = response.headers.get("x-correlation-id") ?? undefined;
     lastError = new StablesError(message, response.status, fields, code, correlationId);
     if (!RETRYABLE.has(response.status)) break;
+    waitMs = retryAfterMs(response.headers.get("retry-after"));
   }
   throw lastError ?? new StablesError("Stables request failed.", 0);
 }

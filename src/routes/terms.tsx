@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { LegalPage, type LegalSection } from "@/components/site/LegalPage";
 import { COMPANY } from "@/lib/company-profile";
 import { LEGAL_CONTACT } from "@/lib/legal";
+import { useLaunchStage } from "@/lib/launch-stage";
 import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/terms")({
@@ -51,10 +52,26 @@ const SECTIONS: LegalSection[] = [
           under its own terms. LamportPay is not a bank, does not take deposits and does not give
           investment, tax or legal advice.
         </p>
+        <StageStatus />
+      </>
+    ),
+  },
+  {
+    title: "Trading on Hyperliquid",
+    body: (
+      <>
         <p>
-          <strong>Current status:</strong> bank payouts and identity verification are being tested
-          in Stables' sandbox, pending production approval. Until LamportPay announces otherwise,
-          no real bank payouts are made.
+          The Trade section lets you place and cancel spot orders on Hyperliquid, a third-party
+          trading platform, from your own EVM wallet. Your wallet approves a trading key that stays
+          in your browser tab; it can place and cancel orders but cannot withdraw or transfer
+          funds. LamportPay shows market data, relays the orders you sign and records them. We do
+          not hold your funds or keys, do not execute or match orders, and do not give investment
+          advice.
+        </p>
+        <p>
+          Trading is at your own risk: prices move, orders can fill at different prices than you
+          expect, and you can lose money. Hyperliquid's own terms and restrictions apply, including
+          where it is not available. Only spot trading is offered; there is no leverage.
         </p>
       </>
     ),
@@ -136,8 +153,9 @@ const SECTIONS: LegalSection[] = [
     title: "Third-party services",
     body: (
       <p>
-        LamportPay relies on services we do not control: Stables, your wallet, the Solana network
-        and, where used, swap routing by Jupiter. Their availability, fees and terms are theirs.
+        LamportPay relies on services we do not control: Stables, your wallet, the Solana network,
+        swap routing by Jupiter where used, and Hyperliquid for trading. Their availability, fees
+        and terms are theirs.
       </p>
     ),
   },
@@ -176,6 +194,24 @@ const SECTIONS: LegalSection[] = [
     ),
   },
 ];
+
+/** The service status, following the site's launch stage (test or live). */
+function StageStatus() {
+  const live = useLaunchStage() === "live";
+  return live ? (
+    <p>
+      <strong>Current status:</strong> payouts and identity verification run in production
+      through Stables. LamportPay is in a soft launch; supported countries, currencies and limits
+      are shown in the app and may change.
+    </p>
+  ) : (
+    <p>
+      <strong>Current status:</strong> bank payouts and identity verification are being tested in
+      Stables' sandbox, pending production approval. Until LamportPay announces otherwise, no real
+      bank payouts are made.
+    </p>
+  );
+}
 
 function TermsPage() {
   return (
