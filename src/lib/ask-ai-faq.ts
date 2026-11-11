@@ -2,7 +2,7 @@
  * Free, built-in Ask AI answers (no AI model, no credits). Answers come from
  * LamportPay's business model and the site's shared content.
  */
-import { PAYMENT_SAFETY } from "@/content/payment-flow";
+import { PAYMENT_SAFETY, paymentFlowCopy } from "@/content/payment-flow";
 
 export type Faq = { id: string; question: string; keywords: RegExp; answer: string };
 
@@ -138,6 +138,9 @@ export const FAQS: Faq[] = [
  * worded as partner-dependent rather than stated as fact.
  */
 export const LIVE_ANSWERS: Record<string, string> = {
+  how:
+    "**8 simple steps:**\n1. Connect your Solana wallet\n2. Choose amount and destination country\n3. See a live quote\n4. Enter and check bank details\n5. Verify identity (only first time, on our partner's secure page)\n6. Review everything\n7. Approve in your wallet\n8. Track processing until complete\n\n" +
+    paymentFlowCopy("live").safety,
   phases:
     "LamportPay follows a **12-phase plan**. Business & architecture, the Web3 foundation, the payout flow with fees and audit trail, the revenue engine and the controlled production go-live are in place, so **real payments now run on Solana mainnet**. Next: more tokens via Jupiter, compliance operations, a full admin dashboard, multi-provider fiat, an external security audit and a wider public launch. Every phase passes testing, security review and approval before moving on.",
   security:

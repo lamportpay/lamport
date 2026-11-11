@@ -4,7 +4,7 @@ import { ShieldCheck, XCircle, CheckCircle2 } from "lucide-react";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
-import { PAYMENT_COSTS } from "@/content/payment-flow";
+import { paymentFlowCopy } from "@/content/payment-flow";
 import { BankRestrictions } from "@/components/site/BankRestrictions";
 import { COMPANY } from "@/lib/company-profile";
 import { useLaunchStage } from "@/lib/launch-stage";
@@ -24,6 +24,7 @@ const LAST_UPDATED = "12 November 2026";
 
 function Compliance() {
   const live = useLaunchStage() === "live";
+  const PAYMENT_COSTS = paymentFlowCopy(live ? "live" : "test").costs;
   const t = (test: string, liveText: string) => (live ? liveText : test);
   const negatives = [
     "Hold customer funds, private keys or balances. Our ledger is a record only.",

@@ -24,7 +24,7 @@ export const COMPANY = {
   ],
 } as const;
 
-export function companyGraph() {
+export function companyGraph(stage: "test" | "live" = "test") {
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -39,7 +39,10 @@ export function companyGraph() {
         identifier: { "@type": "PropertyValue", propertyID: "UK Companies House company number", value: COMPANY.number },
         address: { "@type": "PostalAddress", ...COMPANY.address },
         founder: { "@id": "https://lamportpay.com/#zoaib-ali" },
-        description: "LamportPay is a non-custodial crypto-to-local-bank payment platform. Bank payouts and hosted identity verification remain in the Stables sandbox pending production approval.",
+        description:
+          stage === "live"
+            ? "LamportPay is a non-custodial crypto-to-local-bank payment platform. Payments run on Solana mainnet; identity verification and bank payouts are provided by its licensed partner Stables."
+            : "LamportPay is a non-custodial crypto-to-local-bank payment platform. Bank payouts and hosted identity verification remain in the Stables sandbox pending production approval.",
         sameAs: [COMPANY.registerUrl, "https://x.com/LamportPay", "https://www.linkedin.com/company/lamportpay", "https://github.com/lamportpay"],
       },
       {
