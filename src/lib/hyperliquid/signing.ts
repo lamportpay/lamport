@@ -17,6 +17,8 @@ import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";
 import { bytesToHex, concatBytes, hexToBytes, utf8ToBytes } from "@noble/hashes/utils";
 
+import { HL_SOURCE, type HlNetwork } from "./network";
+
 export const ADDRESS_RE = /^0x[0-9a-fA-F]{40}$/;
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -170,17 +172,24 @@ function typedDataDigest(
   );
 }
 
-/** EIP-712 digest an agent signs for an L1 action on the TESTNET (source "b"). */
-export function l1Digest(action: MsgpackValue, nonce: number): Uint8Array {
+/**
+ * EIP-712 digest an agent signs for an L1 action: phantom agent source "b" on
+ * the testnet, "a" on mainnet (Hyperliquid Python SDK, sign_l1_action).
+ */
+export function l1Digest(
+  action: MsgpackValue,
+  nonce: number,
+  network: HlNetwork = "testnet",
+): Uint8Array {
   return typedDataDigest({ name: "Exchange", version: "1", chainId: 1337 }, "Agent", AGENT_FIELDS, {
-    source: "b",
+    source: HL_SOURCE[network],
     connectionId: actionHash(action, nonce),
   });
 }
 
 export type ApproveAgentAction = {
   type: "approveAgent";
-  hyperliquidChain: "Testnet";
+  hyperliquidChain: "Testnet" | "Mainnet";
   signatureChainId: string;
   agentAddress: string;
   agentName: string;

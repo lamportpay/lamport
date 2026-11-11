@@ -18,6 +18,7 @@ import {
   type Tif,
 } from "./actions";
 import { connectEvmWallet, evmChainId, signTypedData } from "./evm-wallet";
+import type { HlNetwork } from "./network";
 import {
   addressOfPrivateKey,
   approveAgentDigest,
@@ -31,7 +32,13 @@ import {
   type MsgpackValue,
 } from "./signing";
 
-export type TradingSession = { account: string; agent: string; key: Uint8Array };
+export type TradingSession = {
+  account: string;
+  agent: string;
+  key: Uint8Array;
+  /** The Hyperliquid network the key was approved on (it is valid there only). */
+  network: HlNetwork;
+};
 
 export type RelayResult = {
   ok: boolean;
@@ -69,7 +76,10 @@ export class TradingError extends Error {
 }
 
 /** One wallet signature approving a new in-tab trading key for `account`. */
-export async function enableTrading(account: string): Promise<TradingSession> {
+export async function enableTrading(
+  account: string,
+  network: HlNetwork = "testnet",
+): Promise<TradingSession> {
   const walletAccount = await connectEvmWallet();
   if (walletAccount !== account) {
     throw new TradingError("Your wallet switched account. Reconnect and try again.");
@@ -78,18 +88,18 @@ export async function enableTrading(account: string): Promise<TradingSession> {
   const agent = addressOfPrivateKey(key);
   const chain = await evmChainId();
   const nonce = nextNonce();
-  const action = approveAgentAction(agent, chain, nonce);
+  const action = approveAgentAction(agent, chain, nonce, network);
   const signature = splitSignature(await signTypedData(account, approveAgentTypedData(action)));
   if (recoverSigner(approveAgentDigest(action), signature) !== account) {
     throw new TradingError("The wallet signed with a different account.");
   }
   const result = await relay(action, nonce, signature, account);
   if (!result.ok) throw new TradingError(result.outcome.join("; ") || "Hyperliquid refused.");
-  return { account, agent, key };
+  return { account, agent, key, network };
 }
 
 function signL1(session: TradingSession, action: RelayAction, nonce: number): HlSignature {
-  return signDigest(l1Digest(action as unknown as MsgpackValue, nonce), session.key);
+  return signDigest(l1Digest(action as unknown as MsgpackValue, nonce, session.network), session.key);
 }
 
 export async function placeOrder(

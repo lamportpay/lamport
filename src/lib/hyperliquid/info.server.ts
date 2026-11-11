@@ -1,9 +1,9 @@
 /**
- * Hyperliquid TESTNET, read only (decision 2026-11-04: Testnet for all reads, no
- * Mainnet dependency): spot metadata, mid prices, order books and spot account
- * balances from the public testnet info endpoint
- * (POST https://api.hyperliquid-testnet.xyz/info, no key, no signature).
- * Testnet prices are test-market prices, not real prices.
+ * Hyperliquid info reads (public data, no key, no signature). The network
+ * follows the app mode (owner decision, 11 Nov 2026): TEST MODE reads the
+ * testnet (POST https://api.hyperliquid-testnet.xyz/info, test-market prices),
+ * LIVE MODE reads mainnet (POST https://api.hyperliquid.xyz/info).
+ * (4-10 Nov: testnet for all reads.)
  *
  * Earlier design note, kept for history:
  *
@@ -15,9 +15,19 @@
  * guard allows the info path only (app-mode.server.ts, "hyperliquid_info").
  * (Until 4 Nov this read Mainnet market data; it now reads the testnet only.)
  */
-import { assertEndpointAllowed } from "@/lib/app-mode.server";
+import { assertEndpointAllowed, currentMode } from "@/lib/app-mode.server";
 
-export const HYPERLIQUID_INFO_URL = "https://api.hyperliquid-testnet.xyz/info";
+import { HL_API_BASE, networkForMode, type HlNetwork } from "./network";
+
+/** Testnet info endpoint (TEST MODE). LIVE MODE reads mainnet (11 Nov 2026). */
+export const HYPERLIQUID_INFO_URL = `${HL_API_BASE.testnet}/info`;
+
+/** The network the app uses now: testnet in TEST MODE, mainnet in LIVE MODE. */
+export function currentHlNetwork(): HlNetwork {
+  return networkForMode(currentMode().mode);
+}
+
+export const hlInfoUrl = (network: HlNetwork) => `${HL_API_BASE[network]}/info`;
 /** A Hyperliquid account address: 0x followed by 40 hex digits. */
 const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
 /** Coin keys Hyperliquid accepts for books: "PURR/USDC", "@123" or a perp name. */
@@ -57,11 +67,15 @@ export type IndicativeQuote =
     }
   | { status: "unavailable"; reason: string };
 
-async function postInfo(body: Record<string, unknown>): Promise<unknown> {
-  assertEndpointAllowed("hyperliquid_info", HYPERLIQUID_INFO_URL);
+async function postInfo(
+  body: Record<string, unknown>,
+  network: HlNetwork = currentHlNetwork(),
+): Promise<unknown> {
+  const url = hlInfoUrl(network);
+  assertEndpointAllowed("hyperliquid_info", url);
   let response: Response;
   try {
-    response = await fetch(HYPERLIQUID_INFO_URL, {
+    response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(body),
@@ -378,4 +392,211 @@ export async function getLedgerUpdates(
     })
     .sort((a, b) => b.time - a.time)
     .slice(0, limit);
+}
+
+// ------------------------------------- market data and history (11 Nov 2026) ---
+// Official info types (Hyperliquid docs, "Info endpoint"): spotMetaAndAssetCtxs,
+// candleSnapshot, historicalOrders, userFillsByTime, portfolio. Read only.
+
+const num = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
+
+export type SpotAssetCtx = {
+  /** Coin key of the pair ("@{index}" or "PURR/USDC"). */
+  coin: string;
+  markPx: string | null;
+  midPx: string | null;
+  prevDayPx: string | null;
+  /** 24h notional volume in the quote token (USDC). */
+  dayNtlVlm: string | null;
+};
+
+/** 24h context of every spot pair, keyed by coin. */
+export async function getSpotAssetCtxs(): Promise<Map<string, SpotAssetCtx>> {
+  const raw = await postInfo({ type: "spotMetaAndAssetCtxs" });
+  if (!Array.isArray(raw) || raw.length !== 2 || !Array.isArray(raw[1])) {
+    throw new HyperliquidError("Unexpected spotMetaAndAssetCtxs answer.", 502);
+  }
+  const out = new Map<string, SpotAssetCtx>();
+  for (const c of raw[1] as Record<string, unknown>[]) {
+    if (!str(c?.coin)) continue;
+    out.set(c.coin, {
+      coin: c.coin,
+      markPx: dec(c.markPx) ? c.markPx : null,
+      midPx: dec(c.midPx) ? c.midPx : null,
+      prevDayPx: dec(c.prevDayPx) ? c.prevDayPx : null,
+      dayNtlVlm: dec(c.dayNtlVlm) ? c.dayNtlVlm : null,
+    });
+  }
+  return out;
+}
+
+export const CANDLE_INTERVALS = ["15m", "1h", "4h", "1d"] as const;
+export type CandleInterval = (typeof CANDLE_INTERVALS)[number];
+const INTERVAL_MS: Record<CandleInterval, number> = {
+  "15m": 15 * 60_000,
+  "1h": 3_600_000,
+  "4h": 4 * 3_600_000,
+  "1d": 86_400_000,
+};
+export type Candle = { t: number; o: string; h: string; l: string; c: string; v: string };
+
+/** Up to `count` (max 500) most recent candles of a coin. */
+export async function getCandles(
+  coin: string,
+  interval: CandleInterval,
+  count = 120,
+  now = Date.now(),
+): Promise<Candle[]> {
+  if (!COIN.test(coin)) throw new HyperliquidError("Unknown market.", 400);
+  if (!CANDLE_INTERVALS.includes(interval)) throw new HyperliquidError("Unknown interval.", 400);
+  const n = Math.min(Math.max(Math.trunc(count), 1), 500);
+  const raw = await postInfo({
+    type: "candleSnapshot",
+    req: { coin, interval, startTime: now - n * INTERVAL_MS[interval], endTime: now },
+  });
+  if (!Array.isArray(raw)) throw new HyperliquidError("Unexpected candleSnapshot answer.", 502);
+  return raw
+    .filter(
+      (k: Record<string, unknown>) =>
+        isInt(k?.t) && dec(k.o) && dec(k.h) && dec(k.l) && dec(k.c) && dec(k.v),
+    )
+    .map((k: Record<string, unknown>) => ({
+      t: k.t as number,
+      o: k.o as string,
+      h: k.h as string,
+      l: k.l as string,
+      c: k.c as string,
+      v: k.v as string,
+    }))
+    .sort((a, b) => a.t - b.t)
+    .slice(-n);
+}
+
+export type HistoricalOrder = {
+  coin: string;
+  side: "buy" | "sell";
+  limitPx: string;
+  sz: string;
+  origSz: string;
+  oid: number;
+  orderType: string;
+  tif: string | null;
+  timestamp: number;
+  /** Hyperliquid's status: open, filled, canceled, rejected, marginCanceled, ... */
+  status: string;
+  statusTimestamp: number;
+};
+
+/** Order history of an account (Hyperliquid keeps the 2,000 most recent), newest first. */
+export async function getHistoricalOrders(user: string, limit = 100): Promise<HistoricalOrder[]> {
+  if (!ADDRESS.test(user)) throw new HyperliquidError("Invalid account address.", 400);
+  const raw = await postInfo({ type: "historicalOrders", user });
+  if (!Array.isArray(raw)) throw new HyperliquidError("Unexpected historicalOrders answer.", 502);
+  const out: HistoricalOrder[] = [];
+  for (const e of raw as Record<string, unknown>[]) {
+    const o = e?.order as Record<string, unknown> | undefined;
+    if (
+      !o ||
+      !str(o.coin) ||
+      (o.side !== "A" && o.side !== "B") ||
+      !dec(o.limitPx) ||
+      !dec(o.sz) ||
+      !isInt(o.oid) ||
+      !isInt(o.timestamp) ||
+      !str(e.status) ||
+      !isInt(e.statusTimestamp)
+    ) {
+      continue;
+    }
+    out.push({
+      coin: o.coin,
+      side: o.side === "B" ? "buy" : "sell",
+      limitPx: o.limitPx,
+      sz: o.sz,
+      origSz: dec(o.origSz) ? o.origSz : o.sz,
+      oid: o.oid,
+      orderType: str(o.orderType) ? o.orderType : "Limit",
+      tif: str(o.tif) ? o.tif : null,
+      timestamp: o.timestamp,
+      status: e.status.slice(0, 40),
+      statusTimestamp: e.statusTimestamp,
+    });
+  }
+  return out.sort((a, b) => b.statusTimestamp - a.statusTimestamp).slice(0, limit);
+}
+
+/** Fills between `startTime` and `endTime` (ms), newest first (paged by time on the client). */
+export async function getUserFillsByTime(
+  user: string,
+  startTime: number,
+  endTime: number,
+  limit = 200,
+): Promise<Fill[]> {
+  if (!ADDRESS.test(user)) throw new HyperliquidError("Invalid account address.", 400);
+  if (!isInt(startTime) || !isInt(endTime) || endTime < startTime) {
+    throw new HyperliquidError("Invalid time range.", 400);
+  }
+  const raw = await postInfo({ type: "userFillsByTime", user, startTime, endTime });
+  if (!Array.isArray(raw)) throw new HyperliquidError("Unexpected userFillsByTime answer.", 502);
+  return (raw as Record<string, unknown>[])
+    .filter(
+      (f) =>
+        str(f?.coin) &&
+        (f.side === "A" || f.side === "B") &&
+        dec(f.px) &&
+        dec(f.sz) &&
+        isInt(f.oid) &&
+        isInt(f.time) &&
+        str(f.hash),
+    )
+    .map((f) => ({
+      coin: f.coin as string,
+      side: (f.side === "B" ? "buy" : "sell") as Fill["side"],
+      px: f.px as string,
+      sz: f.sz as string,
+      fee: str(f.fee) && /^-?\d+(?:\.\d+)?$/.test(f.fee) ? f.fee : "0",
+      feeToken: str(f.feeToken) ? f.feeToken : null,
+      oid: f.oid as number,
+      time: f.time as number,
+      hash: f.hash as string,
+    }))
+    .sort((a, b) => b.time - a.time)
+    .slice(0, limit);
+}
+
+export type PortfolioPoint = { t: number; value: string };
+export type PortfolioPeriod = {
+  period: string;
+  accountValue: PortfolioPoint[];
+  pnl: PortfolioPoint[];
+  volume: string | null;
+};
+
+/** Account value and PnL history per period (day, week, month, allTime, ...). */
+export async function getPortfolio(user: string): Promise<PortfolioPeriod[]> {
+  if (!ADDRESS.test(user)) throw new HyperliquidError("Invalid account address.", 400);
+  const raw = await postInfo({ type: "portfolio", user });
+  if (!Array.isArray(raw)) throw new HyperliquidError("Unexpected portfolio answer.", 502);
+  const points = (v: unknown): PortfolioPoint[] =>
+    Array.isArray(v)
+      ? (v as unknown[])
+          .filter(
+            (p): p is [number, string] =>
+              Array.isArray(p) && p.length === 2 && num(p[0]) && /^-?\d+(?:\.\d+)?$/.test(String(p[1])),
+          )
+          .map((p) => ({ t: p[0], value: String(p[1]) }))
+      : [];
+  const out: PortfolioPeriod[] = [];
+  for (const entry of raw as unknown[]) {
+    if (!Array.isArray(entry) || entry.length !== 2 || !str(entry[0])) continue;
+    const d = entry[1] as Record<string, unknown> | null;
+    if (!d || typeof d !== "object") continue;
+    out.push({
+      period: entry[0].slice(0, 20),
+      accountValue: points(d.accountValueHistory),
+      pnl: points(d.pnlHistory),
+      volume: dec(d.vlm) ? d.vlm : null,
+    });
+  }
+  return out;
 }
