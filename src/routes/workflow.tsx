@@ -11,7 +11,7 @@ import {
 import { SiteLayout } from "@/components/site/Layout";
 import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
 import { Button } from "@/components/ui/button";
-import { PAYMENT_JOURNEY } from "@/content/payment-flow";
+import { paymentFlowCopy } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { VerificationJourney } from "@/components/site/VerificationJourney";
@@ -135,6 +135,7 @@ const endpoints = [
 
 function WorkflowPage() {
   const live = useLaunchStage() === "live";
+  const PAYMENT_JOURNEY = paymentFlowCopy(live ? "live" : "test").journey;
   const shownEndpoints = endpoints.filter((e) =>
     live ? !("test" in e && e.test) : !("live" in e && e.live),
   );

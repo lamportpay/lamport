@@ -137,7 +137,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify(companyGraph()),
+        children: JSON.stringify(companyGraph(loaderData?.stage === "live" ? "live" : "test")),
       },
     ],
   }),

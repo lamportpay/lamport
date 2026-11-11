@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
-import { PAYMENT_COSTS, PAYMENT_JOURNEY } from "@/content/payment-flow";
+import { paymentFlowCopy } from "@/content/payment-flow";
 import { useLaunchStage } from "@/lib/launch-stage";
 
 export const Route = createFileRoute("/docs")({
@@ -39,6 +39,7 @@ const contents = [
 
 function Docs() {
   const live = useLaunchStage() === "live";
+  const flow = paymentFlowCopy(live ? "live" : "test");
   const stack = stackFor(live);
   return (
     <SiteLayout>
@@ -76,7 +77,7 @@ function Docs() {
             <section id="journey" className="scroll-mt-24">
               <h2 className="text-2xl font-semibold">Quote-first payment sequence</h2>
               <ol className="mt-5 list-decimal pl-5 space-y-4 text-sm text-muted-foreground leading-relaxed">
-                {PAYMENT_JOURNEY.map((step) => <li key={step.title}><strong className="text-foreground">{step.title}. </strong>{step.detail}</li>)}
+                {flow.journey.map((step) => <li key={step.title}><strong className="text-foreground">{step.title}. </strong>{step.detail}</li>)}
               </ol>
               <p className="mt-5 text-sm text-muted-foreground leading-relaxed">A transfer is created only for a verified sender. Own-account payouts use the verified holder name; beneficiary payouts require the beneficiary's name, type and an appropriate payment purpose. Bank details are validated by Stables in either case.</p>
             </section>
@@ -85,7 +86,7 @@ function Docs() {
               <h2 className="text-2xl font-semibold">Amounts & costs</h2>
               <p className="mt-4 text-sm text-muted-foreground leading-relaxed">Payment arithmetic uses integer minor units rather than floating-point amounts. LamportPay's fee is taken from the user's sent total once; optional minimum and maximum fee bounds are off by default. The payment record keeps the applicable fee rule.{live ? " The fee goes to LamportPay's own wallet in the same transaction the customer signs." : " The sandbox build collects no real revenue."}</p>
               <dl className="mt-4 divide-y divide-border text-sm">
-                {PAYMENT_COSTS.map((cost) => <div key={cost.title} className="py-4"><dt className="font-semibold">{cost.title}</dt><dd className="mt-1 leading-relaxed text-muted-foreground">{cost.detail}</dd></div>)}
+                {flow.costs.map((cost) => <div key={cost.title} className="py-4"><dt className="font-semibold">{cost.title}</dt><dd className="mt-1 leading-relaxed text-muted-foreground">{cost.detail}</dd></div>)}
               </dl>
               <p className="mt-3 text-sm text-muted-foreground leading-relaxed">Country-to-currency defaults are reference data, not supported-corridor guarantees. Stables quotes establish country/currency availability, bank-field validation checks recipient details, and configured limits are enforced by the payment app.</p>
             </section>

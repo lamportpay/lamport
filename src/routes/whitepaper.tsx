@@ -3,7 +3,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { TRACKER_PHASES, TRACKER_STATUS_LABEL } from "@/content/roadmap-tracker";
-import { PAYMENT_COSTS, PAYMENT_JOURNEY } from "@/content/payment-flow";
+import { paymentFlowCopy } from "@/content/payment-flow";
 import { PaymentFlowStatus } from "@/components/site/PaymentFlowStatus";
 import { useLaunchStage } from "@/lib/launch-stage";
 
@@ -71,13 +71,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
   {
     title: "5. Core flow",
     body: (
-      <ol className="space-y-4 list-decimal pl-5">
-        {PAYMENT_JOURNEY.map((step) => (
-          <li key={step.title}>
-            <strong className="text-foreground">{step.title}. </strong>{step.detail}
-          </li>
-        ))}
-      </ol>
+      <FlowJourney />
     ),
   },
   {
@@ -174,10 +168,9 @@ const sections: { title: string; body: React.ReactNode }[] = [
       <p>
         USDC on Solana is the enabled settlement currency. The model includes USDT on Solana,
         but USDT payments are currently DISABLED. SOL routing is available where supported by
-        the wallet; the sandbox build does not execute the conversion or move payment funds.
+        the wallet; <SwapNote />
         Bitcoin, Ethereum, USDT and other major-asset routes are IN PROGRESS through the Hyperliquid
-        route and are not accepted deposits; trading, deposits and withdrawals through Hyperliquid
-        remain DISABLED.
+        route and are not accepted deposits. <HyperliquidNote />
       </p>
     ),
   },
@@ -251,14 +244,7 @@ const sections: { title: string; body: React.ReactNode }[] = [
           to Stables—not 153 USDC leaving the wallet. Partner, swap and network costs remain
           separate and are disclosed before approval. The payment app displays the fee amount.
         </p>
-        <dl className="divide-y divide-border">
-          {PAYMENT_COSTS.map((cost) => (
-            <div key={cost.title} className="py-3">
-              <dt className="font-semibold text-foreground">{cost.title}</dt>
-              <dd className="mt-1">{cost.detail}</dd>
-            </div>
-          ))}
-        </dl>
+        <FlowCosts />
         <p>
           Optional minimum and maximum fee bounds are off by default. In production, LamportPay's
           revenue transfer is separate from the Stables deposit within the user-signed transaction;
@@ -333,6 +319,53 @@ const sections: { title: string; body: React.ReactNode }[] = [
     ),
   },
 ];
+
+function FlowJourney() {
+  const journey = paymentFlowCopy(useLaunchStage()).journey;
+  return (
+    <ol className="space-y-4 list-decimal pl-5">
+      {journey.map((step) => (
+        <li key={step.title}>
+          <strong className="text-foreground">{step.title}. </strong>
+          {step.detail}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function FlowCosts() {
+  const costs = paymentFlowCopy(useLaunchStage()).costs;
+  return (
+    <dl className="divide-y divide-border">
+      {costs.map((cost) => (
+        <div key={cost.title} className="py-3">
+          <dt className="font-semibold text-foreground">{cost.title}</dt>
+          <dd className="mt-1">{cost.detail}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function SwapNote() {
+  return useLaunchStage() === "live" ? (
+    <>the swap is signed and paid for in the user's own wallet.</>
+  ) : (
+    <>the sandbox build does not execute the conversion or move payment funds.</>
+  );
+}
+
+function HyperliquidNote() {
+  return useLaunchStage() === "live" ? (
+    <>
+      Spot trading on Hyperliquid is available from the user's own wallet on the Trade page;
+      deposits and withdrawals through Hyperliquid are not offered in the app.
+    </>
+  ) : (
+    <>Trading, deposits and withdrawals through Hyperliquid remain DISABLED.</>
+  );
+}
 
 /** One-line status that follows the server's launch stage. */
 function CurrentStage() {
