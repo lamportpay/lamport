@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { COMPLAINT_RE, FAQS, SUGGESTED, answerFaq } from "@/lib/ask-ai-faq";
 import markUrl from "@/assets/lamportpay-mark.png";
+import { useLaunchStage } from "@/lib/launch-stage";
 
 type Msg = { id: string; role: "user" | "assistant"; text: string };
 
@@ -32,6 +33,7 @@ function Mark({ size = "size-7", inner = "size-5" }: { size?: string; inner?: st
 }
 
 function ChatBody() {
+  const stage = useLaunchStage();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [typing, setTyping] = useState(false);
@@ -70,7 +72,7 @@ function ChatBody() {
     setInput("");
     setTyping(true);
     inputRef.current?.focus();
-    const { answer } = answerFaq(q);
+    const { answer } = answerFaq(q, stage);
     const id = crypto.randomUUID();
     window.setTimeout(() => {
       setTyping(false);

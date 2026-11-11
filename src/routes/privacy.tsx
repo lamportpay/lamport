@@ -69,6 +69,13 @@ const SECTIONS: LegalSection[] = [
           any contact email you give, and complaint details.
         </li>
         <li>
+          <strong>Trading (Hyperliquid):</strong> if you use Trade, your EVM wallet address and a
+          log of the actions you take through LamportPay (trading-key approvals, orders, cancels and
+          check runs, with Hyperliquid's answers). We never receive or store your wallet keys or the
+          in-tab trading key. Hyperliquid account data such as balances and trades is public on
+          Hyperliquid and read from it when you open Trade.
+        </li>
+        <li>
           <strong>Early access:</strong> name, email and wallet address if you join the early-access
           list.
         </li>
@@ -121,9 +128,14 @@ const SECTIONS: LegalSection[] = [
           </li>
           <li>
             <strong>Service providers acting for us</strong>: database and authentication hosting
-            (Supabase), website and application hosting, a Solana network data provider, price and
-            routing quotes (Jupiter), and an AI service used by the in-app assistant (messages are
+            (Supabase), website and application hosting (Vercel), a network relay server we run on
+            Oracle Cloud for our calls to Stables, Solana network data providers, price and routing
+            quotes (Jupiter), and, when the in-app assistant is enabled, an AI service (messages are
             processed through Lovable's AI gateway by an OpenAI model).
+          </li>
+          <li>
+            <strong>Hyperliquid</strong>: the orders and approvals you sign in Trade are sent to
+            Hyperliquid, under Hyperliquid's own terms and privacy policy.
           </li>
           <li>
             <strong>Google</strong>: analytics data from public pages, only if you accept optional

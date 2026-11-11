@@ -132,6 +132,32 @@ export const FAQS: Faq[] = [
   },
 ];
 
+/**
+ * Answers that change once LIVE is active (real payouts on Solana mainnet).
+ * Anything that depends on the payout partner (countries, limits, timing) is
+ * worded as partner-dependent rather than stated as fact.
+ */
+export const LIVE_ANSWERS: Record<string, string> = {
+  phases:
+    "LamportPay follows a **12-phase plan**. Business & architecture, the Web3 foundation, the payout flow with fees and audit trail, the revenue engine and the controlled production go-live are in place, so **real payments now run on Solana mainnet**. Next: more tokens via Jupiter, compliance operations, a full admin dashboard, multi-provider fiat, an external security audit and a wider public launch. Every phase passes testing, security review and approval before moving on.",
+  security:
+    "Security is built in layers: **non-custodial design** (we never hold funds), server-side checks before any live payment, rate limiting on money-moving routes, an append-only admin audit log, and signed webhooks only. An external security audit is part of the roadmap (Phase 10). Compliance features like the Travel Rule and compliance holds are part of the payment design itself.",
+  countries:
+    "Destinations depend on our payout partner's live approval for each country and currency, and **the app only shows the ones you can pay to right now**. United States, United Kingdom, India and Philippines are the first corridors; Nigeria and Pakistan are planned. Bank options depend on the country and currency.",
+  kyc: "Yes, once. Verification runs on our licensed partner **Stables'** secure hosted page. LamportPay only stores a link and a status — never your documents. After your first completed payment your wallet stays verified.",
+  live: "Yes. LamportPay is **live on Solana mainnet**: payments use real USDC and bank payouts are real. Start with a small amount, double-check the bank details, and send exactly the quoted amount from your own wallet.",
+  partners:
+    "- **Stables** — licensed payout & verification partner\n- **Jupiter** — Solana swap quotes\n- **Hyperliquid** — trading from your own wallet (Trade page)\n- **Circle, Tether, Yellow Card** — planned / in discussion, not confirmed\n\nSee the Partners page for details.",
+  time: "The crypto side settles in seconds on Solana. Bank delivery depends on the country, the bank and the payout partner — the quote shows an estimate, and you can follow every step on the payment page.",
+  limits:
+    "The minimum is **15 USDC** per payment. The maximum follows the payout partner's limits for your country and verification level; the app tells you before you approve if an amount is too large.",
+};
+
+/** The answer for the current wording stage. */
+export function faqAnswer(f: Faq, stage: "test" | "live" = "test"): string {
+  return stage === "live" ? (LIVE_ANSWERS[f.id] ?? f.answer) : f.answer;
+}
+
 export const SUGGESTED = ["how", "fees", "countries", "safe", "kyc", "live"];
 
 const COMPLAINT_REPLY =
@@ -142,7 +168,10 @@ const EMAIL_REPLY = "Thanks — the team has your email and will get back to you
 const FALLBACK =
   "I can help with **payment steps, fees, countries, verification, wallet safety, partners and the roadmap** — try one of the questions below. For anything account-specific, email hello@lamportpay.com or use the Contact page.";
 
-export function answerFaq(text: string): { answer: string; complaint: boolean } {
+export function answerFaq(
+  text: string,
+  stage: "test" | "live" = "test",
+): { answer: string; complaint: boolean } {
   if (/[^@\s]+@[^@\s]+\.[^@\s]+/.test(text) && text.length < 120)
     return { answer: EMAIL_REPLY, complaint: false };
   if (COMPLAINT_RE.test(text)) return { answer: COMPLAINT_REPLY, complaint: true };
@@ -155,5 +184,5 @@ export function answerFaq(text: string): { answer: string; complaint: boolean } 
       best = f;
     }
   }
-  return { answer: best ? best.answer : FALLBACK, complaint: false };
+  return { answer: best ? faqAnswer(best, stage) : FALLBACK, complaint: false };
 }

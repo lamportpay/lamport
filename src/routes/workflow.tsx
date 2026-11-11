@@ -15,6 +15,7 @@ import { PAYMENT_JOURNEY } from "@/content/payment-flow";
 import { pageSeo } from "@/lib/seo";
 import { FurtherReading } from "@/components/site/blog/FurtherReading";
 import { VerificationJourney } from "@/components/site/VerificationJourney";
+import { useLaunchStage } from "@/lib/launch-stage";
 
 export const Route = createFileRoute("/workflow")({
   head: () =>
@@ -41,6 +42,9 @@ const layers = [
     status: "LIVE · read-only quotes",
     detail:
       "SOL → USDC route discovery uses mainnet market data. Mainnet swap execution is DISABLED in the sandbox build.",
+    liveStatus: "LIVE",
+    liveDetail:
+      "SOL → USDC routes from mainnet market data; swaps you sign in your own wallet run on Solana mainnet.",
   },
   {
     icon: Landmark,
@@ -48,6 +52,8 @@ const layers = [
     status: "SANDBOX/SIMULATED",
     detail:
       "Sandbox quotes, hosted verification and transfer status. Production KYC and real bank payouts are DISABLED.",
+    liveStatus: "LIVE · production",
+    liveDetail: "Production quotes, hosted verification, bank payouts and transfer status from Stables.",
   },
 ];
 
@@ -59,6 +65,7 @@ const stages = [
     today:
       "Verify the signed message, its origin and freshness before linking the wallet to the customer account.",
     production: "The same wallet-first identity model; no private key or seed phrase is accepted.",
+    live: "The server verifies the signed message, its origin and freshness before linking the wallet to the customer account. No private key or seed phrase is ever accepted.",
   },
   {
     title: "Amount & quote",
@@ -68,6 +75,7 @@ const stages = [
       "Get a Stables sandbox quote before verification. SOL estimates use a read-only Jupiter route. Show the LamportPay fee and separate provider costs.",
     production:
       "An approved Stables production quote determines corridor support, pricing and customer limits.",
+    live: "A Stables production quote sets corridor support, pricing and limits; SOL estimates use a read-only Jupiter route. The LamportPay fee and provider costs are shown before you sign.",
   },
   {
     title: "Payout details",
@@ -77,6 +85,7 @@ const stages = [
       "Validate the bank fields Stables requires. Own-account holder names come from the verified record; beneficiaries require their details and a payment purpose.",
     production:
       "The verified sender can request an own-account or beneficiary bank payout, subject to partner checks.",
+    live: "Stables validates the bank fields. Own-account holder names come from the verified record; beneficiaries need their details and a payment purpose.",
   },
   {
     title: "Verification & review",
@@ -86,6 +95,7 @@ const stages = [
       "Complete any required sandbox verification with Stables, then review the recipient, quote and costs. LamportPay does not collect identity documents.",
     production:
       "Production KYC is DISABLED until approval. Transfers require a verified Stables customer.",
+    live: "Verification happens on Stables' hosted page; LamportPay does not collect identity documents. Transfers require a verified Stables customer.",
   },
   {
     title: "Wallet approval",
@@ -95,6 +105,7 @@ const stages = [
       "Sign a real test-network memo transaction that moves no funds. The server checks the signer, memo, freshness and success before simulating the sandbox deposit.",
     production:
       "DISABLED: user-signed funding to Stables’ single-use deposit address, with any applicable fee transfer and settlement checks.",
+    live: "You sign one Solana mainnet transaction that sends USDC to Stables’ single-use deposit address and LamportPay’s fee to its wallet. The server checks it on-chain, and a second payment cannot be sent while the first can still land.",
   },
   {
     title: "Status & receipt",
@@ -104,6 +115,7 @@ const stages = [
       "Signed webhooks and reconciliation follow Stables’ sandbox transfer status. Processing is not completion; a receipt updates only when the reported status changes.",
     production:
       "The same provider-authoritative status model, with live bank settlement only after production approval.",
+    live: "Signed webhooks and reconciliation follow Stables’ production transfer status. Processing is not completion; the receipt updates when the reported status changes.",
   },
 ];
 
@@ -115,11 +127,17 @@ const endpoints = [
   { step: "Check bank details", method: "POST", path: "/api/payments/:id/payout-details" },
   { step: "Verification status / link", method: "GET / POST", path: "/api/kyc" },
   { step: "Prepare transfer", method: "POST", path: "/api/payments/:id/transfer" },
-  { step: "Verify test approval", method: "POST", path: "/api/payments/:id/test-payment" },
+  { step: "Verify test approval", method: "POST", path: "/api/payments/:id/test-payment", test: true },
+  { step: "Prepare funding", method: "POST", path: "/api/payments/:id/funding-transaction", live: true },
+  { step: "Verify funding on-chain", method: "POST", path: "/api/payments/:id/funding", live: true },
   { step: "Read status & receipt", method: "GET", path: "/api/payments/:id" },
 ];
 
 function WorkflowPage() {
+  const live = useLaunchStage() === "live";
+  const shownEndpoints = endpoints.filter((e) =>
+    live ? !("test" in e && e.test) : !("live" in e && e.live),
+  );
   return (
     <SiteLayout>
       <main className="mx-auto max-w-6xl px-5 pb-16 pt-12 md:pb-24 md:pt-20">
@@ -135,7 +153,7 @@ function WorkflowPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild size="lg">
               <Link to="/pay">
-                Open sandbox <ArrowRight aria-hidden="true" />
+                {live ? "Open the app" : "Open sandbox"} <ArrowRight aria-hidden="true" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
@@ -147,7 +165,7 @@ function WorkflowPage() {
 
         <section className="mt-12" aria-label="Integration layers">
           <div className="grid gap-4 md:grid-cols-3">
-            {layers.map(({ icon: Icon, title, status, detail }) => (
+            {layers.map(({ icon: Icon, title, status, detail, ...rest }) => (
               <article
                 key={title}
                 className="overflow-hidden rounded-xl border border-border bg-card"
@@ -160,8 +178,12 @@ function WorkflowPage() {
                 </div>
                 <div className="p-5">
                   <h2 className="text-lg font-semibold">{title}</h2>
-                  <p className="mt-2 text-xs font-semibold text-primary">{status}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{detail}</p>
+                  <p className="mt-2 text-xs font-semibold text-primary">
+                    {live && "liveStatus" in rest ? rest.liveStatus : status}
+                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {live && "liveDetail" in rest ? rest.liveDetail : detail}
+                  </p>
                 </div>
               </article>
             ))}
@@ -189,7 +211,9 @@ function WorkflowPage() {
             From request to receipt
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Current sandbox behavior, alongside the production path that remains disabled.
+            {live
+              ? "How each step runs in production."
+              : "Current sandbox behavior, alongside the production path that remains disabled."}
           </p>
           <div className="mt-6">
             {stages.map((stage, index) => (
@@ -202,9 +226,18 @@ function WorkflowPage() {
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <h3 className="text-lg font-semibold">{stage.title}</h3>
-                  <span className="text-xs font-medium text-primary">{stage.status}</span>
+                  <span className="text-xs font-medium text-primary">
+                    {live ? "LIVE" : stage.status}
+                  </span>
                 </div>
-                <p className="mt-2 text-xs text-muted-foreground">{stage.provider}</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {live ? stage.provider.replace("Solana test network", "Solana mainnet") : stage.provider}
+                </p>
+                {live ? (
+                  <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                    {stage.live}
+                  </p>
+                ) : (
                 <div className="mt-4 grid gap-5 md:grid-cols-2 md:gap-8">
                   <div>
                     <h4 className="text-xs font-semibold uppercase">Today · sandbox</h4>
@@ -219,6 +252,7 @@ function WorkflowPage() {
                     </p>
                   </div>
                 </div>
+                )}
               </article>
             ))}
           </div>
@@ -238,7 +272,7 @@ function WorkflowPage() {
           </p>
           <div className="mt-6 overflow-x-auto rounded-lg border border-border">
             <table className="w-full text-left text-sm">
-              <caption className="sr-only">Sandbox payment API sequence</caption>
+              <caption className="sr-only">Payment API sequence</caption>
               <thead className="bg-secondary">
                 <tr>
                   <th scope="col" className="px-4 py-3 font-semibold">
@@ -253,7 +287,7 @@ function WorkflowPage() {
                 </tr>
               </thead>
               <tbody>
-                {endpoints.map((endpoint) => (
+                {shownEndpoints.map((endpoint) => (
                   <tr key={endpoint.path} className="border-t border-border">
                     <th scope="row" className="px-4 py-3 font-medium whitespace-nowrap">
                       {endpoint.step}
