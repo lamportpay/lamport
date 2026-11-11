@@ -5,18 +5,26 @@ import { AppLayout } from "@/components/app/AppLayout";
 import { HyperliquidTestPanel } from "@/components/app/HyperliquidTestPanel";
 import { useModeStatus } from "@/lib/use-mode-status";
 
+/**
+ * Trade (Hyperliquid spot) in the app dashboard. The network follows the app
+ * mode: testnet in TEST MODE, mainnet in LIVE MODE (owner decision, 11 Nov
+ * 2026). The path keeps its original name so existing links still work.
+ */
 export const Route = createFileRoute("/_authenticated/hyperliquid-test")({
   head: () => ({
     meta: [
-      { title: "Hyperliquid testnet | LamportPay" },
-      { name: "description", content: "Test LamportPay's Hyperliquid testnet integration." },
+      { title: "Trade | LamportPay" },
+      {
+        name: "description",
+        content: "Trade BTC, ETH, SOL and more on Hyperliquid spot from your own wallet.",
+      },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
-  component: HyperliquidTestPage,
+  component: TradePage,
 });
 
-function HyperliquidTestPage() {
+function TradePage() {
   const { status } = useModeStatus();
   return (
     <AppLayout>
@@ -24,11 +32,11 @@ function HyperliquidTestPage() {
         <div className="flex justify-center py-16">
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
-      ) : status.mode === "test" ? (
+      ) : status.ok ? (
         <HyperliquidTestPanel />
       ) : (
         <p className="mx-auto max-w-xl px-4 py-16 text-center text-sm text-muted-foreground">
-          Hyperliquid testing is available in TEST MODE only.
+          Trading is paused while the service configuration is being completed.
         </p>
       )}
     </AppLayout>

@@ -1,6 +1,8 @@
 /**
- * Relay of Hyperliquid TESTNET actions signed in the customer's browser (owner
- * decision 2026-11-07). TEST MODE only; the testnet exchange endpoint only.
+ * Relay of Hyperliquid actions signed in the customer's browser (owner
+ * decisions 2026-11-07 and 2026-11-11): the testnet exchange endpoint in TEST
+ * MODE, mainnet in LIVE MODE; a key approved on one network never trades on
+ * the other.
  *
  * The server holds no key and cannot sign or change anything: it rebuilds the
  * action in canonical form, recomputes the signed hash, recovers the signer and
@@ -16,6 +18,8 @@ import type { AuthenticatedUser } from "@/lib/payments/auth.server";
 import { PaymentError } from "@/lib/payments/service.server";
 
 import { canonicalAction, type ExchangeRequest, type RelayAction } from "./actions";
+import { currentHlNetwork } from "./info.server";
+import { HL_API_BASE, HL_CHAIN, type HlNetwork } from "./network";
 import { approveAgentDigest, l1Digest, recoverSigner, type MsgpackValue } from "./signing";
 import {
   approvedAccountOf,
@@ -25,7 +29,9 @@ import {
   type TestEventKind,
 } from "./tracking.server";
 
-export const HYPERLIQUID_EXCHANGE_URL = "https://api.hyperliquid-testnet.xyz/exchange";
+/** Testnet exchange endpoint (TEST MODE); LIVE MODE relays to mainnet (11 Nov 2026). */
+export const HYPERLIQUID_EXCHANGE_URL = `${HL_API_BASE.testnet}/exchange`;
+export const hlExchangeUrl = (network: HlNetwork) => `${HL_API_BASE[network]}/exchange`;
 /** A signed action older or newer than this is refused (replay window). */
 export const NONCE_WINDOW_MS = 10 * 60_000;
 const TIMEOUT_MS = 15_000;
@@ -83,11 +89,20 @@ export async function relayTestnetAction(
   req: ExchangeRequest,
   now: number = Date.now(),
 ): Promise<RelayResult> {
-  if (currentMode().mode !== "test") {
+  const status = currentMode();
+  if (!status.ok) {
     throw new PaymentError(
-      "Hyperliquid test trading is available in TEST MODE only.",
+      "Trading is paused: the server configuration does not match its mode.",
+      503,
+      "mode_blocked",
+    );
+  }
+  const network: HlNetwork = currentHlNetwork();
+  if (req.action.type === "approveAgent" && req.action.hyperliquidChain !== HL_CHAIN[network]) {
+    throw new PaymentError(
+      `This approval was made for Hyperliquid ${req.action.hyperliquidChain}; the app now uses ${HL_CHAIN[network]}. Reload and enable trading again.`,
       409,
-      "hyperliquid_test_only",
+      "network_mismatch",
     );
   }
   if (Math.abs(req.nonce - now) > NONCE_WINDOW_MS) {
@@ -111,7 +126,10 @@ export async function relayTestnetAction(
       signer = recoverSigner(approveAgentDigest(action), req.signature);
       agent = action.agentAddress;
     } else {
-      signer = recoverSigner(l1Digest(action as unknown as MsgpackValue, req.nonce), req.signature);
+      signer = recoverSigner(
+        l1Digest(action as unknown as MsgpackValue, req.nonce, network),
+        req.signature,
+      );
       agent = signer;
     }
   } catch (e) {
@@ -127,21 +145,23 @@ export async function relayTestnetAction(
         "signature_mismatch",
       );
     }
-  } else if ((await approvedAccountOf(user.id, agent)) !== account) {
+  } else if ((await approvedAccountOf(user.id, agent, network)) !== account) {
     throw new PaymentError(
-      "Enable test trading for this wallet first (the trading key is not approved).",
+      "Enable trading for this wallet first (the trading key is not approved).",
       403,
       "agent_not_approved",
     );
   }
 
-  assertEndpointAllowed("hyperliquid_exchange", HYPERLIQUID_EXCHANGE_URL);
+  const exchangeUrl = hlExchangeUrl(network);
+  assertEndpointAllowed("hyperliquid_exchange", exchangeUrl);
 
   let eventId: string;
   try {
     eventId = await startEvent({
       userId: user.id,
       kind,
+      network,
       account,
       agent,
       signer,
@@ -157,7 +177,7 @@ export async function relayTestnetAction(
 
   let body: unknown;
   try {
-    const res = await fetch(HYPERLIQUID_EXCHANGE_URL, {
+    const res = await fetch(exchangeUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({
@@ -184,7 +204,7 @@ export async function relayTestnetAction(
       error: "Hyperliquid did not answer; the action may still have been applied.",
     });
     throw new PaymentError(
-      "Hyperliquid testnet did not answer. Refresh the account before trying again.",
+      "Hyperliquid did not answer. Refresh the account before trying again.",
       503,
       "hyperliquid_down",
     );

@@ -9,7 +9,15 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck } from "lucide-react";
 import { paymentApi } from "@/lib/payments/api-client";
 import type { KycStatus } from "@/lib/payments/view";
-import { ChevronRight, FlaskConical, History, LogOut, Send, UserRound, Wallet } from "lucide-react";
+import {
+  CandlestickChart,
+  ChevronRight,
+  History,
+  LogOut,
+  Send,
+  UserRound,
+  Wallet,
+} from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
@@ -31,10 +39,10 @@ const APP_NAV = [
   { to: "/pay", label: "Pay", icon: Send },
   { to: "/payments", label: "History", icon: History },
 ] as const;
-/** TEST MODE only: the Hyperliquid testnet test panel. */
-const TEST_NAV = [
+/** With Trade (Hyperliquid spot: testnet in TEST MODE, mainnet in LIVE MODE, 11 Nov 2026). */
+const TRADE_NAV = [
   ...APP_NAV,
-  { to: "/hyperliquid-test", label: "HL Test", icon: FlaskConical },
+  { to: "/hyperliquid-test", label: "Trade", icon: CandlestickChart },
 ] as const;
 
 /** Whether someone is signed in: null while unknown (first render / loading). */
@@ -274,7 +282,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     account.status === "signed_in" &&
     walletLinkOf(publicKey, account.wallets) === "different_wallet";
   const { status: modeStatus } = useModeStatus();
-  const nav = modeStatus?.mode === "test" ? TEST_NAV : APP_NAV;
+  const nav = modeStatus?.ok ? TRADE_NAV : APP_NAV;
   // overflow-x-clip, not -hidden: "hidden" makes this div a scroll container,
   // which silently breaks the sticky header and the sticky /pay side panels.
   return (
