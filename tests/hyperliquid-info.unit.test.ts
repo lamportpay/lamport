@@ -51,15 +51,19 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-describe("Hyperliquid mode guard: read-only TESTNET info endpoint only", () => {
-  it("allows only POST /info on api.hyperliquid-testnet.xyz, in both modes", () => {
+describe("Hyperliquid mode guard: the network follows the mode (11 Nov 2026)", () => {
+  it("TEST MODE reads the testnet /info only; LIVE MODE reads mainnet /info only", () => {
     expect(HYPERLIQUID_INFO_URL).toBe("https://api.hyperliquid-testnet.xyz/info");
+    expect(endpointAllowed("test", "hyperliquid_info", HYPERLIQUID_INFO_URL).ok).toBe(true);
+    expect(endpointAllowed("test", "hyperliquid_info", "https://api.hyperliquid.xyz/info").ok).toBe(
+      false,
+    );
+    expect(endpointAllowed("live", "hyperliquid_info", "https://api.hyperliquid.xyz/info").ok).toBe(
+      true,
+    );
+    expect(endpointAllowed("live", "hyperliquid_info", HYPERLIQUID_INFO_URL).ok).toBe(false);
     for (const mode of ["test", "live"] as const) {
-      expect(endpointAllowed(mode, "hyperliquid_info", HYPERLIQUID_INFO_URL).ok).toBe(true);
-      // No Mainnet dependency: Mainnet info and every exchange (order) endpoint are refused.
-      expect(endpointAllowed(mode, "hyperliquid_info", "https://api.hyperliquid.xyz/info").ok).toBe(
-        false,
-      );
+      // Exchange (order) paths are never reachable through the info kind.
       expect(
         endpointAllowed(mode, "hyperliquid_info", "https://api.hyperliquid.xyz/exchange").ok,
       ).toBe(false);

@@ -66,6 +66,8 @@ import { Route as AuthenticatedPaymentsIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedPaymentsIdRouteImport } from './routes/_authenticated/payments.$id'
 import { Route as ApiCronReconcilePaymentsRouteImport } from './routes/api/cron/reconcile-payments'
 import { Route as ApiHyperliquidAccountRouteImport } from './routes/api/hyperliquid/account'
+import { Route as ApiHyperliquidActivityRouteImport } from './routes/api/hyperliquid/activity'
+import { Route as ApiHyperliquidCandlesRouteImport } from './routes/api/hyperliquid/candles'
 import { Route as ApiHyperliquidChecksRouteImport } from './routes/api/hyperliquid/checks'
 import { Route as ApiHyperliquidExchangeRouteImport } from './routes/api/hyperliquid/exchange'
 import { Route as ApiHyperliquidHistoryRouteImport } from './routes/api/hyperliquid/history'
@@ -397,6 +399,16 @@ const ApiHyperliquidAccountRoute = ApiHyperliquidAccountRouteImport.update({
   path: '/api/hyperliquid/account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiHyperliquidActivityRoute = ApiHyperliquidActivityRouteImport.update({
+  id: '/api/hyperliquid/activity',
+  path: '/api/hyperliquid/activity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHyperliquidCandlesRoute = ApiHyperliquidCandlesRouteImport.update({
+  id: '/api/hyperliquid/candles',
+  path: '/api/hyperliquid/candles',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiHyperliquidChecksRoute = ApiHyperliquidChecksRouteImport.update({
   id: '/api/hyperliquid/checks',
   path: '/api/hyperliquid/checks',
@@ -618,6 +630,8 @@ export interface FileRoutesByFullPath {
   '/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
   '/api/hyperliquid/account': typeof ApiHyperliquidAccountRoute
+  '/api/hyperliquid/activity': typeof ApiHyperliquidActivityRoute
+  '/api/hyperliquid/candles': typeof ApiHyperliquidCandlesRoute
   '/api/hyperliquid/checks': typeof ApiHyperliquidChecksRoute
   '/api/hyperliquid/exchange': typeof ApiHyperliquidExchangeRoute
   '/api/hyperliquid/history': typeof ApiHyperliquidHistoryRoute
@@ -705,6 +719,8 @@ export interface FileRoutesByTo {
   '/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
   '/api/hyperliquid/account': typeof ApiHyperliquidAccountRoute
+  '/api/hyperliquid/activity': typeof ApiHyperliquidActivityRoute
+  '/api/hyperliquid/candles': typeof ApiHyperliquidCandlesRoute
   '/api/hyperliquid/checks': typeof ApiHyperliquidChecksRoute
   '/api/hyperliquid/exchange': typeof ApiHyperliquidExchangeRoute
   '/api/hyperliquid/history': typeof ApiHyperliquidHistoryRoute
@@ -795,6 +811,8 @@ export interface FileRoutesById {
   '/_authenticated/payments/$id': typeof AuthenticatedPaymentsIdRoute
   '/api/cron/reconcile-payments': typeof ApiCronReconcilePaymentsRoute
   '/api/hyperliquid/account': typeof ApiHyperliquidAccountRoute
+  '/api/hyperliquid/activity': typeof ApiHyperliquidActivityRoute
+  '/api/hyperliquid/candles': typeof ApiHyperliquidCandlesRoute
   '/api/hyperliquid/checks': typeof ApiHyperliquidChecksRoute
   '/api/hyperliquid/exchange': typeof ApiHyperliquidExchangeRoute
   '/api/hyperliquid/history': typeof ApiHyperliquidHistoryRoute
@@ -885,6 +903,8 @@ export interface FileRouteTypes {
     | '/payments/$id'
     | '/api/cron/reconcile-payments'
     | '/api/hyperliquid/account'
+    | '/api/hyperliquid/activity'
+    | '/api/hyperliquid/candles'
     | '/api/hyperliquid/checks'
     | '/api/hyperliquid/exchange'
     | '/api/hyperliquid/history'
@@ -972,6 +992,8 @@ export interface FileRouteTypes {
     | '/payments/$id'
     | '/api/cron/reconcile-payments'
     | '/api/hyperliquid/account'
+    | '/api/hyperliquid/activity'
+    | '/api/hyperliquid/candles'
     | '/api/hyperliquid/checks'
     | '/api/hyperliquid/exchange'
     | '/api/hyperliquid/history'
@@ -1061,6 +1083,8 @@ export interface FileRouteTypes {
     | '/_authenticated/payments/$id'
     | '/api/cron/reconcile-payments'
     | '/api/hyperliquid/account'
+    | '/api/hyperliquid/activity'
+    | '/api/hyperliquid/candles'
     | '/api/hyperliquid/checks'
     | '/api/hyperliquid/exchange'
     | '/api/hyperliquid/history'
@@ -1136,6 +1160,8 @@ export interface RootRouteChildren {
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiCronReconcilePaymentsRoute: typeof ApiCronReconcilePaymentsRoute
   ApiHyperliquidAccountRoute: typeof ApiHyperliquidAccountRoute
+  ApiHyperliquidActivityRoute: typeof ApiHyperliquidActivityRoute
+  ApiHyperliquidCandlesRoute: typeof ApiHyperliquidCandlesRoute
   ApiHyperliquidChecksRoute: typeof ApiHyperliquidChecksRoute
   ApiHyperliquidExchangeRoute: typeof ApiHyperliquidExchangeRoute
   ApiHyperliquidHistoryRoute: typeof ApiHyperliquidHistoryRoute
@@ -1566,6 +1592,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHyperliquidAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/hyperliquid/activity': {
+      id: '/api/hyperliquid/activity'
+      path: '/api/hyperliquid/activity'
+      fullPath: '/api/hyperliquid/activity'
+      preLoaderRoute: typeof ApiHyperliquidActivityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hyperliquid/candles': {
+      id: '/api/hyperliquid/candles'
+      path: '/api/hyperliquid/candles'
+      fullPath: '/api/hyperliquid/candles'
+      preLoaderRoute: typeof ApiHyperliquidCandlesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/hyperliquid/checks': {
       id: '/api/hyperliquid/checks'
       path: '/api/hyperliquid/checks'
@@ -1880,6 +1920,8 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiCronReconcilePaymentsRoute: ApiCronReconcilePaymentsRoute,
   ApiHyperliquidAccountRoute: ApiHyperliquidAccountRoute,
+  ApiHyperliquidActivityRoute: ApiHyperliquidActivityRoute,
+  ApiHyperliquidCandlesRoute: ApiHyperliquidCandlesRoute,
   ApiHyperliquidChecksRoute: ApiHyperliquidChecksRoute,
   ApiHyperliquidExchangeRoute: ApiHyperliquidExchangeRoute,
   ApiHyperliquidHistoryRoute: ApiHyperliquidHistoryRoute,

@@ -7,19 +7,27 @@ import { endpointAllowed, currentMode } from "@/lib/app-mode.server";
 import type { Json } from "@/integrations/supabase/types";
 
 import { SPOT_ASSET_OFFSET } from "./actions";
-import { HYPERLIQUID_EXCHANGE_URL } from "./exchange.server";
 import {
+  currentHlNetwork,
   getAllMids,
+  getHistoricalOrders,
   getL2Book,
   getLedgerUpdates,
   getOpenOrders,
+  getPortfolio,
+  getSpotAssetCtxs,
   getSpotBalances,
   getSpotMeta,
   getUserFills,
+  getUserFillsByTime,
   indicativeUsdcValue,
   usdcMinorFor,
+  type Fill,
+  type HistoricalOrder,
+  type PortfolioPeriod,
   type SpotMeta,
 } from "./info.server";
+import { HL_API_BASE } from "./network";
 import { finishEvent, startEvent } from "./tracking.server";
 
 export type Market = {
@@ -59,12 +67,75 @@ export function marketsOf(meta: SpotMeta, mids: Record<string, string>): Market[
   return markets;
 }
 
-/** USDC-quoted spot markets that have a price right now, by name. */
-export async function getMarkets(): Promise<Market[]> {
-  const [meta, mids] = await Promise.all([getSpotMeta(), getAllMids()]);
+/** Bases shown first, in this order (BTC and ETH are Unit-bridged UBTC / UETH on mainnet). */
+const MAJORS = ["UBTC", "BTC", "UETH", "ETH", "USOL", "SOL", "HYPE", "PURR"];
+const majorRank = (base: string) => {
+  const i = MAJORS.indexOf(base);
+  return i === -1 ? MAJORS.length : i;
+};
+
+export type MarketWithStats = Market & {
+  /** 24h change in percent from Hyperliquid's previous-day price, or null. */
+  change24hPct: number | null;
+  /** 24h volume in USDC, or null. */
+  volume24h: string | null;
+};
+
+/** USDC-quoted spot markets that have a price right now: majors first, then by 24h volume. */
+export async function getMarkets(): Promise<MarketWithStats[]> {
+  const [meta, mids, ctxs] = await Promise.all([getSpotMeta(), getAllMids(), getSpotAssetCtxs()]);
   return marketsOf(meta, mids)
     .filter((m) => m.quote === "USDC" && m.mid !== null)
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .map((m) => {
+      const ctx = ctxs.get(m.coin);
+      const prev = ctx?.prevDayPx ? Number(ctx.prevDayPx) : NaN;
+      const now = Number(m.mid);
+      return {
+        ...m,
+        change24hPct:
+          Number.isFinite(prev) && prev > 0 && Number.isFinite(now)
+            ? ((now - prev) / prev) * 100
+            : null,
+        volume24h: ctx?.dayNtlVlm ?? null,
+      };
+    })
+    .sort(
+      (a, b) =>
+        majorRank(a.base) - majorRank(b.base) ||
+        Number(b.volume24h ?? 0) - Number(a.volume24h ?? 0) ||
+        a.name.localeCompare(b.name),
+    );
+}
+
+export type ActivityView = {
+  orders: (HistoricalOrder & { market: string })[];
+  fills: (Fill & { market: string })[];
+  portfolio: PortfolioPeriod[];
+  readAt: string;
+};
+
+/** Order history, trades of the last `days` days and portfolio history of an account. */
+export async function getActivity(
+  account: string,
+  days: number,
+  now = Date.now(),
+): Promise<ActivityView> {
+  const span = Math.min(Math.max(Math.trunc(days), 1), 365) * 86_400_000;
+  const [meta, mids, orders, fills, portfolio] = await Promise.all([
+    getSpotMeta(),
+    getAllMids(),
+    getHistoricalOrders(account, 200),
+    getUserFillsByTime(account, now - span, now, 500),
+    getPortfolio(account),
+  ]);
+  const byCoin = new Map(marketsOf(meta, mids).map((m) => [m.coin, m.name]));
+  const label = (coin: string) => byCoin.get(coin) ?? coin;
+  return {
+    orders: orders.map((o) => ({ ...o, market: label(o.coin) })),
+    fills: fills.map((f) => ({ ...f, market: label(f.coin) })),
+    portfolio,
+    readAt: new Date(now).toISOString(),
+  };
 }
 
 export type AccountView = {
@@ -177,11 +248,14 @@ export async function runChecks(
   account: string | null,
 ): Promise<{ ok: boolean; eventId: string; results: CheckResult[] }> {
   const mode = currentMode().mode;
+  const network = currentHlNetwork();
+  const other = network === "mainnet" ? "testnet" : "mainnet";
   const eventId = await startEvent({
     userId,
     kind: "checks",
+    network,
     account,
-    request: { account, mode },
+    request: { account, mode, network },
   });
   const results: CheckResult[] = [
     await timed("Spot markets (spotMeta)", async () => {
@@ -200,6 +274,10 @@ export async function runChecks(
       const q = await indicativeUsdcValue("PURR", "10");
       if (q.status !== "quoted") throw new Error(q.reason);
       return `${minorToUsdc(q.usdcMinor)} USDC at mid ${q.mid}`;
+    }),
+    await timed("24h market data (spotMetaAndAssetCtxs)", async () => {
+      const c = await getSpotAssetCtxs();
+      return `${c.size} markets with 24h data`;
     }),
   ];
   if (account) {
@@ -222,18 +300,30 @@ export async function runChecks(
       }),
     );
   }
+  if (account) {
+    results.push(
+      await timed("Order history (historicalOrders)", async () => {
+        const o = await getHistoricalOrders(account, 2000);
+        return `${o.length} orders`;
+      }),
+      await timed("Portfolio (portfolio)", async () => {
+        const p = await getPortfolio(account);
+        return `${p.length} periods`;
+      }),
+    );
+  }
   results.push(
-    await timed("Safety: Hyperliquid mainnet is blocked", async () => {
-      if (endpointAllowed(mode, "hyperliquid_info", "https://api.hyperliquid.xyz/info").ok)
-        throw new Error("Mainnet info would be allowed.");
-      if (endpointAllowed(mode, "hyperliquid_exchange", "https://api.hyperliquid.xyz/exchange").ok)
-        throw new Error("Mainnet exchange would be allowed.");
-      return "mainnet info and exchange refused";
+    await timed(`Safety: Hyperliquid ${other} is blocked`, async () => {
+      if (endpointAllowed(mode, "hyperliquid_info", `${HL_API_BASE[other]}/info`).ok)
+        throw new Error(`${other} info would be allowed.`);
+      if (endpointAllowed(mode, "hyperliquid_exchange", `${HL_API_BASE[other]}/exchange`).ok)
+        throw new Error(`${other} exchange would be allowed.`);
+      return `${other} info and exchange refused`;
     }),
-    await timed("Test trading available (TEST MODE)", async () => {
-      if (!endpointAllowed(mode, "hyperliquid_exchange", HYPERLIQUID_EXCHANGE_URL).ok)
+    await timed(`Trading available (${network})`, async () => {
+      if (!endpointAllowed(mode, "hyperliquid_exchange", `${HL_API_BASE[network]}/exchange`).ok)
         throw new Error(`Not available in ${mode.toUpperCase()} MODE.`);
-      return "testnet exchange relay enabled";
+      return `${network} exchange relay enabled`;
     }),
   );
   const ok = results.every((r) => r.ok);

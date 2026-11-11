@@ -6,6 +6,8 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import type { Json } from "@/integrations/supabase/types";
 
+import { HL_TRACKING_NETWORK, type HlNetwork } from "./network";
+
 export type TestEventKind = "checks" | "approve_agent" | "order" | "cancel";
 
 export type TestEvent = {
@@ -38,6 +40,8 @@ const clip = (s: string | null | undefined) => (s ? s.slice(0, 500) : null);
 export async function startEvent(row: {
   userId: string;
   kind: TestEventKind;
+  /** Hyperliquid network (testnet in TEST MODE, mainnet in LIVE MODE). */
+  network?: HlNetwork;
   account: string | null;
   agent?: string | null;
   signer?: string | null;
@@ -49,6 +53,7 @@ export async function startEvent(row: {
     .insert({
       user_id: row.userId,
       kind: row.kind,
+      network: HL_TRACKING_NETWORK[row.network ?? "testnet"],
       account: row.account,
       agent: row.agent ?? null,
       signer: row.signer ?? null,
@@ -81,12 +86,17 @@ export async function finishEvent(
 }
 
 /** The account that approved `agent` through this app for `userId`, if any. */
-export async function approvedAccountOf(userId: string, agent: string): Promise<string | null> {
+export async function approvedAccountOf(
+  userId: string,
+  agent: string,
+  network: HlNetwork = "testnet",
+): Promise<string | null> {
   const { data, error } = await supabaseAdmin
     .from(TABLE)
     .select("account")
     .eq("user_id", userId)
     .eq("kind", "approve_agent")
+    .eq("network", HL_TRACKING_NETWORK[network])
     .eq("agent", agent)
     .eq("ok", true)
     .order("created_at", { ascending: false })

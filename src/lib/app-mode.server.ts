@@ -252,41 +252,26 @@ export function endpointAllowed(
       return { ok: false, reason: "LIVE MODE: Solana test clusters are blocked." };
     return { ok: true };
   }
-  if (kind === "hyperliquid_info") {
-    // Read-only TESTNET reads only, in every mode (decision 2026-11-04): the
-    // testnet's public info endpoint and nothing else. Mainnet is never
-    // called; the testnet exchange endpoint is the separate
-    // "hyperliquid_exchange" kind below (TEST MODE only).
+  if (kind === "hyperliquid_info" || kind === "hyperliquid_exchange") {
+    // Hyperliquid follows the app mode (owner decision, 11 Nov 2026): TEST MODE
+    // calls the testnet only, LIVE MODE mainnet only. Info reads public data;
+    // the exchange path relays actions signed in the customer's own browser
+    // (the server holds no key and cannot sign).
     let path = "";
     try {
       path = new URL(url).pathname;
     } catch {
       // Unparseable URL: refused below.
     }
-    if (host !== "api.hyperliquid-testnet.xyz" || path !== "/info")
+    const wantedHost = mode === "live" ? "api.hyperliquid.xyz" : "api.hyperliquid-testnet.xyz";
+    const wantedPath = kind === "hyperliquid_info" ? "/info" : "/exchange";
+    if (host !== wantedHost || path !== wantedPath)
       return {
         ok: false,
-        reason: "Only Hyperliquid's read-only testnet info endpoint may be called.",
-      };
-    return { ok: true };
-  }
-  if (kind === "hyperliquid_exchange") {
-    // TESTNET orders signed in the customer's own browser (owner decision
-    // 2026-11-07): TEST MODE only, the testnet exchange path only. The server
-    // relays an already-signed action; it holds no key and cannot sign. LIVE
-    // MODE and Hyperliquid mainnet are never called.
-    let path = "";
-    try {
-      path = new URL(url).pathname;
-    } catch {
-      // Unparseable URL: refused below.
-    }
-    if (mode !== "test")
-      return { ok: false, reason: "Hyperliquid test trading is available in TEST MODE only." };
-    if (host !== "api.hyperliquid-testnet.xyz" || path !== "/exchange")
-      return {
-        ok: false,
-        reason: "Only Hyperliquid's testnet exchange endpoint may be called.",
+        reason:
+          mode === "live"
+            ? `LIVE MODE: only Hyperliquid mainnet ${wantedPath} may be called.`
+            : `TEST MODE: only Hyperliquid testnet ${wantedPath} may be called.`,
       };
     return { ok: true };
   }

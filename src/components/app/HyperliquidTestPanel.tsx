@@ -33,12 +33,23 @@ import {
   onEvmAccountChange,
 } from "@/lib/hyperliquid/evm-wallet";
 import { spotOrderProblem, toWireDecimal } from "@/lib/hyperliquid/signing";
-import type { AccountView, CheckResult, Market } from "@/lib/hyperliquid/account.server";
+import type {
+  AccountView,
+  ActivityView,
+  CheckResult,
+  MarketWithStats as Market,
+} from "@/lib/hyperliquid/account.server";
+import type { Candle, CandleInterval } from "@/lib/hyperliquid/info.server";
+import type { HlNetwork } from "@/lib/hyperliquid/network";
 import type { TestEvent } from "@/lib/hyperliquid/tracking.server";
 import { PaymentApiError, paymentApi } from "@/lib/payments/api-client";
 import { cn } from "@/lib/utils";
 
-const EXPLORER = "https://app.hyperliquid-testnet.xyz/explorer";
+const EXPLORERS: Record<HlNetwork, string> = {
+  testnet: "https://app.hyperliquid-testnet.xyz/explorer",
+  mainnet: "https://app.hyperliquid.xyz/explorer",
+};
+let EXPLORER = EXPLORERS.testnet;
 const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 const when = (ms: number | string) =>
   new Date(ms).toLocaleString(undefined, { dateStyle: "short", timeStyle: "medium" });
@@ -143,11 +154,34 @@ export function HyperliquidTestPanel() {
     });
   }, []);
 
-  const markets = useQuery({
+  const marketsQuery = useQuery({
     queryKey: ["hl-markets"],
     queryFn: async () =>
-      (await paymentApi<{ markets: Market[] }>("/api/hyperliquid/markets")).data.markets,
+      (await paymentApi<{ network: HlNetwork; markets: Market[] }>("/api/hyperliquid/markets"))
+        .data,
     staleTime: 30_000,
+    refetchInterval: 30_000,
+  });
+  const network: HlNetwork | null = marketsQuery.data?.network ?? null;
+  const live = network === "mainnet";
+  if (network) EXPLORER = EXPLORERS[network];
+  const markets = { data: marketsQuery.data?.markets, isLoading: marketsQuery.isLoading };
+  const [coin, setCoin] = useState<string | null>(null);
+  useEffect(() => {
+    if (!coin && marketsQuery.data?.markets[0]) setCoin(marketsQuery.data.markets[0].coin);
+  }, [coin, marketsQuery.data]);
+  const [days, setDays] = useState(30);
+  const activity = useQuery({
+    queryKey: ["hl-activity", account, days],
+    enabled: !!account,
+    queryFn: async () =>
+      (
+        await paymentApi<ActivityView>("/api/hyperliquid/activity", {
+          method: "POST",
+          body: { account, days },
+        })
+      ).data,
+    refetchInterval: 30_000,
   });
 
   const view = useQuery({
@@ -171,6 +205,7 @@ export function HyperliquidTestPanel() {
 
   const refreshAll = () => {
     void queryClient.invalidateQueries({ queryKey: ["hl-account"] });
+    void queryClient.invalidateQueries({ queryKey: ["hl-activity"] });
     void queryClient.invalidateQueries({ queryKey: ["hl-history"] });
   };
 
@@ -204,11 +239,11 @@ export function HyperliquidTestPanel() {
   };
 
   const enable = async () => {
-    if (!account) return;
+    if (!account || !network) return;
     setEnabling(true);
     setEnableError(null);
     try {
-      setSession(await enableTrading(account));
+      setSession(await enableTrading(account, network));
     } catch (e) {
       setEnableError(errorText(e));
     } finally {
@@ -221,17 +256,50 @@ export function HyperliquidTestPanel() {
     <div className="mx-auto w-full max-w-5xl space-y-5 px-4 py-6 sm:px-6">
       <header className="space-y-2">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-xl font-semibold">Hyperliquid testnet</h1>
-          <span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-300">
-            TEST
-          </span>
+          <h1 className="text-xl font-semibold">Trade</h1>
+          {network && (
+            <span
+              className={cn(
+                "rounded-full px-2.5 py-0.5 text-xs font-semibold",
+                live
+                  ? "bg-rose-500/15 text-rose-700 dark:text-rose-300"
+                  : "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+              )}
+            >
+              {live ? "LIVE · Hyperliquid mainnet" : "TEST · Hyperliquid testnet"}
+            </span>
+          )}
         </div>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Testnet only: test tokens, no real money. Your wallet approves a trading key that lives in
-          this tab only; LamportPay never holds a key and cannot move funds. Every check and order
-          is recorded in your test history below.
+          {live
+            ? "Spot trading on Hyperliquid with real funds in your own wallet. "
+            : "Testnet: test tokens, no real money. "}
+          Your wallet approves a trading key that lives in this tab only; it can place and cancel
+          orders but cannot withdraw or transfer. LamportPay never holds a key or your funds. Every
+          check and order is recorded in your history below.
         </p>
+        {live && (
+          <p className="max-w-2xl rounded-xl border border-rose-500/30 bg-rose-500/5 px-3 py-2 text-xs text-rose-700 dark:text-rose-300">
+            Real money. Orders execute on Hyperliquid mainnet at market prices and cannot be
+            reversed. Prices move; you can lose money. Spot only, no leverage.
+          </p>
+        )}
       </header>
+
+      <MarketsCard
+        markets={markets.data ?? []}
+        loading={markets.isLoading}
+        error={marketsQuery.isError ? errorText(marketsQuery.error) : null}
+        selected={coin}
+        onSelect={setCoin}
+      />
+
+      {coin && (
+        <ChartCard
+          coin={coin}
+          market={(markets.data ?? []).find((m) => m.coin === coin) ?? null}
+        />
+      )}
 
       <div className="grid gap-5 lg:grid-cols-2">
         <Card title="Wallet">
@@ -250,18 +318,18 @@ export function HyperliquidTestPanel() {
               </div>
               {session ? (
                 <p className="flex items-center gap-2 text-emerald-600">
-                  <KeyRound className="h-4 w-4" /> Test trading on (key {short(session.agent)}, this
-                  tab only)
+                  <KeyRound className="h-4 w-4" /> Trading on (key {short(session.agent)}, this tab
+                  only)
                 </p>
               ) : (
                 <div className="space-y-2">
-                  <Button onClick={enable} disabled={enabling}>
+                  <Button onClick={enable} disabled={enabling || !network}>
                     {enabling ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       <KeyRound className="h-4 w-4" />
                     )}
-                    Enable test trading
+                    Enable trading
                   </Button>
                   <p className="text-xs text-muted-foreground">
                     One signature in your wallet. No funds move. Needed again after a reload.
@@ -334,10 +402,13 @@ export function HyperliquidTestPanel() {
             ) : !view.data ? (
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             ) : view.data.balances.length === 0 ? (
-              <Empty>No spot balances on the testnet for this address.</Empty>
+              <Empty>
+                No spot balances on Hyperliquid {network ?? ""} for this address. Deposit USDC to
+                Hyperliquid from your own wallet first (app.hyperliquid.xyz, Deposit).
+              </Empty>
             ) : (
               <Table
-                head={["Token", "Total", "On hold", "≈ USDC (testnet mid)"]}
+                head={["Token", "Total", "On hold", "≈ USDC (mid price)"]}
                 rows={view.data.balances.map((b) => [b.coin, b.total, b.hold, b.usdcValue ?? "—"])}
               />
             )}
@@ -348,17 +419,61 @@ export function HyperliquidTestPanel() {
             loading={markets.isLoading}
             session={session}
             onDone={refreshAll}
+            coin={coin}
+            onCoin={setCoin}
+            live={live}
           />
 
           <OpenOrders view={view.data} session={session} onDone={refreshAll} />
 
-          <Card title="Trades (fills)">
-            {!view.data ? null : view.data.fills.length === 0 ? (
-              <Empty>No trades yet.</Empty>
+          <PortfolioCard activity={activity.data} />
+
+          <Card title="Order history">
+            {activity.isError ? (
+              <p className="text-sm text-destructive">{errorText(activity.error)}</p>
+            ) : !activity.data ? (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            ) : activity.data.orders.length === 0 ? (
+              <Empty>No orders yet.</Empty>
+            ) : (
+              <Table
+                head={["Updated", "Market", "Side", "Price", "Size", "Type", "Status"]}
+                rows={activity.data.orders.map((o) => [
+                  when(o.statusTimestamp),
+                  o.market,
+                  o.side,
+                  o.limitPx,
+                  o.origSz,
+                  `${o.orderType}${o.tif ? ` ${o.tif}` : ""}`,
+                  o.status,
+                ])}
+              />
+            )}
+          </Card>
+
+          <Card
+            title="Trades (fills)"
+            action={
+              <select
+                aria-label="Trades period"
+                className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+                value={days}
+                onChange={(e) => setDays(Number(e.target.value))}
+              >
+                {[7, 30, 90, 365].map((d) => (
+                  <option key={d} value={d}>
+                    Last {d} days
+                  </option>
+                ))}
+              </select>
+            }
+          >
+            {!activity.data ? null : activity.data.fills.length === 0 ? (
+              <Empty>No trades in this period.</Empty>
             ) : (
               <Table
                 head={["Time", "Market", "Side", "Price", "Size", "Fee", "Tx"]}
-                rows={view.data.fills.map((f) => [
+                rows={activity.data.fills.map((f) => [
                   when(f.time),
                   f.market,
                   f.side,
@@ -402,13 +517,13 @@ export function HyperliquidTestPanel() {
         </>
       )}
 
-      <Card title="Test history">
+      <Card title="Your LamportPay trading log">
         {history.isError ? (
           <p className="text-sm text-destructive">{errorText(history.error)}</p>
         ) : !history.data ? (
           <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
         ) : history.data.length === 0 ? (
-          <Empty>Nothing yet. Run the checks or place a test order.</Empty>
+          <Empty>Nothing yet. Run the checks or place an order.</Empty>
         ) : (
           <Table
             head={["Time", "Action", "Result", "Details"]}
@@ -451,13 +566,21 @@ function OrderForm({
   loading,
   session,
   onDone,
+  coin: selected,
+  onCoin,
+  live,
 }: {
   markets: Market[];
   loading: boolean;
   session: TradingSession | null;
   onDone: () => void;
+  coin: string | null;
+  onCoin: (coin: string) => void;
+  live: boolean;
 }) {
-  const [coin, setCoin] = useState("PURR/USDC");
+  const coin = selected ?? markets[0]?.coin ?? "";
+  const setCoin = onCoin;
+  const [confirmed, setConfirmed] = useState(false);
   const [isBuy, setIsBuy] = useState(true);
   const [price, setPrice] = useState("");
   const [size, setSize] = useState("");
@@ -480,6 +603,11 @@ function OrderForm({
 
   const submit = async () => {
     if (!session || !market || problem) return;
+    if (live && !confirmed) {
+      setConfirmed(true);
+      return;
+    }
+    setConfirmed(false);
     setBusy(true);
     setResult(null);
     setError(null);
@@ -502,7 +630,7 @@ function OrderForm({
   };
 
   return (
-    <Card title="Place a test order (spot limit)">
+    <Card title={live ? "Place an order (spot limit, real funds)" : "Place a test order (spot limit)"}>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <label className="space-y-1 text-xs text-muted-foreground lg:col-span-2">
           Market
@@ -573,13 +701,27 @@ function OrderForm({
           Order value: {Number.isFinite(notional) && notional > 0 ? notional.toFixed(2) : "—"} USDC
           (Hyperliquid minimum 10)
         </span>
-        <Button onClick={submit} disabled={!session || !!problem || busy} className="ml-auto">
+        <Button
+          onClick={submit}
+          disabled={!session || !!problem || busy}
+          variant={live && confirmed ? "destructive" : "default"}
+          className="ml-auto"
+        >
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-          {isBuy ? "Buy" : "Sell"} on testnet
+          {live
+            ? confirmed
+              ? `Confirm: ${isBuy ? "buy" : "sell"} ${wireSize} ${market?.base ?? ""} @ ${wirePrice}`
+              : `${isBuy ? "Buy" : "Sell"} (real funds)`
+            : `${isBuy ? "Buy" : "Sell"} on testnet`}
         </Button>
+        {live && confirmed && (
+          <Button variant="ghost" onClick={() => setConfirmed(false)} disabled={busy}>
+            Back
+          </Button>
+        )}
       </div>
       <div className="mt-2 space-y-1">
-        {!session && <Empty>Enable test trading (Wallet card) to place orders.</Empty>}
+        {!session && <Empty>Enable trading (Wallet card) to place orders.</Empty>}
         {session && problem && size && <p className="text-xs text-muted-foreground">{problem}</p>}
         <OutcomeNote result={result} error={error} />
       </div>
@@ -644,6 +786,235 @@ function OpenOrders({
       <div className="mt-2">
         <OutcomeNote result={result} error={error} />
       </div>
+    </Card>
+  );
+}
+
+// ----------------------------------------------- markets, chart, portfolio ---
+
+const pct = (v: number | null) =>
+  v === null ? "—" : `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`;
+const compactUsd = (v: string | null) => {
+  const n = v === null ? NaN : Number(v);
+  if (!Number.isFinite(n)) return "—";
+  return new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 2 }).format(
+    n,
+  );
+};
+
+function MarketsCard({
+  markets,
+  loading,
+  error,
+  selected,
+  onSelect,
+}: {
+  markets: Market[];
+  loading: boolean;
+  error: string | null;
+  selected: string | null;
+  onSelect: (coin: string) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [all, setAll] = useState(false);
+  const shown = markets
+    .filter((m) => !query || m.name.toLowerCase().includes(query.trim().toLowerCase()))
+    .slice(0, all || query ? 200 : 8);
+  return (
+    <Card
+      title="Markets (spot, USDC)"
+      action={
+        <Input
+          className="h-8 w-40 text-xs"
+          placeholder="Search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Search markets"
+        />
+      }
+    >
+      {error ? (
+        <p className="text-sm text-destructive">{error}</p>
+      ) : loading ? (
+        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+      ) : shown.length === 0 ? (
+        <Empty>No market matches.</Empty>
+      ) : (
+        <>
+          <div className="-mx-1 overflow-x-auto">
+            <table className="w-full min-w-[420px] text-left text-sm">
+              <thead className="text-xs text-muted-foreground">
+                <tr>
+                  <th className="px-1 pb-2 font-medium">Market</th>
+                  <th className="px-1 pb-2 font-medium">Price</th>
+                  <th className="px-1 pb-2 font-medium">24h</th>
+                  <th className="px-1 pb-2 font-medium">24h volume</th>
+                </tr>
+              </thead>
+              <tbody className="tabular-nums">
+                {shown.map((m) => (
+                  <tr
+                    key={m.coin}
+                    onClick={() => onSelect(m.coin)}
+                    className={cn(
+                      "cursor-pointer border-t border-border/50 hover:bg-muted/40",
+                      selected === m.coin && "bg-muted/60",
+                    )}
+                  >
+                    <td className="px-1 py-2 font-medium">{m.name}</td>
+                    <td className="px-1 py-2">{m.mid}</td>
+                    <td
+                      className={cn(
+                        "px-1 py-2",
+                        m.change24hPct !== null &&
+                          (m.change24hPct >= 0 ? "text-emerald-600" : "text-rose-600"),
+                      )}
+                    >
+                      {pct(m.change24hPct)}
+                    </td>
+                    <td className="px-1 py-2">{compactUsd(m.volume24h)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {!query && markets.length > 8 && (
+            <Button size="sm" variant="ghost" className="mt-2" onClick={() => setAll(!all)}>
+              {all ? "Show fewer" : `Show all ${markets.length} markets`}
+            </Button>
+          )}
+        </>
+      )}
+    </Card>
+  );
+}
+
+function LineChart({ points }: { points: { t: number; v: number }[] }) {
+  if (points.length < 2) return <Empty>Not enough data for a chart yet.</Empty>;
+  const w = 640;
+  const h = 180;
+  const vs = points.map((p) => p.v);
+  const min = Math.min(...vs);
+  const max = Math.max(...vs);
+  const span = max - min || 1;
+  const t0 = points[0]!.t;
+  const t1 = points[points.length - 1]!.t;
+  const x = (t: number) => ((t - t0) / (t1 - t0 || 1)) * w;
+  const y = (v: number) => h - ((v - min) / span) * (h - 8) - 4;
+  const d = points.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)},${y(p.v).toFixed(1)}`);
+  const up = vs[vs.length - 1]! >= vs[0]!;
+  return (
+    <div className="space-y-1">
+      <svg viewBox={`0 0 ${w} ${h}`} className="h-44 w-full" preserveAspectRatio="none" role="img">
+        <path
+          d={d.join(" ")}
+          fill="none"
+          strokeWidth={2}
+          vectorEffect="non-scaling-stroke"
+          className={up ? "stroke-emerald-500" : "stroke-rose-500"}
+        />
+      </svg>
+      <div className="flex justify-between text-xs text-muted-foreground tabular-nums">
+        <span>
+          Low {min.toPrecision(6)} · High {max.toPrecision(6)}
+        </span>
+        <span>{new Date(t1).toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" })}</span>
+      </div>
+    </div>
+  );
+}
+
+function ChartCard({ coin, market }: { coin: string; market: Market | null }) {
+  const [interval, setInterval] = useState<CandleInterval>("1h");
+  const candles = useQuery({
+    queryKey: ["hl-candles", coin, interval],
+    queryFn: async () =>
+      (
+        await paymentApi<{ candles: Candle[] }>("/api/hyperliquid/candles", {
+          method: "POST",
+          body: { coin, interval },
+        })
+      ).data.candles,
+    refetchInterval: 60_000,
+  });
+  return (
+    <Card
+      title={`${market?.name ?? coin} · ${market?.mid ?? ""}`}
+      action={
+        <div className="flex gap-1">
+          {(["15m", "1h", "4h", "1d"] as const).map((i) => (
+            <Button
+              key={i}
+              size="sm"
+              variant={interval === i ? "secondary" : "ghost"}
+              onClick={() => setInterval(i)}
+            >
+              {i}
+            </Button>
+          ))}
+        </div>
+      }
+    >
+      {candles.isError ? (
+        <p className="text-sm text-destructive">{errorText(candles.error)}</p>
+      ) : !candles.data ? (
+        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+      ) : (
+        <LineChart points={candles.data.map((c) => ({ t: c.t, v: Number(c.c) }))} />
+      )}
+    </Card>
+  );
+}
+
+function PortfolioCard({ activity }: { activity: ActivityView | undefined }) {
+  const [period, setPeriod] = useState("month");
+  const periods = activity?.portfolio ?? [];
+  const p = periods.find((x) => x.period === period) ?? periods[0];
+  const last = (arr: { value: string }[] | undefined) =>
+    arr && arr.length ? arr[arr.length - 1]!.value : null;
+  return (
+    <Card
+      title="Portfolio"
+      action={
+        periods.length > 0 && (
+          <select
+            aria-label="Portfolio period"
+            className="h-8 rounded-md border border-input bg-background px-2 text-xs"
+            value={p?.period ?? period}
+            onChange={(e) => setPeriod(e.target.value)}
+          >
+            {periods.map((x) => (
+              <option key={x.period} value={x.period}>
+                {x.period}
+              </option>
+            ))}
+          </select>
+        )
+      }
+    >
+      {!activity ? (
+        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+      ) : !p ? (
+        <Empty>No portfolio history yet.</Empty>
+      ) : (
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-3 text-sm tabular-nums">
+            <div>
+              <div className="text-xs text-muted-foreground">Account value</div>
+              <div className="font-semibold">{last(p.accountValue) ?? "—"} USDC</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">PnL ({p.period})</div>
+              <div className="font-semibold">{last(p.pnl) ?? "—"} USDC</div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Volume</div>
+              <div className="font-semibold">{compactUsd(p.volume)}</div>
+            </div>
+          </div>
+          <LineChart points={p.accountValue.map((a) => ({ t: a.t, v: Number(a.value) }))} />
+        </div>
+      )}
     </Card>
   );
 }

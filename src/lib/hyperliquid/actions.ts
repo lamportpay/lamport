@@ -7,11 +7,13 @@
  */
 import { z } from "zod";
 
+import { HL_AGENT_NAME, HL_CHAIN, networkOfChain, type HlNetwork } from "./network";
 import { ADDRESS_RE, WIRE_DECIMAL_RE, type ApproveAgentAction } from "./signing";
 
 /** Spot assets are 10000 + the spot pair index (Hyperliquid docs: asset ids). */
 export const SPOT_ASSET_OFFSET = 10_000;
-export const AGENT_NAME = "lamportpay-test";
+/** The testnet trading key name (kept for existing callers). */
+export const AGENT_NAME = HL_AGENT_NAME.testnet;
 export const TIFS = ["Gtc", "Ioc", "Alo"] as const;
 export type Tif = (typeof TIFS)[number];
 
@@ -52,13 +54,14 @@ export function approveAgentAction(
   agentAddress: string,
   signatureChainId: string,
   nonce: number,
+  network: HlNetwork = "testnet",
 ): ApproveAgentAction {
   return {
     type: "approveAgent",
-    hyperliquidChain: "Testnet",
+    hyperliquidChain: HL_CHAIN[network],
     signatureChainId,
     agentAddress: agentAddress.toLowerCase(),
-    agentName: AGENT_NAME,
+    agentName: HL_AGENT_NAME[network],
     nonce,
   };
 }
@@ -110,10 +113,10 @@ const CancelSchema = z
 const ApproveSchema = z
   .object({
     type: z.literal("approveAgent"),
-    hyperliquidChain: z.literal("Testnet"),
+    hyperliquidChain: z.enum(["Testnet", "Mainnet"]),
     signatureChainId: z.string().regex(/^0x[0-9a-fA-F]{1,12}$/),
     agentAddress: address,
-    agentName: z.literal(AGENT_NAME),
+    agentName: z.enum([HL_AGENT_NAME.testnet, HL_AGENT_NAME.mainnet]),
     nonce,
   })
   .strict();
@@ -147,5 +150,10 @@ export function canonicalAction(action: ExchangeRequest["action"]): RelayAction 
   if (action.type === "cancel") {
     return { type: "cancel", cancels: action.cancels.map((c) => ({ a: c.a, o: c.o })) };
   }
-  return approveAgentAction(action.agentAddress, action.signatureChainId, action.nonce);
+  return approveAgentAction(
+    action.agentAddress,
+    action.signatureChainId,
+    action.nonce,
+    networkOfChain(action.hyperliquidChain),
+  );
 }
