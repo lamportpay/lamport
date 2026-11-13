@@ -16,10 +16,50 @@ export const COLOSSEUM_URL = "https://colosseum.com/arena/projects/lamportpay";
 
 export const NEWS: NewsItem[] = [
   {
+    slug: "lamportpay-is-live",
+    tag: "Launch",
+    title: "LamportPay is live",
+    headline: "LamportPay is live: send USDC from your wallet to a bank account.",
+    summary:
+      "LamportPay now runs on Solana mainnet. Payments use real USDC from the customer's own wallet, and bank payouts go through our licensed payout partner Stables.",
+    published: "2026-11-12",
+    keywords: ["LamportPay live", "USDC to bank", "Solana stablecoin payout", "crypto to bank payout", "non-custodial payments"],
+    body: [
+      {
+        paragraphs: [
+          "LamportPay is live on Solana mainnet. You connect your own wallet, see a quote with every fee shown, approve one transaction, and the payout partner Stables pays the money out to the bank account.",
+          "LamportPay stays non-custodial: funds go from your wallet straight to the partner's single-use deposit address, and LamportPay never holds keys or balances.",
+        ],
+      },
+      {
+        heading: "What you can do today",
+        bullets: [
+          "Send USDC on Solana to a bank account, or pay with SOL and convert it in the same flow",
+          "See the LamportPay fee, the partner's fees and the amount received before you approve",
+          "Follow every payment until the partner reports it complete",
+          "Trade on Hyperliquid (spot) from your own wallet on the Trade page",
+        ],
+      },
+      {
+        heading: "Good to know",
+        bullets: [
+          "The minimum is 15 USDC per payment; the partner's limits decide the maximum",
+          "Available countries depend on the partner's approval and are shown in the app",
+          "Identity verification runs once, on Stables' hosted page",
+        ],
+      },
+    ],
+    links: [
+      { label: "Send a payment", href: "/pay" },
+      { label: "How a payout works", href: "/how-it-works" },
+      { label: "FAQ", href: "/faq" },
+    ],
+  },
+  {
     slug: "lamportpay-going-live",
     tag: "Launch",
     title: "LamportPay prepares for launch",
-    headline: "LamportPay is going live soon — join early access.",
+    headline: "October update: how LamportPay prepared for launch.",
     summary:
       "The LamportPay website is live and the payment flow is built and tested in the sandbox (no real funds yet). We launch as soon as the final security phase is complete. The first 10 early-access users pay no LamportPay fee.",
     published: "2026-10-15",
