@@ -432,7 +432,7 @@ describe("3. The mode indicator reflects the server's environment", () => {
     expect(modeIndicator(null, "test")).toMatchObject({ tone: "loading", blocking: true });
     expect(
       modeIndicator(status({ mode: "live", ok: true, realFunds: true }), "live"),
-    ).toMatchObject({ tone: "live", label: "LIVE MODE" });
+    ).toMatchObject({ tone: "live", label: "LIVE" });
   });
 
   it("records the observed mode in the audit log", async () => {

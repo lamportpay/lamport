@@ -246,7 +246,7 @@ function PayPage() {
   const feeMin = status.data?.guards?.platformFeeMin ?? null;
   const feeMax = status.data?.guards?.platformFeeMax ?? null;
   const countries = status.data?.guards?.payoutCountries ?? null;
-  // LIVE MODE (real funds) and a broken mode setup get a banner; TEST MODE is the header badge.
+  // Only a broken mode setup gets a banner; TEST and LIVE are shown by the header badge.
   const mode = useModeStatus();
 
   const notices = (
@@ -256,13 +256,7 @@ function PayPage() {
           Payments are unavailable: Stables is not configured on this server.
         </Notice>
       )}
-      {/* TEST MODE needs no banner: the header's TEST badge says it on every screen. */}
-      {mode.indicator.tone === "live" && (
-        <Notice tone="warn">
-          <strong>LIVE MODE</strong> · real funds on Solana mainnet with the production payout
-          partner. Every signature you approve moves real money.
-        </Notice>
-      )}
+      {/* TEST and LIVE need no banner: the header badge says it on every screen. */}
       {mode.indicator.tone === "error" && (
         <Notice tone="warn">
           <strong>{mode.indicator.label}</strong> · {mode.indicator.detail}

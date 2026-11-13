@@ -149,9 +149,9 @@ export function modeIndicator(
   if (server.mode === "live") {
     return {
       tone: "live",
-      label: "LIVE MODE",
+      label: "LIVE",
       short: "LIVE",
-      detail: "Real funds. Solana mainnet and the production payout partner.",
+      detail: "Payments run on Solana mainnet with our licensed payout partner.",
       blocking: false,
     };
   }
