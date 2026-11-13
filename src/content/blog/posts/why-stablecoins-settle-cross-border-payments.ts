@@ -64,7 +64,7 @@ export const post: BlogPost = {
   ],
   productLinks: [
     { to: "/whitepaper", label: "White paper", note: "Architecture and roadmap, including the role of USDC as settlement asset." },
-    { to: "/swap", label: "SOL to USDC swap sandbox", note: "The live conversion leg, with strict amount limits and wallet-only output." },
+    { to: "/pay", label: "Pay with USDC or SOL", note: "SOL is converted to USDC in the same flow when needed, in your own wallet." },
     { to: "/workflow", label: "Workflow overview", note: "See which parts of the route are live, simulated or planned." },
   ],
   relatedSlugs: ["crypto-to-fiat-payments-explained", "solana-payments-for-developers"],
