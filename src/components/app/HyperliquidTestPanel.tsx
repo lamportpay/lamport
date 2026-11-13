@@ -262,7 +262,7 @@ export function HyperliquidTestPanel() {
               className={cn(
                 "rounded-full px-2.5 py-0.5 text-xs font-semibold",
                 live
-                  ? "bg-rose-500/15 text-rose-700 dark:text-rose-300"
+                  ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
                   : "bg-amber-500/15 text-amber-700 dark:text-amber-300",
               )}
             >
@@ -272,16 +272,16 @@ export function HyperliquidTestPanel() {
         </div>
         <p className="max-w-2xl text-sm text-muted-foreground">
           {live
-            ? "Spot trading on Hyperliquid with real funds in your own wallet. "
+            ? "Spot trading on Hyperliquid from your own wallet. "
             : "Testnet: test tokens, no real money. "}
           Your wallet approves a trading key that lives in this tab only; it can place and cancel
           orders but cannot withdraw or transfer. LamportPay never holds a key or your funds. Every
           check and order is recorded in your history below.
         </p>
         {live && (
-          <p className="max-w-2xl rounded-xl border border-rose-500/30 bg-rose-500/5 px-3 py-2 text-xs text-rose-700 dark:text-rose-300">
-            Real money. Orders execute on Hyperliquid mainnet at market prices and cannot be
-            reversed. Prices move; you can lose money. Spot only, no leverage.
+          <p className="max-w-2xl text-xs text-muted-foreground">
+            Orders execute on Hyperliquid mainnet and can&apos;t be reversed. Prices move and you
+            can lose money. Spot only, no leverage.
           </p>
         )}
       </header>
@@ -630,7 +630,7 @@ function OrderForm({
   };
 
   return (
-    <Card title={live ? "Place an order (spot limit, real funds)" : "Place a test order (spot limit)"}>
+    <Card title={live ? "Place an order (spot limit)" : "Place a test order (spot limit)"}>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <label className="space-y-1 text-xs text-muted-foreground lg:col-span-2">
           Market
@@ -704,14 +704,14 @@ function OrderForm({
         <Button
           onClick={submit}
           disabled={!session || !!problem || busy}
-          variant={live && confirmed ? "destructive" : "default"}
+          variant="default"
           className="ml-auto"
         >
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
           {live
             ? confirmed
               ? `Confirm: ${isBuy ? "buy" : "sell"} ${wireSize} ${market?.base ?? ""} @ ${wirePrice}`
-              : `${isBuy ? "Buy" : "Sell"} (real funds)`
+              : `${isBuy ? "Buy" : "Sell"}`
             : `${isBuy ? "Buy" : "Sell"} on testnet`}
         </Button>
         {live && confirmed && (

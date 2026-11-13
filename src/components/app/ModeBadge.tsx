@@ -6,7 +6,7 @@
  * exists (and is approved), after an explicit confirmation, and only then
  * navigates there. Every request is audited server-side.
  */
-import { AlertTriangle, Loader2, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Info, Loader2, ShieldAlert } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -24,7 +24,8 @@ import { MODE_PROFILES } from "@/lib/app-mode";
 
 const TONE: Record<string, string> = {
   test: "border-amber-500/50 bg-amber-400/15 text-amber-700 dark:text-amber-300",
-  live: "border-red-600/60 bg-red-600 text-white",
+  // LIVE is the normal state of the app: a calm green status, not an alarm.
+  live: "border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
   error: "border-red-600/60 bg-red-600/10 text-red-700",
   loading: "border-border bg-muted text-muted-foreground",
 };
@@ -78,9 +79,13 @@ export function ModeBadge() {
         onClick={() => setOpen((v) => !v)}
         className={`inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[11px] font-extrabold tracking-wider ${TONE[indicator.tone]}`}
       >
-        <Icon
-          className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${indicator.tone === "loading" ? "animate-spin" : ""}`}
-        />
+        {indicator.tone === "live" ? (
+          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        ) : (
+          <Icon
+            className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${indicator.tone === "loading" ? "animate-spin" : ""}`}
+          />
+        )}
         {/* Phones: "SANDBOX" / "LIVE"; the full label fits from sm up. */}
         <span className="sm:hidden">{indicator.short}</span>
         <span className="hidden sm:inline">{indicator.label}</span>
@@ -129,7 +134,9 @@ export function ModeBadge() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
+              <AlertTriangle
+                className={`w-5 h-5 ${target === "live" ? "text-red-600" : "text-muted-foreground"}`}
+              />
               Switch to {MODE_PROFILES[target].label}?
             </AlertDialogTitle>
             <AlertDialogDescription asChild>
@@ -169,7 +176,11 @@ export function ModeBadge() {
                 type="button"
                 disabled={busy}
                 onClick={() => void requestSwitch()}
-                className="inline-flex items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+                className={`inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-60 ${
+                  target === "live"
+                    ? "bg-red-600 text-white hover:bg-red-700"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90"
+                }`}
               >
                 {busy && <Loader2 className="w-4 h-4 animate-spin" />}I understand, switch
               </button>
@@ -181,17 +192,18 @@ export function ModeBadge() {
   );
 }
 
-/** Extra warning before any wallet approval that moves real funds (LIVE MODE only). */
+/**
+ * A calm note before the wallet approval in LIVE MODE (owner, 13 Nov 2026: live is the
+ * normal state, so no red alert). It still says the one thing users must know.
+ */
 export function LiveFundsWarning() {
   const { status } = useModeStatus();
   if (status?.mode !== "live") return null;
   return (
-    <div
-      role="alert"
-      className="flex items-start gap-2 rounded-xl border border-red-600/50 bg-red-600/10 px-3 py-2 text-xs font-medium text-red-700"
-    >
-      <ShieldAlert className="w-4 h-4 shrink-0" />
-      LIVE MODE: approving in your wallet moves real funds on Solana mainnet. It cannot be undone.
+    <div className="flex items-start gap-2 rounded-xl border border-border bg-secondary/50 px-3 py-2 text-xs text-muted-foreground">
+      <Info className="w-4 h-4 shrink-0" />
+      You approve this payment in your own wallet. Once it is confirmed on Solana it can&apos;t be
+      reversed, so check the amount and bank details first.
     </div>
   );
 }
