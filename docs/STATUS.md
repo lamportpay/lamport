@@ -29,14 +29,14 @@ the company's real account without switching databases).
 
 | What | Where |
 | --- | --- |
-| Code | GitHub `lamportpay/lamport` (public). **All current work is on `vercel-preview-migration`.** `main` still holds the Lovable code and is not deployed by Vercel |
+| Code | GitHub `lamportpay/lamport` (public). Work on feature branches into `vercel-preview-migration`; `main` is Production, released through an owner-approved PR (code-owner review required). Release PR #29 (13 Nov audit fixes + the 18 Nov audit, PR #30) waits for the owner |
 | Project rules | `CLAUDE.md` |
 | This status file | `docs/STATUS.md` |
 | Older execution tracker (to 21 Oct) | `docs/ROADMAP.md` |
 | Hosting | Vercel, company team, project `lamport`, Hobby plan. Preview only, behind Vercel login, built from this branch. Production: non-secret settings only (31 Oct), no deployment. Builds are decided by `scripts/vercel-ignore-build.sh` (Production only from `main`, deliberately; Previews only for this branch) and `vercel.json` (Git pushes auto-deploy only this branch, never `main`) |
-| Database | Supabase dev project `gdksfksypkcfiohozzsx` (the one in `supabase/config.toml`). Every migration in `supabase/migrations/` (31 files) is reflected there, some applied under other names, so compare with `list_migrations` before building a new database. The 5-minute reconcile job is scheduled but does nothing until its Vault secrets are set. The Lovable live database must never be touched (`CLAUDE.md`) |
-| Payout partner | Stables. Sandbox key on the Preview. Production access issued; the production key is not in Vercel yet |
-| Solana RPC | Alchemy. Devnet key on the Preview; mainnet key only for Production later |
+| Database | Supabase project `gdksfksypkcfiohozzsx` (the one in `supabase/config.toml`), shared by TEST and LIVE (owner decision 11 Nov, confirmed 19 Nov). Every migration in `supabase/migrations/` is reflected there, some applied under other names, so compare with `list_migrations` before building a new database. The 5-minute reconcile job: Vault `lamportpay_reconcile_url` set to the Production endpoint (19 Nov); it starts once the owner adds `lamportpay_cron_secret` (= Production `CRON_SECRET`). The Lovable live database must never be touched (`CLAUDE.md`) |
+| Payout partner | Stables. Production key in Vercel Production (13 Nov), behind the fixed-IP proxy `130.210.11.66` (allowlisted). The Preview has **no** Stables key since 13 Nov, so TEST payments cannot be created there until a new sandbox key and webhook secret are added to Preview |
+| Solana RPC | Production: public mainnet endpoints (`api.mainnet-beta.solana.com`, `solana-rpc.publicnode.com`); replace with a dedicated provider key before launch. Devnet: `SOLANA_DEVNET_RPC_URL` (re-entered 13 Nov) |
 | Swap quotes | Jupiter, API key on the Preview (read-only quotes in TEST) |
 | Company tracker, Stables questions and answers | Owner's Google Drive (private) |
 | Windows PC: backup, VS Code, daily Git workflow | `docs/LOCAL-SETUP-WINDOWS.md` |
@@ -385,6 +385,25 @@ Added 3–4 Nov (dashboard and production checklist checked 3 Nov):
   LamportPay's 2% stays in the user-signed transaction. Keep the Stables developer fee **unset**:
   with the 2% also on, users would pay twice, and the /pay fee breakdown does not yet show a
   `developer_fees` group. Switching models is an owner decision.
+
+**Stables production dashboard, checked 19 Nov** (read only, owner signed in):
+
+- **Webhook endpoint:** `https://lamport-kohl.vercel.app/api/public/stables-webhook`, "LamportPay
+  production (Vercel), 11 Nov 2026", created 11 Nov. Subscribed: `customer.created`,
+  `customer.updated`, `kyc_link.updated.status_transitioned` and 2 more that the dashboard did not
+  expand (owner to confirm `transfer.created` and `transfer.updated.status_transitioned` are among
+  them). No delivery attempts in the last 7 days (no production transfer yet). Change the URL to
+  `https://lamportpay.com/...` at the DNS move.
+- **API key:** one production key ("Lamportpay", full access), created 13 Nov, last used 18 Nov.
+- **IP allowlist:** `130.210.11.66` (1 of 5 used). Confirmed.
+- **Developer fee:** conversion fee and fixed fee both "Not set". No double charge.
+- **Stables' fees for our organisation:** conversion 0.25% for USDC/USDT to AUD, EUR, GBP, HKD,
+  JPY, SGD and USD, 0.40% on all other routes; processing 3.00 USD per transaction (SWIFT 40.00,
+  USD bank transfer 20.00, AED 6.00, CNY and HKD 5.00). Verification: KYC (individual) 3.00 USD,
+  KYB 15.00, fraud check 100.00, **paid from the Stables balance**, which is **0.00 USD**: the owner
+  must top it up before the first customer verification ("Top up your balance to get started").
+- With the 3.00 USD processing fee, a 15 USDC payment to GBP would pay out about 11.7 USD-worth,
+  before the 20 USD rail minimum is even considered (minimum decision still open, above).
 
 Also decided 4 Nov: GitHub (code, full history) and Google Drive are the off-disk backup (no USB
 step); the old `.env` backup files were deleted (test keys can be re-created; live keys will live
