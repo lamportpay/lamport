@@ -150,7 +150,10 @@ npm run reconcile  # pull transfer status from Stables, replay stored webhooks
   No accepted high advisories (2026-10-24): `braces` (GHSA-vfj7-8cjw-p6xm, accepted 2026-10-08) is no
   longer reported, so `ACCEPTED` in `scripts/check-audit.mjs` is empty. Same day, four new highs
   (body-parser, undici, vite, zod) were fixed with in-range patch updates (`npm update`; `npm audit fix`
-  is not safe here: it downgrades `drizzle-kit` and the Solana packages).
+  is not safe here: it downgrades `drizzle-kit` and the Solana packages). 18 Nov 2026: picomatch
+  ReDoS (GHSA-fc5q-39xc-vjpf, high) accepted in `ACCEPTED`: no fixed release exists, and picomatch
+  runs only inside build tooling on repository-controlled patterns (not in the server function or
+  the browser bundle). Remove the entry when a fix ships.
 - **Revenue reconciliation** (C10): Admin → Fees & Revenue → Reconciliation.
 
 ## Sign-in (2026-09-30)
