@@ -338,6 +338,7 @@ export async function runOpsAlerts(now: number = Date.now()): Promise<OpsAlertsR
     const fields = {
       severity: alert.severity,
       title: alert.title,
+      action: alert.action,
       detail: alert.detail as Json,
       last_seen_at: at,
       ...(reopened && {

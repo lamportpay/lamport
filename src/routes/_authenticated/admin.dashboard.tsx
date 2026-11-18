@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { RefreshCw } from "lucide-react";
 
+import { OpenAlertsBar } from "@/components/admin/AdminAlerts";
 import { AdminPage, ErrorState, LoadingState } from "@/components/admin/AdminShell";
 import { DashboardContent } from "@/components/admin/DashboardContent";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,7 @@ function DashboardPage() {
         </>
       }
     >
+      <OpenAlertsBar />
       {query.isLoading && <LoadingState label="Loading dashboard records…" />}
       {query.isError && <ErrorState error={query.error} />}
       {query.data && <DashboardContent data={query.data} />}

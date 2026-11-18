@@ -331,6 +331,7 @@ export type Database = {
       }
       ops_alerts: {
         Row: {
+          action: string | null
           detail: Json
           key: string
           last_seen_at: string
@@ -343,6 +344,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          action?: string | null
           detail?: Json
           key: string
           last_seen_at?: string
@@ -355,6 +357,7 @@ export type Database = {
           title: string
         }
         Update: {
+          action?: string | null
           detail?: Json
           key?: string
           last_seen_at?: string
