@@ -153,7 +153,7 @@ export const LIVE_ANSWERS: Record<string, string> = {
     "- **Stables** — licensed payout & verification partner\n- **Jupiter** — Solana swap quotes\n- **Hyperliquid** — trading from your own wallet (Trade page)\n- **Circle, Tether, Yellow Card** — planned / in discussion, not confirmed\n\nSee the Partners page for details.",
   time: "The crypto side settles in seconds on Solana. Bank delivery depends on the country, the bank and the payout partner — the quote shows an estimate, and you can follow every step on the payment page.",
   limits:
-    "The minimum is **15 USDC** per payment. The maximum follows the payout partner's limits for your country and verification level; the app tells you before you approve if an amount is too large.",
+    "The minimum is **25 USDC** per payment. The maximum follows the payout partner's limits for your country and verification level; the app tells you before you approve if an amount is too large.",
 };
 
 /** The answer for the current wording stage. */

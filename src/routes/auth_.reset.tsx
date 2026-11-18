@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
-import { passwordBreachCount } from "@/lib/password-check";
+import { PASSWORD_MIN_LENGTH, passwordBreachCount } from "@/lib/password-check";
 
 export const Route = createFileRoute("/auth_/reset")({
   ssr: false,
@@ -33,11 +33,13 @@ function ResetPasswordPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [breached, setBreached] = useState(false);
 
   useEffect(() => {
     let active = true;
     const hash = new URLSearchParams(window.location.hash.slice(1));
     const query = new URLSearchParams(window.location.search);
+    setBreached(query.get("reason") === "breached");
     const linkError = hash.get("error_description") ?? query.get("error_description");
     if (linkError) {
       setError(
@@ -105,6 +107,15 @@ function ResetPasswordPage() {
             </div>
           ) : (
             <>
+              {breached && ready && (
+                <p
+                  role="alert"
+                  className="mt-4 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                >
+                  The password you signed in with has appeared in a known data breach. Choose a new
+                  one to keep your account safe.
+                </p>
+              )}
               {!ready && (
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   Open this page from the reset link in your email. If the link has expired, request
@@ -117,19 +128,23 @@ function ResetPasswordPage() {
                   <input
                     required
                     type="password"
-                    minLength={8}
+                    minLength={PASSWORD_MIN_LENGTH}
                     autoComplete="new-password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
                   />
+                  <span className="mt-1 block text-xs font-normal text-muted-foreground">
+                    At least {PASSWORD_MIN_LENGTH} characters, with lowercase and uppercase letters
+                    and a number.
+                  </span>
                 </label>
                 <label className="block text-sm font-medium">
                   Confirm new password
                   <input
                     required
                     type="password"
-                    minLength={8}
+                    minLength={PASSWORD_MIN_LENGTH}
                     autoComplete="new-password"
                     value={confirm}
                     onChange={(event) => setConfirm(event.target.value)}

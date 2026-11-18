@@ -43,7 +43,7 @@ export const NEWS: NewsItem[] = [
       {
         heading: "Good to know",
         bullets: [
-          "The minimum is 15 USDC per payment; the partner's limits decide the maximum",
+          "The minimum is 25 USDC per payment; the partner's limits decide the maximum",
           "Available countries depend on the partner's approval and are shown in the app",
           "Identity verification runs once, on Stables' hosted page",
         ],

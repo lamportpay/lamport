@@ -7,6 +7,7 @@ import { BrandLogo } from "@/components/site/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { getAdminSession } from "@/lib/admin-ops.functions";
 import { safeAdminNext } from "@/lib/admin-path";
+import { passwordBreachCount } from "@/lib/password-check";
 
 /**
  * Admin sign-in: its own page, separate from the customer sign-in (/auth).
@@ -156,6 +157,16 @@ function AdminLoginPage() {
       const result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (result.error || !result.data.session) {
         setError("Email or password is incorrect.");
+        return;
+      }
+      // A password found in a known breach never opens admin: replace it by email first.
+      if (await passwordBreachCount(password)) {
+        await supabase.auth.signOut();
+        setPassword("");
+        setStep("reset");
+        setError(
+          "This password has appeared in a known data breach, so it cannot be used for admin access. Send yourself a reset link and choose a new one.",
+        );
         return;
       }
       const session = await checkSession();

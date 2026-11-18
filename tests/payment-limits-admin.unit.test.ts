@@ -26,15 +26,15 @@ beforeEach(() => {
 });
 
 describe("payment limits in business settings", () => {
-  it("defaults to .env (15 minimum, no maximum)", () => {
+  it("defaults to .env (25 minimum, no maximum)", () => {
     const s = resolveBusinessSettings(null);
-    expect(s.paymentLimits.usdc).toEqual({ min: "15", max: null });
+    expect(s.paymentLimits.usdc).toEqual({ min: "25", max: null });
     expect(s.sources.paymentLimits.usdc).toBe("env");
   });
 
   it("keeps the owner's 'no LamportPay maximum' from .env", () => {
     process.env["PAYMENT_MAX_USDC"] = "none";
-    expect(resolveBusinessSettings(null).paymentLimits.usdc).toEqual({ min: "15", max: null });
+    expect(resolveBusinessSettings(null).paymentLimits.usdc).toEqual({ min: "25", max: null });
   });
 
   it("an admin can set, and then clear, limits per coin", async () => {
@@ -45,11 +45,11 @@ describe("payment limits in business settings", () => {
     const s = await getBusinessSettings();
     expect(s.paymentLimits.usdc).toEqual({ min: "250", max: null });
     expect(s.sources.paymentLimits).toEqual({ usdc: "admin", usdt: "env" });
-    expect(s.paymentLimits.usdt).toEqual({ min: "15", max: null });
+    expect(s.paymentLimits.usdt).toEqual({ min: "25", max: null });
 
     await updateBusinessSettings({ paymentLimits: { usdc: null } }, ADMIN);
     expect((await getBusinessSettings()).paymentLimits.usdc).toEqual({
-      min: "15",
+      min: "25",
       max: null,
     });
   });
@@ -72,6 +72,6 @@ describe("payment limits in business settings", () => {
     process.env["PAYMENT_MAX_USDC"] = "150";
     const s = resolveBusinessSettings(null);
     expect(s.paymentLimits.usdc).toBeNull();
-    expect(s.paymentLimits.usdt).toEqual({ min: "15", max: null });
+    expect(s.paymentLimits.usdt).toEqual({ min: "25", max: null });
   });
 });

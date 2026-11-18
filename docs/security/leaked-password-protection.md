@@ -1,32 +1,40 @@
-# Leaked-password protection (prepared 30 Oct 2026)
+# Leaked-password protection (30 Oct 2026; free-plan solution 19 Nov 2026)
 
-**Status:** the Supabase security advisor reports "Leaked Password Protection Disabled" on the dev
-project. The project's organisation is on the **free** plan; Supabase documents leaked-password
-protection (HaveIBeenPwned) as a paid-plan feature, so it cannot be switched on there today.
+**Status:** Supabase's own "Prevent use of leaked passwords" (HaveIBeenPwned) is a Pro-plan
+feature, and the organisation is on the free plan, so the security advisor keeps reporting
+`auth_leaked_password_protection`. The owner asked (19 Nov) for a solution without Pro. The app
+now does the same check itself, everywhere a password is chosen or used in LamportPay, and the
+free-plan password rules are switched on in Supabase.
 
-## What the app does now
+## What the app does
 
-`/auth/reset` (the only page where a password is chosen in the app; admin invites and password
-resets both land there) checks the new password with `src/lib/password-check.ts` before saving it:
+All checks use `src/lib/password-check.ts`: HaveIBeenPwned's range API with k-anonymity (only the
+first 5 hex characters of the password's SHA-1 leave the browser, with response padding). If the
+service cannot be reached the check is skipped (fail open), because Supabase's rules still apply.
 
-- HaveIBeenPwned range API with k-anonymity: only the first 5 hex characters of the SHA-1 leave the
-  browser, with response padding on;
-- a password found in any breach is refused with a clear message;
-- if the service cannot be reached the check is skipped (fail open), because Supabase's own
-  password rules still apply.
+| Where | What happens with a leaked password |
+| --- | --- |
+| `/auth/reset` (every new password: resets, invites, the change below) | Refused with a clear message |
+| `/auth` customer sign-in | Signs in, then goes straight to `/auth/reset?reason=breached` to choose a new one |
+| `/admin/login` | Admin access refused; the page switches to "Reset admin password" (email link) |
 
-This is a browser-side check: it protects people choosing a password in the app, not someone
-calling the Supabase API directly. Admin accounts are additionally protected by MFA.
+The admin check covers passwords chosen before any of this existed, which Supabase's own setting
+would not re-check either. Admin accounts also need the authenticator-app code (MFA).
 
-## Owner steps (Supabase dashboard, per project; dev first, production later)
+## Supabase settings (free plan; Authentication → Sign In / Providers → Email)
 
-1. Make sure the project sits in a **company-owned** Supabase organisation on a plan that includes
-   leaked-password protection (the dev project is currently in a contributor's personal
-   organisation).
-2. Authentication → Sign In / Providers → Email → Password security:
-   - turn on **Prevent use of leaked passwords**;
-   - minimum password length **12**;
-   - required characters: lowercase, uppercase, digits (symbols optional).
-3. Authentication → Multi-Factor: TOTP **enabled** (default) for admin MFA.
-4. Check: Advisors → Security no longer lists `auth_leaked_password_protection`.
-5. Existing passwords are not re-checked; ask admins to reset theirs once after step 2.
+Set 19 Nov 2026 on `gdksfksypkcfiohozzsx`:
+
+- Minimum password length **12**; required characters **lowercase, uppercase letters and digits**
+  (enforced by Supabase for every new password, including direct API calls; existing passwords
+  keep working until they are changed).
+- **Secure password change** on (a password change needs a sign-in from the last 24 hours).
+- Leave "Require current password when updating" off: a reset link has no current password.
+
+## What is still different from the Pro feature
+
+The app's check runs in the browser, so someone calling the Supabase Auth API directly (with the
+public key) could still choose a leaked password for an account of their own. That only weakens
+their own account; anyone using LamportPay's pages is protected, and admin access always is. The
+advisor warning stays until the organisation moves to Pro (also needed for a separate production
+database, backups and no auto-pause); then turn the Supabase setting on as well.

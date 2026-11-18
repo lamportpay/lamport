@@ -52,9 +52,9 @@ Change these only on the owner's instruction.
   change it). That table is not a list of supported corridors: a Stables preview quote decides
   whether a country/currency is supported, and Stables validates the bank fields
   (`POST /payment-methods/validate`). No country-specific business code.
-- **Limits: minimum 15 per payment (owner decision 2026-10-07, matching Stables' stated 15 USD minimum; was 100); no LamportPay maximum: the partner (Stables) decides the maximum (decision 2026-11-04, replacing the provisional 5,000 of 3 Nov).** TEST MODE: 15–5,000 USDC.
+- **Limits: minimum 25 per payment (owner decision 2026-11-19: Stables' rails take at least 20 USD on most routes, and 25 still clears that after the 2% fee and Stables' 3 USD processing fee; was 15 from 2026-10-07, 100 before); no LamportPay maximum: the partner (Stables) decides the maximum (decision 2026-11-04, replacing the provisional 5,000 of 3 Nov).** TEST MODE: 15–5,000 USDC.
   `PAYMENT_MIN_USDC`, `PAYMENT_MAX_USDC`, `PAYMENT_MIN_USDT`, `PAYMENT_MAX_USDT`, read in
-  `src/lib/payments/limits.server.ts` (default minimum 15, no maximum, from `src/lib/payments/limit-defaults.ts`; `PAYMENT_MAX_*=none` = no
+  `src/lib/payments/limits.server.ts` (default minimum 25, no maximum, from `src/lib/payments/limit-defaults.ts`; `PAYMENT_MAX_*=none` = no
   LamportPay maximum, Stables' per-customer limits decide). Admins can override them per coin in
   Admin → Settings (C07, `business_settings.payment_limits`, audit logged with a reason).
   Don't repeat the numbers anywhere else.
