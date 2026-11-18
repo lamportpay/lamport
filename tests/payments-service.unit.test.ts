@@ -1346,6 +1346,7 @@ describe("webhook endpoint", () => {
       customerEvent("customer.created", "cus_1", user.id),
       customerEvent("customer.updated", "cus_1", user.id),
       kycEvent("cus_1", "VERIFICATION_APPROVED"),
+      { ...transferEvent("tr_1", "AWAITING_FUNDS_COLLECTION"), event_type: "transfer.created" },
       transferEvent("tr_1", "AWAITING_FUNDS_COLLECTION"),
       travelRuleEvent("tr_1"),
     ];
