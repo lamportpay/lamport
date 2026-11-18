@@ -221,7 +221,7 @@ Recommended settings:
 | Live site and database | Move lamportpay.com and production data to Vercel and the company's production Supabase project (Phase 4); export the early-access sign-ups from Lovable Cloud first |
 | `vite.config.ts` fallbacks | Remove the live-database defaults; fail the build clearly when `VITE_SUPABASE_*` is missing |
 | `LAMPORTPAY_SHARED_DB`, `LOVABLE_CRON_SECRET*`, `LOVABLE_API_KEY` | Remove once Lovable no longer runs the app |
-| MCP server | Decide: keep (fix the fee text, own the generated files) or remove with `@lovable.dev/mcp-js` |
+| MCP server | **Removed 18 Nov 2026** (owner decision): routes, `src/lib/mcp/` and `@lovable.dev/mcp-js` deleted |
 | `src/integrations/supabase/` | Take ownership (no regeneration from Lovable); delete the unused `cron-auth.ts` |
 | `lovable-error-reporting.ts`, Lovable publish path in `vite.config.ts`, `bun.lock`, `bunfig.toml`, `roadmap.md` | Remove or keep as inert once Lovable is UI-only |
 | `lockfile.yml` | Pull-request based (section 8) |

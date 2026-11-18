@@ -45,7 +45,7 @@ src/components/site/**
 !src/components/site/CustomerSupport.tsx
 !src/components/site/BusinessSettingsAdmin.tsx
 !src/components/site/StablesPaymentsAdmin.tsx
-# demo-data.ts also feeds the MCP server's quote tools (src/lib/mcp/tools/)
+# demo-data.ts feeds the marketing site's rate widgets and transfer simulator
 !src/components/site/demo-data.ts
 
 # UI primitives, content, images and styles

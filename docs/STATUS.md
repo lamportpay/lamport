@@ -1,15 +1,18 @@
 # LamportPay: project status and handoff
 
-**As of 4 November 2026 (local-first work: section 3, "Local-first work from 2 November 2026").** Read this first, then `CLAUDE.md`
+**As of 19 November 2026** (security audit and go-live preparation: section 3, "Security audit, 18 November 2026"; earlier: "Local-first work from 2 November 2026"). Read this first, then `CLAUDE.md`
 (the project rules, which win over anything else, this file included). Update this file at the
 end of every work session: what changed, what is left, what needs approval.
 
 ## 1. Where the project stands
 
 The whole USDC-to-bank payment flow is built and tested in **TEST mode** (Solana devnet and the
-Stables sandbox) and runs on a protected **Vercel Preview**. LIVE mode is **locked in code**
-(`src/lib/app-mode-lock.ts`). Stables has verified the business (KYB) and issued production API
-access (owner, 30 Oct); nothing production-side is configured yet.
+Stables sandbox) on the protected **Vercel Preview**. Since **11 Nov 2026 LIVE is open on Vercel
+Production** (`lamport-kohl.vercel.app`, owner approval in `LAMPORTPAY_LIVE_APPROVED_*`), with the
+Stables production key behind the fixed-IP proxy. `lamportpay.com` still serves Lovable. No
+real-money payment has run yet (19 Nov). **TEST and LIVE share the one Supabase project**
+(`gdksfksypkcfiohozzsx`; owner decision 11 Nov, confirmed 19 Nov: the team tests and runs live on
+the company's real account without switching databases).
 
 | Phase | Status |
 | --- | --- |
@@ -18,7 +21,7 @@ access (owner, 30 Oct); nothing production-side is configured yet.
 | 2 Stables sandbox flow | Built and tested; owner sign-off open |
 | 3 Revenue engine | Built and tested; to be checked once with real money |
 | Pre-LIVE security and the move from Lovable to Vercel | Mostly done (see section 6) |
-| **4 Stables production go-live, controlled** | **In progress: next is production setup** |
+| **4 Stables production go-live, controlled** | **In progress: LIVE open on Production; next is the controlled real-money test** |
 | 5 Token expansion, 6 Compliance ops, 7 Advanced admin, 8 Notifications, 9 More payout providers, 10 External audit, 11 Scaling | After LIVE |
 | Hyperliquid route (BTC, ETH and others) | Design only |
 
@@ -177,6 +180,36 @@ homepage swap demo becomes quote-only in LIVE (no real swap from the demonstrati
 LamportPay fee stays as is, no Stables developer fee until Stables confirms how it works and
 settles in writing.
 
+### Security audit, 18 November 2026
+
+Full audit of `vercel-preview-migration` (`ed04f76`), Vercel Production (`main` `3fe706d`) and
+the Supabase project. Details are in the owner's private report; nothing secret is recorded here.
+
+- Checks on `ed04f76` (clean Linux install, Node 24): repo secret scan clean, typecheck 0, lint 0
+  errors (6 warnings), 955 unit tests passed (11 skipped), production build OK, client-bundle
+  scan clean. The CI dependency audit **failed** on a new high advisory (picomatch ReDoS,
+  GHSA-fc5q-39xc-vjpf, no fixed release; build tooling only): accepted with reasons in
+  `scripts/check-audit.mjs` on branch `audit/security-2026-11-18`.
+- Production runs `main` `3fe706d`, without the 13 Nov audit fixes (hono patch): release PR #29
+  is still open.
+- Database: RLS on every public table, no `anon` grants, no storage buckets; Supabase advisors:
+  `has_role` callable by signed-in users (needed by the RLS policies), leaked-password
+  protection off (paid plan).
+- **Removed (owner decision 18 Nov):** the Lovable MCP server (`@lovable.dev/mcp-js`, `/mcp`,
+  `/.mcp/*`, `/.well-known/oauth-protected-resource`, `/.lovable/oauth/consent`, `src/lib/mcp/`).
+  Its tools still described a demo with indicative rates and an invented payout fee while LIVE
+  was open. No OAuth client had ever been registered (`auth.oauth_clients` empty). Owner: turn off
+  Supabase Auth's OAuth server if it is on. Its dependency tree went with it (MCP SDK, `hono`,
+  `@hono/node-server`, `express` and about 60 more packages; `package-lock.json` regenerated with
+  npm 10). `bun.lock` (Lovable's) is left as it was; Lovable refreshes it on its next install. Key prefixes and leak commit IDs were taken out of
+  these docs; git history is not rewritten (owner decision: revoke instead).
+- **Owner decision 19 Nov:** TEST and LIVE keep sharing the one database. Known effects, accepted:
+  earlier TEST payments show in a user's LIVE history, and the LIVE reconcile job asks Stables
+  production about the 3 TEST transfers still open (it logs "not found" and leaves them as they are).
+- Still open: the CSP is report-only; mainnet RPC is the public endpoints; the Stables proxy
+  password is sent without TLS; the payment minimum (15) is below Stables' 20 USD minimum on most
+  rails (section 9, 19 Nov).
+
 ## 4. What is built (and where the code is)
 
 | Area | What it does | Code |
@@ -233,7 +266,7 @@ Still open:
 | Item | Who |
 | --- | --- |
 | G2: rotate the keys that were shared in a `.env` file (`docs/security/credential-rotation-2026-10-30.md`) | Owner, then engineering verifies |
-| **Correction (4 Nov):** the rotation note says the shared values are not in the git history. They are: a `.env` was committed in `5898da4` and `b23c674` (10 Oct) and removed in `4762a69` (12 Oct), so the history of the public repository holds the Alchemy key, the Supabase `sb_secret_jgY7…` key and the Stables sandbox `whsec_…` secret. All three are still in the local `.env`. Rotation is the fix (history is not rewritten); the Alchemy key matters most because the same key serves mainnet RPC | Owner rotates, engineering verifies |
+| **Correction (4 Nov):** the rotation note says the shared values are not in the git history. They are: a `.env` was committed on 10 Oct and removed on 12 Oct, so the history of the public repository holds the Alchemy key, the Supabase secret key and the Stables sandbox webhook secret. All three are still in the local `.env`. Rotation is the fix; the Alchemy key matters most because the same key serves mainnet RPC. **18 Nov audit:** the same file also holds the Jupiter API key, the Stables sandbox API key and the `CRON_SECRET`; all seven need revoking at the provider (list in `docs/security/credential-rotation-2026-10-30.md`; prefixes and fingerprints only in the owner's private report). Vercel shows these variables were re-entered on 11–13 Nov; whether the old values were revoked is not verified. **Owner decision 18 Nov:** revoke, do not rewrite git history (a fork and existing clones keep the old history anyway) | Owner revokes, engineering verifies |
 | A Stables **production** key (`sti_live_…`) was pasted into a chat on 3 Nov: revoke it in Stables → API keys and create the production key only when it goes into Vercel Production | Owner |
 | Enforce the CSP after a wallet session on `/pay` shows no violations | Engineering |
 | Leaked-password protection (needs the paid Supabase plan) | Owner |
@@ -323,6 +356,35 @@ Added 3–4 Nov (dashboard and production checklist checked 3 Nov):
 - **Developer fee:** the dashboard now shows a "Developer fee balance" with "Request payout" (in
   September Stables called integrator fees upcoming). Ask how it is set per transfer, in which
   currency and how often it settles. No change until answered in writing.
+
+**Answered 18–19 Nov** (Stables WhatsApp group, Chris; and the docs pages he pointed to, read
+19 Nov: `docs.stables.money/developer-platform/payments/limits`,
+`…/supported-currencies/payouts`, `…/fees/developer-fees`):
+
+- **IP allowlist:** IPv4 is fine; a single IP can be allowlisted, up to 5. Not yet confirmed in
+  writing that `STABLES_PROXY_URL`'s IP is on the production key's list. A second proxy IP would
+  remove the single point of failure.
+- **Limits (Stables decides, as planned 4 Nov):** per verification level, Individual 50,000 USD per
+  transaction and 200,000 USD per month; Business 250,000 / 1,000,000 USD. A rail's own maximum
+  applies where it is lower (for example PHP InstaPay 50,000 PHP, INR IMPS/UPI 500,000 INR, AED IPP
+  50,000 AED). Limits are checked again at execution; an exceeded monthly limit answers `400`, or
+  the transfer goes into review. No daily limits are documented.
+- **Minimums: NEEDS OWNER DECISION.** The payouts page lists **20 USD** as the minimum for most
+  rails (GBP, EUR, INR, PHP, AED IPP, NGN …; AUD NPP 15 AUD; CAD 10 USD). `PAYMENT_MIN_*` = 15 was
+  set on 7 Oct to match a stated 15 USD minimum. With the 2% fee taken out of the total, a 15 USDC
+  payment sends 14.70 to Stables, below 20 on those rails: Stables' quote refuses it. The planned
+  real-money test (15 USDC to a GBP account) would fail for the same reason. Options: raise the
+  minimum to cover 20 USD net (at least 20.41 USDC total before Stables' own fees), or ask Stables
+  whether 15 still applies for our account.
+- **Developer fee:** one organisation-wide setting (dashboard Settings → Organization settings →
+  Developer fee, or `PUT /api/v1/developer-fee`): a percentage (0.01–10%) and/or a fixed USD amount
+  (0.01–50) per transaction, paid by the customer out of the amount sent, on top of Stables' fees;
+  credited in USD only when a transaction completes; quotes show it as `developer_fees` next to
+  `stables_fees`. Paid out by hand ("Request payout", minimum 20 USD, production only) into the
+  Stables Balance in USDC/USDT, then withdrawn under the Balance rules. **No change made:**
+  LamportPay's 2% stays in the user-signed transaction. Keep the Stables developer fee **unset**:
+  with the 2% also on, users would pay twice, and the /pay fee breakdown does not yet show a
+  `developer_fees` group. Switching models is an owner decision.
 
 Also decided 4 Nov: GitHub (code, full history) and Google Drive are the off-disk backup (no USB
 step); the old `.env` backup files were deleted (test keys can be re-created; live keys will live

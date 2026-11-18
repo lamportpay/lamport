@@ -7,8 +7,14 @@
 import { spawnSync } from "node:child_process";
 
 const ACCEPTED = {
-  // Empty since 2026-10-24: the braces advisory GHSA-vfj7-8cjw-p6xm (accepted
-  // 2026-10-08, metro only) is no longer reported by npm audit.
+  // Accepted 2026-11-18 (security audit): picomatch <=4.0.7 ReDoS through repeated
+  // extglobs. No fixed release exists (4.0.7 is the latest). picomatch is only reached
+  // through build tooling (vite, tinyglobby, fdir, the TanStack router/start plugins,
+  // micromatch, jest-util) and only matches patterns written in this repository; it is
+  // not in the Vercel server function or the browser bundle (checked on the 18 Nov
+  // build), so no request input ever reaches it. Remove once a fixed version ships.
+  "GHSA-fc5q-39xc-vjpf":
+    "picomatch ReDoS: build-time tooling only, repository-controlled patterns, no fix released",
 };
 
 const FAIL_ON = new Set(["high", "critical"]);
