@@ -56,7 +56,7 @@ Questions", "Carry-overs", "Roadmap").
 Owner-approved, after A–C:
 
 1. Pause new payments for everyone else (payment controls) or restrict the corridor.
-2. One payment of the minimum amount (15 USDC) from the owner's own wallet to the owner's own
+2. One payment of the minimum amount (25 USDC, owner decision 19 Nov) from the owner's own wallet to the owner's own
    bank account in one corridor (GBP suggested; it completed in the sandbox).
 3. Record: Stables transfer id, deposit and fee transaction signatures, the fee received in the
    revenue wallet, the bank credit, the reconciliation and revenue reports.

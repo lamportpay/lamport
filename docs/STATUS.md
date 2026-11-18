@@ -207,8 +207,7 @@ the Supabase project. Details are in the owner's private report; nothing secret 
   earlier TEST payments show in a user's LIVE history, and the LIVE reconcile job asks Stables
   production about the 3 TEST transfers still open (it logs "not found" and leaves them as they are).
 - Still open: the CSP is report-only; mainnet RPC is the public endpoints; the Stables proxy
-  password is sent without TLS; the payment minimum (15) is below Stables' 20 USD minimum on most
-  rails (section 9, 19 Nov).
+  password is sent without TLS. (The payment minimum is now 25 USDC: section 9, 19 Nov.)
 
 ### Keys, cron secret and admin alerts, 19 November 2026
 
@@ -234,6 +233,16 @@ the Supabase project. Details are in the owner's private report; nothing secret 
   Discord) stays optional, for notifications when the admin is not open.
 - One alert is open now: payment `6a6cd3eb` (a BRL **sandbox** test from 7 Oct that the Stables
   sandbox never completes). Opening an operations case on it (Admin → Payments) closes the alert.
+- **Leaked-password protection without Pro** (owner request): the app checks every password
+  against HaveIBeenPwned itself (`docs/security/leaked-password-protection.md`): refused on
+  `/auth/reset`; a customer signing in with a leaked password is sent to replace it; an admin
+  cannot sign in with one. Supabase free-plan rules set: minimum 12 characters with lowercase,
+  uppercase and digits, secure password change on. The advisor warning stays until Pro.
+- **Payment minimum 25 USDC** (owner: "whatever is reasonable"): `limit-defaults.ts` and Vercel
+  `PAYMENT_MIN_USDC` / `PAYMENT_MIN_USDT`; section 9 has the reasoning. TEST MODE keeps 15.
+- **Stables balance:** verification fees (KYC 3 USD per individual) come out of the Stables
+  balance, which is 0; the owner tops it up in Stables → Balances before the first customer
+  verification.
 
 ## 4. What is built (and where the code is)
 
@@ -294,7 +303,7 @@ Still open:
 | **Correction (4 Nov):** the rotation note says the shared values are not in the git history. They are: a `.env` was committed on 10 Oct and removed on 12 Oct, so the history of the public repository holds the Alchemy key, the Supabase secret key and the Stables sandbox webhook secret. All three are still in the local `.env`. Rotation is the fix; the Alchemy key matters most because the same key serves mainnet RPC. **18 Nov audit:** the same file also holds the Jupiter API key, the Stables sandbox API key and the `CRON_SECRET`; all seven need revoking at the provider (list in `docs/security/credential-rotation-2026-10-30.md`; prefixes and fingerprints only in the owner's private report). Vercel shows these variables were re-entered on 11–13 Nov; whether the old values were revoked is not verified. **Owner decision 18 Nov:** revoke, do not rewrite git history (a fork and existing clones keep the old history anyway) | Owner revokes, engineering verifies |
 | A Stables **production** key (`sti_live_…`) was pasted into a chat on 3 Nov: revoke it in Stables → API keys and create the production key only when it goes into Vercel Production | Owner |
 | Enforce the CSP after a wallet session on `/pay` shows no violations | Engineering |
-| Leaked-password protection (needs the paid Supabase plan) | Owner |
+| Leaked-password protection: done in the app on the free plan (19 Nov, section 3); Supabase's own setting once on Pro | Owner (Pro) |
 | Move Lovable's GitHub sync to the branch `lovable/legacy` (created 31 Oct; plan R2) | Owner, in Lovable |
 | Import the two rulesets in `.github/rulesets/` (see its README; plan R3 and R7) | Owner, in GitHub |
 | Independent security review before scaling | External |
@@ -320,7 +329,7 @@ None of these may be done without the owner's explicit approval (`CLAUDE.md`).
    (`docs/migration/production-cutover-checklist.md`, phase E).
 6. **LIVE unlock:** a reviewed change to `src/lib/app-mode-lock.ts`, the owner approval
    variable and `LAMPORTPAY_MODE=live`.
-7. **Controlled real-money test:** 15 USDC from the owner's wallet to the owner's own GBP bank
+7. **Controlled real-money test:** 25 USDC from the owner's wallet to the owner's own GBP bank
    account (`docs/integrations/stables-production-checklist.md`, section D).
 8. **Soft launch:** invited users, low limits, USDC only.
 
@@ -395,7 +404,8 @@ Added 3–4 Nov (dashboard and production checklist checked 3 Nov):
   applies where it is lower (for example PHP InstaPay 50,000 PHP, INR IMPS/UPI 500,000 INR, AED IPP
   50,000 AED). Limits are checked again at execution; an exceeded monthly limit answers `400`, or
   the transfer goes into review. No daily limits are documented.
-- **Minimums: NEEDS OWNER DECISION.** The payouts page lists **20 USD** as the minimum for most
+- **Minimums: decided 19 Nov: 25 USDC** (owner: "whatever is reasonable"; `limit-defaults.ts`,
+  Vercel `PAYMENT_MIN_USDC`/`_USDT`; TEST MODE keeps 15). Background: the payouts page lists **20 USD** as the minimum for most
   rails (GBP, EUR, INR, PHP, AED IPP, NGN …; AUD NPP 15 AUD; CAD 10 USD). `PAYMENT_MIN_*` = 15 was
   set on 7 Oct to match a stated 15 USD minimum. With the 2% fee taken out of the total, a 15 USDC
   payment sends 14.70 to Stables, below 20 on those rails: Stables' quote refuses it. The planned
@@ -428,8 +438,8 @@ Added 3–4 Nov (dashboard and production checklist checked 3 Nov):
   USD bank transfer 20.00, AED 6.00, CNY and HKD 5.00). Verification: KYC (individual) 3.00 USD,
   KYB 15.00, fraud check 100.00, **paid from the Stables balance**, which is **0.00 USD**: the owner
   must top it up before the first customer verification ("Top up your balance to get started").
-- With the 3.00 USD processing fee, a 15 USDC payment to GBP would pay out about 11.7 USD-worth,
-  before the 20 USD rail minimum is even considered (minimum decision still open, above).
+- With the 3.00 USD processing fee, a 15 USDC payment to GBP would have paid out about 11.7
+  USD-worth, before the 20 USD rail minimum; hence the 25 USDC minimum (above).
 
 Also decided 4 Nov: GitHub (code, full history) and Google Drive are the off-disk backup (no USB
 step); the old `.env` backup files were deleted (test keys can be re-created; live keys will live

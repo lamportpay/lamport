@@ -214,7 +214,7 @@ export function FeeCalculator() {
                   {fmt(result.local)} <span className="text-xl font-medium text-muted-foreground">{cur.code}</span>
                 </>
               ) : (
-                <span className="text-2xl text-muted-foreground">{token === "SOL" && !solPrice ? "Loading SOL price…" : "Min. 15 USDC"}</span>
+                <span className="text-2xl text-muted-foreground">{token === "SOL" && !solPrice ? "Loading SOL price…" : `Min. ${DEFAULT_MIN_MAJOR} USDC`}</span>
               )}
             </p>
 

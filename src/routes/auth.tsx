@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Wallet } from "lucide-react";
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { AppWalletIsland } from "@/components/site/wallet/WalletIsland";
 import { supabase } from "@/integrations/supabase/client";
+import { BREACHED_PASSWORD_RESET_PATH, passwordBreachCount } from "@/lib/password-check";
 import { requestWalletSignIn, useAppWallet } from "@/lib/wallet-state";
 
 export const Route = createFileRoute("/auth")({
@@ -52,6 +53,8 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  /** Set when the password just used is in a known breach: replace it before going on. */
+  const breachedDestination = useRef<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -60,7 +63,9 @@ function AuthPage() {
     });
     // Wallet sign-in finishes asynchronously: continue once the session exists.
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (active && event === "SIGNED_IN" && session) window.location.assign(safeNext);
+      if (active && event === "SIGNED_IN" && session) {
+        window.location.assign(breachedDestination.current ?? safeNext);
+      }
     });
     return () => {
       active = false;
@@ -87,16 +92,20 @@ function AuthPage() {
       return;
     }
 
+    // Checked before signing in, so the redirect on sign-in already knows where to go.
+    const breaches = await passwordBreachCount(password);
+    breachedDestination.current = breaches ? BREACHED_PASSWORD_RESET_PATH : null;
     const result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
 
     setBusy(false);
     if (result.error) {
+      breachedDestination.current = null;
       setError(result.error.message);
       return;
     }
 
     if (result.data.session) {
-      window.location.assign(safeNext);
+      window.location.assign(breachedDestination.current ?? safeNext);
       return;
     }
 

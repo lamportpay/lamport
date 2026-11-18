@@ -453,22 +453,22 @@ describe("payment limits", () => {
     for (const key of ENV_KEYS.filter((k) => k.startsWith("PAYMENT_"))) process.env[key] = "";
   });
 
-  it.each(["14.999999", "0"])(
-    "rejects %s USDC before calling Stables (default minimum 15, no maximum)",
+  it.each(["24.999999", "0"])(
+    "rejects %s USDC before calling Stables (default minimum 25, no maximum)",
     async (amount) => {
       await expect(
         service.createPayment(user, { amount, country: "IN", currency: "inr" }),
       ).rejects.toMatchObject({
         status: 400,
         code: "amount_out_of_range",
-        message: "Payments must be at least 15 USDC.",
+        message: "Payments must be at least 25 USDC.",
       });
       expect(api.createQuote).not.toHaveBeenCalled();
     },
   );
 
   it("accepts both default bounds", async () => {
-    await expect(createPayment("15")).resolves.toMatchObject({ status: "PAYMENT_CREATED" });
+    await expect(createPayment("25")).resolves.toMatchObject({ status: "PAYMENT_CREATED" });
     await expect(createPayment("5000")).resolves.toMatchObject({ status: "PAYMENT_CREATED" });
   });
 

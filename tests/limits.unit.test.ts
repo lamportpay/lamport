@@ -8,24 +8,24 @@ afterEach(() => {
 });
 
 describe("payment limits", () => {
-  it("defaults to a 15 minimum and no LamportPay maximum", () => {
+  it("defaults to a 25 minimum and no LamportPay maximum", () => {
     delete process.env["PAYMENT_MIN_USDC"];
     delete process.env["PAYMENT_MAX_USDC"];
     const limits = getPaymentLimits("usdc");
-    expect(limits.min).toBe("15");
+    expect(limits.min).toBe("25");
     expect(limits.max).toBeNull();
-    expect(outsideLimits(14_999_999n, limits)).toBe(true);
-    expect(outsideLimits(15_000_000n, limits)).toBe(false);
+    expect(outsideLimits(24_999_999n, limits)).toBe(true);
+    expect(outsideLimits(25_000_000n, limits)).toBe(false);
     expect(outsideLimits(5_000_000_000n, limits)).toBe(false);
     expect(outsideLimits(1_000_000_000_000_000n, limits)).toBe(false);
-    expect(limitsMessage(limits, "USDC")).toBe("Payments must be at least 15 USDC.");
+    expect(limitsMessage(limits, "USDC")).toBe("Payments must be at least 25 USDC.");
   });
 
   it("applies the same defaults to USDT", () => {
     delete process.env["PAYMENT_MIN_USDT"];
     delete process.env["PAYMENT_MAX_USDT"];
     const limits = getPaymentLimits("usdt");
-    expect(limits.min).toBe("15");
+    expect(limits.min).toBe("25");
     expect(limits.max).toBeNull();
   });
 

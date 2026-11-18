@@ -1,7 +1,7 @@
 /**
  * Per-payment limits, one pair per funding stablecoin, all configurable:
  *   PAYMENT_MIN_USDC / PAYMENT_MAX_USDC and PAYMENT_MIN_USDT / PAYMENT_MAX_USDT
- *   (defaults in `limit-defaults.ts`: minimum 15, no maximum). A maximum of "none" (or unset) means
+ *   (defaults in `limit-defaults.ts`: minimum 25, no maximum). A maximum of "none" (or unset) means
  *   LamportPay sets no maximum of its own and the payout partner's limits decide.
  * Read per call from process.env. The dev server loads .env / .env.local at
  * startup, so a changed file needs a restart; a deployment needs a redeploy.
@@ -99,7 +99,7 @@ export function outsideLimits(amountMinor: bigint, limits: PaymentLimits): boole
   );
 }
 
-/** "Payments must be at least 15 USDC." or, with a maximum set, "... between 15 and 20 USDC." */
+/** "Payments must be at least 25 USDC." or, with a maximum set, "... between 25 and 100 USDC." */
 export function limitsMessage(limits: PaymentLimits, coinLabel: string): string {
   return limits.max === null
     ? `Payments must be at least ${groupThousands(limits.min)} ${coinLabel}.`
