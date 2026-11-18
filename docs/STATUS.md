@@ -425,10 +425,10 @@ Added 3–4 Nov (dashboard and production checklist checked 3 Nov):
 **Stables production dashboard, checked 19 Nov** (read only, owner signed in):
 
 - **Webhook endpoint:** `https://lamport-kohl.vercel.app/api/public/stables-webhook`, "LamportPay
-  production (Vercel), 11 Nov 2026", created 11 Nov. Subscribed: `customer.created`,
-  `customer.updated`, `kyc_link.updated.status_transitioned` and 2 more that the dashboard did not
-  expand (owner to confirm `transfer.created` and `transfer.updated.status_transitioned` are among
-  them). No delivery attempts in the last 7 days (no production transfer yet). Change the URL to
+  production (Vercel), 11 Nov 2026", created 11 Nov. Subscribed (checked 19 Nov): `customer.created`,
+  `customer.updated`, `kyc_link.updated.status_transitioned`, `transfer.updated.status_transitioned`,
+  `travel_rule.wallet_verification_required`, and since 19 Nov **`transfer.created`** (added: the
+  missing-webhook alert expects it within 30 minutes of each transfer). No delivery attempts in the last 7 days (no production transfer yet). Change the URL to
   `https://lamportpay.com/...` at the DNS move.
 - **API key:** one production key ("Lamportpay", full access), created 13 Nov, last used 18 Nov.
 - **IP allowlist:** `130.210.11.66` (1 of 5 used). Confirmed.

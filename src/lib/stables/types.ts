@@ -192,13 +192,16 @@ export interface SimulatedDeposit {
 }
 
 /**
- * Event types the dashboard endpoint is subscribed to. Anything else that
- * arrives is stored and acknowledged with 200, then ignored.
+ * Event types the dashboard endpoint is subscribed to (production endpoint
+ * checked 19 Nov 2026; `transfer.created` added that day, which the
+ * missing-webhook alert relies on). Anything else that arrives is stored and
+ * acknowledged with 200, then ignored.
  */
 export const SUBSCRIBED_WEBHOOK_EVENTS = [
   "customer.created",
   "customer.updated",
   "kyc_link.updated.status_transitioned",
+  "transfer.created",
   "transfer.updated.status_transitioned",
   "travel_rule.wallet_verification_required",
 ] as const;
