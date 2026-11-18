@@ -438,6 +438,8 @@ describe("alerts step of the reconcile job", () => {
       notify_count: 1,
       resolved_at: null,
     });
+    // Admin → Alerts shows what to do next beside the title.
+    expect(db.table("ops_alerts")[0]["action"]).toMatch(/Check the endpoint in the Stables dashboard/);
 
     const later = NOW + 5 * 60_000;
     expect(await runOpsAlerts(later)).toMatchObject({ open: 1, sent: 0, resolved: 0, failed: 0 });

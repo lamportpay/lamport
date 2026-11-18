@@ -9,6 +9,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
   BarChart3,
+  BellRing,
   Coins,
   LayoutDashboard,
   LogOut,
@@ -45,7 +46,10 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
+import type { AlertSummary } from "@/lib/ops/admin-alerts";
 import { useModeStatus } from "@/lib/use-mode-status";
+
+import { AlertCountBadge, useAlertSummary, useNewAlertToasts } from "./AdminAlerts";
 
 type NavItem = { to: string; label: string; icon: LucideIcon };
 
@@ -54,6 +58,7 @@ const ADMIN_NAV: { section: string; items: NavItem[] }[] = [
     section: "Workspace",
     items: [
       { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { to: "/admin/alerts", label: "Alerts", icon: BellRing },
       { to: "/admin/payments", label: "Payments", icon: ReceiptText },
       { to: "/admin/payouts", label: "Payouts", icon: Send },
     ],
@@ -99,7 +104,13 @@ function Brand() {
   );
 }
 
-function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarNav({
+  onNavigate,
+  alerts,
+}: {
+  onNavigate?: () => void;
+  alerts?: AlertSummary;
+}) {
   const [search, setSearch] = useState("");
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const groups = ADMIN_NAV.map((group) => ({
@@ -141,6 +152,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
               >
                 <Icon className="w-4 h-4 shrink-0" />
                 {label}
+                {to === "/admin/alerts" && <AlertCountBadge summary={alerts} />}
               </Link>
             </Button>
           ))}
@@ -177,6 +189,8 @@ export function AdminShell({ email, children }: { email: string | null; children
     (item) => pathname === item.to || pathname.startsWith(`${item.to}/`),
   );
   const { status, indicator } = useModeStatus();
+  const alerts = useAlertSummary().data;
+  useNewAlertToasts(alerts);
 
   return (
     <div className="min-h-screen bg-muted/40 text-foreground">
@@ -186,7 +200,7 @@ export function AdminShell({ email, children }: { email: string | null; children
           <Brand />
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-5">
-          <SidebarNav />
+          <SidebarNav alerts={alerts} />
         </div>
         <div className="border-t border-border/60 p-3 text-xs text-muted-foreground">
           <Button
@@ -210,7 +224,7 @@ export function AdminShell({ email, children }: { email: string | null; children
             <Brand />
           </div>
           <div className="px-3 py-5">
-            <SidebarNav onNavigate={() => setOpen(false)} />
+            <SidebarNav onNavigate={() => setOpen(false)} alerts={alerts} />
           </div>
         </SheetContent>
       </Sheet>
