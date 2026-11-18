@@ -1,6 +1,6 @@
 # LamportPay: project status and handoff
 
-**As of 19 November 2026** (security audit and go-live preparation: section 3, "Security audit, 18 November 2026"; earlier: "Local-first work from 2 November 2026"). Read this first, then `CLAUDE.md`
+**As of 19 November 2026** (security audit and go-live preparation: section 3, "Security audit, 18 November 2026" and "Keys, cron secret and admin alerts, 19 November 2026"; earlier: "Local-first work from 2 November 2026"). Read this first, then `CLAUDE.md`
 (the project rules, which win over anything else, this file included). Update this file at the
 end of every work session: what changed, what is left, what needs approval.
 
@@ -210,6 +210,31 @@ the Supabase project. Details are in the owner's private report; nothing secret 
   password is sent without TLS; the payment minimum (15) is below Stables' 20 USD minimum on most
   rails (section 9, 19 Nov).
 
+### Keys, cron secret and admin alerts, 19 November 2026
+
+- **Leaked keys (G2), checked in the dashboards with the owner signed in:** the leaked Supabase
+  secret key is no longer on the project (its only secret key is "vercel", a different one); the
+  Supabase OAuth server is off; leaked-password protection needs the Pro plan (the app's own
+  reset form already rejects breached passwords). The Alchemy account in use was created on
+  13 Nov; the October key belongs to another Alchemy account (whoever set up the Lovable version)
+  and Production does not use Alchemy. **Owner decision:** skip the Stables sandbox key and
+  webhook secret (test money only, not used by Production); revoke the old Jupiter key after
+  launch (developers.jup.ag, once it is confirmed not to be the key in Production).
+- **Cron secret rotated:** a new random `lamportpay_cron_secret` was created inside Supabase Vault
+  (never displayed outside the owner's own dashboard) and the owner set the same value as
+  `CRON_SECRET` in Vercel (Production and Preview). It takes effect with the next Production
+  deployment (release PR #29); until then the 5-minute pg_cron call is refused (401) and Vercel's
+  daily cron keeps running with the deployed value. This also retires the October `CRON_SECRET`.
+- **Alerts in the admin (owner request: no chat channel needed):** Admin → Alerts lists the open
+  operations alerts the reconcile job keeps in `ops_alerts` (payments stuck at Stables, payments
+  that ended after funds reached Stables, webhook problems) with what to do next and links to the
+  payments, plus those cleared in the last 7 days; a sidebar count, a dashboard bar and a pop-up
+  while an admin page is open. New column `ops_alerts.action` (migration
+  `20261119120000_ops_alerts_action.sql`, applied 19 Nov). `OPS_ALERT_WEBHOOK_URL` (Slack or
+  Discord) stays optional, for notifications when the admin is not open.
+- One alert is open now: payment `6a6cd3eb` (a BRL **sandbox** test from 7 Oct that the Stables
+  sandbox never completes). Opening an operations case on it (Admin → Payments) closes the alert.
+
 ## 4. What is built (and where the code is)
 
 | Area | What it does | Code |
@@ -265,7 +290,7 @@ Still open:
 
 | Item | Who |
 | --- | --- |
-| G2: rotate the keys that were shared in a `.env` file (`docs/security/credential-rotation-2026-10-30.md`) | Owner, then engineering verifies |
+| G2: rotate the keys that were shared in a `.env` file (`docs/security/credential-rotation-2026-10-30.md`). **19 Nov:** Supabase key gone, cron secret rotated, Stables sandbox skipped, Jupiter after launch, Alchemy in another account (section 3) | Owner, then engineering verifies |
 | **Correction (4 Nov):** the rotation note says the shared values are not in the git history. They are: a `.env` was committed on 10 Oct and removed on 12 Oct, so the history of the public repository holds the Alchemy key, the Supabase secret key and the Stables sandbox webhook secret. All three are still in the local `.env`. Rotation is the fix; the Alchemy key matters most because the same key serves mainnet RPC. **18 Nov audit:** the same file also holds the Jupiter API key, the Stables sandbox API key and the `CRON_SECRET`; all seven need revoking at the provider (list in `docs/security/credential-rotation-2026-10-30.md`; prefixes and fingerprints only in the owner's private report). Vercel shows these variables were re-entered on 11–13 Nov; whether the old values were revoked is not verified. **Owner decision 18 Nov:** revoke, do not rewrite git history (a fork and existing clones keep the old history anyway) | Owner revokes, engineering verifies |
 | A Stables **production** key (`sti_live_…`) was pasted into a chat on 3 Nov: revoke it in Stables → API keys and create the production key only when it goes into Vercel Production | Owner |
 | Enforce the CSP after a wallet session on `/pay` shows no violations | Engineering |
@@ -323,8 +348,9 @@ the real-money test with the owner. Stables webhooks reach production once lampo
 Vercel (custom domains are not behind Vercel login).
 
 **Before the real-money test:** the approvals above (1 to 6); G2; production webhook in the
-Stables dashboard; `OPS_ALERT_WEBHOOK_URL` in Production (owner picks the channel; webhook-failure,
-stuck-payment and ended-after-funds alerts are built); background job secrets (alerts only run with the job). No further TEST-mode run (owner, 31 Oct:
+Stables dashboard; alerts show in Admin → Alerts (19 Nov; `OPS_ALERT_WEBHOOK_URL` optional for
+chat notifications); background job secrets: done 19 Nov (Vault URL and secret, `CRON_SECRET` in
+Vercel), live with the next Production deployment. No further TEST-mode run (owner, 31 Oct:
 the earlier sandbox runs and 770 unit tests stand).
 
 **Before inviting users:** the real-money test; CSP enforced; lawyer review of `/terms` and
