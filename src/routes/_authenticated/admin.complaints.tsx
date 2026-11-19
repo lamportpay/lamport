@@ -11,6 +11,7 @@ import {
   LoadingState,
   Panel,
 } from "@/components/admin/AdminShell";
+import { StablesEscalationPanel } from "@/components/admin/StablesEscalationPanel";
 import { Button } from "@/components/ui/button";
 import {
   listSupportChatsAdmin,
@@ -46,7 +47,7 @@ function ComplaintsPage() {
     <AdminPage
       title="Complaints & chats"
       crumbs={[{ label: "Complaints & chats" }]}
-      description="Questions from the website's Ask AI assistant. When a visitor reports a problem, the assistant files it as a complaint here. Updates every 10 seconds."
+      description="Questions from the website's Ask AI assistant. When a visitor reports a problem, the assistant files it as a complaint here; send it to Stables, record their reply and publish the answer to the customer from the complaint. Updates every 10 seconds."
     >
       <div className="flex flex-wrap items-center gap-2">
         <Button size="sm" variant={complaintsOnly ? "default" : "outline"} onClick={() => setComplaintsOnly(true)}>
@@ -155,6 +156,7 @@ function ChatDetail({ row }: { row: SupportChatRow }) {
           </div>
         </div>
       )}
+      {row.is_complaint && <StablesEscalationPanel row={row} />}
       <div className="max-h-[60vh] space-y-3 overflow-y-auto">
         {row.messages.map((m, i) => (
           <div

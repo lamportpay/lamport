@@ -963,13 +963,22 @@ export type Database = {
           complaint_category: string | null
           complaint_summary: string | null
           contact_email: string | null
+          customer_answer: string | null
+          customer_answer_published_at: string | null
           created_at: string
           id: string
           is_complaint: boolean
           last_question: string | null
           message_count: number
           messages: Json
+          payment_id: string | null
           session_id: string
+          stables_message: string | null
+          stables_reference: string | null
+          stables_replied_at: string | null
+          stables_reply: string | null
+          stables_sent_at: string | null
+          stables_status: string | null
           status: string
           updated_at: string
           user_id: string | null
@@ -979,13 +988,22 @@ export type Database = {
           complaint_category?: string | null
           complaint_summary?: string | null
           contact_email?: string | null
+          customer_answer?: string | null
+          customer_answer_published_at?: string | null
           created_at?: string
           id?: string
           is_complaint?: boolean
           last_question?: string | null
           message_count?: number
           messages?: Json
+          payment_id?: string | null
           session_id: string
+          stables_message?: string | null
+          stables_reference?: string | null
+          stables_replied_at?: string | null
+          stables_reply?: string | null
+          stables_sent_at?: string | null
+          stables_status?: string | null
           status?: string
           updated_at?: string
           user_id?: string | null
@@ -995,13 +1013,22 @@ export type Database = {
           complaint_category?: string | null
           complaint_summary?: string | null
           contact_email?: string | null
+          customer_answer?: string | null
+          customer_answer_published_at?: string | null
           created_at?: string
           id?: string
           is_complaint?: boolean
           last_question?: string | null
           message_count?: number
           messages?: Json
+          payment_id?: string | null
           session_id?: string
+          stables_message?: string | null
+          stables_reference?: string | null
+          stables_replied_at?: string | null
+          stables_reply?: string | null
+          stables_sent_at?: string | null
+          stables_status?: string | null
           status?: string
           updated_at?: string
           user_id?: string | null

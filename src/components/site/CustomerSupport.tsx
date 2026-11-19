@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { COMPLAINT_RE, FAQS, SUGGESTED, answerFaq } from "@/lib/ask-ai-faq";
 import markUrl from "@/assets/lamportpay-mark.png";
+import { supabase } from "@/integrations/supabase/client";
 import { useLaunchStage } from "@/lib/launch-stage";
 
 type Msg = { id: string; role: "user" | "assistant"; text: string };
@@ -22,6 +23,35 @@ const EMAIL_RE = /[^@\s]+@[^@\s]+\.[^@\s]+/;
 /** Only complaints (or messages with a contact email) are sent to the team. */
 function worthReporting(messages: Msg[]) {
   return messages.some((m) => m.role === "user" && (COMPLAINT_RE.test(m.text) || EMAIL_RE.test(m.text)));
+}
+
+/**
+ * Complaints this browser sent (their random chat session IDs only), so the chat can show the
+ * team's published answer on a later visit (/api/support/updates). Kept on this device.
+ */
+const SESSIONS_KEY = "lamportpay:support-sessions";
+const MAX_SESSIONS = 10;
+
+type SupportUpdate = { sessionId: string; reference: string; answer: string; answeredAt: string };
+
+function rememberedSessions(): string[] {
+  try {
+    const parsed: unknown = JSON.parse(window.localStorage.getItem(SESSIONS_KEY) || "[]");
+    return Array.isArray(parsed)
+      ? parsed.filter((v): v is string => typeof v === "string").slice(-MAX_SESSIONS)
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function rememberSession(id: string) {
+  try {
+    const next = [...rememberedSessions().filter((s) => s !== id), id].slice(-MAX_SESSIONS);
+    window.localStorage.setItem(SESSIONS_KEY, JSON.stringify(next));
+  } catch {
+    /* storage unavailable: the signed-in "My requests" page still shows the answer */
+  }
 }
 
 function Mark({ size = "size-7", inner = "size-5" }: { size?: string; inner?: string }) {
@@ -43,6 +73,26 @@ function ChatBody() {
   const [busy, setBusy] = useState(false);
   // One id per conversation (memory only) so repeat saves update the same complaint row.
   const chatId = useRef<string>(crypto.randomUUID());
+  const [updates, setUpdates] = useState<SupportUpdate[]>([]);
+
+  useEffect(() => {
+    const sessionIds = rememberedSessions();
+    if (sessionIds.length === 0) return;
+    let active = true;
+    fetch("/api/support/updates", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sessionIds }),
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((body: { updates?: SupportUpdate[] } | null) => {
+        if (active && Array.isArray(body?.updates)) setUpdates(body.updates);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => () => {
     if (timer.current) window.clearInterval(timer.current);
@@ -52,13 +102,27 @@ function ChatBody() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, typing]);
 
-  function persist(next: Msg[]) {
+  async function persist(next: Msg[]) {
     if (!worthReporting(next)) return;
+    const sessionId = chatId.current;
+    const headers: Record<string, string> = { "content-type": "application/json" };
+    // Signed in: the complaint is linked to the account, so the answer shows on "My requests".
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data.session?.access_token) headers.authorization = `Bearer ${data.session.access_token}`;
+    } catch {
+      /* not signed in */
+    }
+    const isComplaint = next.some((m) => m.role === "user" && COMPLAINT_RE.test(m.text));
     fetch("/api/ask-ai", {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ sessionId: chatId.current, messages: next.map(({ role, text }) => ({ role, text })) }),
-    }).catch(() => {});
+      headers,
+      body: JSON.stringify({ sessionId, messages: next.map(({ role, text }) => ({ role, text })) }),
+    })
+      .then((res) => {
+        if (res.ok && isComplaint) rememberSession(sessionId);
+      })
+      .catch(() => {});
   }
 
   function ask(raw: string) {
@@ -88,7 +152,7 @@ function ChatBody() {
           setBusy(false);
           const final = [...base, { id, role: "assistant" as const, text: answer }];
           setMessages(final);
-          persist(final);
+          void persist(final);
           inputRef.current?.focus();
         }
       }, 30);
@@ -114,6 +178,13 @@ function ChatBody() {
   return (
     <>
       <div ref={scrollRef} className="max-h-[50dvh] min-h-48 space-y-4 overflow-y-auto p-5" aria-live="polite">
+        {updates.map((u) => (
+          <div key={u.sessionId} role="status" className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+            <p className="text-xs font-semibold text-primary">Update on your request {u.reference}</p>
+            <p className="mt-1 whitespace-pre-wrap text-foreground">{u.answer}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">From the LamportPay team · {new Date(u.answeredAt).toLocaleString()}</p>
+          </div>
+        ))}
         <div className="flex gap-3">
           <Mark />
           <p className="text-sm text-muted-foreground">Hello! Ask me anything about LamportPay — fees, countries, safety or how payments work.</p>

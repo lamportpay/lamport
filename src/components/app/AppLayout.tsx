@@ -13,6 +13,7 @@ import {
   CandlestickChart,
   ChevronRight,
   History,
+  LifeBuoy,
   LogOut,
   Send,
   UserRound,
@@ -164,6 +165,13 @@ function Account() {
             >
               <History className="w-4 h-4" /> My conversions
             </Link>
+            <Link
+              to="/requests"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm hover:bg-secondary"
+            >
+              <LifeBuoy className="w-4 h-4" /> My requests
+            </Link>
             <button
               type="button"
               disabled={busy}
@@ -239,6 +247,10 @@ function AccountSheet({
               )}
               <Link to="/payments" onClick={close} className={row}>
                 <History className="w-4 h-4 text-muted-foreground" /> My conversions
+                <ChevronRight className="ml-auto w-4 h-4 text-muted-foreground" />
+              </Link>
+              <Link to="/requests" onClick={close} className={row}>
+                <LifeBuoy className="w-4 h-4 text-muted-foreground" /> My requests
                 <ChevronRight className="ml-auto w-4 h-4 text-muted-foreground" />
               </Link>
               <button

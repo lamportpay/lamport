@@ -243,6 +243,15 @@ the Supabase project. Details are in the owner's private report; nothing secret 
   uppercase and digits, secure password change on. The advisor warning stays until Pro.
 - **Payment minimum 25 USDC** (owner: "whatever is reasonable"): `limit-defaults.ts` and Vercel
   `PAYMENT_MIN_USDC` / `PAYMENT_MIN_USDT`; section 9 has the reasoning. TEST MODE keeps 15.
+- **Complaints to Stables and back** (owner request 19 Nov): Stables has no support-ticket API
+  (their docs list team@stables.money for support and compliance@stables.money for formal
+  complaints), so each complaint in Admin → Complaints & chats has a Stables panel: link the
+  payment, a prepared message (copy, or open an email to team@stables.money) to send by email or
+  the Stables WhatsApp group, "mark as sent", paste Stables' reply, then publish an answer for the
+  customer. Customers see published answers on **My requests** (`/requests`, signed-in complaints)
+  and in the Ask AI chat on their next visit from the same browser (`/api/support/updates`, by the
+  chat's random session IDs). Each step is audit logged (`support_request`). Migration
+  `20261119140000_support_escalation.sql`.
 - **Stables balance:** verification fees (KYC 3 USD per individual) come out of the Stables
   balance, which is 0; the owner tops it up in Stables → Balances before the first customer
   verification.
