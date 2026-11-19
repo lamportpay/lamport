@@ -145,6 +145,8 @@ const escalationInput = z.discriminatedUnion("action", [
   z.object({ action: z.literal("unpublish_answer"), id: z.string().uuid() }).strict(),
 ]);
 
+export type EscalationInput = z.infer<typeof escalationInput>;
+
 /** One escalation step on a complaint; each is audit logged with the complaint's reference. */
 export const escalateSupportChatAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

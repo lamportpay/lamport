@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import {
   escalateSupportChatAdmin,
   getSupportPaymentContextAdmin,
+  type EscalationInput,
   type SupportChatRow,
 } from "@/lib/support-chats.functions";
 import {
@@ -74,7 +75,7 @@ export function StablesEscalationPanel({ row }: { row: SupportChatRow }) {
   const shownMessage = message || built;
 
   const step = useMutation({
-    mutationFn: (input: Parameters<typeof escalate>[0]["data"]) => escalate({ data: input }),
+    mutationFn: (input: EscalationInput) => escalate({ data: input }),
     onSuccess: (_result, input) => {
       const done: Record<string, string> = {
         link_payment: "Payment linked",
