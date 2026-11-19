@@ -34,6 +34,14 @@ function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [breached, setBreached] = useState(false);
+  /**
+   * An account with an authenticator app (every admin) may only change its password from a
+   * session that has passed the code (Supabase: "AAL2 session is required"). A reset link
+   * gives a first-step session, so the page asks for the code before saving.
+   */
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [code, setCode] = useState("");
+  const [usedMfa, setUsedMfa] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -59,6 +67,24 @@ function ResetPasswordPage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!ready) return;
+    let active = true;
+    void (async () => {
+      const { data: level } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (!active || !level || level.nextLevel !== "aal2" || level.currentLevel === "aal2") return;
+      const { data: factors } = await supabase.auth.mfa.listFactors();
+      const totp = factors?.totp[0];
+      if (active && totp) {
+        setMfaFactorId(totp.id);
+        setUsedMfa(true);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [ready]);
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
@@ -74,6 +100,19 @@ function ResetPasswordPage() {
         "This password has appeared in a known data breach, so it is not safe to use. Please choose a different one.",
       );
       return;
+    }
+    if (mfaFactorId) {
+      const { error: mfaError } = await supabase.auth.mfa.challengeAndVerify({
+        factorId: mfaFactorId,
+        code: code.trim(),
+      });
+      if (mfaError) {
+        setBusy(false);
+        setError("That authenticator code is wrong or has expired. Enter the current 6-digit code.");
+        return;
+      }
+      // The session now has the second step; a retry after a failed save needs no new code.
+      setMfaFactorId(null);
     }
     const { error: updateError } = await supabase.auth.updateUser({ password });
     setBusy(false);
@@ -99,7 +138,7 @@ function ResetPasswordPage() {
                 Your password has been updated.
               </p>
               <a
-                href="/auth"
+                href={usedMfa ? "/admin/login" : "/auth"}
                 className="block w-full rounded-full bg-foreground px-5 py-3 text-center font-semibold text-background transition hover:opacity-90"
               >
                 Continue to sign in
@@ -151,6 +190,25 @@ function ResetPasswordPage() {
                     className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-ring"
                   />
                 </label>
+                {mfaFactorId && (
+                  <label className="block text-sm font-medium">
+                    Authenticator code
+                    <input
+                      required
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      pattern="[0-9]{6}"
+                      maxLength={6}
+                      value={code}
+                      onChange={(event) => setCode(event.target.value.replace(/\D/g, ""))}
+                      className="mt-2 w-full rounded-xl border border-border bg-background px-3 py-2.5 tracking-widest outline-none transition focus:ring-2 focus:ring-ring"
+                    />
+                    <span className="mt-1 block text-xs font-normal text-muted-foreground">
+                      This account uses an authenticator app. Enter its current 6-digit code to
+                      confirm the change.
+                    </span>
+                  </label>
+                )}
 
                 {error && (
                   <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">

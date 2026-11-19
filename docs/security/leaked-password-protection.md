@@ -19,7 +19,10 @@ service cannot be reached the check is skipped (fail open), because Supabase's r
 | `/admin/login` | Admin access refused; the page switches to "Reset admin password" (email link) |
 
 The admin check covers passwords chosen before any of this existed, which Supabase's own setting
-would not re-check either. Admin accounts also need the authenticator-app code (MFA).
+would not re-check either. Admin accounts also need the authenticator-app code (MFA): Supabase
+refuses a password change from a session that has not passed it ("AAL2 session is required"), so
+`/auth/reset` asks an MFA account for its current code before saving (fixed 19 Nov, after the
+owner's first admin reset failed with that message).
 
 ## Supabase settings (free plan; Authentication → Sign In / Providers → Email)
 
