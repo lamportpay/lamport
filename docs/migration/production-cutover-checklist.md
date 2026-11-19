@@ -111,7 +111,7 @@ approval at that moment; "Owner" = only the owner can do it (account access or s
 
 - [ ] **Approval:** LIVE unlock (reviewed change to `src/lib/app-mode-lock.ts`,
       `LAMPORTPAY_LIVE_APPROVED_BY` / `_AT`).
-- [ ] **Approval:** the 15 USDC real-money test to the team's GBP bank account
+- [ ] **Approval:** the 25 USDC real-money test to the team's GBP bank account
       (`docs/integrations/stables-production-checklist.md` section D and
       `docs/testing/real-money-test-plan.md`, including section E: interrupted confirmation),
       then the soft launch.

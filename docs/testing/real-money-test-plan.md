@@ -29,8 +29,14 @@ user wallet → (Jupiter swap, only if the wallet lacks the settlement coin) →
 
 ## B. Transaction test
 
-Amount: the configured minimum (**15 USDC**) unless Stables or the business approves a lower
-production-only test amount. Do not change `PAYMENT_MIN_*` for the test without explicit approval.
+Amount: the configured minimum (**25 USDC**, owner decision 19 Nov) unless the business approves
+another production-only test amount. Do not change `PAYMENT_MIN_*` for the test without explicit
+approval.
+
+**Why 25 (19 Nov):** Stables' payouts page lists a **20 USD** minimum for GBP Faster Payments (and
+most other rails). The old 15 USDC minimum sent 14.70 to Stables after the 2% fee and would have
+been refused at the quote. 25 USDC sends 24.50, about 21 USD after Stables' 3 USD processing fee
+(`docs/STATUS.md` §9).
 
 Run 1: wallet already holds USDC (no swap). Run 2 (only after run 1 reconciles): wallet holds SOL
 or another token and needs a Jupiter swap into USDC. Optional run 3: USDT (currently unverified).

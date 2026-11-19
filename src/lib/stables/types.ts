@@ -10,6 +10,11 @@ export type StablesAmount = { amount: string; currency: string };
  * `developer_fee` / `integrator_fee` are reported only: no request field sets
  * them, and every sandbox quote so far had `integrator_fee` 0. Every line the
  * API returns is stored as-is (service.server.ts `storedFees`).
+ * 19 Nov 2026: Stables' developer fee is one organisation-wide setting
+ * (`PUT /api/v1/developer-fee`), shown on quotes as a `developer_fees` group
+ * next to `stables_fees`. It is deliberately left unset (LamportPay's own fee is
+ * in the user-signed transaction); /pay does not display that group yet, so
+ * setting it would charge users a fee they are not shown (docs/STATUS.md §9).
  */
 export type StablesFeeKind =
   | "fx_fee"
@@ -187,13 +192,16 @@ export interface SimulatedDeposit {
 }
 
 /**
- * Event types the dashboard endpoint is subscribed to. Anything else that
- * arrives is stored and acknowledged with 200, then ignored.
+ * Event types the dashboard endpoint is subscribed to (production endpoint
+ * checked 19 Nov 2026; `transfer.created` added that day, which the
+ * missing-webhook alert relies on). Anything else that arrives is stored and
+ * acknowledged with 200, then ignored.
  */
 export const SUBSCRIBED_WEBHOOK_EVENTS = [
   "customer.created",
   "customer.updated",
   "kyc_link.updated.status_transitioned",
+  "transfer.created",
   "transfer.updated.status_transitioned",
   "travel_rule.wallet_verification_required",
 ] as const;

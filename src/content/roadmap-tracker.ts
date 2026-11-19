@@ -96,7 +96,7 @@ export const TRACKER_PHASES: TrackerPhase[] = [
     items: [
       { label: "Solana wallets (USDC, SOL)", done: true },
       { label: "Jupiter swap quotes", done: true },
-      { label: "Stables payout and hosted verification (sandbox)", done: true },
+      { label: "Stables payout and hosted verification (sandbox, then production)", done: true },
     ],
   },
   {

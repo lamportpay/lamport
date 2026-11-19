@@ -136,6 +136,7 @@ const DEFAULTS: Record<string, () => Row> = {
     updated_at: now(),
   }),
   ops_alerts: () => ({
+    action: null,
     detail: {},
     opened_at: now(),
     last_seen_at: now(),

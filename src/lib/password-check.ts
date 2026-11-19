@@ -1,13 +1,20 @@
 /**
  * Leaked-password check against HaveIBeenPwned's range API (k-anonymity: only the first five
  * hex characters of the password's SHA-1 leave the browser; padding hides the answer size).
- * Supabase's own leaked-password protection is a dashboard setting (see
- * docs/security/leaked-password-protection.md); this covers the app's own password form until
- * it is on, and keeps checking after.
+ * Supabase's own leaked-password protection needs a paid plan, so the app does it itself
+ * (docs/security/leaked-password-protection.md): a new password is refused on /auth/reset, a
+ * customer who signs in with a leaked password is sent there to replace it, and an admin
+ * cannot sign in with one at all.
  *
  * Returns how often the password appears in known breaches (0 = not found), or null when the
  * check could not run. Callers fail open on null: Supabase's password rules still apply.
  */
+/** Where a customer goes after signing in with a password found in a breach. */
+export const BREACHED_PASSWORD_RESET_PATH = "/auth/reset?reason=breached";
+
+/** Supabase's password rules (Authentication → Email), mirrored for the form hint. */
+export const PASSWORD_MIN_LENGTH = 12;
+
 export async function passwordBreachCount(
   password: string,
   fetchImpl: typeof fetch = fetch,

@@ -12,6 +12,18 @@ yet and are not part of this. Nothing here enables LIVE mode.
 any branch (exact-value search over all refs), so the exposure is the chat upload plus the copies
 in Vercel (encrypted, Preview and branch-scoped) and in local `.env` files.
 
+**Correction (first noted in `docs/STATUS.md` on 4 Nov; completed by the security audit of
+18 Nov 2026):** that check was wrong. The Lovable bot committed a full `.env` on 10 Oct 2026
+(removed on 12 Oct), and it is still in the history of `main` and every branch of this **public**
+repository. It holds real values for **every** secret in the table below: `SUPABASE_SERVICE_ROLE_KEY`,
+`SOLANA_RPC_URL` and `SOLANA_DEVNET_RPC_URL` (Alchemy keys), `JUPITER_API_KEY`, `STABLES_API_KEY`
+(sandbox), `STABLES_WEBHOOK_SECRET` (sandbox) and `CRON_SECRET`. The 4 Nov note listed only three of
+these. Rows 1 and 3–7 must each be **revoked at the provider** (a new value in Vercel is not enough
+while the old one still works); for `CRON_SECRET`, make sure the value in Vercel Production differs
+from the October one and that `CRON_SECRET_PREVIOUS` is not set to it. The owner's private audit
+report (18 Nov) gives each old value's prefix and fingerprint for comparison. Rewriting git
+history does not undo the exposure (clones and forks keep it); revocation does.
+
 ## Order for every credential
 
 1. **Create** the new credential in the provider's dashboard (keep the old one working).
@@ -30,7 +42,7 @@ Never paste a credential into chat, a ticket, a commit or a document.
 
 | # | Credential (variables) | Where it is used | Create / revoke in | How to verify | Notes |
 |---|---|---|---|---|---|
-| 1 | Supabase **secret** key (`SUPABASE_SERVICE_ROLE_KEY`) | Server only: Vercel Preview, local `.env` | Supabase → project → Project Settings → API Keys → Secret keys | Script: "server read accepted"; Supabase logs show the new key prefix with HTTP 200 | The key in the shared file (prefix `sb_secret_jgY7p`) is **not registered** on the dev project. Look for that prefix in **every** Supabase project you control and delete it there. The key now on the Preview (`sb_secret_G_1KH`) was entered directly in Vercel and was not shared: no rotation needed |
+| 1 | Supabase **secret** key (`SUPABASE_SERVICE_ROLE_KEY`) | Server only: Vercel Preview, local `.env` | Supabase → project → Project Settings → API Keys → Secret keys | Script: "server read accepted"; Supabase logs show the new key prefix with HTTP 200 | The key in the shared file is **not registered** on the dev project. Look for it in **every** Supabase project you control and delete it there (its prefix is in the owner's private audit report, not here). The key now on the Preview was entered directly in Vercel and was not shared: no rotation needed |
 | 2 | Supabase publishable key (`SUPABASE_PUBLISHABLE_KEY`, `VITE_…`) | Browser bundle (public by design) | – | Script: "accepted by the project" | Not a secret; rotation optional |
 | 3 | Alchemy Solana RPC keys (`SOLANA_DEVNET_RPC_URL`, `SOLANA_RPC_URL`; the key is the last path segment) | Devnet: Vercel Preview + local. Mainnet: local only (LIVE only, deliberately not in Vercel) | Alchemy dashboard → Apps → create a new app/key for each network; delete the old app/key | Script: genesis hash = devnet / mainnet; Preview `/api/solana/health?cluster=devnet` reachable via Alchemy | Read-only RPC; mainnet is blocked in TEST mode |
 | 4 | Jupiter API key (`JUPITER_API_KEY`) | Vercel Preview + local | portal.jup.ag → API keys | Script: "quote accepted"; a quote on the Preview `/pay` page | Quotes only in TEST mode |

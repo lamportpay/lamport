@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Clock } from "lucide-react";
 
 import { SiteLayout } from "@/components/site/Layout";
+import { useLaunchStage } from "@/lib/launch-stage";
 import { POSTS, CATEGORIES } from "@/content/blog";
 import { formatDate } from "@/content/blog/types";
 import { breadcrumbSchema, canonical, pageSeo, SITE_URL } from "@/lib/seo";
@@ -154,9 +155,7 @@ function BlogIndex() {
         <aside className="mt-16 rounded-3xl border border-border/60 bg-secondary/40 p-6 md:p-8">
           <h2 className="text-xl font-semibold tracking-tight">See the architecture in practice</h2>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            The sandbox shows the full route. The SOL to USDC conversion runs live against Solana under
-            strict limits with output returning to your own wallet; identity checks, fiat conversion
-            and local payout are simulated.
+            <ArchitectureNote />
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
@@ -181,5 +180,21 @@ function BlogIndex() {
         </aside>
       </section>
     </SiteLayout>
+  );
+}
+
+/** The call-to-action note, following the launch stage. */
+function ArchitectureNote() {
+  return useLaunchStage() === "live" ? (
+    <>
+      The full route runs live: your wallet, an optional SOL to USDC conversion, identity checks
+      on the partner&apos;s hosted page, and the bank payout through Stables.
+    </>
+  ) : (
+    <>
+      The sandbox shows the full route. The SOL to USDC conversion runs live against Solana under
+      strict limits with output returning to your own wallet; identity checks, fiat conversion and
+      local payout are simulated.
+    </>
   );
 }

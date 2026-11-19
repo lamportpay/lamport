@@ -33,7 +33,8 @@ export const Route = createFileRoute("/api/integration-status")({
         const stablesConfigured = stables.configured;
         const stablesLive = stables.configured && stables.environment === "production";
 
-        const jupiterMode = jupiterConfigured ? "sandbox" : "mock";
+        // Jupiter has no sandbox: in LIVE the payment flow swaps on mainnet, so report "live".
+        const jupiterMode = !jupiterConfigured ? "mock" : modeStatus.mode === "live" ? "live" : "sandbox";
         const stablesMode = !stables.configured ? "mock" : stablesLive ? "live" : "sandbox";
         // Public business settings only (coins turned on, fee rate); never the revenue wallet.
         const settings = await getBusinessSettings().catch((e: unknown) => {
