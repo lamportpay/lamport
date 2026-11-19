@@ -29,7 +29,7 @@ the company's real account without switching databases).
 
 | What | Where |
 | --- | --- |
-| Code | GitHub `lamportpay/lamport` (public). Work on feature branches into `vercel-preview-migration`; `main` is Production, released through an owner-approved PR (code-owner review required). Release PR #29 (13 Nov audit fixes + the 18 Nov audit, PR #30) waits for the owner |
+| Code | GitHub `lamportpay/lamport` (public). Work on feature branches into `vercel-preview-migration`; `main` is Production, released through an owner-approved PR (code-owner review required). Release PR #29 (13 Nov and 18 Nov audits, admin alerts, leaked-password check, 25 USDC minimum) approved by the owner (code owner `lamportpay`) and merged 19 Nov (`974890e`) |
 | Project rules | `CLAUDE.md` |
 | This status file | `docs/STATUS.md` |
 | Older execution tracker (to 21 Oct) | `docs/ROADMAP.md` |
@@ -190,8 +190,8 @@ the Supabase project. Details are in the owner's private report; nothing secret 
   scan clean. The CI dependency audit **failed** on a new high advisory (picomatch ReDoS,
   GHSA-fc5q-39xc-vjpf, no fixed release; build tooling only): accepted with reasons in
   `scripts/check-audit.mjs` on branch `audit/security-2026-11-18`.
-- Production runs `main` `3fe706d`, without the 13 Nov audit fixes (hono patch): release PR #29
-  is still open.
+- Production ran `main` `3fe706d` until 19 Nov; release PR #29 is now merged and deployed
+  (section 3, "Keys, cron secret and admin alerts").
 - Database: RLS on every public table, no `anon` grants, no storage buckets; Supabase advisors:
   `has_role` callable by signed-in users (needed by the RLS policies), leaked-password
   protection off (paid plan).
@@ -221,9 +221,8 @@ the Supabase project. Details are in the owner's private report; nothing secret 
   launch (developers.jup.ag, once it is confirmed not to be the key in Production).
 - **Cron secret rotated:** a new random `lamportpay_cron_secret` was created inside Supabase Vault
   (never displayed outside the owner's own dashboard) and the owner set the same value as
-  `CRON_SECRET` in Vercel (Production and Preview). It takes effect with the next Production
-  deployment (release PR #29); until then the 5-minute pg_cron call is refused (401) and Vercel's
-  daily cron keeps running with the deployed value. This also retires the October `CRON_SECRET`.
+  `CRON_SECRET` in Vercel (Production and Preview). Live since the 19 Nov deployment: the
+  5-minute pg_cron call answers 200 (first at 00:15 UTC). This also retires the October `CRON_SECRET`.
 - **Alerts in the admin (owner request: no chat channel needed):** Admin → Alerts lists the open
   operations alerts the reconcile job keeps in `ops_alerts` (payments stuck at Stables, payments
   that ended after funds reached Stables, webhook problems) with what to do next and links to the
@@ -231,6 +230,10 @@ the Supabase project. Details are in the owner's private report; nothing secret 
   while an admin page is open. New column `ops_alerts.action` (migration
   `20261119120000_ops_alerts_action.sql`, applied 19 Nov). `OPS_ALERT_WEBHOOK_URL` (Slack or
   Discord) stays optional, for notifications when the admin is not open.
+- **Released 19 Nov:** the owner approved PR #29 as code owner; merged to `main` (`974890e`) and
+  deployed to Production (`dpl_AvPHMsNTydpdoVHoTPGNHQbreJKo`, `lamport-kohl.vercel.app`).
+  Checked: LIVE mode with Stables production, minimum 25 USDC, `/mcp` 404, security headers,
+  `/admin/alerts` served, reconcile job 200 with the alert's next-step text stored.
 - One alert is open now: payment `6a6cd3eb` (a BRL **sandbox** test from 7 Oct that the Stables
   sandbox never completes). Opening an operations case on it (Admin → Payments) closes the alert.
 - **Leaked-password protection without Pro** (owner request): the app checks every password
