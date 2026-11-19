@@ -54,6 +54,13 @@ export const Route = createFileRoute("/api/ask-ai")({
           row.complaint_summary = complaints.join(" / ").slice(0, 500);
         }
         if (email) row.contact_email = email.slice(0, 200);
+        // A signed-in visitor's complaint is linked to their account, so the answer the team
+        // publishes shows on their "My requests" page. Anonymous chats stay anonymous.
+        if (request.headers.get("authorization")) {
+          const { authenticateUser } = await import("@/lib/payments/auth.server");
+          const { user } = await authenticateUser(request);
+          if (user) row.user_id = user.id;
+        }
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { error } = await supabaseAdmin

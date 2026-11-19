@@ -9,7 +9,8 @@ export type AuditEntry = {
     | "user_role"
     | "admin_invite"
     | "business_settings"
-    | "payment_case";
+    | "payment_case"
+    | "support_request";
   entityId?: string | null;
   entityReference?: string | null;
   action: string;

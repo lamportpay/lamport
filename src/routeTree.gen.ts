@@ -33,6 +33,7 @@ import { Route as WhitepaperRouteImport } from './routes/whitepaper'
 import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedHyperliquidTestRouteImport } from './routes/_authenticated/hyperliquid-test'
+import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as ApiAskAiRouteImport } from './routes/api/ask-ai'
 import { Route as ApiCspReportRouteImport } from './routes/api/csp-report'
@@ -77,6 +78,7 @@ import { Route as ApiPublicStablesWebhookRouteImport } from './routes/api/public
 import { Route as ApiQuoteEstimateRouteImport } from './routes/api/quote/estimate'
 import { Route as ApiSolanaHealthRouteImport } from './routes/api/solana/health'
 import { Route as ApiSolanaVerifyTxRouteImport } from './routes/api/solana/verify-tx'
+import { Route as ApiSupportUpdatesRouteImport } from './routes/api/support/updates'
 import { Route as ApiWalletHoldingsRouteImport } from './routes/api/wallet/holdings'
 import { Route as ApiWalletSignInRouteImport } from './routes/api/wallet/sign-in'
 import { Route as AuthenticatedAdminPaymentsIndexRouteImport } from './routes/_authenticated/admin.payments.index'
@@ -215,6 +217,11 @@ const AuthenticatedHyperliquidTestRoute =
     path: '/hyperliquid-test',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -448,6 +455,11 @@ const ApiSolanaVerifyTxRoute = ApiSolanaVerifyTxRouteImport.update({
   path: '/api/solana/verify-tx',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSupportUpdatesRoute = ApiSupportUpdatesRouteImport.update({
+  id: '/api/support/updates',
+  path: '/api/support/updates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiWalletHoldingsRoute = ApiWalletHoldingsRouteImport.update({
   id: '/api/wallet/holdings',
   path: '/api/wallet/holdings',
@@ -573,6 +585,7 @@ export interface FileRoutesByFullPath {
   '/workflow': typeof WorkflowRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/hyperliquid-test': typeof AuthenticatedHyperliquidTestRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
   '/api/csp-report': typeof ApiCspReportRoute
@@ -614,6 +627,7 @@ export interface FileRoutesByFullPath {
   '/api/quote/estimate': typeof ApiQuoteEstimateRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
+  '/api/support/updates': typeof ApiSupportUpdatesRoute
   '/api/wallet/holdings': typeof ApiWalletHoldingsRoute
   '/api/wallet/sign-in': typeof ApiWalletSignInRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -658,6 +672,7 @@ export interface FileRoutesByTo {
   '/whitepaper': typeof WhitepaperRoute
   '/workflow': typeof WorkflowRoute
   '/hyperliquid-test': typeof AuthenticatedHyperliquidTestRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
   '/api/csp-report': typeof ApiCspReportRoute
@@ -699,6 +714,7 @@ export interface FileRoutesByTo {
   '/api/quote/estimate': typeof ApiQuoteEstimateRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
+  '/api/support/updates': typeof ApiSupportUpdatesRoute
   '/api/wallet/holdings': typeof ApiWalletHoldingsRoute
   '/api/wallet/sign-in': typeof ApiWalletSignInRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -746,6 +762,7 @@ export interface FileRoutesById {
   '/workflow': typeof WorkflowRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/hyperliquid-test': typeof AuthenticatedHyperliquidTestRoute
+  '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/ask-ai': typeof ApiAskAiRoute
   '/api/csp-report': typeof ApiCspReportRoute
@@ -787,6 +804,7 @@ export interface FileRoutesById {
   '/api/quote/estimate': typeof ApiQuoteEstimateRoute
   '/api/solana/health': typeof ApiSolanaHealthRoute
   '/api/solana/verify-tx': typeof ApiSolanaVerifyTxRoute
+  '/api/support/updates': typeof ApiSupportUpdatesRoute
   '/api/wallet/holdings': typeof ApiWalletHoldingsRoute
   '/api/wallet/sign-in': typeof ApiWalletSignInRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -834,6 +852,7 @@ export interface FileRouteTypes {
     | '/workflow'
     | '/admin'
     | '/hyperliquid-test'
+    | '/requests'
     | '/admin/login'
     | '/api/ask-ai'
     | '/api/csp-report'
@@ -875,6 +894,7 @@ export interface FileRouteTypes {
     | '/api/quote/estimate'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
+    | '/api/support/updates'
     | '/api/wallet/holdings'
     | '/api/wallet/sign-in'
     | '/admin/'
@@ -919,6 +939,7 @@ export interface FileRouteTypes {
     | '/whitepaper'
     | '/workflow'
     | '/hyperliquid-test'
+    | '/requests'
     | '/admin/login'
     | '/api/ask-ai'
     | '/api/csp-report'
@@ -960,6 +981,7 @@ export interface FileRouteTypes {
     | '/api/quote/estimate'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
+    | '/api/support/updates'
     | '/api/wallet/holdings'
     | '/api/wallet/sign-in'
     | '/admin'
@@ -1006,6 +1028,7 @@ export interface FileRouteTypes {
     | '/workflow'
     | '/_authenticated/admin'
     | '/_authenticated/hyperliquid-test'
+    | '/_authenticated/requests'
     | '/admin/login'
     | '/api/ask-ai'
     | '/api/csp-report'
@@ -1047,6 +1070,7 @@ export interface FileRouteTypes {
     | '/api/quote/estimate'
     | '/api/solana/health'
     | '/api/solana/verify-tx'
+    | '/api/support/updates'
     | '/api/wallet/holdings'
     | '/api/wallet/sign-in'
     | '/_authenticated/admin/'
@@ -1119,6 +1143,7 @@ export interface RootRouteChildren {
   ApiQuoteEstimateRoute: typeof ApiQuoteEstimateRoute
   ApiSolanaHealthRoute: typeof ApiSolanaHealthRoute
   ApiSolanaVerifyTxRoute: typeof ApiSolanaVerifyTxRoute
+  ApiSupportUpdatesRoute: typeof ApiSupportUpdatesRoute
   ApiWalletHoldingsRoute: typeof ApiWalletHoldingsRoute
   ApiWalletSignInRoute: typeof ApiWalletSignInRoute
   ApiPaymentsIndexRoute: typeof ApiPaymentsIndexRoute
@@ -1304,6 +1329,13 @@ declare module '@tanstack/react-router' {
       path: '/hyperliquid-test'
       fullPath: '/hyperliquid-test'
       preLoaderRoute: typeof AuthenticatedHyperliquidTestRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/requests': {
+      id: '/_authenticated/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof AuthenticatedRequestsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/admin/login': {
@@ -1614,6 +1646,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSolanaVerifyTxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/support/updates': {
+      id: '/api/support/updates'
+      path: '/api/support/updates'
+      fullPath: '/api/support/updates'
+      preLoaderRoute: typeof ApiSupportUpdatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/wallet/holdings': {
       id: '/api/wallet/holdings'
       path: '/api/wallet/holdings'
@@ -1779,6 +1818,7 @@ const AuthenticatedAdminRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedHyperliquidTestRoute: typeof AuthenticatedHyperliquidTestRoute
+  AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedAdminRolesRoute: typeof AuthenticatedAdminRolesRoute
   AuthenticatedPaymentsIdRoute: typeof AuthenticatedPaymentsIdRoute
   AuthenticatedPaymentsIndexRoute: typeof AuthenticatedPaymentsIndexRoute
@@ -1788,6 +1828,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedHyperliquidTestRoute: AuthenticatedHyperliquidTestRoute,
+  AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedAdminRolesRoute: AuthenticatedAdminRolesRoute,
   AuthenticatedPaymentsIdRoute: AuthenticatedPaymentsIdRoute,
   AuthenticatedPaymentsIndexRoute: AuthenticatedPaymentsIndexRoute,
@@ -1847,6 +1888,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiQuoteEstimateRoute: ApiQuoteEstimateRoute,
   ApiSolanaHealthRoute: ApiSolanaHealthRoute,
   ApiSolanaVerifyTxRoute: ApiSolanaVerifyTxRoute,
+  ApiSupportUpdatesRoute: ApiSupportUpdatesRoute,
   ApiWalletHoldingsRoute: ApiWalletHoldingsRoute,
   ApiWalletSignInRoute: ApiWalletSignInRoute,
   ApiPaymentsIndexRoute: ApiPaymentsIndexRoute,
