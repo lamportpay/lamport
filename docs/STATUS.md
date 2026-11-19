@@ -1,6 +1,6 @@
 # LamportPay: project status and handoff
 
-**As of 19 November 2026** (security audit and go-live preparation: section 3, "Security audit, 18 November 2026" and "Keys, cron secret and admin alerts, 19 November 2026"; earlier: "Local-first work from 2 November 2026"). Read this first, then `CLAUDE.md`
+**As of 19 November 2026** (security audit and go-live preparation: section 3, "Security audit, 18 November 2026", "Keys, cron secret and admin alerts, 19 November 2026" and "Go-live readiness check, 19 November 2026"; earlier: "Local-first work from 2 November 2026"). Read this first, then `CLAUDE.md`
 (the project rules, which win over anything else, this file included). Update this file at the
 end of every work session: what changed, what is left, what needs approval.
 
@@ -29,7 +29,7 @@ the company's real account without switching databases).
 
 | What | Where |
 | --- | --- |
-| Code | GitHub `lamportpay/lamport` (public). Work on feature branches into `vercel-preview-migration`; `main` is Production, released through an owner-approved PR (code-owner review required). Release PR #29 (13 Nov and 18 Nov audits, admin alerts, leaked-password check, 25 USDC minimum) approved by the owner (code owner `lamportpay`) and merged 19 Nov (`974890e`) |
+| Code | GitHub `lamportpay/lamport` (public). Work on feature branches into `vercel-preview-migration`; `main` is Production, released through an owner-approved PR (code-owner review required). Releases on 19 Nov: #29 (13 Nov and 18 Nov audits, admin alerts, leaked-password check, 25 USDC minimum; `974890e`), #38 (admin password reset with authenticator code; `e345a3f`) and #40 (complaints to Stables and back; `1659777`), each approved by the owner |
 | Project rules | `CLAUDE.md` |
 | This status file | `docs/STATUS.md` |
 | Older execution tracker (to 21 Oct) | `docs/ROADMAP.md` |
@@ -234,8 +234,9 @@ the Supabase project. Details are in the owner's private report; nothing secret 
   deployed to Production (`dpl_AvPHMsNTydpdoVHoTPGNHQbreJKo`, `lamport-kohl.vercel.app`).
   Checked: LIVE mode with Stables production, minimum 25 USDC, `/mcp` 404, security headers,
   `/admin/alerts` served, reconcile job 200 with the alert's next-step text stored.
-- One alert is open now: payment `6a6cd3eb` (a BRL **sandbox** test from 7 Oct that the Stables
-  sandbox never completes). Opening an operations case on it (Admin → Payments) closes the alert.
+- The one open alert (payment `6a6cd3eb`, a BRL **sandbox** test from 7 Oct that the Stables
+  sandbox never completes) cleared at 00:45 UTC once the owner opened an operations case on it.
+  Keep that case open: closing it brings the alert back.
 - **Leaked-password protection without Pro** (owner request): the app checks every password
   against HaveIBeenPwned itself (`docs/security/leaked-password-protection.md`): refused on
   `/auth/reset`; a customer signing in with a leaked password is sent to replace it; an admin
@@ -255,6 +256,36 @@ the Supabase project. Details are in the owner's private report; nothing secret 
 - **Stables balance:** verification fees (KYC 3 USD per individual) come out of the Stables
   balance, which is 0; the owner tops it up in Stables → Balances before the first customer
   verification.
+- **Released 19 Nov (later):** #38 (`e345a3f`, `dpl_BPRVD2HDFtMBpiikA7PduTcDWhfe`) and #40
+  (`1659777`, `dpl_3BdbwS1JqwkXRJ4p4UaF67vvNMmy`), both merged by the owner and deployed to
+  Production on purpose.
+
+### Go-live readiness check, 19 November 2026
+
+Owner-facing report: "LamportPay go-live readiness — 19 November 2026" (private Claude doc).
+Checked on Production between 01:05 and 01:15 UTC:
+
+- Deployment `dpl_3BdbwS1JqwkXRJ4p4UaF67vvNMmy` Ready on `lamport-kohl.vercel.app` (`1659777`); CI
+  green on `main` and on this branch; nothing waiting to be released.
+- `/api/integration-status`: LIVE, mainnet, Stables production, no live blockers; USDC only,
+  minimum 25, no maximum, fee 200 bps, 19 payout countries. `/requests` and `/admin/complaints`
+  load; `POST /api/support/updates` answers 400 to bad input and 200 (`no-store`) to valid input.
+- Reconcile job: runs at 00:55, 01:00 and 01:05 UTC answered 200; 0 open alerts.
+- Runtime errors (24 h): only "Transfer not found" from Stables production for sandbox payments
+  (accepted effect of the shared database): `ad0c4160` (COMPLETED, missing `actual_payout`; 13
+  times since 11 Nov; leaves the 14-day reconcile window at 22:29 UTC on 19 Nov) and `6a6cd3eb`
+  (only when opened in admin). All 87 payments in the database are sandbox tests (26 Sep to 5 Nov).
+- Stables dashboard: balance 0.00 USD; one customer (Lamport Pay Ltd, business, active); compliance
+  queue empty; verification fees KYC 3, KYB 15, fraud check 100 USD (paid from the balance).
+- Early access: 0 of the 10 fee-waiver slots taken (the waiver has no cap: business decision
+  before inviting users, checklist item 36).
+
+**Verdict:** ready for the controlled real-money test once the owner tops up the Stables balance.
+Order: top-up → owner KYC → 25 USDC to the owner's GBP account (`docs/testing/real-money-test-plan.md`)
+→ reconciliation → go/no-go. Before inviting users: dedicated Solana RPC, CSP enforced, the
+early-access waiver decision, lawyer review of `/terms` and `/privacy`, Stables' answers (production
+country list, status webhooks and `actual_payout` in production, when the fraud check applies).
+The DNS move of `lamportpay.com` stays optional and needs the owner's approval.
 
 ## 4. What is built (and where the code is)
 
@@ -293,7 +324,8 @@ Stables' hosted page; own account or named beneficiary; USDC only for now; minim
 
 Added on 3 Nov:
 
-- **Limits follow the payout partner:** minimum **15** (Stables' 15 USD-equivalent minimum);
+- **Limits follow the payout partner:** minimum **25** (owner decision 19 Nov; was 15, Stables' 15
+  USD-equivalent minimum, but most rails need 20 USD after the fees: section 9);
   **no LamportPay maximum** (decision 4 Nov, replacing the provisional 5,000 of 3 Nov): the
   partner decides how much one transfer can be, and Stables applies its own per-customer and
   per-corridor limits at quote time. Defaults in `src/lib/payments/limit-defaults.ts`; `.env` and
@@ -313,11 +345,12 @@ Still open:
 | --- | --- |
 | G2: rotate the keys that were shared in a `.env` file (`docs/security/credential-rotation-2026-10-30.md`). **19 Nov:** Supabase key gone, cron secret rotated, Stables sandbox skipped, Jupiter after launch, Alchemy in another account (section 3) | Owner, then engineering verifies |
 | **Correction (4 Nov):** the rotation note says the shared values are not in the git history. They are: a `.env` was committed on 10 Oct and removed on 12 Oct, so the history of the public repository holds the Alchemy key, the Supabase secret key and the Stables sandbox webhook secret. All three are still in the local `.env`. Rotation is the fix; the Alchemy key matters most because the same key serves mainnet RPC. **18 Nov audit:** the same file also holds the Jupiter API key, the Stables sandbox API key and the `CRON_SECRET`; all seven need revoking at the provider (list in `docs/security/credential-rotation-2026-10-30.md`; prefixes and fingerprints only in the owner's private report). Vercel shows these variables were re-entered on 11–13 Nov; whether the old values were revoked is not verified. **Owner decision 18 Nov:** revoke, do not rewrite git history (a fork and existing clones keep the old history anyway) | Owner revokes, engineering verifies |
-| A Stables **production** key (`sti_live_…`) was pasted into a chat on 3 Nov: revoke it in Stables → API keys and create the production key only when it goes into Vercel Production | Owner |
+| ~~A Stables production key pasted into a chat on 3 Nov~~ **Done:** the only production key in the Stables dashboard was created 13 Nov (checked 19 Nov) | Owner |
 | Enforce the CSP after a wallet session on `/pay` shows no violations | Engineering |
 | Leaked-password protection: done in the app on the free plan (19 Nov, section 3); Supabase's own setting once on Pro | Owner (Pro) |
 | Move Lovable's GitHub sync to the branch `lovable/legacy` (created 31 Oct; plan R2) | Owner, in Lovable |
-| Import the two rulesets in `.github/rulesets/` (see its README; plan R3 and R7) | Owner, in GitHub |
+| ~~Import the two rulesets~~ **Done:** both active on GitHub (verified 4 Nov, section 9) | Owner, in GitHub |
+| Early-access fee waiver: the first 10 signups pay no fee forever, with no cap (checklist item 36); 0 taken on 19 Nov. Cap it or confirm before inviting users | Owner (business) |
 | Independent security review before scaling | External |
 
 ## 7. Approvals needed to go LIVE
