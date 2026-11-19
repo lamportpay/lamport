@@ -20,8 +20,8 @@ user wallet → (Jupiter swap, only if the wallet lacks the settlement coin) →
 | A3 | IP whitelisting done if Stables requires it for production | Stables | Confirmation |
 | A4 | Corridor confirmed for the test customer (country, currency, bank) and that customer is eligible | Stables | Preview quote succeeds |
 | A5 | Test customer fully KYC-verified on production (base level), payout account in the customer's own name | Test user | Stables customer status |
-| A6 | Fee configuration decided and live: LamportPay fee and the Stables `integrator_fee` mechanism (see open question F2) | Business + Stables | Written decision |
-| A7 | Production limits confirmed: `PAYMENT_MIN_*` = 15 (owner decision 7 Oct 2026, Stables' 15 USD minimum), `PAYMENT_MAX_*` empty = no LamportPay maximum; Stables decides (decision 4 Nov 2026) | Business | Env values |
+| A6 | Fee configuration live: `LAMPORTPAY_FEE_BPS` = 200 and `LAMPORTPAY_REVENUE_WALLET` set in Production. The fee is paid in the user's own transaction to the revenue wallet; the Stables developer fee stays unset (Stables answer: no integrator fee) | Business | Env names set; `/api/integration-status` shows 200 bps |
+| A7 | Production limits confirmed: `PAYMENT_MIN_*` = 25 (owner decision 19 Nov 2026: most Stables rails need 20 USD after the fees), `PAYMENT_MAX_*` empty = no LamportPay maximum; Stables decides (decision 4 Nov 2026) | Business | Env values |
 | A8 | Legal/compliance sign-off for operating the flow in the test corridor | Legal | Written sign-off |
 | A9 | Stables' answers on: `transfer.updated.status_transitioned` in production, `actual_payout`, deposit address expiry, Travel Rule holds for self-custody wallets | Stables | Slack/email thread |
 | A10 | Production webhook endpoint reachable and verified with Stables' test message; reconcile cron schedule set (`RECONCILE_CRON_SCHEDULE`) | Engineering | Delivery log line |
@@ -38,8 +38,12 @@ most other rails). The old 15 USDC minimum sent 14.70 to Stables after the 2% fe
 been refused at the quote. 25 USDC sends 24.50, about 21 USD after Stables' 3 USD processing fee
 (`docs/STATUS.md` §9).
 
-Run 1: wallet already holds USDC (no swap). Run 2 (only after run 1 reconciles): wallet holds SOL
-or another token and needs a Jupiter swap into USDC. Optional run 3: USDT (currently unverified).
+Do not join early access (the website popup) from the test wallet or the test account's email
+before the run: the first 10 signups pay no LamportPay fee, so the fee leg would not be tested.
+
+Run 1: wallet already holds USDC (no swap). Run 2 (only after run 1 reconciles, and after the
+Jupiter ExactOut fix listed in `docs/STATUS.md` §8): wallet holds SOL or another token and needs
+a Jupiter swap into USDC. Optional run 3: USDT (currently unverified).
 
 For each run record, in order:
 
@@ -65,7 +69,7 @@ For each run record, in order:
 | Final status | Stables `GET /transfers/{id}` | our `payments.status` = `COMPLETED` |
 | How it got there | `payment_events` (source per step) | Stables webhook delivery log |
 | Fees | Stables quote / transfer | receipt shown to user |
-| LamportPay fee | configured value | Stables `integrator_fee` line |
+| LamportPay fee | configured value (2% of the total: 0.50 of 25 USDC) | revenue wallet's receipt in the deposit transaction (on chain) |
 | Payout | Stables `actual_payout` (if provided) | bank statement |
 | No double processing | `stables_webhook_events` (unique event IDs) | `payment_events` (one transition per state) |
 
